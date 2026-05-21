@@ -160,9 +160,9 @@ Does any checkpoint affect downstream tasks?
 
 | Strategy | Orchestrator | Subagent/Segment | Total |
 |----------|--------------|-----------------|-------|
-| A: Autonomous | 1.5k (~5%) | 25k | 26.5k |
-| B: Segmented | 10k | 20k per segment | 35k max |
-| C: Sequential | 10k | 15k domain | 35k max |
+| A: Autonomous | 2,500-3,000 tokens (~10-15%) | 25,000 tokens per worker (fresh, isolated) | <30% overhead target |
+| B: Segmented | 10k tokens (~10-15%) | 20k per segment | 35k max |
+| C: Sequential | 10k tokens (~10-15%) | 15k domain + 7k execution | 35k max |
 
 **Monitoring thresholds:**
 - 25% remaining: Warning flag, consider flushing completed segments
