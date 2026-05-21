@@ -455,7 +455,7 @@ Auto-fix bugs, auto-add missing criticals, auto-fix blockers — all documented 
 **Templates:** `templates/brief.md`, `templates/phase-prompt.md`, `templates/roadmap.md`, `templates/summary.md`
 **Workflows:** `workflows/execute-phase.md`
 **Milestones:** `references/milestone-management.md`
-**Subagent Prompts:** `agents/explorer.md`, `agents/researcher.md`, `agents/architect.md`, `agents/implementer.md`, `agents/verifier.md`
+**Subagent Prompts:** `agents/explorer.md`, `agents/researcher.md`, `agents/architect.md`, `agents/implementer.md`, `agents/verifier.md`, `agents/critic.md`
 
 ---
 

@@ -37,13 +37,13 @@ Good skill design separates:
 
 ## What Good Looks Like
 
-A well-designed skill:
+Design principles for skills:
 
-- Has a clear YAML description (when should Claude use this?)
-- Starts with the most important information
-- Uses structure that makes sense for the content
-- Stays concise—typically under 200 lines
-- Includes one good example, not every edge case
+- **Clear routing signal** — description tells Claude exactly when to act and when not to; vague descriptions trigger on everything and nothing
+- **Principle first** — opening lines set the mental model before details compete; if Claude has to infer the point, the skill failed
+- **Structure follows purpose** — organize around how the reader thinks, not how the writer organized their notes; coherence aids retention
+- **Concision is respect** — every line competes for context space; extraneous words dilute what matters
+- **One vivid example** — a concrete case teaches judgment better than ten edge cases that teach pattern-matching
 
 ### Numeric Thresholds
 
@@ -91,6 +91,7 @@ Complex skills (multiple workflows, extensive domain knowledge) → use folders:
 ```
 skill-name/
 ├── SKILL.md          # Principles, routing
+├── agents/           # Bundled subagent prompts (for portable delegation)
 ├── workflows/        # Step-by-step procedures
 ├── references/       # Domain knowledge
 ├── templates/        # Output structures
@@ -175,3 +176,5 @@ Skill creation is itself a multi-step workflow. When you spawn a subagent to dra
 If multiple skill ideas surface simultaneously, you can spawn parallel drafting subagents — but the orchestrator must track each one and wait for all before moving to integration check.
 
 **Principle:** A skill about coordinated work should demonstrate coordination in its own workflow. Even if you don't spawn subagents for skill creation, framing each phase as a tracked task clarifies what must complete before what.
+
+**For tracking implementation**, load `references/skill-self-testing.md` — it provides YAML validation, threshold checks, and pre-commit verification steps.
