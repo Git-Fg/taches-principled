@@ -2,6 +2,14 @@
 
 All notable changes are documented here.
 
+## [0.0.1-alpha]
+
+### Added
+- CLAUDE.md development guide with operational rules and best practices
+
+### Changed
+- Downgraded version to `0.0.1-alpha` for early development
+
 ## [1.1.0]
 
 ### Changed
