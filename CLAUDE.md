@@ -347,6 +347,8 @@ EOF
 - [ ] Policy/Mechanism framing present
 - [ ] Anti-Patterns present if the concept is invertible
 - [ ] Numeric thresholds present where applicable
+- [ ] Reference steering uses "IF X → BEFORE/IMMEDIATELY" conditionals (not passive tables)
+- [ ] Decision router at TOP (not buried at end) for any skill with references
 - [ ] README updated if structure changed
 - [ ] CHANGELOG entry added
 - [ ] No MCP references (plugin is MCP-free)
@@ -372,6 +374,8 @@ Better a 100-line skill that teaches clearly than a 500-line skill that overwhel
 
 Every line competes for context space. Every line must earn its place.
 
+**But:** Line count is a symptom, not the rule. If content must be always known, put it in SKILL.md regardless of length. The delta principle governs what to include; line count is only a signal for auditing.
+
 ---
 
 ## Rule: No Generated Documentation
@@ -383,6 +387,35 @@ Do not create README summaries or changelog summaries using AI. Write them by ha
 ## Rule: Named Principles Over Procedures
 
 If you find yourself writing "Step 1, Step 2, Step 3" — stop. Ask: what is the **principle** that makes these steps correct? Write the principle. The steps should be obvious from the principle, not from a checklist.
+
+---
+
+## Rule: SKILL.md as Decision Router, Not Teaching Document
+
+Skills should **route** agents to the right action, not **teach** the agent about the domain. The difference:
+
+**Teaching document (wrong):**
+```
+## What Skills Are
+Skills are prompts that load on demand...
+## Context Competition
+Every token in your skill competes...
+```
+
+**Decision router (correct):**
+```
+## Decision Router
+IF [situation] → BEFORE [action] read [reference]
+
+## Success Criteria
+A skill succeeds when:
+- Triggers unambiguously on correct inputs
+- Silently skips incorrect inputs
+```
+
+The first pattern fills context with explanations the agent already knows. The second pattern gives the agent decision points with clear success criteria.
+
+**Core shift:** From "Do these steps" to "Achieve this outcome, within these constraints, consulting these references when relevant."
 
 ---
 

@@ -5,9 +5,15 @@ when_to_use: |
   Do NOT use for interactive debugging, single-file edits, or one-off questions that don't involve prompt files.
 ---
 
-# Execute Prompts Skill
+## Decision Router
 
-Execute prompts from `.principled/prompts/` as delegated sub-tasks with fresh context. Supports single, parallel, and sequential execution strategies.
+IF executing a single prompt → Read `workflows/execute-prompt.md` BEFORE starting
+IF executing parallel prompts → Read `workflows/execute-prompt.md` for parallel coordination rules
+IF executing sequential prompts → Read `workflows/execute-prompt.md` for sequential handoff rules
+
+This skill is self-contained — no cross-skill routing needed.
+
+---
 
 ## Core Principle
 
@@ -118,11 +124,14 @@ Question: How would you like to execute these prompts?
 Options:
 - A: Fully autonomous (recommended) — Execute all prompts without stopping
 - B: Step through one at a time — Confirm before each prompt executes
-- C: Execute [N] prompts then stop — Let me specify how many
-- D: Just run the first one, I'll do the rest
+- C: Something else
 ```
 
 **Default to A (autonomous)** when user says "run" without qualification.
+
+**If user selects C:** Acknowledge and stop — ask what they'd like to do instead.
+
+**If user selects B:** Set step-through mode, execute one prompt at a time with confirmation gates.
 
 ---
 
@@ -243,6 +252,17 @@ Never `git add .` — stage only files you modified.
 | Commit message length | 72 chars max | Standard git convention |
 
 **Parallel execution is all-or-nothing:** If you cannot fit all parallel Task calls in one message, fall back to sequential. Batched "parallel" is sequential with added latency.
+
+---
+
+## Success Criteria
+
+A prompt execution succeeds when:
+- **Correct resolution**: Prompt identified by number/name/empty as intended
+- **Strategy matched**: Single/parallel/sequential matches prompt count and dependencies
+- **Artifact archived**: Output moved to `.principled/prompts/completed/` after execution
+- **Git committed**: Commit created with proper scope format (`feat:`, `fix:`, etc.)
+- **Clean handoff**: Orchestrator receives structured results, not raw output
 
 ---
 

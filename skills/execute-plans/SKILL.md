@@ -6,6 +6,27 @@ when_to_use: |
   Do NOT use for planning without execution intent.
 ---
 
+## Decision Router
+
+IF plan has zero checkpoints or only checkpoint:human-verify → Strategy A: Fully Autonomous
+IF plan has checkpoint:human-verify markers → Strategy B: Segmented Execution
+IF plan has checkpoint:decision or checkpoint:human-action → Strategy C: Sequential Execution
+
+For detailed strategy mechanics → read `references/execution-strategies.md` AFTER selecting strategy
+
+---
+
+## Numeric Thresholds
+
+| Metric | Limit |
+|--------|-------|
+| Parallel workers | 3-5 |
+| Milestone review frequency | Every 2-3 tasks |
+| Context overhead target | <30% |
+| Spawn prompt tokens | 1500 max |
+
+---
+
 # Execute Plans Skill
 
 Execute PLAN.md files as prompts. Transform planned work into shipped artifacts.
@@ -86,21 +107,10 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 **Pre-execution self-critique (devil's advocate):**
 
-Before spawning workers, delegate a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure:
-
-```
-Spawn critic subagent (haiku, read-only):
-Task: Review this execution plan as a devil's advocate
-Focus areas:
-- What assumptions is the plan making that might be wrong?
-- What could go wrong with this plan's approach?
-- Where could parallel execution fail due to hidden dependencies?
-- What risks does the milestone structure miss?
-- Are task groupings correct or are there subtle conflicts?
+Before spawning workers, delegate a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Read `agents/critic.md` for the agent template and spawn the critic with the plan as context.
 
 If critic finds critical issues: fix the plan before spawning workers.
 If critic finds minor concerns: note them for milestone review.
-```
 
 **Why:** Milestone self-review catches bad execution. Pre-execution critique catches bad plans. Catching a flawed plan before wasting parallel workers is cheaper than fixing after they complete.
 

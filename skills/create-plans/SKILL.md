@@ -5,6 +5,22 @@ when_to_use: |
   Do NOT use for code review, debugging existing code, or one-off questions.
 ---
 
+## Decision Router
+
+IF user asks to "plan" → FIRST create brief before roadmap
+IF user asks to "plan a phase" → BEFORE creating tasks read `references/plan-format.md` AND `references/checkpoints.md`
+IF scope is unclear or large → BEFORE decomposing read `references/scope-estimation.md`
+IF automation CLI available → BEFORE running commands read `references/cli-automation.md`
+
+User phrase → Action routing:
+- "plan", "make plan", "create plan" → Create brief first (never roadmap first)
+- "quick plan", "sketch" → Short intake with 2-3 tasks max
+- "full plan", "detailed" → Full intake with scope analysis
+- "phase plan", "increment" → Use phase structure from `references/plan-format.md`
+- "execute", "run", "build it" → Load `execute-plans` skill (compositional pair)
+
+---
+
 # Create Plans Skill
 
 Create executable project plans that Claude implements directly. Produces CLAUDE.md-executable prompts—not documentation.
@@ -308,8 +324,7 @@ After the fan-out exploration, before writing the plan, spawn a critic agent to 
 
 ```
 Spawn critic subagent (haiku, read-only):
-Task: Challenge the proposed approach as devil's advocate
-Focus areas:
+Focus: Challenge the proposed approach as devil's advocate
 - What assumptions does the approach make that might be wrong?
 - What could go wrong with this direction?
 - Are there hidden dependencies or conflicts we missed?
@@ -322,29 +337,6 @@ If critic finds critical issues: reconsider the approach before committing to pl
 
 ---
 
-## Autonomy Mode Selection
-
-**Trigger:** When user says "execute", "run", "do it", or any variation indicating execution intent.
-
-**First, explain what execution means:**
-
-> When you say "execute", it doesn't mean "good luck" — it means "use the execution skill to proceed autonomously with the plan I've prepared."
-
-**Then present autonomy modes:**
-
-**Question:** How would you like to work on this?
-**Options:**
-- A: Fully autonomous — I create the plan, you execute without stopping for me (recommended)
-- B: Segmented — Execute, but pause at checkpoints for my verification
-- C: Sequential — Execute, but stop after each task for confirmation
-- D: I'm not sure, explain the difference
-
-**If user selects D (explain):** Present a brief explanation of each mode, then re-present the question.
-
-**After selection:** Route to the appropriate execution mode. Fully autonomous proceeds directly; Segmented and Sequential set flags that control checkpoint frequency in the execution skill.
-
----
-
 ## Routing
 
 | Response | Action |
@@ -353,7 +345,7 @@ If critic finds critical issues: reconsider the approach before committing to pl
 | "roadmap", "phases" | Create roadmap |
 | "phase", "plan phase", "next phase" | Plan phase |
 | "chunk", "next tasks" | Plan chunk |
-| "execute", "run", "do it" | Present autonomy mode selection, then load execution skill |
+| "execute", "run", "do it" | Load execution skill |
 | "research", "investigate" | Create research prompt |
 | "handoff", "pack up", "stopping" | Create handoff |
 | "resume", "continue" | Load handoff |
@@ -368,27 +360,24 @@ If critic finds critical issues: reconsider the approach before committing to pl
 
 First, explain what execution means:
 
-> When you say "execute", it doesn't mean "good luck" — it means "use the execution skill to proceed autonomously with the plan I've prepared."
+> When you say "execute", it doesn't mean "good luck" — it means "use the execution skill to proceed with the plan I've prepared. The execution skill analyzes your plan's checkpoint structure and automatically selects the appropriate strategy: fully autonomous (no checkpoints), segmented (verify-only checkpoints), or sequential (decision/action checkpoints)."
 
 **Pre-execution gate:**
 
 **Question:** Ready to execute [plan name]?
 **Options:**
-- A: Execute autonomously (recommended)
+- A: Execute autonomously (recommended) — the execution skill handles strategy selection automatically
 - B: Let me review the plan first
-- C: Execute in segmented mode instead
-- D: Cancel, do something else
+- C: Something else
 
 **If user selects B:** Present the plan for review, then re-ask the pre-execution gate question.
 
-**If user selects C:** Set execution mode to segmented, then load the execution skill.
+**If user selects C:** Acknowledge and stop — ask what they'd like to do instead.
 
-**If user selects D:** Acknowledge and stop.
-
-**If user selects A (autonomous):** Load the execution skill to execute this plan autonomously.
+**If user selects A:** Load the execution skill to execute this plan. The execution skill will analyze checkpoint types and select Strategy A (fully autonomous), B (segmented), or C (sequential) automatically.
 
 The execution skill uses intelligent orchestration:
-- Analyzes task dependencies
+- Analyzes task dependencies and checkpoint structure
 - Spawns parallel subagents for independent tasks
 - Spawns critic subagents at milestones for self-review
 - Creates SUMMARY.md and commits when done

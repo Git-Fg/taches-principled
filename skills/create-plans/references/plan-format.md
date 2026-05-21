@@ -128,7 +128,7 @@ Should be testable without subjective judgment.
 
 **When to use:** When a task requires human verification, decision, or action before the next task can proceed.
 
-**Syntax:**
+**Canonical syntax:**
 ```markdown
 Checkpoint: checkpoint:human-verify  # Human confirms output
 ```
@@ -140,6 +140,8 @@ Checkpoint: checkpoint:human-verify  # Human confirms output
 | `checkpoint:human-verify` | Human confirms results | Visual checks, reviewing generated content |
 | `checkpoint:decision` | Human chooses path | Architecture, library selection, API design |
 | `checkpoint:human-action` | Human performs action | Email verification, 2FA, account approval |
+
+**Note:** This is the canonical checkpoint syntax for PLAN.md files. The `type="checkpoint:..."` attribute syntax shown in checkpoint-protocols.md is an alternative representation — both are recognized by execute-plans, but prefer the `Checkpoint:` field syntax for consistency.
 
 **When to add checkpoints:**
 - One checkpoint per 5-10 tasks maximum

@@ -5,6 +5,16 @@ when_to_use: |
   Do NOT use for general help, single-task execution, or when direct conversation is faster.
 ---
 
+## Decision Router
+
+IF writing spawn prompts → FIRST read `references/writing-subagent-prompts.md`
+IF choosing orchestration pattern → IMMEDIATELY read `references/orchestration-patterns.md`
+IF managing subagent context → BEFORE spawning read `references/context-management.md`
+IF configuring subagent tools → BEFORE setting restrictions read `references/subagents.md`
+IF evaluating subagent quality → BEFORE testing read `references/evaluation-and-testing.md`
+
+---
+
 # Create Subagents Skill
 
 Create specialized Claude Code subagents with expert guidance. Subagents are specialized Claude instances that run in isolated contexts with focused roles and limited tool access.

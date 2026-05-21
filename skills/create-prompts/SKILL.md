@@ -5,6 +5,17 @@ when_to_use: |
   Do NOT use for executing prompts directly, reviewing existing prompts, or one-off questions that don't need a reusable prompt.
 ---
 
+## Decision Router
+
+IF adaptive intake required → BEFORE gathering requirements read section below on intake workflow
+IF generating for coding task → Use XML-structured prompts with `<implementation>` and `<verification>` sections
+IF generating for analysis task → Use XML-structured prompts with `<analysis_framework>` and `<output_format>` sections
+IF generating for research task → Use XML-structured prompts with `<search_strategy>` and `<synthesis>` sections
+
+This skill is self-contained — no external skill references needed.
+
+---
+
 # Create Prompts Skill
 
 Create highly effective prompts that another Claude Code session can execute. Produces XML-structured prompts—not explanations or documentation.

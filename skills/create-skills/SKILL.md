@@ -5,13 +5,41 @@ when_to_use: |
   Do NOT use for writing general code, creating subagents, or configuring hooks/MCP servers.
 ---
 
-## What Skills Are
+## Decision Router
 
-Skills are prompts that load on demand. They give Claude domain expertise without bloating every conversation. Think of them as specialists you can call in when needed.
+IF naming or describing a skill → FIRST read `references/cross-skill-discovery.md`
+IF skill might exceed 500 lines or 7 tools → IMMEDIATELY read `references/context-management.md`
+IF about to commit a new skill → BEFORE commit read `references/skill-self-testing.md`
 
-A skill is just a `SKILL.md` file. It can be a single file, or a folder with supporting materials (workflows, references, templates, scripts).
+---
 
-### Policy vs. Mechanism
+## Success Criteria
+
+A skill succeeds when:
+- **Triggers unambiguously**: Description matches only intended inputs, no false positives
+- **Skips silently**: Incorrect inputs produce no skill loading
+- **Fits in context**: Under 500 lines, under 7 tools, single focus
+- **Teaches judgment**: Enables decisions, not just steps
+
+A skill fails when Claude cannot decide whether to load it.
+
+---
+
+## What This Skill Teaches
+
+Skills encode domain-specific judgment — when to act, how to decide, what "done" looks like. This separates domain knowledge from general knowledge:
+
+| General Knowledge (Don't Explain) | Domain Judgment (Teach This) |
+|-----------------------------------|------------------------------|
+| What skills are, how context works | Trigger patterns for this domain |
+| Tool syntax and parameters | Success metrics and completion criteria |
+| Claude's capabilities | Decomposition logic and tradeoffs |
+
+If your skill teaches what Claude already knows, it has no value.
+
+---
+
+## Policy vs. Mechanism
 
 **Policy** = when a skill should trigger (the routing decision)
 **Mechanism** = what the skill teaches and how it guides behavior
@@ -254,45 +282,10 @@ Load a reference only when working on that specific aspect — do not load all u
 
 ---
 
-## Clarifying Questions
+## Workflow Principle
 
-Before creating a skill, ask:
+Skill creation follows phases: requirements → draft → verify → integrate. Each phase is a decision point — proceed when criteria are met, not on a schedule.
 
-1. **What specific task should Claude accomplish?** (The narrower, the better.)
+**Principle over procedure:** A skill about coordinated work should demonstrate coordination. Frame each phase as a tracked task with clear completion criteria. Trust the agent to determine execution order from the principles, not from scripted steps.
 
-2. **What does Claude already know about this?** (Don't repeat general knowledge.)
-
-3. **What would make this skill successful?** (Define completion criteria.)
-
-## Workflow Coordination
-
-The skill creation workflow has natural phases: clarifying questions → draft → self-test → integration check. When building a skill, treat each phase as a tracked task.
-
-**Phase tracking pattern:**
-- Clarifying questions: Gather requirements before spawning any drafting subagent
-- Draft subagent: Create the skill file with clear scope
-- Self-test: Verify the skill loads and triggers correctly
-- Integration check: Confirm it works within the existing skill ecosystem
-
-**Why track here:**
-Skill creation is itself a multi-step workflow. When you spawn a subagent to draft a skill, you're delegating a task that has dependencies (requirements must be clear before drafting). Tracking makes the dependency explicit.
-
-**Parallel drafting:**
-If multiple skill ideas surface simultaneously, you can spawn parallel drafting subagents — but the orchestrator must track each one and wait for all before moving to integration check.
-
-**Principle:** A skill about coordinated work should demonstrate coordination in its own workflow. Even if you don't spawn subagents for skill creation, framing each phase as a tracked task clarifies what must complete before what.
-
-**Example — tracking a single skill draft:**
-```
-Clarifying questions: [task: gather requirements, pending]
-  → "What is the trigger? What tools does this skill need?"
-Draft subagent spawned: [task: draft skill, in_progress]
-  → Subagent reports back with draft
-Draft complete: [task: draft skill, completed]
-  → Integration check: [task: verify ecosystem fit, pending]
-```
-Each bracket is a state checkpoint. The orchestrator (you) updates the state after each phase transition. This does not require a task management system — a text note or checklist with checkmarks suffices.
-
-**Note:** No reference file covers tracking implementation. The pattern above is the simplest form.
-
-**For pre-commit verification of threshold checks**, load `references/skill-self-testing.md` — it provides YAML validation, threshold checks, and trigger testing.
+For pre-commit verification of threshold checks, load `references/skill-self-testing.md`.

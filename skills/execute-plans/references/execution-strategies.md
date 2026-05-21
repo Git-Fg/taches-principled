@@ -1,8 +1,15 @@
 # Execution Strategies
 
-Three strategies for plan execution, differentiated by checkpoint structure and autonomy level.
+## Sections
+- [Strategy A: Fully Autonomous](#strategy-a-fully-autonomous)
+- [Strategy B: Segmented Execution](#strategy-b-segmented-execution)
+- [Strategy C: Sequential Execution](#strategy-c-sequential-execution)
+- [Decision Tree](#decision-tree)
+- [Context Budget](#context-budget)
 
 ---
+
+Three strategies for plan execution, differentiated by checkpoint structure and autonomy level.
 
 ## Strategy A: Fully Autonomous (Intelligent Orchestration)
 

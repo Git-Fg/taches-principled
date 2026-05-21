@@ -1,8 +1,17 @@
 # Deviation Rules
 
-Rules for handling work discovered during execution that was not in the original plan. Apply automatically.
+## Sections
+- [Rule 1: Auto-fix Bugs](#rule-1-auto-fix-bugs)
+- [Rule 2: Auto-add Missing Critical Functionality](#rule-2-auto-add-missing-critical-functionality)
+- [Rule 3: Auto-fix Blocking Issues](#rule-3-auto-fix-blocking-issues)
+- [Rule 4: Stop for Architectural Changes](#rule-4-stop-for-architectural-changes)
+- [Rule 5: Log Non-critical Enhancements](#rule-5-log-non-critical-enhancements)
+- [Priority Order](#priority-order)
+- [Documentation in Summary](#documentation-in-summary)
 
 ---
+
+Rules for handling work discovered during execution that was not in the original plan. Apply automatically.
 
 ## Rule 1: Auto-fix Bugs
 

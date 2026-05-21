@@ -1,8 +1,15 @@
 # Checkpoint Protocols
 
-Templates and flows for each checkpoint type.
+## Sections
+- [Template: checkpoint:human-verify](#template-checkpointhuman-verify)
+- [Template: checkpoint:decision](#template-checkpointdecision)
+- [Template: checkpoint:human-action](#template-checkpointhuman-action)
+- [Resume Signal Handling](#resume-signal-handling)
+- [Checkpoint Metadata](#checkpoint-metadata)
 
 ---
+
+Templates and flows for each checkpoint type.
 
 **Checkpoint verification uses AskUserQuestion to present structured options.** The user responds, and the orchestrator proceeds based on the response.
 
@@ -205,20 +212,28 @@ When the user selects an option via AskUserQuestion, execution resumes automatic
 
 ## Checkpoint Metadata
 
-Each checkpoint in PLAN.md should have:
+Each checkpoint in PLAN.md should use the inline `Checkpoint:` field syntax:
 
 ```markdown
-type="checkpoint:human-verify"
-id="verify-01"
-label="Verify build output"
-criteria:
-  - Build completes without errors
-  - Generated files exist
-  - Tests pass
+### Task 3: Review generated output
+Files: src/output.json
+Action: Validate JSON structure matches schema
+Verify: jq '.' src/output.json succeeds
+Done: Output validated
+Checkpoint: checkpoint:human-verify
 ```
+
+**Alternative syntax (also recognized):**
+```markdown
+type="checkpoint:human-verify"
+```
+
+Both syntaxes are recognized by execute-plans. The `Checkpoint:` field syntax is canonical and preferred for consistency with plan-format.md.
 
 **Fields:**
 - `type`: checkpoint:human-verify | checkpoint:decision | checkpoint:human-action
-- `id`: Unique identifier for tracking
-- `label`: Human-readable name
+- `id`: Unique identifier for tracking (optional)
+- `label`: Human-readable name (optional)
 - `criteria` / `options` / `action`: Type-specific payload
+
+For full checkpoint syntax details, see `skills/create-plans/references/plan-format.md`.
