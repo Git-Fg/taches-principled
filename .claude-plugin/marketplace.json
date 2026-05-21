@@ -1,0 +1,18 @@
+{
+  "name": "taches-modernized-marketplace",
+  "owner": {
+    "name": "Felix",
+    "email": "felix@example.com"
+  },
+  "plugins": [
+    {
+      "name": "taches-modernized",
+      "source": {
+        "github": {
+          "repo": "felixhopper/taches-modernized"
+        }
+      },
+      "description": "Principle-based plugin for building Claude Code extensions — skills, subagents, MCP servers, hooks, and plans. Replaces prescriptive XML-era templates with goals and principles."
+    }
+  ]
+}

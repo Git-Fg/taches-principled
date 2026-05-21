@@ -1,0 +1,20 @@
+{
+  "name": "taches-principled",
+  "displayName": "Taches Principled",
+  "version": "1.0.0",
+  "description": "Principle-based Claude Code plugin for building skills, subagents, hooks, and project plans. A modern replacement for prescriptive XML-era approaches.",
+  "author": {
+    "name": "Felix"
+  },
+  "homepage": "https://github.com/felixhopper/taches-principled",
+  "repository": "https://github.com/felixhopper/taches-principled",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "skills",
+    "subagents",
+    "hooks",
+    "plugin",
+    "productivity"
+  ]
+}
