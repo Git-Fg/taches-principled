@@ -118,7 +118,7 @@ Claude has `vercel deploy` CLI. No checkpoint needed.
 ```markdown
 # WRONG - unless genuinely visual
 ### Task: Implement feature X
-Checkpoint: checkpoint:human-verify  # Human reviews code
+Checkpoint: checkpoint:human-verify  # Human reviews code (but code review isn't visual)
 ```
 
 Code review is part of normal execution. Only use verify checkpoint if human needs to see rendered output.

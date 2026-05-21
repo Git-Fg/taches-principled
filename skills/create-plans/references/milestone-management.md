@@ -96,9 +96,9 @@ Milestones mark shipped versions. They solve the "what happens after v1.0?" prob
 ```markdown
 # Project Brief: AppName
 
-## Current State (Updated: 2025-12-01)
+## Current State (Updated: 2026-01-31)
 
-**Shipped:** v1.0 MVP (2025-11-25)
+**Shipped:** v1.0 MVP (2026-01-25)
 **Users:** 500 downloads, 50 daily actives
 **Feedback:** Requesting dark mode, occasional crashes on network errors
 **Codebase:** 2,450 lines Swift, macOS 13.0+, AppKit
@@ -133,13 +133,13 @@ Milestones mark shipped versions. They solve the "what happens after v1.0?" prob
 
 ## Milestones
 
-- ✅ **v1.0 MVP** - Phases 1-4 (shipped 2025-11-25)
+- ✅ **v1.0 MVP** - Phases 1-4 (shipped 2026-01-25)
 - 🚧 **v1.1 Hardening** - Phases 5-6 (in progress)
 
 ## Phases
 
 <details>
-<summary>✅ v1.0 MVP (Phases 1-4) - SHIPPED 2025-11-25</summary>
+<summary>✅ v1.0 MVP (Phases 1-4) - SHIPPED 2026-01-25</summary>
 
 - [x] Phase 1: Foundation
 - [x] Phase 2: Core Features
@@ -412,9 +412,9 @@ The "Current State" section in BRIEF.md is what makes plans brownfield-aware.
 **After v1.0 ships**:
 
 ```markdown
-## Current State (Updated: 2025-11-25)
+## Current State (Updated: 2026-01-25)
 
-**Shipped:** v1.0 MVP (2025-11-25)
+**Shipped:** v1.0 MVP (2026-01-25)
 **Status:** Production
 **Users:** 500 downloads, 50 daily actives, growing 10% weekly
 **Feedback:**

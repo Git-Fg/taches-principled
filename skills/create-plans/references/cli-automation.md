@@ -37,14 +37,14 @@
 - Manually link repository
 
 ### Railway
-**CLI:** `railway`
+**Status:** Deprecated — Railway was discontinued in 2024.
 
-**What Claude automates:**
-- Initialize project: `railway init`
-- Link to repo: `railway link`
-- Deploy: `railway up`
-- Set variables: `railway variables set KEY=value`
-- Get deployment URL: `railway domain`
+**Alternative approaches:**
+- Use Railway's web dashboard for existing deployments
+- Migrate to a different platform (Vercel, Fly.io, Render, or Railway's open-source successor)
+- For existing Railway projects: `railway run` can still execute commands in the Railway environment
+
+**Migration path:** Export environment variables from Railway dashboard, then deploy to your chosen alternative.
 
 ### Fly.io
 **CLI:** `fly`

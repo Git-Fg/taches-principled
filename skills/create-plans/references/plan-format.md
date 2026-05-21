@@ -220,24 +220,6 @@ Reference files that Claude needs to understand before implementing.
 
 ## Summary Output
 
-Specify the SUMMARY.md structure:
+See SKILL.md "What Good Looks Like" section for the authoritative SUMMARY.md template.
 
-```markdown
-## Output
-
-After completion, create `.principled/plans/phases/XX-name/SUMMARY.md`:
-
-# Phase X: Name Summary
-
-**[Substantive one-liner]**
-
-## Accomplishments
-## Files Created/Modified
-## Decisions Made
-## Issues Encountered
-## Next Phase Readiness
-```
-
-The one-liner must be substantive:
-- **Good:** "JWT auth with refresh rotation using jose library"
-- **Bad:** "Phase complete"
+**Maintenance note:** Only SKILL.md needs to be updated — this reference is kept in sync.
