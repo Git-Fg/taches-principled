@@ -49,14 +49,16 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 ```
 1. Analyze plan structure and task relationships
 2. Build dependency graph (task → files touched, prerequisites)
-3. Identify conflict-free groups (tasks touching different files)
-4. Spawn parallel workers for independent task groups (max 3-5 workers)
-5. Spawn sequential workers for dependent chains (ordered execution)
-6. At milestone (every 2-3 tasks or phase boundary): spawn CRITIC subagent to review intermediate output
-7. If critic finds issues: fix before continuing
-8. Aggregate all results
-9. Create SUMMARY.md
-10. Commit
+3. Pre-execution: spawn critic to challenge the plan (devil's advocate)
+4. If critic finds critical issues: fix plan before proceeding
+5. Identify conflict-free groups (tasks touching different files)
+6. Spawn parallel workers for independent task groups (max 3-5 workers)
+7. Spawn sequential workers for dependent chains (ordered execution)
+8. At milestone (every 2-3 tasks or phase boundary): spawn CRITIC subagent to review intermediate output
+9. If critic finds issues: executor fixes before continuing
+10. Aggregate all results
+11. Create SUMMARY.md
+12. Commit
 ```
 
 **Parallel execution rules:**
@@ -79,6 +81,28 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 - Delegate simple tasks without tracking overhead; only track when multiple workers coordinate or depend on intermediate outputs
 
 **Why:** No user interaction needed. Executor operates as intelligent orchestrator with parallel execution for speed and self-review for quality. Overhead: ~10-15% main context (higher than old single-subagent approach due to coordination, but better quality through parallelism and review).
+
+---
+
+**Pre-execution self-critique (devil's advocate):**
+
+Before spawning workers, delegate a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure:
+
+```
+Spawn critic subagent (haiku, read-only):
+Task: Review this execution plan as a devil's advocate
+Focus areas:
+- What assumptions is the plan making that might be wrong?
+- What could go wrong with this plan's approach?
+- Where could parallel execution fail due to hidden dependencies?
+- What risks does the milestone structure miss?
+- Are task groupings correct or are there subtle conflicts?
+
+If critic finds critical issues: fix the plan before spawning workers.
+If critic finds minor concerns: note them for milestone review.
+```
+
+**Why:** Milestone self-review catches bad execution. Pre-execution critique catches bad plans. Catching a flawed plan before wasting parallel workers is cheaper than fixing after they complete.
 
 ---
 

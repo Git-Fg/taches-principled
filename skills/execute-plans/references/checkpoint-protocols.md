@@ -4,6 +4,10 @@ Templates and flows for each checkpoint type.
 
 ---
 
+**Checkpoint verification uses AskUserQuestion to present structured options.** The user responds, and the orchestrator proceeds based on the response.
+
+---
+
 ## Template: checkpoint:human-verify
 
 **Purpose:** Verification gate requiring explicit user confirmation before proceeding.
@@ -13,7 +17,7 @@ Templates and flows for each checkpoint type.
 ```
 1. Orchestrator loads verification criteria from plan
 2. Orchestrator executes the work up to this checkpoint
-3. Present verification prompt to user:
+3. Present verification prompt to user via AskUserQuestion:
 
 ════════════════════════════════════
 Verification Required: [Task Name]
@@ -35,7 +39,7 @@ What's next?
 
 **On-user-action responses:**
 
-Present these structured options to the user and wait for their selection:
+Present these structured options via AskUserQuestion and wait for user selection:
 
 For checkpoint:human-verify:
 - option A: "Approved - continue" (user confirms verification passed)
@@ -97,7 +101,7 @@ What's next?
 
 **On-user-action responses:**
 
-Present these structured options to the user and wait for their selection:
+Present these structured options via AskUserQuestion and wait for user selection:
 
 For checkpoint:decision:
 - option A: "Option A" (execute path A)
@@ -149,7 +153,7 @@ Type "done" when completed.
 
 **On-user-action responses:**
 
-Present these structured options to the user and wait for their selection:
+Present these structured options via AskUserQuestion and wait for user selection:
 
 For checkpoint:human-action:
 - option A: "Action completed" (verification passed)
@@ -169,7 +173,7 @@ For checkpoint:human-action:
 
 **When resuming after checkpoint completion:**
 
-When the user types "approved" or selects "continue", execution resumes automatically. The structured options handle the input routing — no special parsing needed.
+When the user selects an option via AskUserQuestion, execution resumes automatically based on the selection. The orchestrator interprets the response and routes to the appropriate handler — no special parsing needed.
 
 | Checkpoint Type | Resume Action |
 |----------------|--------------|

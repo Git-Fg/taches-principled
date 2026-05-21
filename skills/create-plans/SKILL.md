@@ -302,6 +302,47 @@ Read agent templates from `skills/create-plans/agents/`, then dispatch parallel 
 
 After all complete, aggregate findings into understanding of the project.
 
+**Using critic agents during planning:**
+
+After the fan-out exploration, before writing the plan, spawn a critic agent to challenge the emerging approach:
+
+```
+Spawn critic subagent (haiku, read-only):
+Task: Challenge the proposed approach as devil's advocate
+Focus areas:
+- What assumptions does the approach make that might be wrong?
+- What could go wrong with this direction?
+- Are there hidden dependencies or conflicts we missed?
+- What risks does the task grouping miss?
+
+If critic finds critical issues: reconsider the approach before committing to plan.
+```
+
+**Why:** Catching a flawed approach during planning is cheaper than reworking during execution. The explore phase gathers information; the critic phase tests whether that information supports the chosen direction.
+
+---
+
+## Autonomy Mode Selection
+
+**Trigger:** When user says "execute", "run", "do it", or any variation indicating execution intent.
+
+**First, explain what execution means:**
+
+> When you say "execute", it doesn't mean "good luck" — it means "use the execution skill to proceed autonomously with the plan I've prepared."
+
+**Then present autonomy modes:**
+
+**Question:** How would you like to work on this?
+**Options:**
+- A: Fully autonomous — I create the plan, you execute without stopping for me (recommended)
+- B: Segmented — Execute, but pause at checkpoints for my verification
+- C: Sequential — Execute, but stop after each task for confirmation
+- D: I'm not sure, explain the difference
+
+**If user selects D (explain):** Present a brief explanation of each mode, then re-present the question.
+
+**After selection:** Route to the appropriate execution mode. Fully autonomous proceeds directly; Segmented and Sequential set flags that control checkpoint frequency in the execution skill.
+
 ---
 
 ## Routing
@@ -312,7 +353,7 @@ After all complete, aggregate findings into understanding of the project.
 | "roadmap", "phases" | Create roadmap |
 | "phase", "plan phase", "next phase" | Plan phase |
 | "chunk", "next tasks" | Plan chunk |
-| "execute", "run", "do it" | Load autonomous execution skill |
+| "execute", "run", "do it" | Present autonomy mode selection, then load execution skill |
 | "research", "investigate" | Create research prompt |
 | "handoff", "pack up", "stopping" | Create handoff |
 | "resume", "continue" | Load handoff |
@@ -325,7 +366,26 @@ After all complete, aggregate findings into understanding of the project.
 
 **When user says "execute", "run", "build it", "do it":**
 
-Load the autonomous execution skill to execute this plan autonomously.
+First, explain what execution means:
+
+> When you say "execute", it doesn't mean "good luck" — it means "use the execution skill to proceed autonomously with the plan I've prepared."
+
+**Pre-execution gate:**
+
+**Question:** Ready to execute [plan name]?
+**Options:**
+- A: Execute autonomously (recommended)
+- B: Let me review the plan first
+- C: Execute in segmented mode instead
+- D: Cancel, do something else
+
+**If user selects B:** Present the plan for review, then re-ask the pre-execution gate question.
+
+**If user selects C:** Set execution mode to segmented, then load the execution skill.
+
+**If user selects D:** Acknowledge and stop.
+
+**If user selects A (autonomous):** Load the execution skill to execute this plan autonomously.
 
 The execution skill uses intelligent orchestration:
 - Analyzes task dependencies

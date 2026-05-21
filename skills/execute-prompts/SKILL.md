@@ -19,6 +19,7 @@ Execute prompts from `.principled/prompts/` as delegated sub-tasks with fresh co
 
 - [Policy vs. Mechanism](#policy-vs-mechanism)
 - [Execution Strategies](#execution-strategies)
+- [Execution Mode Intake](#execution-mode-intake)
 - [Argument Parsing](#argument-parsing)
 - [File Resolution](#file-resolution)
 - [Archival and Git Workflow](#archival-and-git-workflow)
@@ -91,6 +92,37 @@ Use when: prompts have dependencies (output of one feeds into another).
 8. Return consolidated results
 
 **Failure handling:** If any prompt fails, stop the chain and report. Do not continue with dependent prompts.
+
+---
+
+## Execution Mode Intake
+
+**Pre-execution gate:** Before parsing arguments, determine execution mode when multiple prompts are involved.
+
+### When to Ask
+
+Ask the user about execution mode when:
+- Multiple prompts are specified
+- User asks to "run" or "execute" prompts (not "step through" or "confirm each")
+
+**Skip this gate when:**
+- User explicitly said "step through" or "confirm before each"
+- Single prompt only
+- User specified `--parallel` or `--sequential` flag directly
+
+### The Question
+
+```
+Question: How would you like to execute these prompts?
+
+Options:
+- A: Fully autonomous (recommended) — Execute all prompts without stopping
+- B: Step through one at a time — Confirm before each prompt executes
+- C: Execute [N] prompts then stop — Let me specify how many
+- D: Just run the first one, I'll do the rest
+```
+
+**Default to A (autonomous)** when user says "run" without qualification.
 
 ---
 

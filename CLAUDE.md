@@ -95,6 +95,37 @@ Every skill teaches this distinction:
 
 ---
 
+## Delta Principle — Only Document What Differs
+
+Only document conventions that differ from what the agent would naturally do. The agent already knows how to write a for-loop; it does not need to be taught. What it needs is your team's *specific* deviation from the default.
+
+**Rule:** If Claude already knows it from training, don't document it. If the skill teaches what the agent would otherwise get wrong, that's delta.
+
+**Example — violates delta (restates obvious):**
+```
+## Coding Standards
+- Use meaningful variable names.
+- Handle errors gracefully.
+- Keep functions under 50 lines.
+```
+
+**Example — respects delta (only non-default):**
+```
+## Our Deviations
+- We use `snake_case` for variables (historical consistency with Python backend).
+- NEVER use `console.log` — use `src/lib/logger.ts` instead.
+- All DB queries must use the transaction wrapper in `src/db/tx.ts`.
+```
+
+**Application to SKILL.md:**
+- **Keep in SKILL.md:** What must be **always known** when the skill loads. Policy, core principles, success criteria.
+- **Defer to references/:** Edge cases, conditional knowledge, extensive domain detail.
+- **Delete:** Restatements of what Claude already knows (what skills are, how context works, tool syntax).
+
+The 500-line threshold is a symptom heuristic, not the rule itself. When a skill exceeds 500 lines, audit via the delta lens: remove what Claude knows, move conditional knowledge to references/, keep only what changes behavior.
+
+---
+
 ## User Interaction
 
 **Interact with users when gathering information or making decisions — not while executing a plan.**
@@ -109,9 +140,9 @@ The goal is a smooth handoff between thinking and doing. Questions belong in the
 
 ---
 
-## Numeric Thresholds
+## Numeric Thresholds (Indicative)
 
-These limits are not arbitrary — they come from cognitive science and agent reliability research:
+These limits are heuristics, not laws. The true principle is the **delta principle**: only document what differs from default behavior. If knowledge must be **always known** when a skill loads, it belongs in SKILL.md regardless of line count.
 
 | Metric | Limit | Source |
 |--------|-------|--------|
@@ -119,10 +150,9 @@ These limits are not arbitrary — they come from cognitive science and agent re
 | Spawn prompt length | 1500 tokens max | Reliability drop beyond this |
 | Tools per subagent | 7 max | Miller's number |
 | Description length | 150 chars | Truncation at 1,536 combined with when_to_use |
-| Skill body | 500 lines | Principle dilution beyond this |
-| Default timeout | 60s | External commands can hang |
+| Skill body | 500 lines | Context dilution beyond this |
 
-**When limits are exceeded:** Split, don't stretch. A broken-up task beats an overwhelmed agent.
+**When limits are exceeded:** Split, don't stretch — but apply the delta principle first. A 503-line skill that contains exactly what Claude needs is better than a 300-line skill that omits critical knowledge.
 
 ---
 
@@ -166,6 +196,39 @@ Each skill has one job. If it needs more than 7 tools or 500 lines, split.
 
 ---
 
+## "If X, Then Y" Trigger Pattern — Strong Reference Steering
+
+Reference files are only useful if agents actually read them. Passive reference listings ("see references/foo.md for details") are ignored 50%+ of the time. Use **conditional triggers with urgency words** instead:
+
+**Pattern:**
+```
+IF [situation] → [before acting] read [reference]
+```
+
+**Urgency words:** BEFORE, IMMEDIATELY, FIRST — these pierce through "probably ignore this" behavior.
+
+**Example — weak (ignored):**
+```
+## References
+- `references/aws.md` — AWS guidelines
+- `references/gcp.md` — GCP guidelines
+```
+
+**Example — strong (triggers):**
+```
+## Decision Router
+
+IF deploying to AWS → BEFORE writing infrastructure read `references/aws.md`
+IF deploying to GCP → BEFORE creating resources read `references/gcp.md`
+IF task involves auth → IMMEDIATELY read `references/auth.md`
+```
+
+**Rule:** Put the decision router at the TOP of SKILL.md, not at the end. If the agent has to read 400 lines before seeing how to route, the routing fails.
+
+**Why this works:** Conditional urgency ("BEFORE writing infrastructure") creates a decision point the agent must resolve before proceeding. Passive references are skipped; imperative triggers are honored.
+
+---
+
 ## Semantic-First Skill Design
 
 **Principle:** Skills teach judgment; runtimes handle execution. Never embed tool-calling syntax in skill instructions.
@@ -185,6 +248,19 @@ Each skill has one job. If it needs more than 7 tools or 500 lines, split.
 - Describe delegation semantically: "delegate parallel investigation"
 - Trust runtime tool schemas — don't duplicate binding info
 - Use progressive file references for large content
+
+### Compositional Skill Pairs Exception
+
+**Exception:** The create/execute skill pairs (`create-plans`/`execute-plans`, `create-prompts`/`execute-prompts`) are compositional by design. `create-plans` creates a plan and explicitly invokes `execute-plans` to execute it. `create-prompts` creates a prompt bundle and explicitly invokes `execute-prompts` to execute it. This is not a dependency — it's the intended workflow.
+
+**Why this exception exists:** These skills cannot execute alone. A plan without execution is just a document. A prompt bundle without execution is just text. The create skill must clearly state that execution requires the execution partner skill — not that it will "try to execute on its own."
+
+**What this means for skill authors:**
+- `create-plans` must reference `execute-plans` as the execution partner
+- `create-prompts` must reference `execute-prompts` as the execution partner
+- Both skills must state they are half of a compositional pair, not standalone tools
+
+This is NOT a violation of the self-contained principle — it's explicit compositional intent. The rule against cross-skill references exists to prevent accidental coupling. These pairs are designed to be used together; the reference is intentional, not accidental.
 
 ---
 
