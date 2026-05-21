@@ -8,9 +8,8 @@
     {
       "name": "taches-principled",
       "source": {
-        "github": {
-          "repo": "Git-Fg/taches-principled"
-        }
+        "source": "url",
+        "url": "https://github.com/Git-Fg/taches-principled.git"
       },
       "description": "Principle-based plugin for building Claude Code extensions — skills, subagents, hooks, and plans. Replaces prescriptive XML-era templates with goals and principles."
     }
