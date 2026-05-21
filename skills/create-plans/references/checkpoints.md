@@ -161,3 +161,25 @@ Not:
 ```markdown
 Checkpoint: checkpoint:human-verify
 ```
+
+---
+
+## Escalation and Timeout
+
+Checkpoints wait for user input, but users may not respond immediately.
+
+**Timeout behavior:**
+- If a checkpoint is reached and user is offline/unresponsive, the checkpoint remains pending
+- Do NOT proceed past a checkpoint without user input — checkpoints exist to prevent execution errors
+- After 3 reminders (1 per conversation turn), offer alternatives
+
+**Reminder format:**
+```
+Checkpoint [{id}] pending — awaiting your confirmation/decision.
+Type 'continue' to proceed or 'handoff' to pause execution.
+```
+
+**Escalation options:**
+- `continue` — User approves and execution proceeds
+- `handoff` — Create .continue-here.md and pause for later resumption
+- `skip` — Only for informational checkpoints (not recommended for decision/human-action)

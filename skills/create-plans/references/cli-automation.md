@@ -20,7 +20,7 @@
 
 ## Deployment Platforms
 
-### Vercel
+### Vercel ⚠️ Verify current syntax
 **CLI:** `vercel`
 
 **What Claude automates:**
@@ -54,6 +54,35 @@
 - Deploy: `fly deploy`
 - Set secrets: `fly secrets set KEY=value`
 - Scale: `fly scale count 2`
+
+### Cloudflare
+**CLI:** `wrangler` (Workers, R2, Pages, D1)
+**Can automate:**
+- Deploy Workers via `wrangler deploy`
+- Create D1 databases via `wrangler d1 create`
+- Manage R2 buckets via `wrangler r2`
+- Pages deployments via `wrangler pages deploy`
+
+**Cannot automate:** Domain registrar operations (use web dashboard)
+
+### AWS
+**CLI:** `aws` (via AWS CLI v2)
+**Can automate:**
+- S3 operations via `aws s3`
+- Lambda deployments via `aws lambda`
+- ECS tasks via `aws ecs`
+- CloudFormation stacks
+
+**Cannot automate:** IAM role creation (requires human approval for security), billing operations
+
+### GCP
+**CLI:** `gcloud`
+**Can automate:**
+- GCS operations via `gsutil`
+- Cloud Functions deployments via `gcloud functions deploy`
+- Cloud Run via `gcloud run deploy`
+
+**Cannot automate:** Project creation (requires web console), billing
 
 ---
 
@@ -138,6 +167,16 @@
 - Run builds: `npm run build`
 - Run tests: `npm test`, `npm run test:e2e`
 - Type checking: `tsc --noEmit`
+
+### Bun
+**CLI:** `bun`
+**Can automate:**
+- Install via `bun install`
+- Run scripts via `bun run`
+- Build via `bun build`
+- Test via `bun test`
+
+**Note:** Bun is a modern JavaScript runtime and package manager, drop-in replacement for npm/yarn.
 
 ### Xcode (macOS/iOS)
 **CLI:** `xcodebuild`

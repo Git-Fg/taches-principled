@@ -122,6 +122,32 @@ Must be executable—a command, a test, an observable behavior.
 
 Should be testable without subjective judgment.
 
+### Checkpoint (Optional)
+
+**What it is:** An optional field declaring a checkpoint type after task completion.
+
+**When to use:** When a task requires human verification, decision, or action before the next task can proceed.
+
+**Syntax:**
+```markdown
+Checkpoint: checkpoint:human-verify  # Human confirms output
+```
+
+**Checkpoint types:**
+
+| Type | Trigger | Use when |
+|------|---------|----------|
+| `checkpoint:human-verify` | Human confirms results | Visual checks, reviewing generated content |
+| `checkpoint:decision` | Human chooses path | Architecture, library selection, API design |
+| `checkpoint:human-action` | Human performs action | Email verification, 2FA, account approval |
+
+**When to add checkpoints:**
+- One checkpoint per 5-10 tasks maximum
+- Checkpoints that require thinking = plan needed more specificity upstream
+- Checkpoints for things Claude can do via CLI = anti-pattern
+
+**Anti-pattern:** Using checkpoints when Claude can verify automatically.
+
 ---
 
 ## Specificity Levels

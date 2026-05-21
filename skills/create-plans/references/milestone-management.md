@@ -214,6 +214,37 @@ When planning Phase 5, the PLAN.md automatically gets context:
 
 ---
 
+## Emergency Fixes (Hotfix Branches)
+
+Real-world shipping requires emergency fixes between milestones.
+
+### Hotfix Model
+
+**Trigger:** Critical bug or security issue discovered after milestone ship.
+
+**Workflow:**
+1. Create hotfix branch from main: `git checkout -b hotfix/description`
+2. Fix the critical issue
+3. Ship hotfix: `git tag v1.0.1 && git push --tags`
+4. Merge hotfix back to main: `git checkout main && git merge hotfix/description`
+5. Delete hotfix branch: `git branch -d hotfix/description`
+
+**Scope rules:**
+- Hotfix: ONLY the critical fix. No feature work, no refactoring.
+- If fix requires more than 1-2 tasks, it's not a hotfix — it's a patch release
+- Hotfixes do NOT reset the milestone counter (v1.0.1 is still part of v1.0 milestone)
+
+**Integration:**
+- After hotfix merges, update ROADMAP.md with hotfix entry
+- Document what was fixed in SUMMARY.md of next phase
+
+**Anti-patterns:**
+- ❌ Adding features to hotfix branches
+- ❌ Refactoring in hotfix branches
+- ❌ Hotfix that requires >1 day of work (it's a patch release, not hotfix)
+
+---
+
 ## When to Archive and Start Fresh
 
 **Archive ONLY for these scenarios**:

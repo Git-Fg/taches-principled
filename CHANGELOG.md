@@ -16,6 +16,22 @@ All notable changes are documented here.
 - **README.md**: Corrected skills count (6 → 5) and commands count (10 → 2)
 - **execute-plans/SKILL.md**: Removed duplicate "Strategy B" section header in Strategy A content
 - **sequential-execution.md template**: Fixed `Sonnets/Large Context Executor` → `Sonnet` (valid model name)
+- **autonomous-execution.md**: Removed duplicate rollback sections, clarified revert scope
+- **autonomous-execution.md**: Removed invalid Task() spawn syntax, replaced with plain-text instruction
+- **execute-phase.md**: Added YAML frontmatter per skill anatomy standards
+- **cli-automation.md**: Marked Railway as deprecated (discontinued 2024), added migration path
+- **milestone-management.md**: Updated all 2025 dates to 2026
+- **plan-format.md**: Removed duplicate Summary Output section, cross-referenced SKILL.md
+- **checkpoints.md**: Added human-readable comment pattern to checkpoint declaration examples
+
+### Deferred Improvements
+- **checkpoints.md**: Needs escalation path for non-responsive users
+- **cli-automation.md**: Needs Cloudflare Workers/R2/Pages, AWS, GCP, Azure CLIs added
+- **plan-format.md**: Needs Checkpoint field added to task anatomy
+- **milestone-management.md**: Needs hotfix/hotpatch branch model
+- **scope-estimation.md**: Needs context metrics definition and sequential chain limit
+- **execute-plans references**: Needs version tracking
+- **execute-plans references**: Needs strategy decision tree deduplication
 
 ## [0.0.2-alpha]
 

@@ -135,13 +135,15 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 ---
 
-### Strategy Selection Matrix
+### Strategy Selection
 
 | Checkpoint Types | Strategy | Main Context Usage |
 |-----------------|----------|---------------------|
 | None | A: Fully Autonomous | ~10-15% |
 | human-verify | B: Segmented | ~15-20% |
 | decision, human-action | C: Sequential | ~25-30% |
+
+**Decision tree:** See `references/execution-strategies.md` for full strategy selection flow.
 
 **Target:** Reserve 70%+ context for workspace and implementation.
 

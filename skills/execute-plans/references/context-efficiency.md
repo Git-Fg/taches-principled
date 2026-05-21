@@ -1,3 +1,8 @@
+---
+version: 1.0
+updated: 2026-05-22
+---
+
 # Context Efficiency
 
 Token budgets and optimization guidance for execution phases.

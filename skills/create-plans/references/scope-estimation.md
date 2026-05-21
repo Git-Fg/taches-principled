@@ -12,6 +12,22 @@
 
 ---
 
+## What is Context Usage?
+
+Context usage is measured in **tokens** — the input capacity for the AI model.
+
+**How to measure:**
+- Claude Code shows context bar in UI (~X% remaining)
+- CLI: `claude -p` shows token estimates in verbose mode
+- Rough formula: 1 line of code ≈ 10-15 tokens; 1 file reference ≈ 50-100 tokens
+
+**Why tokens matter:**
+- Quality degrades when >50% context used
+- Planning/implementation quality drops as context fills
+- Subagent spawn prompts compete with workspace tokens
+
+---
+
 Plans must maintain consistent quality from first task to last. This requires understanding the quality degradation curve and splitting aggressively to stay in the peak quality zone.
 
 ---
@@ -107,6 +123,10 @@ Why this number?
 3. **Any uncertainty about approach** — "Figure out X" phase separate from "implement X"
 
 4. **Natural semantic boundaries** — Setup → Core → Features
+
+**Also watch for:**
+- Sequential dependency chain >8 tasks — parallelization opportunity lost
+- If a chain exceeds 8 tasks, split into multiple plans with checkpoint between
 
 ---
 

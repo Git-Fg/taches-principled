@@ -1,3 +1,8 @@
+---
+version: 1.0
+updated: 2026-05-22
+---
+
 # Deviation Rules
 
 Rules for handling work discovered during execution that was not in the original plan. Apply automatically.
