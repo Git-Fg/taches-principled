@@ -143,29 +143,19 @@ Every 2-3 tasks (whichever comes first):
 
 ### Critic Prompt Structure
 
+**Read the critic agent template** at `skills/execute-plans/agents/critic.md`. Use it as the spawn prompt for the milestone reviewer, completing the placeholders:
+
 ```
-Review execution so far.
-
-## Completed Tasks
-- {task}: {outcome}
-
-## Files Modified
-{list with paths}
-
-## Success Criteria
-{from PLAN.md}
-
-## Review Focus
-- Are outputs consistent?
-- Any integration issues?
-- Deviations handled correctly?
-
-## Output
-Return:
-- Issues found (or "none")
-- Severity (blocking/non-blocking)
-- Fixes applied (or "none")
+## Spawn the critic
+Task(agent="critic", subagent_type="haiku", tools=["Read", "Grep", "Bash"],
+     prompt="Read agents/critic.md, fill placeholders:
+             {{context}} = [current execution state]
+             {{files}} = [files modified since last milestone]
+             {{milestone_id}} = [milestone number]
+             {{task}} = [review task]")
 ```
+
+**Why:** The critic agent template provides structured output with blocking/non-blocking classification. Using it instead of inline prose ensures consistent review format and easier maintenance.
 
 ---
 
