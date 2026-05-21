@@ -2,6 +2,15 @@
 
 All notable changes are documented here.
 
+## [Unreleased]
+
+### Fixed
+- **marketplace.json**: Changed `source.github.repo` to `source.source: "url"` with full git URL — `felixhopper` repo does not exist, corrected to `Git-Fg/taches-principled`
+- **README.md**: Replaced all `felixhopper` references with `Git-Fg` (lines 13, 125)
+- **README.md**: Corrected skills count (6 → 5) and commands count (10 → 2)
+- **execute-plans/SKILL.md**: Removed duplicate "Strategy B" section header in Strategy A content
+- **sequential-execution.md template**: Fixed `Sonnets/Large Context Executor` → `Sonnet` (valid model name)
+
 ## [0.0.2-alpha]
 
 ### Added

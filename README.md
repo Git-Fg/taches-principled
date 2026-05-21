@@ -10,7 +10,7 @@ A principle-based Claude Code plugin for building skills, subagents, and project
 
 ```bash
 # Install from GitHub marketplace
-/plugin marketplace add felixhopper/taches-principled
+/plugin marketplace add Git-Fg/taches-principled
 /plugin install taches-principled
 
 # Or manual install
@@ -36,7 +36,7 @@ cp -r skills/* commands/* agents/* ~/.claude/
 
 ## What's Inside
 
-### 6 Skills
+### 5 Skills
 
 Skills load on demand and give Claude domain expertise without bloating every conversation.
 
@@ -47,20 +47,14 @@ Skills load on demand and give Claude domain expertise without bloating every co
 | **create-plans** | Planning projects, phases, or features for Claude to build | Policy/Mechanism, Anti-Patterns, Thresholds |
 | **create-prompts** | Creating executable prompts for Claude Code sessions | Policy/Mechanism, Anti-Patterns, Thresholds |
 | **execute-prompts** | Executing prompts via delegated sub-tasks | Policy/Mechanism, Anti-Patterns, Thresholds |
+| **execute-plans** | Executing PLAN.md files via parallel subagent orchestration | Policy/Mechanism, Anti-Patterns, Thresholds |
 
-### 10 Commands
+### 2 Commands
 
 Slash commands for quick, focused workflows.
 
 | Command | What It Does |
 |---------|-------------|
-| `/create-skill` | Scaffold a new skill |
-| `/create-subagent` | Scaffold a new subagent |
-| `/create-plan` | Scaffold a project plan |
-| `/create-prompt` | Create an executable prompt |
-| `/run-prompt` | Execute prompts via sub-tasks |
-| `/audit-skill` | Evaluate a skill with rubric-based scoring |
-| `/audit-subagent` | Evaluate a subagent's routing quality |
 | `/debug` | Apply systematic debugging methodology |
 | `/whats-next` | Create a handoff for a fresh session |
 
@@ -121,7 +115,7 @@ This plugin practices what it preaches: skills focus on principles and anti-patt
 ### Marketplace (recommended)
 
 ```bash
-/plugin marketplace add felixhopper/taches-principled
+/plugin marketplace add Git-Fg/taches-principled
 /plugin install taches-principled
 ```
 
