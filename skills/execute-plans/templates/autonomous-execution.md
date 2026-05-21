@@ -143,17 +143,7 @@ Every 2-3 tasks (whichever comes first):
 
 ### Critic Prompt Structure
 
-**Read the critic agent template** at `skills/execute-plans/agents/critic.md`. Use it as the spawn prompt for the milestone reviewer, completing the placeholders:
-
-```
-## Spawn the critic
-Task(agent="critic", subagent_type="haiku", tools=["Read", "Grep", "Bash"],
-     prompt="Read agents/critic.md, fill placeholders:
-             {{context}} = [current execution state]
-             {{files}} = [files modified since last milestone]
-             {{milestone_id}} = [milestone number]
-             {{task}} = [review task]")
-```
+**Spawn the critic** using the critic agent template at `skills/execute-plans/agents/critic.md` as the spawn prompt. Fill the placeholders with the current execution state, files modified since the last milestone, the milestone number, and the review task.
 
 **Why:** The critic agent template provides structured output with blocking/non-blocking classification. Using it instead of inline prose ensures consistent review format and easier maintenance.
 
@@ -225,25 +215,21 @@ Examples:
 
 ---
 
-## Rollback Procedure
-
-Provide one command that undoes all changes:
-
-```bash
-git reset --hard HEAD~1 && git clean -fd
-```
-
-Verify rollback with: `git status` (clean working tree)
-
----
-
 ## Rollback
 
-One-command revert:
+Use the appropriate command based on scope:
 
+**Single file revert:**
+```bash
+git checkout -- {file}
+```
+
+**Full phase revert:**
 ```bash
 git reset --hard HEAD~1 && git clean -fd
 ```
+
+Verify with: `git status` (clean working tree)
 
 ---
 
