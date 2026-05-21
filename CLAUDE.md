@@ -166,6 +166,28 @@ Each skill has one job. If it needs more than 7 tools or 500 lines, split.
 
 ---
 
+## Semantic-First Skill Design
+
+**Principle:** Skills teach judgment; runtimes handle execution. Never embed tool-calling syntax in skill instructions.
+
+**Layers:**
+1. **Discovery** (frontmatter): name + description only
+2. **Activation** (SKILL.md body): goals, constraints, workflow logic
+3. **Reference** (references/ folder): loaded on demand
+
+**Anti-patterns:**
+- Syntax cheat sheets — don't show Task() JSON
+- Tool name repetition — don't say "use Task tool"
+- Monolithic mega-prompts — keep SKILL.md under 500 lines
+- Teaching "how to call" instead of "when/why to delegate"
+
+**Correct pattern:**
+- Describe delegation semantically: "delegate parallel investigation"
+- Trust runtime tool schemas — don't duplicate binding info
+- Use progressive file references for large content
+
+---
+
 ## Documentation Sync
 
 README.md lives in two places:

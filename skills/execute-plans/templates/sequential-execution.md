@@ -126,22 +126,16 @@ Proceeding to task {N+1}.
 
 ## Deviation Rules
 
-Apply these rules after each task completes:
+Reference `references/deviation-rules.md` for the full deviation handling policy.
 
-**Rule 1 — Auto-fix within scope:**
-If a deviation is within your current scope and has a clear fix, apply it immediately and log the change.
+**Summary** (see deviation-rules.md for triggers and actions):
+- **Rule 1** — Auto-fix within scope (bugs, broken behavior)
+- **Rule 2** — Log and continue (non-blocking, cannot auto-fix)
+- **Rule 3** — Block and report (blocks execution)
+- **Rule 4** — Ask user (architectural change requiring plan modification)
+- **Rule 5** — Log enhancement (non-critical, do not interrupt)
 
-**Rule 2 — Log and continue:**
-If a deviation is non-blocking and cannot be auto-fixed, log it as an ISS-XXX entry and continue.
-
-**Rule 3 — Block and report:**
-If a deviation blocks execution, stop immediately. Report to user with options.
-
-**Rule 4 — Architectural change:**
-If a deviation requires a plan change, stop. Present the change to user via AskUserQuestion. Do not proceed until user approves the change.
-
-**Rule 5 — Non-critical enhancement:**
-Log as ISS-XXX enhancement. Do not interrupt task flow.
+When a deviation occurs, consult deviation-rules.md to determine which rule applies. Apply the rule; document in SUMMARY.
 
 ---
 

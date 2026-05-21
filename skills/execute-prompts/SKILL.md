@@ -54,7 +54,7 @@ Use when: one prompt target, or user explicitly requests one-at-a-time.
 
 **Mechanism:**
 1. Read the complete prompt file
-2. Delegate via Task tool with `subagent_type="general-purpose"`
+2. Delegate to a general-purpose subagent
 3. Wait for completion
 4. Archive to `.principled/prompts/completed/`
 5. Commit work via git
@@ -64,11 +64,11 @@ Use when: one prompt target, or user explicitly requests one-at-a-time.
 
 Use when: multiple prompts with no interdependencies.
 
-**Critical constraint:** ALL Task tool calls MUST occur in a SINGLE message. This is the mechanism that enables true parallelization — not batching, not async/await, but concurrent dispatch in one token emission.
+**Critical constraint:** ALL subagent dispatches MUST occur in a SINGLE message. This is the mechanism that enables true parallelization — not batching, not async/await, but concurrent dispatch in one token emission.
 
 **Mechanism:**
 1. Read all prompt files
-2. Dispatch ALL Task tools in one message
+2. Dispatch ALL subagents in one message
 3. Wait for all completions
 4. Archive all prompts
 5. Commit all work
@@ -80,7 +80,7 @@ Use when: prompts have dependencies (output of one feeds into another).
 
 **Mechanism:**
 1. Read first prompt file
-2. Dispatch Task tool
+2. Dispatch subagent
 3. Wait for completion
 4. Archive completed prompt
 5. Repeat for each subsequent prompt
@@ -175,11 +175,11 @@ Never `git add .` — stage only files you modified.
 
 ### Parallelization Without True Concurrency
 
-**Anti-pattern:** Spawning Task tools across multiple messages for "parallel" execution.
+**Anti-pattern:** Spawning subagents across multiple messages for "parallel" execution.
 
 **Why it fails:** Sequential token emission creates sequential execution. The illusion of parallelization with sequential latency.
 
-**Fix:** All parallel Task calls MUST be in a single message.
+**Fix:** All parallel subagent dispatches MUST be in a single message.
 
 ### Ignoring Dependencies in Sequential
 

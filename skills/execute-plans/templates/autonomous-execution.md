@@ -123,6 +123,12 @@ Return structured result:
 
 ---
 
+**Subagent spawn footer (append to every worker prompt):**
+
+You are a subagent executing a delegated task. Your context starts fresh — you have no access to prior conversation or other subagents' outputs. When complete, return your full results (file paths, findings, and any artifacts) to the orchestrator in structured form. If you encounter anything unexpected or have any question or doubt, stop and report back with what you found and what is unclear. Do not proceed silently on assumptions.
+
+---
+
 ## Phase 4: Milestone Self-Review
 
 Every 2-3 tasks (whichever comes first):

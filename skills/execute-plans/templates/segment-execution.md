@@ -187,3 +187,21 @@ Segment subagent workspace (20,000 tokens):
 - Each segment subagent starts fresh
 - No shared state between segments
 - Orchestrator owns all cross-segment state
+
+---
+
+## Milestone Self-Review (within segment)
+
+At segment midpoint (every 2-3 tasks), trigger a self-review:
+
+**Spawn the reviewer** using `agents/critic.md` as the spawn prompt. Fill the placeholders with the current segment state, files modified so far, milestone number, and review task.
+
+The reviewer returns structured output with blocking/non-blocking classification. If blocking issues are found, fix before proceeding to next task.
+
+**Do not skip the review** even if tasks appear to be running cleanly. Integration issues often surface at milestone boundaries.
+
+---
+
+**Subagent spawn footer (append to every segment prompt):**
+
+You are a subagent executing a delegated task. Your context starts fresh — you have no access to prior conversation or other subagents' outputs. When complete, return your full results (file paths, findings, and any artifacts) to the orchestrator in structured form. If you encounter anything unexpected or have any question or doubt, stop and report back with what you found and what is unclear. Do not proceed silently on assumptions.

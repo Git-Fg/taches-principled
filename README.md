@@ -36,7 +36,7 @@ cp -r skills/* commands/* agents/* ~/.claude/
 
 ## What's Inside
 
-### 5 Skills
+### 6 Skills
 
 Skills load on demand and give Claude domain expertise without bloating every conversation.
 

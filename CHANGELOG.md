@@ -5,29 +5,39 @@ All notable changes are documented here.
 ## [Unreleased]
 
 ### Added
+- (nothing yet)
+
+## [0.0.2-alpha]
+
+### Added
 - **create-plans skill**: Added `agents/` folder with subagent prompt templates (explorer, researcher, architect, implementer, verifier)
 - **create-plans skill**: Added fan-out exploration pattern with parallel subagent spawning guidance
 - **create-plans skill**: Natural language instructions for reading agent prompts and filling placeholders
 - **execute-plans skill**: Added `agents/critic.md` for formalizing milestone self-review pattern
+- **CLAUDE.md**: Added Semantic-First Skill Design section with progressive disclosure architecture
 
 ### Fixed
 - **marketplace.json**: Changed `source.github.repo` to `source.source: "url"` with full git URL — `felixhopper` repo does not exist, corrected to `Git-Fg/taches-principled`
 - **README.md**: Replaced all `felixhopper` references with `Git-Fg` (lines 13, 125)
-- **README.md**: Corrected skills count (6 → 5) and commands count (10 → 2)
+- **README.md**: Corrected skills count (6 skills now) and commands count (10 → 2)
 - **execute-plans/SKILL.md**: Removed duplicate "Strategy B" section header in Strategy A content
 - **sequential-execution.md template**: Fixed `Sonnets/Large Context Executor` → `Sonnet` (valid model name)
 - **autonomous-execution.md**: Removed duplicate rollback sections, clarified revert scope
 - **autonomous-execution.md**: Removed invalid Task() spawn syntax, replaced with plain-text instruction
+- **autonomous-execution.md**: Added spawn footer to worker prompt structure
+- **segment-execution.md**: Added milestone self-review section, integrated critic.md reference, added spawn footer
+- **sequential-execution.md**: Replaced inline deviation rules with reference to deviation-rules.md
 - **execute-phase.md**: Added YAML frontmatter per skill anatomy standards
-- **cli-automation.md**: Marked Railway as deprecated (discontinued 2024), added migration path
-- **milestone-management.md**: Updated all 2025 dates to 2026
-- **plan-format.md**: Removed duplicate Summary Output section, cross-referenced SKILL.md
-- **checkpoints.md**: Added human-readable comment pattern to checkpoint declaration examples
+- **execute-prompts/SKILL.md**: Removed Task tool prose references, replaced with semantic delegation language
+- **cli-automation.md**: Marked Railway as deprecated (discontinued 2024), added Cloudflare/AWS/GCP/Bun platforms
+- **milestone-management.md**: Updated all 2025 dates to 2026, added hotfix branch model
+- **plan-format.md**: Removed duplicate Summary Output section, cross-referenced SKILL.md, added Checkpoint field
+- **checkpoints.md**: Added human-readable comment pattern, added Escalation and Timeout section
+- **scope-estimation.md**: Defined context usage metrics, added sequential chain limit
+- **create-plans SKILL.md**: Simplified fan-out description, removed Task: spawn examples
+- **create-plans/references/**: Removed per-file version tracking (anti-pattern documented in CLAUDE.md)
 
-### Deferred Improvements
-- All items from reference review resolved (see commit 80981da)
-
-## [0.0.2-alpha]
+## [0.0.1-alpha]
 
 ### Added
 - **create-prompts skill**: Creates executable XML-structured prompts for Claude Code sessions

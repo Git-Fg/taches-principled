@@ -261,7 +261,7 @@ Use AskUserQuestion to present options:
 
 Before creating a plan, understand the project thoroughly. Use subagent fan-out to explore in parallel:
 
-**Read the agents folder** at `skills/create-plans/agents/` — each markdown file is a subagent prompt template. Read the relevant agent, fill in placeholders like `{{context}}`, `{{task}}`, `{{scope}}`, and spawn it via the Task tool.
+**Read the agents folder** at `skills/create-plans/agents/` — each markdown file is a subagent prompt template. Read the relevant agent, fill in placeholders like `{{context}}`, `{{task}}`, `{{scope}}`, and dispatch it as a subagent.
 
 **Fan-out pattern for exploration:**
 
@@ -272,28 +272,19 @@ Before creating a plan, understand the project thoroughly. Use subagent fan-out 
 3. **Architect agents** — When facing complex decisions (auth strategy, state management, API design), spawn an architect agent to evaluate trade-offs.
 
 **Fan-out rules:**
-- All parallel Task calls MUST occur in a single message
+- All parallel subagent dispatches MUST occur in a single message
 - Each subagent should have disjoint scope (different files/areas)
 - Subagents start cold — pass all context in the spawn prompt
 - Cap at 5 concurrent subagents to avoid coordination overhead
 
 **Example explore phase:**
 
-```
-# Read agent templates
-Read skills/create-plans/agents/explorer.md
-Read skills/create-plans/agents/researcher.md
+Read agent templates from `skills/create-plans/agents/`, then dispatch parallel subagents for exploration:
+1. Explorer agents (3-5) — map project structure across different areas (frontend, backend, config, tests)
+2. Researcher agents — find best practices for unfamiliar technologies
+3. Architect agents — evaluate trade-offs for complex decisions
 
-# Dispatch parallel exploration subagents in ONE message
-Task: Explore src/ directory structure and naming patterns (explorer agent, scope: src/**)
-Task: Explore test organization and patterns (explorer agent, scope: **/*.test.ts)
-Task: Research JWT auth best practices for [framework] (researcher agent)
-Task: Research database migration strategies (researcher agent)
-Task: Analyze API layer architecture (architect agent, focus: REST vs GraphQL tradeoffs)
-
-# Wait for all completions
-# Aggregate findings into understanding of project
-```
+After all complete, aggregate findings into understanding of the project.
 
 ---
 

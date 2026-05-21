@@ -1,7 +1,7 @@
 {
   "name": "taches-principled",
   "displayName": "Taches Principled",
-  "version": "0.0.1-alpha",
+  "version": "0.0.2-alpha",
   "description": "Principle-based Claude Code plugin for building skills, subagents, hooks, and project plans. A modern replacement for prescriptive XML-era approaches.",
   "author": {
     "name": "Felix"
