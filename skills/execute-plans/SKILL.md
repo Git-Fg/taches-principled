@@ -72,6 +72,12 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 - If critic finds issues: executor fixes before continuing to next milestone
 - This is internal review, not user interaction
 
+**Task tracking:**
+- Track each parallel worker group as a unit of work — status updates as workers complete
+- At milestones, the critic review itself becomes a tracked checkpoint in the execution flow
+- Result aggregation updates the parent task status, not the individual workers
+- Delegate simple tasks without tracking overhead; only track when multiple workers coordinate or depend on intermediate outputs
+
 **Why:** No user interaction needed. Executor operates as intelligent orchestrator with parallel execution for speed and self-review for quality. Overhead: ~10-15% main context (higher than old single-subagent approach due to coordination, but better quality through parallelism and review).
 
 ---

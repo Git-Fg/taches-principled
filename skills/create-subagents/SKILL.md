@@ -257,6 +257,26 @@ Central AI agent routes tasks to specialized subagents dynamically.
 
 Example: "Help me improve my codebase" → coordinator analyzes → routes to appropriate specialists → synthesizes results
 
+### Tracking Spawned Subagents
+
+When orchestrating multiple subagents, treat each as a unit of work for visibility and coordination.
+
+**When tracking matters:**
+- Parallel execution (A + B + C simultaneously): Track each worker so the orchestrator knows when all complete before aggregating
+- Hierarchical decomposition: Track each specialist's result so the coordinator can verify coverage before synthesizing
+- Long-running tasks: Track progress so failure doesn't leave orphaned work
+
+**When tracking is optional:**
+- Sequential delegation (A → B → C): Each step completes before the next starts; natural checkpoint is the dependency
+- Simple fire-and-forget: When a single subagent handles a well-defined task with clear completion criteria
+
+**Pattern language:**
+- "Track parallel workers" — explicit tracking when 3+ agents running and aggregator needs all completed
+- "Checkpoint after each" — implicit tracking when execution is strictly sequential
+- "Monitor for completion" — tracking when downstream work depends on all results
+
+The orchestrator owns coordination state. Subagents are isolated — they don't see each other's outputs or progress. The orchestrator holds the thread and decides when to proceed, aggregate, or retry.
+
 ---
 
 ## Workflow Design
@@ -347,7 +367,7 @@ The `description` field is critical for automatic invocation.
 "Implement POST /api/users in src/api/users.ts. Verify: npx jest --testPathPattern=users. Rollback: git checkout -- src/api/users.ts"
 
 ### ❌ Over-permissioned tools
-Granting Write, Edit, Bash, Grep, Glob, Task, TaskOutput to a read-only analysis agent.
+Granting write, edit, and execution tools to a read-only analysis agent.
 
 ### ✅ Least-privilege tools
 Read-only analysis: `Read, Grep, Glob`. Code implementation: `Read, Edit, Bash`. No extra tools.

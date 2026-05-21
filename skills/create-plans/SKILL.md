@@ -277,6 +277,22 @@ Before creating a plan, understand the project thoroughly. Use subagent fan-out 
 - Subagents start cold — pass all context in the spawn prompt
 - Cap at 5 concurrent subagents to avoid coordination overhead
 
+**Task coordination — when to track vs. delegate:**
+
+Tracking (orchestrator retains):
+- Coordinating dependencies and sequencing decisions
+- Aggregating findings from multiple subagents
+- Making trade-off calls when researchers disagree
+- Final verdict on plan quality before handoff
+
+Delegating (subagent owns execution):
+- Parallel exploration of disjoint areas
+- Deep research on specific technical questions
+- Implementation of well-scoped, independent tasks
+- Verification against specific criteria
+
+Signal: if a task requires seeing output from another task to proceed, it is a dependency — handle it in the orchestrator, not a subagent. Subagents should be able to complete their scope without waiting for other subagents.
+
 **Example explore phase:**
 
 Read agent templates from `skills/create-plans/agents/`, then dispatch parallel subagents for exploration:
@@ -316,8 +332,6 @@ The execute-plans skill uses intelligent orchestration:
 - Spawns parallel subagents for independent tasks
 - Spawns critic subagents at milestones for self-review
 - Creates SUMMARY.md and commits when done
-
-**Run:** `Skill(execute-plans)` with the plan path as argument
 
 Do NOT re-invoke create-plans. Do NOT ask for guidance. Execute autonomously via execute-plans.
 

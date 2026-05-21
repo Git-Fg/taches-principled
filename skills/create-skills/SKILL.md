@@ -157,3 +157,21 @@ Before creating a skill, ask:
 2. **What does Claude already know about this?** (Don't repeat general knowledge.)
 
 3. **What would make this skill successful?** (Define completion criteria.)
+
+## Workflow Coordination
+
+The skill creation workflow has natural phases: clarifying questions → draft → self-test → integration check. When building a skill, treat each phase as a tracked task.
+
+**Phase tracking pattern:**
+- Clarifying questions: Gather requirements before spawning any drafting subagent
+- Draft subagent: Create the skill file with clear scope
+- Self-test: Verify the skill loads and triggers correctly
+- Integration check: Confirm it works within the existing skill ecosystem
+
+**Why track here:**
+Skill creation is itself a multi-step workflow. When you spawn a subagent to draft a skill, you're delegating a task that has dependencies (requirements must be clear before drafting). Tracking makes the dependency explicit.
+
+**Parallel drafting:**
+If multiple skill ideas surface simultaneously, you can spawn parallel drafting subagents — but the orchestrator must track each one and wait for all before moving to integration check.
+
+**Principle:** A skill about coordinated work should demonstrate coordination in its own workflow. Even if you don't spawn subagents for skill creation, framing each phase as a tracked task clarifies what must complete before what.

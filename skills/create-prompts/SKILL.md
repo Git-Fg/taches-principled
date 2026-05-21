@@ -465,3 +465,9 @@ Every prompt should include clear success criteria and verification steps.
 - Sequential numbering applied correctly
 - Output saved to `.principled/prompts/[slug]-[number]-[name].md`
 - Decision tree presented to user
+
+---
+
+## Reference Index
+
+**Self-contained:** This skill does not reference other skills by name or invocation pattern. Prompts created by this skill are executed by `execute-prompts`.

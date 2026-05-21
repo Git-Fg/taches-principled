@@ -68,11 +68,13 @@ Use when: multiple prompts with no interdependencies.
 
 **Mechanism:**
 1. Read all prompt files
-2. Dispatch ALL subagents in one message
-3. Wait for all completions
-4. Archive all prompts
-5. Commit all work
-6. Return consolidated results
+2. Track each prompt's execution as a distinct unit — resolution, dispatch, completion
+3. Dispatch ALL subagents in one message
+4. For parallel execution, track each subagent's completion independently to enable partial failure reporting
+5. Wait for all completions
+6. Archive all prompts
+7. Commit all work
+8. Return consolidated results
 
 ### Sequential Execution
 
@@ -82,10 +84,11 @@ Use when: prompts have dependencies (output of one feeds into another).
 1. Read first prompt file
 2. Dispatch subagent
 3. Wait for completion
-4. Archive completed prompt
-5. Repeat for each subsequent prompt
-6. Commit all work
-7. Return consolidated results
+4. Track progression through the chain — each prompt's completion gates the next
+5. Archive completed prompt
+6. Repeat for each subsequent prompt
+7. Commit all work
+8. Return consolidated results
 
 **Failure handling:** If any prompt fails, stop the chain and report. Do not continue with dependent prompts.
 
@@ -130,7 +133,7 @@ For each prompt identifier, resolve to a concrete file path.
 |---------|--------|
 | Exactly one match | Use that file |
 | Multiple matches | List candidates, ask user to choose |
-| No match | Report error, list available prompts |
+| No match | Track as failed state, report error with available prompts listing |
 
 **Always verify file exists before dispatch.** Assumed existence is a race condition.
 
