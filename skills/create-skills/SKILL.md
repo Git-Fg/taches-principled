@@ -66,6 +66,8 @@ when_to_use: |
   Do NOT use for debugging, refactoring, or writing production code.
 ---
 
+Tests reveal how code actually fails, not just that it works — edge cases expose the gaps between intended design and real-world input. These categories organize that lens: boundary conditions probe the edges of valid input, error paths verify graceful degradation, and happy/failure paths confirm core logic under expected and unexpected conditions alike.
+
 ## What to Check
 
 - Edge cases and boundary conditions
@@ -107,33 +109,58 @@ name: specialist-type
 description: What this agent does and when to use it.
 ---
 
+# Specialist Type Subagent
+
 You are a [role] specializing in [domain].
 
-## Scope
-[What files/areas this agent owns]
+## Role
+
+[Brief description of what this agent does and why it exists]
+
+## Approach
+
+1. [Step 1 with action verb]
+2. [Step 2 with action verb]
+3. [Step 3 with action verb]
+
+## Focus Areas
+
+- [Area 1]
+- [Area 2]
+- [Area 3]
 
 ## Output Format
-[How this agent returns results]
+
+Return structured findings:
+
+```markdown
+## [Section]
+
+[Content]
+```
 
 ## Constraints
-[What this agent MUST NOT do]
+
+- [Hard constraint 1]
+- [Hard constraint 2]
 
 ---
 
 **Spawned by:** [orchestrator name]
-**Context:** {{context}}
+**Context provided:** {{context}}
+**Scope:** {{scope}}
 **Task:** {{task}}
 ```
 
-The frontmatter provides the routing signal. The body establishes the agent's identity, scope, and constraints. The footer is a mandatory handoff convention.
+The frontmatter provides the routing signal. The H1 title establishes identity. `## Approach` provides numbered steps. `## Focus Areas` scopes the investigation. The footer is a mandatory handoff convention with domain-specific variables.
 
-### Portable Path Resolution
+### Semantic Reference Pattern
 
-When SKILL.md references an agent file, the skill's installation path resolves automatically at runtime. This means the agent definition travels with the skill — no hardcoded paths needed. Describe the reference semantically:
+When SKILL.md delegates to an agent file, reference it semantically — not with JSON or tool syntax:
 
-> "Read the agent briefing from `agents/[name].md` and pass it as instructions when delegating"
+> "Delegate to the explorer agent to map the project structure. Read `agents/explorer.md` for the agent briefing and pass it alongside the task context."
 
-No JSON. No Task tool syntax. Describe the delegation pattern in domain terms.
+The skill body describes intent and scope. The agent file provides the executable prompt. This separation keeps SKILL.md readable and agent prompts portable.
 
 ### Spawn-Footer Convention
 
@@ -166,6 +193,8 @@ Invoke it: mention the skill name or topic in conversation. Check that Claude lo
 
 ## Anti-Patterns
 
+**Unifying principle:** All anti-patterns share low routing signal density — they give Claude no basis to distinguish this skill from others. All correct patterns share high routing signal density — they give Claude specific, unambiguous triggers that make routing decisions obvious.
+
 ### Vague description that won't route
 "Helps with coding tasks" — triggers on everything, means nothing.
 
@@ -176,13 +205,19 @@ routing signal, making the skill invisible to the trigger system.
 ### Specific description with trigger keywords
 "Creates unit tests with edge cases. Use when user asks to 'write tests', 'add test coverage', or 'generate tests'."
 
+WHY: Specific phrases like "'write tests'" and "'add test coverage'" give Claude
+concrete anchor points for the trigger matching algorithm. Each phrase maps to a
+specific user intent. When a user says "write tests," Claude can route with
+confidence. Generic phrases like "helps with coding" match everything and nothing.
+
 ### Overloaded skill doing too much
 A single skill that handles skill creation, agent configuration, AND hook setup has no clear identity.
 
-WHY: When one skill tries to be everything, it becomes nothing.
-Claude cannot route to a skill that has no coherent scope. Overloaded
-skills create ambiguity about when to invoke them and what they cover.
-Each skill must own one clearly bounded domain.
+WHY: Routing is a classification problem — Claude must decide whether the
+current task matches this skill's domain. When a skill covers three unrelated
+domains, the trigger description must either enumerate all of them (making it
+vague) or focus on one (making it incomplete). Either way, the match score for
+any given task becomes ambiguous. Specificity requires bounded scope.
 
 ### Focused skill with single responsibility
 "create-skills" teaches skill creation only. "create-subagents" teaches subagent configuration only. Each has one job.
@@ -202,15 +237,20 @@ nouns that describe the domain, not generic helpers.
 ### Specific frontmatter
 "name: security-audit, description: 'Audits code for OWASP Top 10. Use when user mentions security, vulnerabilities, or XSS.'"
 
+WHY: The name "security-audit" is a noun describing a domain, not a verb
+describing an action. This allows Claude to match it against any user utterance
+mentioning that domain — "check for security issues," "audit this code," "look
+for XSS." A name like "helper" or "assistant" has no semantic anchor point.
+
 ## Reference Index
 
 Load a reference only when working on that specific aspect — do not load all upfront. The skill body provides what you need for typical cases; references are for deeper dives.
 
 | Reference | Purpose | When to Load |
 |-----------|---------|--------------|
-| `references/context-management.md` | Context window principles, SKILL.md vs references/ load strategy | When splitting skills or managing load |
-| `references/skill-self-testing.md` | YAML validation, threshold checks, trigger testing | Before committing a new skill |
-| `references/cross-skill-discovery.md` | Skill routing, description patterns, name conventions | When naming or describing a new skill |
+| `references/context-management.md` | Context window principles, SKILL.md vs references/ load strategy | If you're about to add content to SKILL.md and suspect it might exceed 500 lines or 7 tools |
+| `references/skill-self-testing.md` | YAML validation, threshold checks, trigger testing | If you've finished a draft and want to verify it passes threshold checks before committing |
+| `references/cross-skill-discovery.md` | Skill routing, description patterns, name conventions | If your skill's description triggers on things it shouldn't OR fails to trigger on things it should |
 
 ---
 
@@ -242,4 +282,17 @@ If multiple skill ideas surface simultaneously, you can spawn parallel drafting 
 
 **Principle:** A skill about coordinated work should demonstrate coordination in its own workflow. Even if you don't spawn subagents for skill creation, framing each phase as a tracked task clarifies what must complete before what.
 
-**For tracking implementation**, load `references/skill-self-testing.md` — it provides YAML validation, threshold checks, and pre-commit verification steps.
+**Example — tracking a single skill draft:**
+```
+Clarifying questions: [task: gather requirements, pending]
+  → "What is the trigger? What tools does this skill need?"
+Draft subagent spawned: [task: draft skill, in_progress]
+  → Subagent reports back with draft
+Draft complete: [task: draft skill, completed]
+  → Integration check: [task: verify ecosystem fit, pending]
+```
+Each bracket is a state checkpoint. The orchestrator (you) updates the state after each phase transition. This does not require a task management system — a text note or checklist with checkmarks suffices.
+
+**Note:** No reference file covers tracking implementation. The pattern above is the simplest form.
+
+**For pre-commit verification of threshold checks**, load `references/skill-self-testing.md` — it provides YAML validation, threshold checks, and trigger testing.
