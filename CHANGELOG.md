@@ -25,13 +25,7 @@ All notable changes are documented here.
 - **checkpoints.md**: Added human-readable comment pattern to checkpoint declaration examples
 
 ### Deferred Improvements
-- **checkpoints.md**: Needs escalation path for non-responsive users
-- **cli-automation.md**: Needs Cloudflare Workers/R2/Pages, AWS, GCP, Azure CLIs added
-- **plan-format.md**: Needs Checkpoint field added to task anatomy
-- **milestone-management.md**: Needs hotfix/hotpatch branch model
-- **scope-estimation.md**: Needs context metrics definition and sequential chain limit
-- **execute-plans references**: Needs version tracking
-- **execute-plans references**: Needs strategy decision tree deduplication
+- All items from reference review resolved (see commit 80981da)
 
 ## [0.0.2-alpha]
 
