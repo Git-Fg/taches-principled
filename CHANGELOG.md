@@ -5,7 +5,23 @@ All notable changes are documented here.
 ## [Unreleased]
 
 ### Added
-- (nothing yet)
+- **execute-plans skill**: Critical fixes from second round of critic review
+- **create-skills skill**: Comprehensive improvements from critic review
+- **create-skills skill**: Now teaches bundled agents pattern
+- **create-skills skill**: Native task lists + semantic-first skill refactor
+- **execute-plans skill**: Added agents/critic.md for milestone self-review
+- **create-plans skill**: Added agents folder with subagent prompt templates
+
+### Fixed
+- **execute-plans skill**: Use agents/critic.md template for milestone reviews
+- **create-plans skill**: Resolve inconsistencies found during reference review
+- **create-plans skill**: Resolve critical issues found during reference review
+- Corrected GitHub repo references across plugin
+
+### Changed
+- **create-plans skill**: Complete remaining deferred improvements from reference review
+- Marked all deferred improvements from reference review as resolved
+- **create-plans skill**: Remove per-file version tracking (anti-pattern)
 
 ## [0.0.2-alpha]
 
@@ -56,14 +72,6 @@ All notable changes are documented here.
 
 ### Changed
 - README updated: Skills count 4 → 6, Policy/Mechanism table expanded
-
-## [0.0.1-alpha]
-
-### Added
-- CLAUDE.md development guide with operational rules and best practices
-
-### Changed
-- Downgraded version to `0.0.1-alpha` for early development
 
 ## [1.1.0]
 

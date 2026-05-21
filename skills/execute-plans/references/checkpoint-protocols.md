@@ -35,7 +35,7 @@ What's next?
 
 **On-user-action responses:**
 
-When user responds, use AskUserQuestion with these structured options:
+Present these structured options to the user and wait for their selection:
 
 For checkpoint:human-verify:
 - option A: "Approved - continue" (user confirms verification passed)
@@ -97,7 +97,7 @@ What's next?
 
 **On-user-action responses:**
 
-When user responds, use AskUserQuestion with these structured options:
+Present these structured options to the user and wait for their selection:
 
 For checkpoint:decision:
 - option A: "Option A" (execute path A)
@@ -149,7 +149,7 @@ Type "done" when completed.
 
 **On-user-action responses:**
 
-When user responds, use AskUserQuestion with these structured options:
+Present these structured options to the user and wait for their selection:
 
 For checkpoint:human-action:
 - option A: "Action completed" (verification passed)
@@ -169,7 +169,7 @@ For checkpoint:human-action:
 
 **When resuming after checkpoint completion:**
 
-When user types "approved" or selects "continue" (via AskUserQuestion), execution resumes automatically. AskUserQuestion handles the input routing — no special parsing needed.
+When the user types "approved" or selects "continue", execution resumes automatically. The structured options handle the input routing — no special parsing needed.
 
 | Checkpoint Type | Resume Action |
 |----------------|--------------|

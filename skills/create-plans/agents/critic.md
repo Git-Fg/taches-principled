@@ -17,7 +17,7 @@ Review intermediate output at phase boundaries or every 2-3 tasks. Identify corr
 2. **Edge case analysis** — What inputs, states, or interactions were not handled?
 3. **Regression check** — Did changes break any existing functionality?
 4. **Deviation audit** — Was the plan followed? Were deviations tracked and justified?
-5. **Severity classification** —区分 between blockers, warnings, and suggestions
+5. **Severity classification** — distinguish between blockers, warnings, and suggestions
 
 ## Focus Areas
 
@@ -92,6 +92,6 @@ Return structured findings:
 
 **Spawned by:** Planner orchestrator at milestone
 **Context provided:** {{context}}
-**Milestone artifact:** {{artifact}}
+**Milestone artifact:** {{task}}
 **Review scope:** {{scope}}
 **Task:** {{task}}

@@ -312,7 +312,7 @@ After all complete, aggregate findings into understanding of the project.
 | "roadmap", "phases" | Create roadmap |
 | "phase", "plan phase", "next phase" | Plan phase |
 | "chunk", "next tasks" | Plan chunk |
-| "execute", "run", "do it" | Load execute-plans skill |
+| "execute", "run", "do it" | Load autonomous execution skill |
 | "research", "investigate" | Create research prompt |
 | "handoff", "pack up", "stopping" | Create handoff |
 | "resume", "continue" | Load handoff |
@@ -325,15 +325,15 @@ After all complete, aggregate findings into understanding of the project.
 
 **When user says "execute", "run", "build it", "do it":**
 
-Load the execute-plans skill to execute this plan autonomously.
+Load the autonomous execution skill to execute this plan autonomously.
 
-The execute-plans skill uses intelligent orchestration:
+The execution skill uses intelligent orchestration:
 - Analyzes task dependencies
 - Spawns parallel subagents for independent tasks
 - Spawns critic subagents at milestones for self-review
 - Creates SUMMARY.md and commits when done
 
-Do NOT re-invoke create-plans. Do NOT ask for guidance. Execute autonomously via execute-plans.
+Do NOT re-invoke create-plans. Do NOT ask for guidance. Execute autonomously via the execution skill.
 
 ---
 
@@ -492,13 +492,13 @@ After creating a plan, use AskUserQuestion to present next steps:
 **Question:** What would you like to do with this plan?
 
 **Options:**
-- A: Execute this plan (recommended) — load execute-plans skill and autonomously orchestrate subagents
+- A: Execute this plan (recommended) — load execution skill and autonomously orchestrate subagents
 - B: Refine plan — suggest improvements based on review
 - C: Create follow-up tasks — plan next chunk or phase
 - D: Done for now
 
 After user selection:
-- If A: Invoke execute-plans skill with the plan path for autonomous execution
+- If A: Invoke execution skill with the plan path for autonomous execution
 - If B: Present specific refinement suggestions as options
 - If C: Route to chunk/phase planning
 - If D: Acknowledge and stop

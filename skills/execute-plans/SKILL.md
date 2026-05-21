@@ -2,7 +2,7 @@
 name: execute-plans
 description: "Execute PLAN.md files using intelligent strategies based on checkpoint types. Use when user says 'execute', 'run plan', 'build it', or wants to progress from PLAN to SUMMARY."
 when_to_use: |
-  Do NOT use for creating plans — use create-plans instead.
+  Do NOT use for creating plans — use the planning skill instead.
   Do NOT use for planning without execution intent.
 ---
 

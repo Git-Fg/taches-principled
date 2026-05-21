@@ -65,6 +65,7 @@ Specialized agents for quality and review work.
 | Agent | Purpose |
 |-------|---------|
 | **code-reviewer** | Reviews code for issues that matter |
+| **prompt-engineer** | Reviews prompts for clarity and effectiveness |
 | **skill-auditor** | Reviews skills for clarity and routing |
 | **subagent-auditor** | Reviews subagents for effectiveness |
 
@@ -95,6 +96,7 @@ For those contributing to this plugin, see [CLAUDE.md](./CLAUDE.md) for developm
 | `create-skills` | When to trigger | What the skill teaches |
 | `create-prompts` | What a good prompt contains | How to gather requirements and generate |
 | `execute-prompts` | When to use parallel vs. sequential | How to parse, resolve, and execute |
+| `execute-plans` | When to use autonomous/segmented/sequential | How to orchestrate parallel workers and milestone reviews |
 
 ## The Principle-Based Approach
 
@@ -132,7 +134,7 @@ ls ~/.claude/skills/
 
 ## Relationship to taches-cc-resources
 
-This plugin is a direct descendant of [taches-cc-resources](https://github.com/glittercowboy/taches-cc-resources), which introduced valuable structure and organization to Claude Code extensions. The original `taches-cc-resources` (now archived) established the mental models for skills, subagents, and plans.
+This plugin is a direct descendant of [taches-cc-resources](https://github.com/glittercowboy/taches-cc-resources), which introduced valuable structure and organization to Claude Code extensions. The original `taches-cc-resources` established the mental models for skills, subagents, and plans.
 
 **What changed here:** The prescriptive layer was stripped — the XML templates, the step-by-step procedures, and the complexity theater. What remained are the principles that actually guide good decisions.
 
