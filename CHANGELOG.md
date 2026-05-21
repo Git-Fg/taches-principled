@@ -4,6 +4,11 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+### Added
+- **create-plans skill**: Added `agents/` folder with subagent prompt templates (explorer, researcher, architect, implementer, verifier)
+- **create-plans skill**: Added fan-out exploration pattern with parallel subagent spawning guidance
+- **create-plans skill**: Natural language instructions for reading agent prompts and filling placeholders
+
 ### Fixed
 - **marketplace.json**: Changed `source.github.repo` to `source.source: "url"` with full git URL — `felixhopper` repo does not exist, corrected to `Git-Fg/taches-principled`
 - **README.md**: Replaced all `felixhopper` references with `Git-Fg` (lines 13, 125)
