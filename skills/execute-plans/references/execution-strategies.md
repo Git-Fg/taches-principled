@@ -1,8 +1,3 @@
----
-version: 1.0
-updated: 2026-05-22
----
-
 # Execution Strategies
 
 Three strategies for plan execution, differentiated by checkpoint structure and autonomy level.

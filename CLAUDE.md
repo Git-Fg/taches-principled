@@ -146,6 +146,24 @@ One skill handling skill creation, agent config, AND hooks — no clear identity
 ### ✅ Focused skill
 Each skill has one job. If it needs more than 7 tools or 500 lines, split.
 
+### Per-File Version Tracking
+
+**Anti-pattern:** Adding `version:` and `updated:` frontmatter to every file in a system.
+
+**Why it's wrong:** Version numbers per file create maintenance overhead with no value. Git commit history already tracks when files changed. When a file is updated, you bump the version — but the version number never actually controls anything. It's ceremony.
+
+**Examples:**
+- `version: 1.0` in every markdown reference file
+- `updated: 2026-05-22` timestamps that nobody reads
+- CHANGELOG per file instead of per project
+
+**Correct approach:**
+- Version the project/package (plugin.json, package.json)
+- Trust git history for file-level change tracking
+- Use CHANGELOG.md for project-level release notes, not per-file timestamps
+
+**Signal:** If you're adding metadata about when something changed instead of just changing it, stop.
+
 ---
 
 ## Documentation Sync

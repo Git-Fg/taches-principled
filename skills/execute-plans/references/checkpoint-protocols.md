@@ -1,8 +1,3 @@
----
-version: 1.0
-updated: 2026-05-22
----
-
 # Checkpoint Protocols
 
 Templates and flows for each checkpoint type.
