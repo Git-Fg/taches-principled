@@ -1,5 +1,7 @@
 # TÂCHES Principled
 
+**Version:** 0.0.1-alpha
+
 A principle-based Claude Code plugin for building skills, subagents, hooks, and project plans.
 
 **For when** you keep pasting the same instructions into chat, or when CLAUDE.md has grown into a procedure. Each skill teaches you to build better extensions — not by giving you templates and checklists, but by giving you the principles behind them.
@@ -32,12 +34,12 @@ cp -r skills/* commands/* agents/* ~/.claude/
 
 Skills load on demand and give Claude domain expertise without bloating every conversation.
 
-| Skill | When to Use |
-|-------|-------------|
-| **create-skills** | Building new skills or improving existing ones |
-| **create-subagents** | Creating specialized agents or configuring the Task tool |
-| **create-hooks** | Setting up validation, logging, or notification automation |
-| **create-plans** | Planning projects, phases, or features for Claude to build |
+| Skill | When to Use | Enhancements |
+|-------|-------------|---------------|
+| **create-skills** | Building new skills or improving existing ones | Policy/Mechanism, Anti-Patterns, Thresholds |
+| **create-subagents** | Creating specialized agents or configuring the Task tool | Policy/Mechanism, Anti-Patterns, Thresholds |
+| **create-hooks** | Setting up validation, logging, or notification automation | Policy/Mechanism, Anti-Patterns, Thresholds |
+| **create-plans** | Planning projects, phases, or features for Claude to build | Policy/Mechanism, Anti-Patterns, Thresholds |
 
 ### 8 Commands
 
@@ -49,7 +51,7 @@ Slash commands for quick, focused workflows.
 | `/create-subagent` | Scaffold a new subagent |
 | `/create-hook` | Scaffold a new hook |
 | `/create-plan` | Scaffold a project plan |
-| `/audit-skill` | Evaluate a skill's effectiveness |
+| `/audit-skill` | Evaluate a skill with rubric-based scoring |
 | `/audit-subagent` | Evaluate a subagent's routing quality |
 | `/debug` | Apply systematic debugging methodology |
 | `/whats-next` | Create a handoff for a fresh session |
@@ -79,6 +81,20 @@ create-plans ──→ create-subagents ──→ create-hooks
      │
      └── subagent-auditor
 ```
+
+## Teaching Patterns
+
+Each skill teaches through three layers:
+
+1. **Policy vs. Mechanism** — The organizing principle. Separates what to do (policy) from how to do it (mechanism).
+2. **Anti-Patterns** — Concrete wrong/right pairs showing what not to do and why.
+3. **Numeric Thresholds** — Actionable limits (not arbitrary) with rationale from cognitive science.
+
+This replaces the old approach of step-by-step procedures and prescriptive templates.
+
+## Developer Guide
+
+For those contributing to this plugin, see [CLAUDE.md](./CLAUDE.md) for development practices, skill anatomy standards, and operational rules.
 
 **Dependency chain:**
 - `create-plans` → `create-subagents`: Plans define what needs building; subagents execute plans
