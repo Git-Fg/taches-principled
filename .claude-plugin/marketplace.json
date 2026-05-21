@@ -9,7 +9,7 @@
       "name": "taches-principled",
       "source": {
         "github": {
-          "repo": "felixhopper/taches-principled"
+          "repo": "Git-Fg/taches-principled"
         }
       },
       "description": "Principle-based plugin for building Claude Code extensions — skills, subagents, hooks, and plans. Replaces prescriptive XML-era templates with goals and principles."

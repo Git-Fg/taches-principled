@@ -73,6 +73,12 @@ Three strategies for plan execution, differentiated by checkpoint structure and 
 3. On reject: follow Verification Failure Gate protocol
 4. On confirm: record signal, proceed to next segment
 
+**Strategy B: Segmented Execution**
+- Use when: ONLY checkpoint:human-verify checkpoints exist
+- Segments execute autonomously between verify checkpoints
+- Human-verify checkpoints: present to user, wait for approval, continue
+- If ANY decision or human-action checkpoint exists → Strategy C
+
 **Context budget:**
 - Each segment subagent: 20k tokens (focused execution)
 - Orchestrator: 10k tokens (checkpoint management + state)
@@ -135,8 +141,12 @@ Are ALL checkpoints human-verify type?
 └─ No ↓
 
 Does any checkpoint affect downstream tasks?
-├─ Yes → Strategy C (Sequential Decision-Dependent)
-└─ No → Strategy B (Segmented Execution, with decision checkpoints blocking)
+├─ Yes → Strategy C (Sequential)
+│         Any of: checkpoint:decision OR checkpoint:human-action
+│         These change the execution path based on user choice.
+└─ No → Strategy B (Segmented)
+          Only checkpoint:human-verify checkpoints exist.
+          These don't change the path, just require verification.
 ```
 
 **Selection heuristic:**
