@@ -480,6 +480,7 @@ Loading all project files instead of only those referenced in the plan. Context 
 | `references/deviation-rules.md` | Extended deviation handling with examples |
 | `templates/autonomous-execution.md` | Template for Strategy A subagent prompts |
 | `templates/segment-execution.md` | Template for Strategy B segment handoffs |
+| `agents/critic.md` | Self-critique subagent for milestone reviews |
 
 ---
 
