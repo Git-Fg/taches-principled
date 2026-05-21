@@ -2,6 +2,26 @@
 
 All notable changes are documented here.
 
+## [0.0.2-alpha]
+
+### Added
+- **create-prompts skill**: Creates executable XML-structured prompts for Claude Code sessions
+  - Adaptive intake gate with task type detection
+  - Contextual questioning with templates (dashboard type, auth method, etc.)
+  - Decision gate loop until user confirms
+  - Single/parallel/sequential prompt generation
+  - XML patterns for coding/analysis/research tasks
+- **execute-prompts skill**: Executes prompts via delegated sub-tasks
+  - Policy vs. Mechanism framing for strategy selection
+  - Single/parallel/sequential execution via Task tool
+  - Critical constraint: parallel Task calls in single message
+  - Argument parsing and file resolution
+  - Archival to `./prompts/completed/` and git workflow
+- **create-prompts/workflows/execute-prompt.md**: Workflow reference for prompt execution
+
+### Changed
+- README updated: Skills count 4 → 6, Policy/Mechanism table expanded
+
 ## [0.0.1-alpha]
 
 ### Added

@@ -1,5 +1,17 @@
 # Milestone Management & Greenfield/Brownfield Planning
 
+## Sections
+- [The Core Problem](#the-core-problem)
+- [Three Planning Modes](#three-planning-modes)
+- [When to Archive and Start Fresh](#when-to-archive-and-start-fresh)
+- [Decision Tree](#decision-tree)
+- [Milestone Workflow Triggers](#milestone-workflow-triggers)
+- [Brownfield Plan Patterns](#brownfield-plan-patterns)
+- [BRIEF Current State Section](#brief-current-state-section)
+- [Summary](#summary)
+
+---
+
 Milestones mark shipped versions. They solve the "what happens after v1.0?" problem.
 
 ---
@@ -27,7 +39,7 @@ Milestones mark shipped versions. They solve the "what happens after v1.0?" prob
 
 **Planning structure**:
 ```
-.planning/
+.principled/plans/
 ├── BRIEF.md              # Original vision
 ├── ROADMAP.md            # Phases 1-4
 └── phases/
@@ -67,7 +79,7 @@ Milestones mark shipped versions. They solve the "what happens after v1.0?" prob
 
 **Planning structure**:
 ```
-.planning/
+.principled/plans/
 ├── BRIEF.md              # Updated with "Current State"
 ├── ROADMAP.md            # Phases 1-6 (grouped by milestone)
 ├── MILESTONES.md         # v1.0 entry
@@ -149,8 +161,8 @@ When planning Phase 5, the PLAN.md automatically gets context:
 ```markdown
 # Context
 
-@.planning/BRIEF.md                      # Knows: v1.0 shipped, codebase exists
-@.planning/MILESTONES.md                 # Knows: what v1.0 delivered
+@.principled/plans/BRIEF.md                      # Knows: v1.0 shipped, codebase exists
+@.principled/plans/MILESTONES.md                 # Knows: what v1.0 delivered
 @AppName/NetworkManager.swift             # Existing code to improve
 @AppName/APIClient.swift                 # Existing code to fix
 
@@ -182,7 +194,7 @@ When planning Phase 5, the PLAN.md automatically gets context:
 
 **Planning structure**:
 ```
-.planning/
+.principled/plans/
 ├── BRIEF.md              # Updated for v2.0 vision
 ├── ROADMAP.md            # Phases 1-14 (grouped)
 ├── MILESTONES.md         # v1.0, v1.1 entries
@@ -214,8 +226,8 @@ When planning Phase 5, the PLAN.md automatically gets context:
 
 **Action**:
 ```
-.planning/
-├── archive/
+.principled/plans/
+├── .attic/
 │   └── v1-macos/
 │       ├── BRIEF.md
 │       ├── ROADMAP.md
@@ -243,7 +255,7 @@ When planning Phase 5, the PLAN.md automatically gets context:
 - Built: WeatherBar (weather app) ✓
 - Now building: TaskBar (task management app)
 
-**Action**: New project entirely, new `.planning/` directory
+**Action**: New project entirely, new `.principled/plans/` directory
 
 ---
 
@@ -333,8 +345,8 @@ Create authentication system from scratch.
 
 # Context
 
-@.planning/BRIEF.md
-@.planning/ROADMAP.md
+@.principled/plans/BRIEF.md
+@.principled/plans/ROADMAP.md
 
 # Tasks
 
@@ -355,8 +367,8 @@ Add MFA to existing authentication system.
 
 # Context
 
-@.planning/BRIEF.md              # Shows v1.0 shipped, auth exists
-@.planning/MILESTONES.md         # Shows what v1.0 delivered
+@.principled/plans/BRIEF.md              # Shows v1.0 shipped, auth exists
+@.principled/plans/MILESTONES.md         # Shows what v1.0 delivered
 @src/models/User.ts              # Existing User model
 @src/auth/AuthService.ts         # Existing auth logic
 

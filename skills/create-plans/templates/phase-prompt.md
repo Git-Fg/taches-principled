@@ -6,7 +6,7 @@ when_to_use: When authoring a new PLAN.md for a phase or plan within a phase.
 
 # Phase Prompt Template
 
-Copy and fill this structure for `.planning/phases/XX-name/{phase}-{plan}-PLAN.md`:
+Copy and fill this structure for `.principled/plans/phases/XX-name/{phase}-{plan}-PLAN.md`:
 
 **Naming:** Use `{phase}-{plan}-PLAN.md` format (e.g., `01-02-PLAN.md` for Phase 1, Plan 2)
 
@@ -15,6 +15,7 @@ Copy and fill this structure for `.planning/phases/XX-name/{phase}-{plan}-PLAN.m
 phase: XX-name
 type: execute
 domain: [optional - if domain skill loaded]
+checkpoint-mode: autonomous | segmented | sequential
 ---
 
 ## Objective
@@ -26,10 +27,10 @@ Output: [What artifacts will be created]
 
 ## Context
 
-@.planning/BRIEF.md
-@.planning/ROADMAP.md
+@.principled/plans/BRIEF.md
+@.principled/plans/ROADMAP.md
 [If research exists:]
-@.planning/phases/XX-name/FINDINGS.md
+@.principled/plans/phases/XX-name/FINDINGS.md
 [Relevant source files:]
 @src/path/to/relevant.ts
 
@@ -66,7 +67,7 @@ Before declaring phase complete:
 
 ## Output
 
-After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`:
+After completion, create `.principled/plans/phases/XX-name/{phase}-{plan}-SUMMARY.md`:
 
 # Phase [X] Plan [Y]: [Name] Summary
 
@@ -107,6 +108,11 @@ After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`:
 - If planning >5 tasks, split into multiple plans (01-01, 01-02, etc.)
 - Target ~50% context usage maximum
 
+**Checkpoint mode:**
+- `autonomous` — Execute all tasks without stopping (default)
+- `segmented` — Pause at checkpoints for human verification/decision
+- `sequential` — Stop after each task for confirmation
+
 ---
 
 ## Good Example
@@ -127,8 +133,8 @@ Output: Working Next.js app with JWT auth, protected routes, and user model.
 
 ## Context
 
-@.planning/BRIEF.md
-@.planning/ROADMAP.md
+@.principled/plans/BRIEF.md
+@.principled/plans/ROADMAP.md
 @src/lib/db.ts
 
 ## Tasks
@@ -161,7 +167,7 @@ Done: Valid credentials return 200 + cookie, invalid return 401, missing fields 
 
 ## Output
 
-After completion, create `.planning/phases/01-foundation/01-01-SUMMARY.md`
+After completion, create `.principled/plans/phases/01-foundation/01-01-SUMMARY.md`
 ```
 
 ---

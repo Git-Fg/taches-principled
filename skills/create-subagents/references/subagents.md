@@ -1,5 +1,17 @@
 # Subagents Reference
 
+## Sections
+- [File Format](#file-format)
+- [Storage Locations](#storage-locations)
+- [Execution Model](#execution-model)
+- [Tool Configuration](#tool-configuration)
+- [Model Selection](#model-selection)
+- [Invocation](#invocation)
+- [Tool Security](#tool-security)
+- [Best Practices](#best-practices)
+
+---
+
 Subagent file structure, configuration, model selection, and best practices.
 
 ---
@@ -7,13 +19,6 @@ Subagent file structure, configuration, model selection, and best practices.
 ## File Format
 
 ```markdown
----
-name: your-subagent-name
-description: Description of when this subagent should be invoked
-tools: tool1, tool2, tool3 # Optional - inherits all tools if omitted
-model: sonnet # Optional - specify model alias or 'inherit'
----
-
 <role>
 Your subagent's system prompt using pure XML structure. This defines the subagent's role, capabilities, and approach.
 </role>
@@ -27,7 +32,7 @@ Step-by-step process for consistency.
 </workflow>
 ```
 
-**Critical:** Use pure XML structure in the body. Remove ALL markdown headings (##, ###). Keep markdown formatting within content (bold, lists, code blocks).
+**Critical:** Use markdown sections in the body (## Role, ## Constraints, ## Workflow). Remove XML tags.
 
 ### Configuration Fields
 
@@ -80,13 +85,9 @@ Keep user interaction in main chat:
 
 ```markdown
 # ❌ WRONG - Subagent cannot do this
----
-name: requirement-gatherer
-description: Gathers requirements from user
-tools: AskUserQuestion  # This won't work!
----
-
+<workflow>
 You ask the user questions to gather requirements...
+</workflow>
 ```
 
 ```markdown
@@ -106,7 +107,7 @@ Main chat: Present subagent results to user
 
 Omit the `tools` field to inherit all tools from main thread:
 
-```yaml
+```markdown
 ---
 name: code-reviewer
 description: Reviews code for quality and security
@@ -119,7 +120,7 @@ Subagent has access to all tools, including MCP tools.
 
 Specify tools as comma-separated list for granular control:
 
-```yaml
+```markdown
 ---
 name: read-only-analyzer
 description: Analyzes code without making changes
@@ -133,21 +134,16 @@ tools: Read, Grep, Glob
 
 ### Model Capabilities
 
-**Sonnet 4.5** (`sonnet`):
-- "Best model in the world for agents" (Anthropic)
-- Exceptional at agentic tasks: 64% problem-solving on coding benchmarks
-- SWE-bench Verified: 49.0%
+**Sonnet** (`sonnet`):
+- Strong reasoning and planning capabilities
 - **Use for**: Planning, complex reasoning, validation, critical decisions
 
-**Haiku 4.5** (`haiku`):
-- "Near-frontier performance" - 90% of Sonnet 4.5's capabilities
-- SWE-bench Verified: 73.3% (one of world's best coding models)
-- Fastest and most cost-efficient
+**Haiku** (`haiku`):
+- Fast and cost-efficient for simpler tasks
 - **Use for**: Task execution, simple transformations, high-volume processing
 
 **Opus** (`opus`):
-- Highest performance on evaluation benchmarks
-- Most capable but slowest and most expensive
+- Highest capability but slowest and most expensive
 - **Use for**: Highest-stakes decisions, most complex reasoning
 
 **Inherit** (`inherit`):
@@ -158,24 +154,19 @@ tools: Read, Grep, Glob
 
 **Optimal cost/performance pattern:**
 
-```markdown
-1. Sonnet 4.5 (Coordinator):
-   - Creates plan
-   - Breaks task into subtasks
-   - Identifies parallelizable work
+1. **Sonnet** (Coordinator):
+   - Analyzes task, creates plan
+   - Breaks task into subtasks, identifies parallelizable work
 
-2. Multiple Haiku 4.5 instances (Workers):
+2. **Haiku** (Workers):
    - Execute subtasks in parallel
    - Fast and cost-efficient
-   - 90% of Sonnet's capability for execution
 
-3. Sonnet 4.5 (Validator):
-   - Integrates results
-   - Validates output quality
+3. **Sonnet** (Validator):
+   - Integrates results, validates output quality
    - Ensures coherence
-```
 
-**Benefit**: Use expensive Sonnet only for planning and validation, cheap Haiku for execution.
+**Benefit**: Use Sonnet for planning and validation, Haiku for execution.
 
 ### When to Use Each Model
 
@@ -216,8 +207,6 @@ Users can explicitly request a subagent:
 
 ### Core Principle
 
-**"Permission sprawl is the fastest path to unsafe autonomy."** - Anthropic
-
 Treat tool access like production IAM: start from deny-all, allowlist only what's needed.
 
 ### Why It Matters
@@ -237,54 +226,6 @@ Treat tool access like production IAM: start from deny-all, allowlist only what'
 - [ ] Can we restrict further without blocking legitimate use?
 
 **Default**: Grant minimum necessary. Add tools only when lack of access blocks task.
-
----
-
-## Prompt Caching
-
-### Benefits
-
-- **90% cost reduction** on cached tokens
-- **85% latency reduction** for cache hits
-- Cached content: ~10% cost of uncached tokens
-- Cache TTL: 5 minutes (default) or 1 hour (extended)
-
-### Structure for Caching
-
-```markdown
----
-name: security-reviewer
-description: ...
-tools: ...
-model: sonnet
----
-
-[CACHEABLE SECTION - Stable content]
-<role>
-You are a senior security engineer...
-</role>
-
-<focus_areas>
-- SQL injection
-- XSS attacks
-...
-</focus_areas>
-
---- [CACHE BREAKPOINT] ---
-
-[VARIABLE SECTION - Task-specific content]
-Current task: {dynamic context}
-Recent changes: {varies per invocation}
-```
-
-**Principle**: Stable instructions at beginning (cached), variable context at end (fresh).
-
-### Best Candidates for Caching
-
-- Frequently-invoked subagents (multiple times per session)
-- Large, stable prompts (extensive guidelines, examples)
-- Consistent tool definitions across invocations
-- Long-running sessions with repeated subagent use
 
 ---
 

@@ -8,7 +8,7 @@ when_to_use: When starting a new project or updating BRIEF.md after shipping a v
 
 ## Greenfield Brief (v1.0)
 
-Copy and fill this structure for `.planning/BRIEF.md` when starting a new project:
+Copy and fill this structure for `.principled/plans/BRIEF.md` when starting a new project:
 
 ```markdown
 # [Project Name]

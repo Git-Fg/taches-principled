@@ -45,7 +45,7 @@ Standardize SUMMARY.md format for phase completion:
 
 ### Deferred Enhancements
 
-Logged to .planning/ISSUES.md for future consideration:
+Logged to .principled/plans/ISSUES.md for future consideration:
 - ISS-XXX: [Brief description] (discovered in Task [N])
 - ISS-XXX: [Brief description] (discovered in Task [N])
 
@@ -139,7 +139,7 @@ The one-liner should tell someone what actually shipped.
 
 ### Deferred Enhancements
 
-Logged to .planning/ISSUES.md for future consideration:
+Logged to .principled/plans/ISSUES.md for future consideration:
 - ISS-001: Add rate limiting to login endpoint (discovered in Task 2)
 - ISS-002: Improve token refresh UX with auto-retry on 401 (discovered in Task 5)
 

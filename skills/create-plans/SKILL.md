@@ -106,6 +106,30 @@ Plans are guides, not straitjackets. Real development involves discoveries. Hand
 
 **Only Rule 4 requires your input.** Rules 1-3, 5 execute automatically.
 
+---
+
+### Checkpoint Types
+
+Checkpoints are for verification and decisions, not manual work. Claude automates everything that has a CLI or API.
+
+| Type | Trigger | When to Use |
+|------|---------|-------------|
+| `checkpoint:human-verify` | Claude automated, human confirms | Visual checks, UI verification, reviewing generated content |
+| `checkpoint:decision` | Human makes implementation choice | Architecture, library selection, API design |
+| `checkpoint:human-action` | Human performs action (no CLI/API) | Email verification, 2FA, account approval requiring web login |
+
+**Checkpoint declaration example:**
+```markdown
+### Task 2: Deploy to production
+Files: .env.production
+Action: Run deployment via CLI, verify health endpoint
+Verify: `curl https://api.production.com/health` returns 200
+Done: Production deployed and healthy
+Checkpoint: checkpoint:human-verify  # Human confirms deployment looks correct
+```
+
+**Protocol:** Claude automates work → reaches checkpoint → presents results → waits for confirmation → resumes
+
 ### Ship Fast, Iterate Fast
 
 No enterprise process. No approval gates.
@@ -175,18 +199,23 @@ Run on every invocation:
 git rev-parse --git-dir 2>/dev/null || echo "NO_GIT_REPO"
 
 # Check for planning structure
-ls -la .planning/ 2>/dev/null
-ls -la .planning/phases/ 2>/dev/null
+ls -la .principled/plans/ 2>/dev/null
+ls -la .principled/plans/phases/ 2>/dev/null
 
 # Find any continue-here files
 find . -name ".continue-here.md" -type f 2>/dev/null
 
 # Check for existing artifacts
-[ -f .planning/BRIEF.md ] && echo "BRIEF: exists"
-[ -f .planning/ROADMAP.md ] && echo "ROADMAP: exists"
+[ -f .principled/plans/BRIEF.md ] && echo "BRIEF: exists"
+[ -f .principled/plans/ROADMAP.md ] && echo "ROADMAP: exists"
 ```
 
-**If NO_GIT_REPO detected:** Offer to initialize one.
+**If NO_GIT_REPO detected:** Use AskUserQuestion to present options:
+
+**Question:** No git repository found. Initialize one?
+**Options:**
+- A: Initialize git repository (recommended)
+- B: Continue without git
 
 Present scan findings before intake.
 
@@ -197,42 +226,34 @@ Present scan findings before intake.
 Based on scan results, present context-aware options:
 
 **If handoff found:**
-```
-Found handoff: .planning/phases/XX/.continue-here.md
-[Summary of state]
+Use AskUserQuestion to present options:
 
-1. Resume from handoff
-2. Discard handoff, start fresh
-3. Different action
-```
+**Question:** Found handoff at .principled/plans/phases/XX/.continue-here.md. What would you like to do?
+**Options:**
+- A: Resume from handoff (recommended)
+- B: Discard handoff, start fresh
+- C: Do something else
 
 **If planning structure exists:**
-```
-Project: [from BRIEF or directory]
-Brief: [exists/missing]
-Roadmap: [X phases defined]
-Current: [phase status]
+Use AskUserQuestion to present options:
 
-What would you like to do?
-1. Plan next phase
-2. Execute current phase
-3. Create handoff
-4. View/update roadmap
-5. Something else
-```
+**Question:** What would you like to do?
+**Options:**
+- A: Plan next phase (recommended)
+- B: Execute current phase
+- C: Create handoff
+- D: View/update roadmap
+- E: Something else
 
 **If no planning structure:**
-```
-No planning structure found.
+Use AskUserQuestion to present options:
 
-What would you like to do?
-1. Start new project (create brief)
-2. Create roadmap from existing brief
-3. Jump straight to phase planning
-4. Get guidance on approach
-```
-
-Wait for response before proceeding.
+**Question:** No planning structure found. What would you like to do?
+**Options:**
+- A: Start new project (create brief) (recommended)
+- B: Create roadmap from existing brief
+- C: Jump straight to phase planning
+- D: Get guidance on approach
 
 ---
 
@@ -244,7 +265,7 @@ Wait for response before proceeding.
 | "roadmap", "phases" | Create roadmap |
 | "phase", "plan phase", "next phase" | Plan phase |
 | "chunk", "next tasks" | Plan chunk |
-| "execute", "run", "do it" | Use `/run-plan` command |
+| "execute", "run", "do it" | Load execute-plans skill |
 | "research", "investigate" | Create research prompt |
 | "handoff", "pack up", "stopping" | Create handoff |
 | "resume", "continue" | Load handoff |
@@ -253,10 +274,28 @@ Wait for response before proceeding.
 
 ---
 
+## Execution Handoff
+
+**When user says "execute", "run", "build it", "do it":**
+
+Load the execute-plans skill to execute this plan autonomously.
+
+The execute-plans skill uses intelligent orchestration:
+- Analyzes task dependencies
+- Spawns parallel subagents for independent tasks
+- Spawns critic subagents at milestones for self-review
+- Creates SUMMARY.md and commits when done
+
+**Run:** `Skill(execute-plans)` with the plan path as argument
+
+Do NOT re-invoke create-plans. Do NOT ask for guidance. Execute autonomously via execute-plans.
+
+---
+
 ## Files Structure
 
 ```
-.planning/
+.principled/plans/
 ├── BRIEF.md              # Vision
 ├── ROADMAP.md            # Phase structure + tracking
 └── phases/
@@ -290,8 +329,8 @@ Purpose: Establish data layer for the application
 Output: Migration files, Prisma schema, connection verified
 
 ## Context
-@.planning/BRIEF.md
-@.planning/ROADMAP.md
+@.principled/plans/BRIEF.md
+@.principled/plans/ROADMAP.md
 
 ## Tasks
 
@@ -325,7 +364,7 @@ Done: Types generated, no schema errors
 - Ready for auth implementation
 
 ## Output
-After completion, create `.planning/phases/01-foundation/SUMMARY.md`
+After completion, create `.principled/plans/phases/01-foundation/SUMMARY.md`
 ```
 
 ---
@@ -366,9 +405,9 @@ Auto-fix bugs, auto-add missing criticals, auto-fix blockers — all documented 
 
 ## Reference Index
 
-**Formats:** `references/plan-format.md`, `references/scope-estimation.md`
+**Formats:** `references/plan-format.md`, `references/checkpoints.md`, `references/scope-estimation.md`
 **Automation:** `references/cli-automation.md`
-**Templates:** `templates/brief.md`, `templates/phase-prompt.md`, `templates/summary.md`
+**Templates:** `templates/brief.md`, `templates/phase-prompt.md`, `templates/roadmap.md`, `templates/summary.md`
 **Workflows:** `workflows/execute-phase.md`
 **Milestones:** `references/milestone-management.md`
 
@@ -399,3 +438,21 @@ If domain expertise is needed, invoke the relevant expertise skill directly rath
 - Context limits respected (auto-handoff at 10%)
 - Deviations handled automatically per embedded rules
 - All work fully documented
+
+## What Now?
+
+After creating a plan, use AskUserQuestion to present next steps:
+
+**Question:** What would you like to do with this plan?
+
+**Options:**
+- A: Execute this plan (recommended) — load execute-plans skill and autonomously orchestrate subagents
+- B: Refine plan — suggest improvements based on review
+- C: Create follow-up tasks — plan next chunk or phase
+- D: Done for now
+
+After user selection:
+- If A: Invoke execute-plans skill with the plan path for autonomous execution
+- If B: Present specific refinement suggestions as options
+- If C: Route to chunk/phase planning
+- If D: Acknowledge and stop

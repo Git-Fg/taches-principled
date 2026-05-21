@@ -35,7 +35,6 @@ When improving skills, follow the Tier system:
 - Numeric thresholds with rationale
 
 ### Tier 2 — Ecosystem (Do Second)
-- Skill dependency graph in CLAUDE.md
 - Cross-references between related skills
 
 ### Tier 3 — Architectural (Do Third)
@@ -81,26 +80,6 @@ when_to_use: |
 
 ---
 
-## Skill Ecosystem Map
-
-```
-create-plans ──→ create-subagents ──→ create-hooks
-     │                                   │
-     └─── audit-skill ◄─────────────────┘
-     │
-     └─── subagent-auditor
-```
-
-**Dependency rules:**
-- `create-plans` informs `create-subagents` (plans define scope, subagents execute)
-- `create-subagents` informs `create-hooks` (subagents may create hooks)
-- `audit-skill` audits all three creation skills
-- No circular dependencies
-
-**Cross-reference rule:** Only reference direct neighbors in the dependency graph.
-
----
-
 ## Policy vs. Mechanism — The Unifying Principle
 
 Every skill teaches this distinction:
@@ -109,10 +88,24 @@ Every skill teaches this distinction:
 |-------|--------|-----------|
 | `create-plans` | What a good plan looks like | How to decompose and sequence |
 | `create-subagents` | When to spawn vs. delegate | How to construct spawn prompts |
-| `create-hooks` | When to intercept | What the hook script does |
 | `create-skills` | When to trigger | What the skill teaches |
+| `execute-plans` | When to use autonomous/segmented/sequential | How to orchestrate parallel workers and milestone reviews |
 
 **When writing a new skill:** State the policy first, then the mechanism. If you can't separate them, the skill is doing too much.
+
+---
+
+## User Interaction
+
+**Interact with users when gathering information or making decisions — not while executing a plan.**
+
+When you need user input, ask clearly. Present options as clickable choices, not numbered lists or free-form prompts. Make it easy to say yes or no to a specific direction.
+
+During execution, trust your judgment for anything the plan didn't explicitly decide. If you find yourself asking "should I do X or Y?" — check whether the plan already commits to one. If it does, proceed. If neither was decided and the choice is significant, stop and ask.
+
+Use checkpoints when verification is genuinely needed — not as a checkpoint for every task. A checkpoint that requires the user to think is often a sign the plan needed more specificity upstream.
+
+The goal is a smooth handoff between thinking and doing. Questions belong in the thinking phase. Once you're implementing, focus on building.
 
 ---
 
@@ -127,7 +120,6 @@ These limits are not arbitrary — they come from cognitive science and agent re
 | Tools per subagent | 7 max | Miller's number |
 | Description length | 150 chars | Truncation at 1,536 combined with when_to_use |
 | Skill body | 500 lines | Principle dilution beyond this |
-| Hooks per event | 5 max | Debugging complexity |
 | Default timeout | 60s | External commands can hang |
 
 **When limits are exceeded:** Split, don't stretch. A broken-up task beats an overwhelmed agent.
@@ -243,6 +235,7 @@ EOF
 - [ ] CHANGELOG entry added
 - [ ] No MCP references (plugin is MCP-free)
 - [ ] No broken cross-references between skills
+- [ ] User interaction uses clear, structured options
 
 ---
 
@@ -274,6 +267,32 @@ Do not create README summaries or changelog summaries using AI. Write them by ha
 ## Rule: Named Principles Over Procedures
 
 If you find yourself writing "Step 1, Step 2, Step 3" — stop. Ask: what is the **principle** that makes these steps correct? Write the principle. The steps should be obvious from the principle, not from a checklist.
+
+---
+
+## Artifact Hygiene — `.principled/` Directory
+
+**All Claude-generated artifacts live in `.principled/` — never pollute the codebase.**
+
+Generated plans, prompts, scratch notes, and cross-session memory go here. This keeps git clean and makes it easy to archive or wipe generated content.
+
+```
+.principled/
+├── plans/           # Plans, briefs, roadmaps, phases
+│   ├── phases/     # Phase-specific plans and summaries
+│   └── .attic/     # Archived completed phases
+├── prompts/        # Generated prompts
+│   ├── analyses/
+│   ├── research/
+│   ├── completed/
+│   └── .attic/
+├── scratch/        # Debug sessions, temp artifacts
+└── memory/         # Architecture state, cross-session notes
+```
+
+**Archiving:** Skills define when to move content to `.attic/`. A plan moves to `.attic/` when its phase completes. Prompts move when execution finishes. The attic is not deleted — it preserves context for future audits.
+
+**Not artifacts:** `.claude/agents/` and `.claude/skills/` are definitions, not generated content. They stay where they are.
 
 ---
 

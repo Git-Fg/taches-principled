@@ -1,10 +1,18 @@
----
-name: cli-automation
-description: Reference for automating deployment platforms, databases, and services via CLI or API.
-when_to_use: When a plan task involves deploying to Vercel, Railway, Stripe, Supabase, or any service with CLI/API automation capability.
----
-
 # CLI and API Automation Reference
+
+## Sections
+- [Deployment Platforms](#deployment-platforms)
+- [Payment & Billing](#payment--billing)
+- [Databases & Backend](#databases--backend)
+- [Version Control & CI/CD](#version-control--cicd)
+- [Build Tools & Testing](#build-tools--testing)
+- [Environment Configuration](#environment-configuration)
+- [When Claude Must Ask for Help](#when-claude-must-ask-for-help)
+- [Quick Reference](#quick-reference)
+- [Decision Tree](#decision-tree)
+- [Summary](#summary)
+
+---
 
 **Core principle:** If it has a CLI or API, Claude does it. Never ask the human to perform manual steps that Claude can automate.
 

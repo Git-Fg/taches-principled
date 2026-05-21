@@ -1,10 +1,16 @@
----
-name: plan-format
-description: Defines the structure and quality standards for executable PLAN.md documents.
-when_to_use: When authoring or reviewing PLAN.md files to ensure they are specific, verifiable, and Claude-executable.
----
-
 # Plan Format Reference
+
+## Sections
+- [Core Principle](#core-principle)
+- [Plan Structure](#plan-structure)
+- [Task Anatomy](#task-anatomy)
+- [Specificity Levels](#specificity-levels)
+- [Anti-Patterns](#anti-patterns)
+- [Sizing Tasks](#sizing-tasks)
+- [Context References](#context-references)
+- [Summary Output](#summary-output)
+
+---
 
 PLAN.md is the executable prompt. This reference defines what makes a plan executable vs. vague.
 
@@ -38,8 +44,8 @@ Output: [What artifacts will be created]
 
 ## Context
 
-@.planning/BRIEF.md
-@.planning/ROADMAP.md
+@.principled/plans/BRIEF.md
+@.principled/plans/ROADMAP.md
 @[relevant/source/files]
 
 ## Tasks
@@ -202,8 +208,8 @@ Use @file references to load context:
 ```markdown
 ## Context
 
-@.planning/BRIEF.md           # Project vision
-@.planning/ROADMAP.md         # Phase structure
+@.principled/plans/BRIEF.md           # Project vision
+@.principled/plans/ROADMAP.md         # Phase structure
 @src/lib/db.ts                # Existing database setup
 @src/types/user.ts            # Existing type definitions
 ```
@@ -219,7 +225,7 @@ Specify the SUMMARY.md structure:
 ```markdown
 ## Output
 
-After completion, create `.planning/phases/XX-name/SUMMARY.md`:
+After completion, create `.principled/plans/phases/XX-name/SUMMARY.md`:
 
 # Phase X: Name Summary
 

@@ -1,11 +1,12 @@
----
-name: evaluation-and-testing
-description: How to evaluate subagent quality, test prompts, and measure performance
----
-
 # Evaluation and Testing
 
-Subagent prompts require validation before deployment. This document covers test case design, trigger validation, quality assessment, and performance measurement.
+## Sections
+- [Test Case Collection](#test-case-collection)
+- [Train/Test Split](#traintest-split)
+- [Trigger Validation](#trigger-validation)
+- [Output Quality Evaluation](#output-quality-evaluation)
+- [Performance Measurement](#performance-measurement)
+- [Common Overfitting Patterns](#common-overfitting-patterns)
 
 ---
 
@@ -45,13 +46,13 @@ Build a test corpus from three sources:
 
 ## Trigger Validation
 
-Use `claude -p` headless for objective trigger testing:
+Test skill descriptions using headless Claude:
 
 ```bash
-claude -p --dangerously-auto-accept --system PromptFromSkill \
-  "test input that should trigger skill" \
-  2>/dev/null | jq '.triggered, .routed_to, .confidence'
+claude -p "<test query>" --dangerously-skip-permissions 2>&1 | grep "skill-name"
 ```
+
+If the skill name appears in output, it triggered correctly.
 
 **Validation criteria:**
 - Skill triggers when it should (recall)

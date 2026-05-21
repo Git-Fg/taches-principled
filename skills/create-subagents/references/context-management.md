@@ -1,5 +1,15 @@
 # Context Management for Subagents
 
+## Sections
+- [Core Problem](#core-problem)
+- [Memory Architecture](#memory-architecture)
+- [Context Strategies](#context-strategies)
+- [Subagent Patterns](#subagent-patterns)
+- [Anti-Patterns](#anti-patterns)
+- [Best Practices](#best-practices)
+
+---
+
 "Most agent failures are not model failures, they are context failures."
 
 ---
@@ -158,7 +168,7 @@ Move to vector storage:
 ```markdown
 <scratchpad_workflow>
 For complex debugging:
-1. Create scratchpad file: `.claude/scratch/debug-session-{timestamp}.md`
+1. Create scratchpad file: `.principled/scratch/debug-session-{timestamp}.md`
 2. Log each hypothesis and test result in scratchpad
 3. Keep only current hypothesis and key findings in context
 4. Reference scratchpad for full debugging history
@@ -199,20 +209,13 @@ When context reaches 90% capacity:
 **For long-running or frequently-invoked subagents:**
 
 ```markdown
----
-name: code-architect
-description: Maintains understanding of system architecture across multiple invocations
-tools: Read, Write, Grep, Glob
-model: sonnet
----
-
 <role>
 You are a system architect maintaining coherent design across project evolution.
 </role>
 
 <memory_management>
 On each invocation:
-1. Read `.claude/memory/architecture-state.md` for current system state
+1. Read `.principled/memory/architecture-state.md` for current system state
 2. Perform assigned task with full context
 3. Update architecture-state.md with new components, decisions, patterns
 4. Maintain concise state (max 500 lines), summarize older decisions
@@ -224,13 +227,6 @@ On each invocation:
 **For simple, focused subagents:**
 
 ```markdown
----
-name: syntax-checker
-description: Validates code syntax without maintaining state
-tools: Read, Bash
-model: haiku
----
-
 <role>
 You are a syntax validator. Check code for syntax errors.
 </role>

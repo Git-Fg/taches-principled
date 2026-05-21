@@ -138,6 +138,16 @@ A single skill that handles skill creation, agent configuration, AND hook setup 
 ### Specific frontmatter
 "name: security-audit, description: 'Audits code for OWASP Top 10. Use when user mentions security, vulnerabilities, or XSS.'"
 
+## Reference Index
+
+| Reference | Purpose |
+|-----------|---------|
+| `references/context-management.md` | Context window principles, SKILL.md vs references/ load strategy |
+| `references/skill-self-testing.md` | YAML validation, threshold checks, trigger testing |
+| `references/cross-skill-discovery.md` | Skill routing, description patterns, name conventions |
+
+---
+
 ## Clarifying Questions
 
 Before creating a skill, ask:

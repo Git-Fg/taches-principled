@@ -1,10 +1,13 @@
----
-name: execute-phase
-description: Workflow for executing a PLAN.md and producing its corresponding SUMMARY.md, including deviation handling.
-when_to_use: When beginning execution of a phase plan from ROADMAP.md.
----
-
 # Workflow: Execute Phase
+
+## Sections
+- [Process](#process)
+- [Deviation Rules](#deviation-rules)
+- [Verification Failure Gate](#verification-failure-gate)
+- [Authentication Gates](#authentication-gates)
+- [Success Criteria](#success-criteria)
+
+---
 
 Execute a phase prompt (PLAN.md) and create the outcome summary (SUMMARY.md).
 
@@ -20,11 +23,11 @@ Find the next plan to execute:
 - Identify first plan without corresponding SUMMARY
 
 ```bash
-cat .planning/ROADMAP.md
+cat .principled/plans/ROADMAP.md
 # Look for phase with "In progress" status
 # Then find plans in that phase
-ls .planning/phases/XX-name/*-PLAN.md 2>/dev/null | sort
-ls .planning/phases/XX-name/*-SUMMARY.md 2>/dev/null | sort
+ls .principled/plans/phases/XX-name/*-PLAN.md 2>/dev/null | sort
+ls .principled/plans/phases/XX-name/*-SUMMARY.md 2>/dev/null | sort
 ```
 
 **Logic:**
@@ -46,7 +49,7 @@ Proceed with execution?
 
 Read the plan prompt:
 ```bash
-cat .planning/phases/XX-name/{phase}-{plan}-PLAN.md
+cat .principled/plans/phases/XX-name/{phase}-{plan}-PLAN.md
 ```
 
 This IS the execution instructions. Follow it exactly.
@@ -57,7 +60,7 @@ Before executing, check if previous phase had issues:
 
 ```bash
 # Find previous phase summary
-ls .planning/phases/*/SUMMARY.md 2>/dev/null | sort -r | head -2
+ls .principled/plans/phases/*/SUMMARY.md 2>/dev/null | sort -r | head -2
 ```
 
 If previous phase SUMMARY.md has "Issues Encountered" or mentions blockers:
@@ -88,7 +91,7 @@ Execute each task in the prompt. **Deviations are normal**—handle them automat
 
 Create `{phase}-{plan}-SUMMARY.md` as specified in the prompt's Output section.
 
-**File location:** `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
+**File location:** `.principled/plans/phases/XX-name/{phase}-{plan}-SUMMARY.md`
 
 **Title format:** `# Phase [X] Plan [Y]: [Name] Summary`
 
@@ -117,9 +120,9 @@ Update ROADMAP.md:
 Commit plan completion (PLAN + SUMMARY + code):
 
 ```bash
-git add .planning/phases/XX-name/{phase}-{plan}-PLAN.md
-git add .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
-git add .planning/ROADMAP.md
+git add .principled/plans/phases/XX-name/{phase}-{plan}-PLAN.md
+git add .principled/plans/phases/XX-name/{phase}-{plan}-SUMMARY.md
+git add .principled/plans/ROADMAP.md
 git add src/  # or relevant code directories
 git commit -m "feat({phase}-{plan}): [one-liner from SUMMARY.md]"
 ```
@@ -133,7 +136,7 @@ git commit -m "feat({phase}-{plan}): [one-liner from SUMMARY.md]"
 **If more plans in this phase:**
 ```
 Plan {phase}-{plan} complete.
-Summary: .planning/phases/XX-name/{phase}-{plan}-SUMMARY.md
+Summary: .principled/plans/phases/XX-name/{phase}-{plan}-SUMMARY.md
 
 [X] of [Y] plans complete for Phase Z.
 
@@ -262,7 +265,7 @@ Proceed with proposed change? (yes / different approach / defer)
 
 **Trigger:** Improvement that would enhance code but isn't essential now
 
-**Action:** Add to .planning/ISSUES.md automatically, continue task
+**Action:** Add to .principled/plans/ISSUES.md automatically, continue task
 
 **Examples:**
 - Performance optimization (works correctly, just slower than ideal)
@@ -270,7 +273,7 @@ Proceed with proposed change? (yes / different approach / defer)
 - Better naming (works, but variables could be clearer)
 
 **Process:**
-1. Create .planning/ISSUES.md if doesn't exist
+1. Create .principled/plans/ISSUES.md if doesn't exist
 2. Add entry with ISS-XXX number (auto-increment)
 3. Brief notification: `📋 Logged enhancement: [brief] (ISS-XXX)`
 4. Continue task without implementing

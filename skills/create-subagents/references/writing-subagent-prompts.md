@@ -1,6 +1,13 @@
 # Writing Subagent Prompts
 
-Subagent prompts should be task-specific, not generic. They define a specialized role with clear focus areas, workflows, and constraints.
+## Sections
+- [Core Principles](#core-principles)
+- [XML Structure](#xml-structure)
+- [Examples](#examples)
+- [Anti-Patterns](#anti-patterns)
+- [Best Practices](#best-practices)
+- [Testing Subagents](#testing-subagents)
+- [Quick Reference](#quick-reference)
 
 ---
 
@@ -53,13 +60,6 @@ Keep markdown formatting WITHIN content (bold, italic, lists, code blocks, links
 ### Security Reviewer
 
 ```markdown
----
-name: security-reviewer
-description: Reviews code for security vulnerabilities. Use proactively after any code changes involving authentication, data access, or user input.
-tools: Read, Grep, Glob, Bash
-model: sonnet
----
-
 <role>
 You are a senior security engineer specializing in web application security.
 </role>
@@ -106,13 +106,6 @@ For each issue found:
 ### Test Writer
 
 ```markdown
----
-name: test-writer
-description: Creates comprehensive test suites. Use when new code needs tests or test coverage is insufficient.
-tools: Read, Write, Grep, Glob, Bash
-model: sonnet
----
-
 <role>
 You are a test automation specialist creating thorough, maintainable test suites.
 </role>
@@ -160,13 +153,6 @@ Follow AAA pattern:
 ### Debugger
 
 ```markdown
----
-name: debugger
-description: Investigates and fixes bugs. Use when errors occur or behavior is unexpected.
-tools: Read, Edit, Bash, Grep, Glob
-model: sonnet
----
-
 <role>
 You are a debugging specialist skilled at root cause analysis and systematic problem-solving.
 </role>
@@ -260,12 +246,6 @@ Without constraints, subagents might:
 
 ❌ Bad example:
 ```markdown
----
-name: intake-agent
-description: Gathers requirements from user
-tools: AskUserQuestion
----
-
 <workflow>
 1. Ask user about their requirements using AskUserQuestion
 2. Follow up with clarifying questions
@@ -429,13 +409,6 @@ Task is complete when:
 ## Quick Reference
 
 ```markdown
----
-name: subagent-name
-description: What it does and when to use it. Include trigger keywords.
-tools: Tool1, Tool2, Tool3
-model: sonnet
----
-
 <role>
 You are a [specific role] specializing in [domain].
 </role>

@@ -1,5 +1,16 @@
 # Orchestration Patterns for Multi-Agent Systems
 
+## Sections
+- [Pattern Catalog](#pattern-catalog)
+- [Sonnet + Haiku Orchestration](#sonnet--haiku-orchestration)
+- [Hybrid Approaches](#hybrid-approaches)
+- [Implementation Guidance](#implementation-guidance)
+- [Anti-Patterns](#anti-patterns)
+- [Best Practices](#best-practices)
+- [Pattern Selection](#pattern-selection)
+
+---
+
 Orchestration defines how multiple subagents coordinate to complete complex tasks.
 
 **Single agent:** Sequential execution within one context.
@@ -200,31 +211,21 @@ Workers (5 concurrent instances of security-reviewer):
 
 **Optimal cost/performance pattern:**
 
-Research findings:
-- Sonnet 4.5: "Best model in the world for agents", exceptional at planning and validation
-- Haiku 4.5: "90% of Sonnet 4.5 performance", one of best coding models, fast and cost-efficient
+1. **Sonnet** (Orchestrator):
+   - Analyzes task, creates plan
+   - Breaks into subtasks, identifies what can be parallelized
 
-**Pattern:**
-```
-1. Sonnet 4.5 (Orchestrator):
-   - Analyzes task
-   - Creates plan
-   - Breaks into subtasks
-   - Identifies what can be parallelized
-
-2. Multiple Haiku 4.5 instances (Workers):
+2. **Haiku** (Workers):
    - Each completes assigned subtask
    - Executes in parallel for speed
    - Returns results to orchestrator
 
-3. Sonnet 4.5 (Orchestrator):
+3. **Sonnet** (Orchestrator):
    - Integrates results from all workers
    - Validates output quality
    - Ensures coherence
-   - Delivers final output
-```
 
-**Cost/performance optimization:** Expensive Sonnet only for planning/validation, cheap Haiku for execution.
+**Cost/performance optimization:** Use Sonnet for planning/validation, Haiku for execution.
 
 ---
 
@@ -292,46 +293,20 @@ Coordinator:
 
 ## Implementation Guidance
 
-### Handoff Protocol
-
-**Clean handoffs between agents:**
-
-```markdown
-<agent_handoff_format>
-From: {source_agent}
-To: {target_agent}
-Task: {specific task}
-Context:
-  - What was done: {summary of prior work}
-  - Key findings: {important discoveries}
-  - Constraints: {limitations or requirements}
-  - Expected output: {what target agent should produce}
-
-Attachments:
-  - {relevant files, data, or previous outputs}
-</agent_handoff_format>
-```
-
-**Why explicit format matters:** Prevents information loss, ensures target agent has full context, enables validation.
-
 ### Synchronization
 
 **Handling parallel execution:**
 
-```markdown
-Launch pattern:
 1. Initiate all parallel agents with shared context
 2. Track which agents have completed
 3. Collect outputs as they arrive
 4. Wait for all to complete OR timeout
 5. Proceed with available results (flag missing if timeout)
 
-Partial failure handling:
+**Partial failure handling:**
 - If 1 of 3 agents fails: Proceed with 2 results, note gap
 - If 2 of 3 agents fail: Consider retry or workflow failure
 - Always communicate what was completed vs attempted
-</markdown>
-```
 
 ---
 

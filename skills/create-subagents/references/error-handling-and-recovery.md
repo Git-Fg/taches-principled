@@ -1,11 +1,11 @@
----
-name: error-handling-and-recovery
-description: Failure modes, recovery strategies, and retry patterns for subagents
----
-
 # Error Handling and Recovery
 
-Subagents encounter failures that require structured response. This document defines failure taxonomy, detection patterns, and recovery workflows.
+## Sections
+- [Subagent Failure Modes](#subagent-failure-modes)
+- [Detection and Diagnosis](#detection-and-diagnosis)
+- [Recovery Strategies](#recovery-strategies)
+- [Retry Rules](#retry-rules)
+- [Failure Signal](#failure-signal)
 
 ---
 
@@ -71,23 +71,10 @@ Diagnose failure type by examining error output and return structure:
 
 ---
 
-## Failure Signal Format
+## Failure Signal
 
-When a subagent encounters a failure it cannot resolve, it returns a structured failure signal:
-
-```json
-{
-  "status": "failed",
-  "failure_mode": "logic_failure|transient_failure|context_exhaustion|permission_denied",
-  "root_cause": "Description of what caused the failure",
-  "attempts": [
-    {"prompt": "...", "error": "...", "timestamp": "ISO8601"},
-    {"prompt": "...", "error": "...", "timestamp": "ISO8601"}
-  ],
-  "partial_output": "Any output produced before failure (may be null)",
-  "diagnosis": "What the orchestrator should understand about this failure",
-  "suggested_recovery": "Retry with corrected prompt | Stop and manual resolve | Alternative approach"
-}
-```
-
-**Orchestrator contract:** A subagent that returns `status: failed` has exhausted its retry budget. The orchestrator must decide next action — retry with modified context, spawn alternative subagent, or escalate to human review.
+When a subagent encounters a failure it cannot resolve, report back with:
+- What was attempted
+- What went wrong
+- What partial output was produced (if any)
+- Whether retry might succeed or if the issue is fundamental

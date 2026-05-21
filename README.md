@@ -2,7 +2,7 @@
 
 **Version:** 0.0.1-alpha
 
-A principle-based Claude Code plugin for building skills, subagents, hooks, and project plans.
+A principle-based Claude Code plugin for building skills, subagents, and project plans.
 
 **For when** you keep pasting the same instructions into chat, or when CLAUDE.md has grown into a procedure. Each skill teaches you to build better extensions — not by giving you templates and checklists, but by giving you the principles behind them.
 
@@ -24,13 +24,19 @@ cp -r skills/* commands/* agents/* ~/.claude/
 # Plan a project phase
 /create-plan First phase: user authentication
 
+# Create an executable prompt
+/create-prompt Implement user authentication with JWT
+
+# Run a prompt via sub-task
+/run-prompt 001
+
 # Audit an existing skill
 /audit-skill ~/.claude/skills/my-skill/SKILL.md
 ```
 
 ## What's Inside
 
-### 4 Skills
+### 6 Skills
 
 Skills load on demand and give Claude domain expertise without bloating every conversation.
 
@@ -38,10 +44,11 @@ Skills load on demand and give Claude domain expertise without bloating every co
 |-------|-------------|---------------|
 | **create-skills** | Building new skills or improving existing ones | Policy/Mechanism, Anti-Patterns, Thresholds |
 | **create-subagents** | Creating specialized agents or configuring the Task tool | Policy/Mechanism, Anti-Patterns, Thresholds |
-| **create-hooks** | Setting up validation, logging, or notification automation | Policy/Mechanism, Anti-Patterns, Thresholds |
 | **create-plans** | Planning projects, phases, or features for Claude to build | Policy/Mechanism, Anti-Patterns, Thresholds |
+| **create-prompts** | Creating executable prompts for Claude Code sessions | Policy/Mechanism, Anti-Patterns, Thresholds |
+| **execute-prompts** | Executing prompts via delegated sub-tasks | Policy/Mechanism, Anti-Patterns, Thresholds |
 
-### 8 Commands
+### 10 Commands
 
 Slash commands for quick, focused workflows.
 
@@ -49,8 +56,9 @@ Slash commands for quick, focused workflows.
 |---------|-------------|
 | `/create-skill` | Scaffold a new skill |
 | `/create-subagent` | Scaffold a new subagent |
-| `/create-hook` | Scaffold a new hook |
 | `/create-plan` | Scaffold a project plan |
+| `/create-prompt` | Create an executable prompt |
+| `/run-prompt` | Execute prompts via sub-tasks |
 | `/audit-skill` | Evaluate a skill with rubric-based scoring |
 | `/audit-subagent` | Evaluate a subagent's routing quality |
 | `/debug` | Apply systematic debugging methodology |
@@ -70,18 +78,6 @@ Specialized agents for quality and review work.
 
 Both create `/name` shortcuts — **they're the same mechanism under the hood**. Commands are simpler flat files; skills are directories with `SKILL.md` that can add auto-invocation, frontmatter controls, and supporting files. A skill with `disable-model-invocation: true` behaves identically to a command.
 
-## Skill Ecosystem
-
-The four skills form a dependency chain from planning through to auditing:
-
-```
-create-plans ──→ create-subagents ──→ create-hooks
-     │                                   │
-     └───────── audit-skill ◄───────────┘
-     │
-     └── subagent-auditor
-```
-
 ## Teaching Patterns
 
 Each skill teaches through three layers:
@@ -96,19 +92,15 @@ This replaces the old approach of step-by-step procedures and prescriptive templ
 
 For those contributing to this plugin, see [CLAUDE.md](./CLAUDE.md) for development practices, skill anatomy standards, and operational rules.
 
-**Dependency chain:**
-- `create-plans` → `create-subagents`: Plans define what needs building; subagents execute plans
-- `create-subagents` → `create-hooks`: Subagents may create hooks as part of their output
-- `create-hooks` → audit loop: Hooks can be audited for correctness and security
-
 **Policy vs. Mechanism** is the unifying principle across all skills:
 
 | Skill | Policy | Mechanism |
 |-------|--------|-----------|
 | `create-plans` | What a good plan looks like | How to decompose tasks |
 | `create-subagents` | When to spawn vs. delegate | How to construct spawn prompts |
-| `create-hooks` | When to intercept | What the hook script does |
 | `create-skills` | When to trigger | What the skill teaches |
+| `create-prompts` | What a good prompt contains | How to gather requirements and generate |
+| `execute-prompts` | When to use parallel vs. sequential | How to parse, resolve, and execute |
 
 ## The Principle-Based Approach
 
@@ -146,7 +138,7 @@ ls ~/.claude/skills/
 
 ## Relationship to taches-cc-resources
 
-This plugin is a direct descendant of [taches-cc-resources](https://github.com/glittercowboy/taches-cc-resources), which introduced valuable structure and organization to Claude Code extensions. The original `taches-cc-resources` (now archived) established the mental models for skills, subagents, hooks, and plans.
+This plugin is a direct descendant of [taches-cc-resources](https://github.com/glittercowboy/taches-cc-resources), which introduced valuable structure and organization to Claude Code extensions. The original `taches-cc-resources` (now archived) established the mental models for skills, subagents, and plans.
 
 **What changed here:** The prescriptive layer was stripped — the XML templates, the step-by-step procedures, and the complexity theater. What remained are the principles that actually guide good decisions.
 
@@ -154,7 +146,7 @@ This plugin is a direct descendant of [taches-cc-resources](https://github.com/g
 - Skills stripped to essentials: principles and anti-patterns, not templates
 - Commands simplified to single-file slash commands
 - Domain expertise system excluded (brittle keyword inference)
-- Hooks and plans prioritized over MCP (builds on existing MCP tooling instead)
+- Focus on skills, subagents, and plans (hooks are a separate concern)
 
 If you're migrating from `taches-cc-resources`, this plugin gives you the same mental models with less friction.
 

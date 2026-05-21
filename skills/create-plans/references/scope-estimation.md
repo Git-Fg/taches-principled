@@ -1,10 +1,16 @@
----
-name: scope-estimation
-description: Guides task sizing, context usage estimation, and when to split a plan into smaller phases.
-when_to_use: When scoping a new plan or deciding whether to split a plan into multiple smaller plans.
----
-
 # Scope Estimation & Quality-Driven Plan Splitting
+
+## Sections
+- [The Quality Degradation Curve](#the-quality-degradation-curve)
+- [Target: 50% Context Maximum](#target-50-context-maximum)
+- [The 2-3 Task Rule](#the-2-3-task-rule)
+- [Signals to Split](#signals-to-split)
+- [Splitting Strategies](#splitting-strategies)
+- [Estimating Context Usage](#estimating-context-usage)
+- [The Atomic Commit Philosophy](#the-atomic-commit-philosophy)
+- [Summary](#summary)
+
+---
 
 Plans must maintain consistent quality from first task to last. This requires understanding the quality degradation curve and splitting aggressively to stay in the peak quality zone.
 

@@ -1,5 +1,10 @@
 # Workflows
 
+## Sections
+- [execute-phase.md](#execute-phasemd)
+
+---
+
 This directory contains executable workflows for the create-plans skill.
 
 ---
