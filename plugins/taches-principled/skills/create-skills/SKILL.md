@@ -293,7 +293,7 @@ When a subagent prompt needs to be portable across projects, shared between skil
 ### Bash Injection Pattern (Level 3 Resources)
 Scripts in scripts/ run via bash — their CODE never enters context, only their OUTPUT does.
 Use for: deterministic operations (validation, formatting, build steps) that would otherwise consume context tokens.
-Example: `{baseDir}/scripts/validate.sh` runs via Bash, only "Validation passed" output counts.
+Example: `${CLAUDE_SKILL_DIR}/scripts/run_trigger_benchmark.py` runs via Bash, only benchmark output counts.
 
 ### Agent File Anatomy
 

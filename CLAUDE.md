@@ -79,6 +79,13 @@ Skills must work whether installed as personal (`~/.claude/skills/`), project (`
 - Hard-coded paths like `skills/create-plans/agents/explorer.md`
 - Paths pointing to other skills' internals (use natural language instead)
 
+**Do NOT boundary concision:** In Do NOT boundaries, skill names are acceptable for brevity — but only when the boundary is self-contained and unambiguous:
+- ✅ `DO NOT use when X — use sadd-execute instead` (concise, unambiguous)
+- ❌ `DO NOT use when X — use sadd-execute or sadd-dispatch instead` (ambiguous — which one?)
+- ❌ `sadd-execute` as the only reference in a boundary that doesn't explain what it does
+
+The goal is disambiguation, not elimination of names. If a skill name alone is unambiguous, use it. If it needs explanation, describe the role.
+
 ---
 
 ## Token Economy

@@ -2,7 +2,7 @@
 name: sadd-execute
 description: "Execute tasks with meta-judge verification: single-task, sequential-steps, parallel-targets, or competitive generation with quality gates"
 when_to_use: |
-  When user says 'execute this', 'implement with verification', 'meta-judge this', 'run the task', 'build this with quality gates', 'implement [something]'. IMMEDIATELY when user asks to implement anything that needs independent verification. FIRST when task requires parallel implementation, sequential steps, or competitive generation. DO NOT use when the task is a simple one-liner needing only basic implementation — use a basic sub-agent dispatch instead. DO NOT use when you need to delegate work to a sub-agent without quality verification — use launch-sub-agent or sadd-dispatch instead.
+  When user says 'execute this', 'implement with verification', 'meta-judge this', 'run the task', 'build this with quality gates', 'implement [something]'. IMMEDIATELY when user asks to implement anything that needs independent verification. FIRST when task requires parallel implementation, sequential steps, or competitive generation. DO NOT use when the task is a simple one-liner needing only basic implementation — use a basic sub-agent dispatch instead. DO NOT use when you need to delegate work to a sub-agent without quality verification — use sadd-dispatch instead.
 argument-hint: "Task description [--mode single|steps|parallel|competitive] [--files f1,f2]"
 ---
 
