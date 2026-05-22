@@ -523,14 +523,13 @@ Loading all project files instead of only those referenced in the plan. Context 
 
 ## Reference Index
 
-| Reference | Purpose |
-|-----------|---------|
-| `references/execution-strategies.md` | Detailed strategy selection criteria |
-| `references/checkpoint-protocols.md` | Checkpoint type templates and protocols |
-| `references/deviation-rules.md` | Extended deviation handling with examples |
-| `templates/autonomous-execution.md` | Template for Strategy A subagent prompts |
-| `templates/segment-execution.md` | Template for Strategy B segment handoffs |
-| `agents/critic.md` | Self-critique subagent for milestone reviews |
+IF selecting execution strategy → BEFORE choosing read `references/execution-strategies.md`
+IF checkpoint type is human-verify → BEFORE segment read `references/checkpoint-protocols.md`
+IF checkpoint type is decision → BEFORE presenting read `references/checkpoint-protocols.md`
+IF handling deviations → read `references/deviation-rules.md`
+IF spawning autonomous worker → read `templates/autonomous-execution.md`
+IF spawning segment worker → read `templates/segment-execution.md`
+IF spawning milestone critic → read `agents/critic.md`
 
 ---
 

@@ -5,6 +5,14 @@ All notable changes are documented here.
 ## [Unreleased]
 
 ### Added
+- **create-skills skill**: Decision Router with IF→FIRST/IMMEDIATELY/BEFORE imperative conditionals at top
+- **create-skills skill**: Five skill categories with inspirational examples (Constraint/Guardrail, Orchestration, Domain Expertise, QA, Creative Direction)
+- **create-skills skill**: Added Success Criteria section with measurable outcomes
+- **execute-plans skill**: Decision Router with strategy selection based on checkpoint types
+- **execute-plans skill**: Added Numeric Thresholds section
+- **execute-prompts skill**: Decision Router and Success Criteria
+- **create-prompts skill**: Decision Router
+- **create-subagents skill**: Decision Router with five imperative conditionals
 - **execute-plans skill**: Critical fixes from second round of critic review
 - **create-skills skill**: Comprehensive improvements from critic review
 - **create-skills skill**: Now teaches bundled agents pattern
@@ -19,6 +27,7 @@ All notable changes are documented here.
 - Corrected GitHub repo references across plugin
 
 ### Changed
+- **CLAUDE.md**: Reduced from ~475 lines to ~178 lines by moving teaching content to skills ( marketplace operations only)
 - **create-plans skill**: Complete remaining deferred improvements from reference review
 - Marked all deferred improvements from reference review as resolved
 - **create-plans skill**: Remove per-file version tracking (anti-pattern)

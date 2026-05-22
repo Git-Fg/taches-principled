@@ -194,7 +194,7 @@ Segment subagent workspace (20,000 tokens):
 
 At segment midpoint (every 2-3 tasks), trigger a self-review:
 
-**Spawn the reviewer** using `agents/critic.md` as the spawn prompt. Fill the placeholders with the current segment state, files modified so far, milestone number, and review task.
+**Spawn the reviewer** using `{baseDir}/agents/critic.md` as the spawn prompt. Fill the placeholders with the current segment state, files modified so far, milestone number, and review task.
 
 The reviewer returns structured output with blocking/non-blocking classification. If blocking issues are found, fix before proceeding to next task.
 

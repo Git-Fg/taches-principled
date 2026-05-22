@@ -58,7 +58,7 @@ Slash commands for quick, focused workflows.
 | `/debug` | Apply systematic debugging methodology |
 | `/whats-next` | Create a handoff for a fresh session |
 
-### 3 Agents
+### 4 Agents
 
 Specialized agents for quality and review work.
 

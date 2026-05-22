@@ -277,7 +277,7 @@ Use AskUserQuestion to present options:
 
 Before creating a plan, understand the project thoroughly. Use subagent fan-out to explore in parallel:
 
-**Read the agents folder** at `skills/create-plans/agents/` — each markdown file is a subagent prompt template. Read the relevant agent, fill in placeholders like `{{context}}`, `{{task}}`, `{{scope}}`, and dispatch it as a subagent.
+**Read the agents folder** at `{baseDir}/agents/` — each markdown file is a subagent prompt template. Read the relevant agent, fill in placeholders like `{{context}}`, `{{task}}`, `{{scope}}`, and dispatch it as a subagent.
 
 **Fan-out pattern for exploration:**
 
@@ -311,7 +311,7 @@ Signal: if a task requires seeing output from another task to proceed, it is a d
 
 **Example explore phase:**
 
-Read agent templates from `skills/create-plans/agents/`, then dispatch parallel subagents for exploration:
+Read agent templates from `{baseDir}/agents/`, then dispatch parallel subagents for exploration:
 1. Explorer agents (3-5) — map project structure across different areas (frontend, backend, config, tests)
 2. Researcher agents — find best practices for unfamiliar technologies
 3. Architect agents — evaluate trade-offs for complex decisions
@@ -499,12 +499,12 @@ Auto-fix bugs, auto-add missing criticals, auto-fix blockers — all documented 
 
 ## Reference Index
 
-**Formats:** `references/plan-format.md`, `references/checkpoints.md`, `references/scope-estimation.md`
-**Automation:** `references/cli-automation.md`
-**Templates:** `templates/brief.md`, `templates/phase-prompt.md`, `templates/roadmap.md`, `templates/summary.md`
-**Workflows:** `workflows/execute-phase.md`
-**Milestones:** `references/milestone-management.md`
-**Subagent Prompts:** `agents/explorer.md`, `agents/researcher.md`, `agents/architect.md`, `agents/implementer.md`, `agents/verifier.md`, `agents/critic.md`
+IF writing brief → FIRST read `templates/brief.md`
+IF writing phase plan → BEFORE tasks read `references/plan-format.md` AND `references/checkpoints.md`
+IF scope is unclear → BEFORE decomposing read `references/scope-estimation.md`
+IF automation available → BEFORE running commands read `references/cli-automation.md`
+IF managing milestones → read `references/milestone-management.md`
+IF spawning subagents → read `agents/explorer.md`, `agents/researcher.md`, `agents/architect.md` for templates
 
 ---
 

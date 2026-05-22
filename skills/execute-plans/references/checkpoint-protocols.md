@@ -236,4 +236,4 @@ Both syntaxes are recognized by execute-plans. The `Checkpoint:` field syntax is
 - `label`: Human-readable name (optional)
 - `criteria` / `options` / `action`: Type-specific payload
 
-For full checkpoint syntax details, see `skills/create-plans/references/plan-format.md`.
+For full checkpoint syntax details, see `references/plan-format.md`.
