@@ -7,6 +7,8 @@ when_to_use: |
 
 ## Decision Router
 
+IF creating plugin-distributed subagent → NOTE: plugin subagents IGNORE hooks, mcpServers, permissionMode frontmatter fields
+IF using Task tool → NOTE: tool renamed to "Agent" in v2.1.63, backward-compatible alias exists
 IF writing spawn prompts → FIRST read `{baseDir}/references/writing-subagent-prompts.md`
 IF choosing orchestration pattern → IMMEDIATELY read `{baseDir}/references/orchestration-core.md`
 IF handling failures → IMMEDIATELY read `{baseDir}/references/failure-modes.md`
@@ -108,6 +110,38 @@ model: sonnet                # sonnet, opus, haiku, or inherit
 **model field:**
 - `sonnet`, `opus`, `haiku`, or `inherit`
 - `inherit`: uses same model as main conversation
+
+### Plugin Scope Gotcha
+
+**Critical:** When subagents come from plugins (installed via `/plugin install`), these frontmatter fields are SILENTLY IGNORED:
+- `hooks` — hook configuration not applied to plugin subagents
+- `mcpServers` — MCP server access not granted to plugin subagents
+- `permissionMode` — permission restrictions not enforced
+
+**If you need these fields**, copy the subagent definition to `.claude/agents/` (project scope) or `~/.claude/agents/` (user scope).
+
+**URL:** https://code.claude.com/docs/en/sub-agents#choose-a-subagent-scope
+
+**skills field:**
+- Preload skills into subagent context at startup
+- Full skill content injected, not just description
+- Use when: subagent needs domain knowledge before starting (e.g., security-reviewer with project patterns)
+
+**memory field:**
+- Persistent memory scope: `user` (~/.claude/agent-memory/), `project` (.claude/agent-memory/), `local` (.claude/agent-memory.local/)
+- Enables cross-session learning
+
+**background field:**
+- Set `true` to always run as background task
+- Background subagents run concurrently, auto-deny permission prompts
+
+**maxTurns field:**
+- Maximum agentic turns before subagent stops
+- Guards against runaway agents
+
+**isolation field:**
+- Set `worktree` for git worktree isolation
+- Gives subagent isolated repo copy, auto-cleaned if no changes
 
 ---
 

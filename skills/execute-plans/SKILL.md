@@ -83,6 +83,10 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 4. If critic finds critical issues: fix plan before proceeding
 5. Identify conflict-free groups (tasks touching different files)
 6. Spawn parallel workers for independent task groups (max 3-5 workers)
+   - **Context rule:** Subagents start with FRESH context — no inheritance from orchestrator.
+     Every piece of context needed must be in the spawn prompt: file paths, prior findings, constraints, success criteria.
+     A subagent cannot reference "as we discussed" or "from earlier" — it has no idea what that means.
+     **URL:** https://code.claude.com/docs/en/sub-agents#what-loads-at-startup
 7. Spawn sequential workers for dependent chains (ordered execution)
 8. At milestone (every 2-3 tasks or phase boundary): spawn CRITIC subagent to review intermediate output
 9. If critic finds issues: executor fixes before continuing
@@ -500,6 +504,27 @@ git commit -m "feat({phase}-{plan}): [one-liner from SUMMARY.md]"
 **Target:** <30% overhead, 70%+ workspace for implementation.
 
 **Optimization:** Load only files explicitly referenced in plan's `<execution_context>` and `<context>` sections. Do not pre-load "might be useful" files.
+
+---
+
+## Execution Gotchas
+
+### Thought/Action/Observation Anti-Pattern
+
+**The Problem:**
+When Claude sees code blocks with `Thought:`, `Action:`, `Observation:` patterns, it interprets them as output templates to mimic, not as instructions to execute. Instead of calling Write() tool, it generates text that says "Thought: Let me analyze... Action: Write(...)".
+
+**Why This Happens:**
+1. Code blocks look like output format — Claude thinks "this is what my response should look like"
+2. Pattern mimicking — The agent copies the structure as text instead of executing
+3. Pseudo-code confusion — `Action: Write(...)` looks like code to output, not a command to run
+
+**The Fix:**
+Replace all Thought/Action/Observation examples with imperative natural language:
+- Instead of: "Thought: I need to read the task file..."
+- Write: "First, use the Read tool to load the task file."
+
+**This affects ANY skill that shows tool calls in a demonstrated output format.**
 
 ---
 
