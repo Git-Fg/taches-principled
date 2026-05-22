@@ -2,10 +2,13 @@
   "name": "tp-fpf",
   "displayName": "TP First Principles Framework",
   "version": "0.2.0",
-  "description": "First Principles Framework \u2014 structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
+  "description": "First Principles Framework — structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
   "author": {
-    "name": "Felix"
+    "name": "Felix",
+    "email": "felix@example.com"
   },
+  "homepage": "https://github.com/Git-Fg/taches-principled",
+  "repository": "https://github.com/Git-Fg/taches-principled",
   "license": "MIT",
   "keywords": [
     "taches-principled",

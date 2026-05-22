@@ -7,7 +7,7 @@ All notable changes are documented here.
 ### Added
 - **22 root skills**: Integrated review (review-pr, review-local-changes), kaizen (kaizen, analyse, analyse-problem, cause-and-effect, plan-do-check-act, root-cause-tracing, why), and docs (update-docs, write-concisely) into root plugin
 - **6 separate plugins**: Ported from context-engineering-kit — tp-sadd (9 skills), tp-fpf (3 skills), tp-git (4 skills), tp-tdd (1 skill), tp-sdd (5 skills), tp-ddd (14 rules)
-- **Decision routers**: All 68 skills now have IF/THEN decision routers at top
+- **Decision routers**: All 60 skills now have IF/THEN decision routers at top
 - **Semantic vocabulary**: Cross-plugin synergy through shared workflow vocabulary (no plugin name references)
 - **Integration architecture**: `.principled/plans/BRIEF.md`, `ROADMAP.md`, `scratch/integration-architecture.md`, `scratch/fan-out-plan.md`
 - **Phase summaries**: `.principled/plans/phases/00-scaffold/SUMMARY.md`, `01-reflexion/SUMMARY.md`
@@ -18,7 +18,7 @@ All notable changes are documented here.
 - **CLAUDE.md**: Added Plugin Management section for multi-plugin marketplace operations
 
 ### Fixed
-- Cross-plugin naming violations: all 68 skills use semantic vocabulary instead of plugin name references
+- Cross-plugin naming violations: all 60 skills use semantic vocabulary instead of plugin name references
 - XML tags removed from all ported content (markdown headings only)
 - Threatening language removed from SADD and reflexion skills (professional tone)
 - Meta-judge pattern deduplicated across 10 SADD skills (was 4,000 lines of copy-paste)

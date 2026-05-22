@@ -29,10 +29,9 @@ Model resolution order: env var → per-invocation → frontmatter → main sess
 ## Role Definition Quality
 
 ### Effective role (specific)
-```xml
-<role>
+```markdown
+## Role
 You are a senior security engineer specializing in web application security.
-</role>
 ```
 
 ### Ineffective role (generic)
@@ -47,13 +46,12 @@ Role should specify: domain expertise, specialization, what the agent focuses on
 Subagent should have clear workflow — step-by-step process for consistent output.
 
 ### Good workflow
-```xml
-<workflow>
+```markdown
+## Workflow
 1. Run git diff to identify recent changes
 2. Read modified files focusing on data flow
 3. Identify security risks with severity ratings
 4. Provide specific remediation steps
-</workflow>
 ```
 
 ### Missing workflow
@@ -68,12 +66,11 @@ Without workflow, agent may skip steps or be inconsistent.
 Constraints should use strong modal verbs: MUST, NEVER, ALWAYS, SHOULD.
 
 ### Effective constraints
-```xml
-<constraints>
+```markdown
+## Constraints
 - NEVER modify production code, ONLY test files
 - MUST verify tests pass before completing
 - ALWAYS include edge case coverage
-</constraints>
 ```
 
 ### Missing constraints
@@ -89,31 +86,33 @@ No constraints specified — agent may overstep bounds.
 
 For least privilege: only grant tools the subagent needs for its specific role.
 
-## XML Structure Rules
+## Structure Conventions
 
-**Required**: No markdown headings (##, ###) in body — use semantic XML tags instead.
-**Required**: All XML tags must be properly closed.
-**Optional**: Markdown formatting within content (bold, italic, lists, code blocks) is fine.
+**Use markdown headings** (##, ###) for clear section hierarchy.
+**Use bold** for emphasis, code fences for examples.
+**Plain text** for constraints and criteria — no XML wrappers.
 
-### Valid XML tags
-```xml
-<role>...</role>
-<focus_areas>...</focus_areas>
-<workflow>...</workflow>
-<output_format>...</output_format>
-<constraints>...</constraints>
-<success_criteria>...</success_criteria>
-<validation>...</validation>
-```
-
-### Invalid (hybrid structure)
+### Good structure
 ```markdown
 ## Role
-<role>...</role>
+You are a [specialization] agent...
 
 ## Workflow
-<workflow>...</workflow>
+1. [step 1]
+2. [step 2]
+...
+
+## Constraints
+- MUST...
+- NEVER...
 ```
+
+### Anti-pattern: over-structured
+```xml
+<role>You are a security engineer</role>
+<constraints>NEVER modify code</constraints>
+```
+XML wrappers on everything adds noise without clarity. Content over ceremony.
 
 ## Model Selection Guidance
 
@@ -164,9 +163,8 @@ What's working well:
 3. **Missing constraints** — allows unsafe or out-of-scope actions
 4. **Over-permissioned tools** — Read-only agent has Write/Edit/Bash
 5. **Vague trigger** — description doesn't indicate when to invoke
-6. **Markdown headings** — using ## instead of XML tags
-7. **Unclosed XML tags** — breaks parsing
-8. **No success criteria** — can't measure completion
+6. **Over-structured XML** — wrapping everything in XML tags when markdown suffices
+7. **Missing success criteria** — can't measure completion
 
 ## Contextual Judgment
 
@@ -197,7 +195,6 @@ Always explain WHY something matters for this specific subagent.
 | must-fix | workflow_specification | steps present and logical? |
 | must-fix | constraints_definition | boundaries clear? |
 | must-fix | tool_access | least privilege? |
-| must-fix | xml_structure | no markdown headings, tags closed? |
 | should-fix | focus_areas | 3-6 specific areas listed? |
 | should-fix | output_format | structure defined? |
 | should-fix | model_selection | appropriate for complexity? |

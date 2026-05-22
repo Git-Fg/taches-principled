@@ -20,54 +20,51 @@ When asked to create a prompt:
 
 1. **Detect intent** — understand the outcome the user wants
 2. **Ask only about genuine gaps** — don't ask what's already stated or obvious
-3. **Apply structure** — use XML tags appropriate to the task type
+3. **Apply structure** — use markdown sections appropriate to the task type
 4. **Save with sequential numbering** — `./prompts/XXX-[slug].md`
 
-### XML Patterns
+### Prompt Patterns
 
 **Coding tasks:**
-```xml
-<objective>
+```markdown
+## Objective
 What to build/fix/refactor and why it matters
-</objective>
-<context>
+
+## Context
 Tech stack, constraints, relevant files or patterns
-</context>
-<requirements>
+
+## Requirements
 Specific functional requirements
-</requirements>
-<output>
+
+## Output
 - ./path/to/file.ext - description
-</output>
-<verification>
+
+## Verification
 Specific test or observable check
-</verification>
 ```
 
 **Analysis tasks:**
-```xml
-<objective>
+```markdown
+## Objective
 What to analyze and why
-</objective>
-<data_sources>
+
+## Data Sources
 Files or commands to examine
-</data_sources>
-<output_format>
+
+## Output Format
 Save to: ./analyses/[name].md
-</output_format>
 ```
 
 **Research tasks:**
-```xml
-<research_objective>
+```markdown
+## Research Objective
 What to gather and why
-</research_objective>
-<scope>
+
+## Scope
 Boundaries, sources, time constraints
-</scope>
-<deliverables>
+
+## Deliverables
 Format, level of detail
-</deliverables>
 ```
 
 ## Executing Prompts
@@ -99,7 +96,7 @@ When asked to run a prompt:
 
 | User says | Action |
 |-----------|--------|
-| "create a prompt", "write a prompt" | Build prompt with XML structure |
+| "create a prompt", "write a prompt" | Build prompt with markdown structure |
 | "run prompt", "execute prompt" | Find and dispatch via Task tool |
 | "run these prompts" | Use parallel dispatch (single message) |
 

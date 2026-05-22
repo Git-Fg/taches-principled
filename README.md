@@ -19,20 +19,28 @@ cp -r skills/* commands/* agents/* ~/.claude/
 
 ```bash
 # Create a new skill
-/create-skill Review code for security vulnerabilities
+/skill create-skills
 
 # Plan a project phase
-/create-plan First phase: user authentication
+/skill create-plans
 
 # Create an executable prompt
-/create-prompt Implement user authentication with JWT
+/skill create-prompts
 
 # Run a prompt via sub-task
-/run-prompt 001
+/skill execute-prompts
 
-# Audit an existing skill
-/audit-skill ~/.claude/skills/my-skill/SKILL.md
+# Debug an issue
+/debug <issue description>
+
+# Create a handoff for the next session
+/whats-next
+
+# Simplify code
+/simplify [file-pattern]
 ```
+
+**Note:** Skills are invoked via `/skill <name>` or by description routing — they don't create individual slash commands. The command shortcuts above (`/debug`, `/simplify`, `/whats-next`) are the only flat slash commands. All other skills load on description match.
 
 ## What's Inside
 

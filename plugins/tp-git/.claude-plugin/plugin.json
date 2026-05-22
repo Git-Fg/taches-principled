@@ -2,10 +2,13 @@
   "name": "tp-git",
   "displayName": "TP Git",
   "version": "0.2.0",
-  "description": "Git workflow automation \u2014 conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
+  "description": "Git workflow automation — conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
   "author": {
-    "name": "Felix"
+    "name": "Felix",
+    "email": "felix@example.com"
   },
+  "homepage": "https://github.com/Git-Fg/taches-principled",
+  "repository": "https://github.com/Git-Fg/taches-principled",
   "license": "MIT",
   "keywords": [
     "taches-principled",

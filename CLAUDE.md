@@ -203,7 +203,7 @@ When spawning subagents for exploration/investigation, the orchestrator should:
 
 1. **Read** any existing scratch notes BEFORE spawning — avoid redundant work
 2. **Write** current context and questions to the scratch area — preserve institutional memory
-3. **Use a general-purpose subagent with Write tool** — Haiku Explore subagents are read-only and cannot write findings; a general-purpose subagent with `[Read, Write, Grep, Glob, Bash]` is needed for investigation work
+3. **Use a general-purpose subagent with Write tool** — Haiku Explore subagents are read-only and cannot write findings; an agent that can read files, write findings, search content, and run shell commands is needed for investigation work
 4. **Read** scratch notes AFTER subagents return, BEFORE synthesizing
 
 **Guidance, not rigidity:** The goal is preventing the telephone game — information degrading as it passes through multiple agents. Writing findings to a shared artifact (rather than relying on subagent output alone) keeps the chain intact. The scratch area location is `.principled/scratch/` — use descriptive topic filenames.
@@ -216,12 +216,7 @@ taches-principled has a multi-agent evaluation system for skill quality assuranc
 
 ### The Four Evaluation Agents
 
-| Agent | Purpose | Output |
-|-------|---------|--------|
-| **Grader** | Measures teaching effectiveness (not format compliance) | Dimension scores (routing, delta, posture, anti-patterns) |
-| **Comparator** | Compares skill versions to understand what changed | Delta analysis with teaching impact |
-| **Skill Auditor** | Quality signals and format audit | Severity-ranked findings |
-| **Analyzer** | Synthesizes into prioritized improvement path | Max 3 changes with teaching outcomes |
+The evaluation pipeline uses four specialized agents. The **Grader** measures teaching effectiveness — not format compliance — scoring routing signal density, delta clarity, teaching posture, and anti-pattern quality. The **Comparator** analyzes what changed between skill versions and assesses teaching impact. The **Skill Auditor** reviews quality signals, format, and frontmatter, producing severity-ranked findings. The **Analyzer** synthesizes all input into a maximum of three prioritized changes with explicit teaching outcomes.
 
 ### The Evaluation Pipeline
 
@@ -260,26 +255,13 @@ Agent(description = "Audit [skill] for quality",
 
 ### Trigger Benchmark
 
-Tests skill description reliability with 20 queries:
+Tests skill description reliability with 20 queries across five categories. Core positive cases (5 queries covering essential triggers) must route at 100%. Edge positive cases (3 queries) should route above 60%. Core negative cases (5 queries) must not trigger at 100%. Edge negative cases (3 queries) should not trigger above 40%. Held-out blind-test queries (4 queries) should route correctly above 70%.
 
-| Category | Count | Exit Target |
-|----------|-------|------------|
-| Core positive (must trigger) | 5 | 100% |
-| Edge positive (should trigger) | 3 | >60% |
-| Core negative (must not trigger) | 5 | 100% |
-| Edge negative (should not) | 3 | >40% |
-| Held-out (blind test) | 4 | >70% |
-
-**The benchmark is a teaching instrument, not a gate.** Failed test cases teach where the description is unclear. If held-out < 70%, the description overfit to test cases — rebuild with genuinely different queries.
+**The benchmark is a teaching instrument, not a gate.** Failed test cases teach where the description is unclear. If held-out performance drops below 70%, the description has overfit to specific test cases — rebuild with genuinely different queries.
 
 ### Grading Dimensions
 
-| Dimension | Weight | What It Measures |
-|-----------|--------|-----------------|
-| Routing Signal | 40% | Description gives clear trigger phrases |
-| Delta Clarity | 30% | Skill states what it adds vs. default |
-| Teaching Posture | 20% | Principles over procedures |
-| Anti-Pattern Quality | 10% | Concrete wrong/right pairs with consequence |
+Skills are graded on four dimensions. **Routing Signal** (40% weight) measures whether the description gives clear trigger phrases for when to invoke the skill. **Delta Clarity** (30%) measures whether the skill states what it changes from default behavior. **Teaching Posture** (20%) measures whether the skill teaches principles over procedures. **Anti-Pattern Quality** (10%) measures whether the skill provides concrete wrong/right pairs with consequence explanation.
 
 A perfectly formatted skill that teaches nothing scores 0/10 on teaching. Format without teaching is decoration.
 

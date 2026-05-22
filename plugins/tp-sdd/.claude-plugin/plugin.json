@@ -4,8 +4,11 @@
   "version": "0.2.0",
   "description": "Software design and delivery workflow — brainstorm ideas, add tasks, create plans, and implement with LLM-as-Judge verification.",
   "author": {
-    "name": "Felix"
+    "name": "Felix",
+    "email": "felix@example.com"
   },
+  "homepage": "https://github.com/Git-Fg/taches-principled",
+  "repository": "https://github.com/Git-Fg/taches-principled",
   "license": "MIT",
   "keywords": [
     "taches-principled",
