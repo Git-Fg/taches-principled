@@ -41,7 +41,7 @@ When to use `{baseDir}` vs `${CLAUDE_SKILL_DIR}` for path references in skills.
 
 Anti-pattern:
 ```
-Read(skills/execute-plans/agents/critic.md)
+Read({baseDir}/agents/critic.md)
 ```
 
 Problem: If this skill is installed in a plugin with a different directory structure, or if Claude Code changes skill loading paths, the reference breaks.
