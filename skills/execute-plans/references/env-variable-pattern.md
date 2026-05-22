@@ -48,7 +48,7 @@ Read(skills/execute-plans/agents/critic.md)
 Problem: If this skill is installed in a plugin with a different directory structure, or if Claude Code changes skill loading paths, the reference breaks.
 
 Correct pattern:
-```
+```markdown
 Read({baseDir}/agents/critic.md)
 ```
 

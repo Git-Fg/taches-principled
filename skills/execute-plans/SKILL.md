@@ -12,7 +12,7 @@ IF plan has zero checkpoints or only checkpoint:human-verify → Strategy A: Ful
 IF plan has checkpoint:human-verify markers → Strategy B: Segmented Execution
 IF plan has checkpoint:decision or checkpoint:human-action → Strategy C: Sequential Execution
 
-For detailed strategy mechanics → read `references/execution-strategies.md` AFTER selecting strategy
+For detailed strategy mechanics → read `{baseDir}/references/execution-strategies.md` AFTER selecting strategy
 
 ---
 
@@ -115,7 +115,7 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 **Pre-execution self-critique (devil's advocate):**
 
-Before spawning workers, delegate a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Read `agents/critic.md` for the agent template and spawn the critic with the plan as context.
+Before spawning workers, delegate a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Read `{baseDir}/agents/critic.md` for the agent template and spawn the critic with the plan as context.
 
 If critic finds critical issues: fix the plan before spawning workers.
 If critic finds minor concerns: note them for milestone review.
@@ -191,7 +191,7 @@ If critic finds minor concerns: note them for milestone review.
 | human-verify | B: Segmented | ~15-20% |
 | decision, human-action | C: Sequential | ~25-30% |
 
-**Decision tree:** See `references/execution-strategies.md` for full strategy selection flow.
+**Decision tree:** See `{baseDir}/references/execution-strategies.md` for full strategy selection flow.
 
 **Target:** Reserve 70%+ context for workspace and implementation.
 
@@ -523,13 +523,13 @@ Loading all project files instead of only those referenced in the plan. Context 
 
 ## Reference Index
 
-IF selecting execution strategy → BEFORE choosing read `references/execution-strategies.md`
-IF checkpoint type is human-verify → BEFORE segment read `references/checkpoint-protocols.md`
-IF checkpoint type is decision → BEFORE presenting read `references/checkpoint-protocols.md`
-IF handling deviations → read `references/deviation-rules.md`
-IF spawning autonomous worker → read `templates/autonomous-execution.md`
-IF spawning segment worker → read `templates/segment-execution.md`
-IF spawning milestone critic → read `agents/critic.md`
+IF selecting execution strategy → BEFORE choosing read `{baseDir}/references/execution-strategies.md`
+IF checkpoint type is human-verify → BEFORE segment read `{baseDir}/references/checkpoint-protocols.md`
+IF checkpoint type is decision → BEFORE presenting read `{baseDir}/references/checkpoint-protocols.md`
+IF handling deviations → read `{baseDir}/references/deviation-rules.md`
+IF spawning autonomous worker → read `{baseDir}/templates/autonomous-execution.md`
+IF spawning segment worker → read `{baseDir}/templates/segment-execution.md`
+IF spawning milestone critic → read `{baseDir}/agents/critic.md`
 
 ---
 

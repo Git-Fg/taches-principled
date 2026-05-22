@@ -126,7 +126,7 @@ Proceeding to task {N+1}.
 
 ## Deviation Rules
 
-Reference `references/deviation-rules.md` for the full deviation handling policy.
+Reference `{baseDir}/references/deviation-rules.md` for the full deviation handling policy.
 
 **Summary** (see deviation-rules.md for triggers and actions):
 - **Rule 1** — Auto-fix within scope (bugs, broken behavior)

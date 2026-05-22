@@ -7,9 +7,9 @@ when_to_use: |
 
 ## Decision Router
 
-IF naming or describing a skill → FIRST read `references/cross-skill-discovery.md`
-IF skill might exceed 500 lines or 7 tools → IMMEDIATELY read `references/context-management.md`
-IF about to commit a new skill → BEFORE commit read `references/skill-self-testing.md`
+IF naming or describing a skill → FIRST read `{baseDir}/references/cross-skill-discovery.md`
+IF skill might exceed 500 lines or 7 tools → IMMEDIATELY read `{baseDir}/references/context-management.md`
+IF about to commit a new skill → BEFORE commit read `{baseDir}/references/skill-self-testing.md`
 
 ---
 
@@ -422,9 +422,9 @@ Load a reference only when working on that specific aspect — do not load all u
 
 | Reference | Purpose | When to Load |
 |-----------|---------|--------------|
-| `references/context-management.md` | Context window principles, SKILL.md vs references/ load strategy | If you're about to add content to SKILL.md and suspect it might exceed 500 lines or 7 tools |
-| `references/skill-self-testing.md` | YAML validation, threshold checks, trigger testing | If you've finished a draft and want to verify it passes threshold checks before committing |
-| `references/cross-skill-discovery.md` | Skill routing, description patterns, name conventions | If your skill's description triggers on things it shouldn't OR fails to trigger on things it should |
+| `{baseDir}/references/context-management.md` | Context window principles, SKILL.md vs references/ load strategy | If you're about to add content to SKILL.md and suspect it might exceed 500 lines or 7 tools |
+| `{baseDir}/references/skill-self-testing.md` | YAML validation, threshold checks, trigger testing | If you've finished a draft and want to verify it passes threshold checks before committing |
+| `{baseDir}/references/cross-skill-discovery.md` | Skill routing, description patterns, name conventions | If your skill's description triggers on things it shouldn't OR fails to trigger on things it should |
 
 ---
 
@@ -434,4 +434,4 @@ Skill creation follows phases: requirements → draft → verify → integrate. 
 
 **Principle over procedure:** A skill about coordinated work should demonstrate coordination. Frame each phase as a tracked task with clear completion criteria. Trust the agent to determine execution order from the principles, not from scripted steps.
 
-For pre-commit verification of threshold checks, load `references/skill-self-testing.md`.
+For pre-commit verification of threshold checks, load `{baseDir}/references/skill-self-testing.md`.

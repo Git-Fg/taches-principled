@@ -7,9 +7,9 @@ when_to_use: |
 
 ## Decision Router
 
-IF executing a single prompt → Read `workflows/execute-prompt.md` BEFORE starting
-IF executing parallel prompts → Read `workflows/execute-prompt.md` for parallel coordination rules
-IF executing sequential prompts → Read `workflows/execute-prompt.md` for sequential handoff rules
+IF executing a single prompt → Read `{baseDir}/workflows/execute-prompt.md` BEFORE starting
+IF executing parallel prompts → Read `{baseDir}/workflows/execute-prompt.md` for parallel coordination rules
+IF executing sequential prompts → Read `{baseDir}/workflows/execute-prompt.md` for sequential handoff rules
 
 This skill is self-contained — no cross-skill routing needed.
 
@@ -268,5 +268,5 @@ A prompt execution succeeds when:
 
 ## Reference Index
 
-**Workflows:** `workflows/execute-prompt.md`
+**Workflows:** `{baseDir}/workflows/execute-prompt.md`
 **Self-contained:** This skill does not reference other skills by name or invocation pattern.

@@ -7,11 +7,11 @@ when_to_use: |
 
 ## Decision Router
 
-IF writing spawn prompts → FIRST read `references/writing-subagent-prompts.md`
-IF choosing orchestration pattern → IMMEDIATELY read `references/orchestration-patterns.md`
-IF managing subagent context → BEFORE spawning read `references/context-management.md`
-IF configuring subagent tools → BEFORE setting restrictions read `references/subagents.md`
-IF evaluating subagent quality → BEFORE testing read `references/evaluation-and-testing.md`
+IF writing spawn prompts → FIRST read `{baseDir}/references/writing-subagent-prompts.md`
+IF choosing orchestration pattern → IMMEDIATELY read `{baseDir}/references/orchestration-patterns.md`
+IF managing subagent context → BEFORE spawning read `{baseDir}/references/context-management.md`
+IF configuring subagent tools → BEFORE setting restrictions read `{baseDir}/references/subagents.md`
+IF evaluating subagent quality → BEFORE testing read `{baseDir}/references/evaluation-and-testing.md`
 
 ---
 
@@ -400,10 +400,10 @@ Spawn prompt without stated rollback = no recovery path if agent goes wrong.
 
 | Reference | Purpose |
 |-----------|---------|
-| `references/writing-subagent-prompts.md` | Core principles, XML structure, examples, anti-patterns |
-| `references/orchestration-patterns.md` | Sequential, parallel, hierarchical, coordinator patterns |
-| `references/subagents.md` | Configuration, model selection, tool security |
-| `references/context-management.md` | STM, LTM, working memory, context strategies |
+| `{baseDir}/references/writing-subagent-prompts.md` | Core principles, XML structure, examples, anti-patterns |
+| `{baseDir}/references/orchestration-patterns.md` | Sequential, parallel, hierarchical, coordinator patterns |
+| `{baseDir}/references/subagents.md` | Configuration, model selection, tool security |
+| `{baseDir}/references/context-management.md` | STM, LTM, working memory, context strategies |
 
 ---
 

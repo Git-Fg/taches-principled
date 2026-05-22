@@ -8,15 +8,15 @@ when_to_use: |
 ## Decision Router
 
 IF user asks to "plan" → FIRST create brief before roadmap
-IF user asks to "plan a phase" → BEFORE creating tasks read `references/plan-format.md` AND `references/checkpoints.md`
-IF scope is unclear or large → BEFORE decomposing read `references/scope-estimation.md`
-IF automation CLI available → BEFORE running commands read `references/cli-automation.md`
+IF user asks to "plan a phase" → BEFORE creating tasks read `{baseDir}/references/plan-format.md` AND `{baseDir}/references/checkpoints.md`
+IF scope is unclear or large → BEFORE decomposing read `{baseDir}/references/scope-estimation.md`
+IF automation CLI available → BEFORE running commands read `{baseDir}/references/cli-automation.md`
 
 User phrase → Action routing:
 - "plan", "make plan", "create plan" → Create brief first (never roadmap first)
 - "quick plan", "sketch" → Short intake with 2-3 tasks max
 - "full plan", "detailed" → Full intake with scope analysis
-- "phase plan", "increment" → Use phase structure from `references/plan-format.md`
+- "phase plan", "increment" → Use phase structure from `{baseDir}/references/plan-format.md`
 - "execute", "run", "build it" → Load `execute-plans` skill (compositional pair)
 
 ---
@@ -508,12 +508,12 @@ Auto-fix bugs, auto-add missing criticals, auto-fix blockers — all documented 
 
 ## Reference Index
 
-IF writing brief → FIRST read `templates/brief.md`
-IF writing phase plan → BEFORE tasks read `references/plan-format.md` AND `references/checkpoints.md`
-IF scope is unclear → BEFORE decomposing read `references/scope-estimation.md`
-IF automation available → BEFORE running commands read `references/cli-automation.md`
-IF managing milestones → read `references/milestone-management.md`
-IF spawning subagents → read `agents/explorer.md`, `agents/researcher.md`, `agents/architect.md` for templates
+IF writing brief → FIRST read `{baseDir}/templates/brief.md`
+IF writing phase plan → BEFORE tasks read `{baseDir}/references/plan-format.md` AND `{baseDir}/references/checkpoints.md`
+IF scope is unclear → BEFORE decomposing read `{baseDir}/references/scope-estimation.md`
+IF automation available → BEFORE running commands read `{baseDir}/references/cli-automation.md`
+IF managing milestones → read `{baseDir}/references/milestone-management.md`
+IF spawning subagents → read `{baseDir}/agents/explorer.md`, `{baseDir}/agents/researcher.md`, `{baseDir}/agents/architect.md` for templates
 
 ---
 
