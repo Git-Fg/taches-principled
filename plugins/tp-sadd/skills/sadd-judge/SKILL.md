@@ -4,7 +4,6 @@ description: "Evaluate work using meta-judge then judge sub-agents: single judge
 when_to_use: |
   When user says 'judge this', 'evaluate', 'assess quality', 'verify this', 'check my work', 'review this solution', 'grade this', 'is this any good'. IMMEDIATELY when user asks for LLM-as-Judge verification or quality assessment. FIRST when evaluation requires independent criteria (not hardcoded). DO NOT use when you want explicit multi-round adversarial debate with a panel of judges — use judge-with-debate instead.
 argument-hint: "[evaluation-focus] [--debate]"
-disable-model-invocation: true
 ---
 
 ## Decision Router

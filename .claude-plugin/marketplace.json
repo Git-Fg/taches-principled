@@ -24,7 +24,7 @@
       "description": "Structured agent-driven development with meta-judge verification — single/competitive/sequential/parallel execution, sub-agent dispatch, and multi-perspective judging."
     },
     {
-      "name": "taches-principled",
+      "name": "tp-fpf",
       "version": "0.2.0",
       "source": {
         "source": "github",

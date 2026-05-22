@@ -4,7 +4,6 @@ description: "Launch focused sub-agent with automatic model selection based on t
 when_to_use: |
   When user says 'launch sub-agent', 'dispatch agent', 'delegate to agent', 'spawn agent', 'send to background', 'run this in a subagent'. IMMEDIATELY when user wants to delegate work with optimal model selection. FIRST when task requires context isolation and self-critique verification.
 argument-hint: Task description and optional model/agent/output flags
-disable-model-invocation: true
 ---
 
 ## Decision Router

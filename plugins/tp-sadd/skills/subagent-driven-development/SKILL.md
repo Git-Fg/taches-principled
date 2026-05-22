@@ -4,7 +4,6 @@ description: "Dispatch fresh subagent per task with code review gates — for im
 when_to_use: |
   When user says 'implement this plan', 'execute plan', 'dispatch per task', 'subagent implementation', 'run the tasks', 'execute these items'. IMMEDIATELY when user provides a plan with multiple tasks to implement. FIRST when tasks are independent or sequential with code review between them.
 argument-hint: Plan file path and execution mode (sequential/parallel)
-disable-model-invocation: true
 ---
 
 ## Decision Router

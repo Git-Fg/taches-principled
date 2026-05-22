@@ -2,7 +2,6 @@
 name: git-ship
 description: "Create well-formatted commits with conventional messages and publish pull requests with template-driven bodies."
 when_to_use: "Use when the user says 'commit', 'ship', 'commit and push', 'create PR', 'pull request', 'publish changes', or 'send this out'. IMMEDIATELY when the user says 'create a pull request', 'open a PR', 'make a commit', or 'conventional commit'. BEFORE merging any completed feature, fix, or refactor to main branch."
-disable-model-invocation: true
 ---
 
 ## Decision Router
