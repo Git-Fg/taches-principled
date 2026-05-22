@@ -2,7 +2,7 @@
 name: add-task
 description: "Capture user intent as draft task file — sets up folder structure, type classification, naming convention, and preserves original prompt verbatim"
 when_to_use: |
-  When user says 'add a task', 'capture this', 'create a task', 'log this', 'I need to do', 'remind me to', 'track this', 'file this away'. FIRST when user expresses intent to work on something that needs specification.
+  When user says 'add a task', 'capture this', 'create a task', 'log this', 'I need to do', 'remind me to', 'track this', 'file this away'. FIRST when user expresses intent to work on something that needs specification. Do NOT use when the user wants to refine an existing draft task — use the plan-task skill for refinement. Do NOT use when you already have a detailed spec — use implement-task to start building.
 argument-hint: "[task title or description] [dependencies:task-file.md]"
 ---
 

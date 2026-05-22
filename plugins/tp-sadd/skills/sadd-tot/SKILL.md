@@ -2,7 +2,7 @@
 name: sadd-tot
 description: "Explore solution space through systematic ideation, pruning, and expansion — generate diverse proposals, prune to top 3, develop full solutions, evaluate with judges"
 when_to_use: |
-  When user says 'tree of thoughts', 'explore solution space', 'systematic exploration', 'generate and prune', 'multiple proposals', 'ideate then narrow'. IMMEDIATELY when user wants to explore many approaches before committing to one. FIRST when task requires exploring diverse solution paths with pruning before implementation.
+  When user says 'tree of thoughts', 'explore solution space', 'systematic exploration', 'generate and prune', 'multiple proposals', 'ideate then narrow'. IMMEDIATELY when user wants to explore many approaches before committing to one. FIRST when task requires exploring diverse solution paths with pruning before implementation. DO NOT use when the solution space is already well-understood or a single approach is clearly best — just implement. DO NOT use for simple tasks where the approach is obvious.
 argument-hint: "Task description [--output <path>]"
 ---
 

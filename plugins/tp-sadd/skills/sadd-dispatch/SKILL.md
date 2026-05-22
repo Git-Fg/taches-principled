@@ -2,7 +2,7 @@
 name: sadd-dispatch
 description: "Dispatch sub-agents with CoT reasoning and self-critique: single-task dispatch with auto model selection, or plan-driven multi-task execution with code review gates"
 when_to_use: |
-  When user says 'dispatch sub-agent', 'launch agent for task', 'delegate this', 'run in background'. IMMEDIATELY when user wants to delegate a focused task with context isolation. FIRST when task requires automatic model selection and verification before completion.
+  When user says 'dispatch sub-agent', 'launch agent for task', 'delegate this', 'run in background'. IMMEDIATELY when user wants to delegate a focused task with context isolation. FIRST when task requires automatic model selection and verification before completion. DO NOT use when the task needs quality verification gates and iterative refinement — use sadd-execute instead. DO NOT use for multi-step plans with sequential dependencies — use subagent-driven-development instead.
 argument-hint: "Task description [--model opus|sonnet|haiku] [--agent <name>] [--plan <path>]"
 ---
 

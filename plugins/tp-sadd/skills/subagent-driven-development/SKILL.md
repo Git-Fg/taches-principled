@@ -2,7 +2,7 @@
 name: subagent-driven-development
 description: "Dispatch fresh subagent per task with code review gates — for implementing plans with multiple independent tasks or investigating 3+ unrelated issues in parallel"
 when_to_use: |
-  When user says 'implement this plan', 'execute plan', 'dispatch per task', 'subagent implementation', 'run the tasks', 'execute these items'. IMMEDIATELY when user provides a plan with multiple tasks to implement. FIRST when tasks are independent or sequential with code review between them.
+  When user says 'implement this plan', 'execute plan', 'dispatch per task', 'subagent implementation', 'run the tasks', 'execute these items'. IMMEDIATELY when user provides a plan with multiple tasks to implement. FIRST when tasks are independent or sequential with code review between them. DO NOT use for simple single-task delegation — use launch-sub-agent or sadd-dispatch instead. DO NOT use when the task needs quality verification with iterative refinement — use sadd-execute instead.
 argument-hint: Plan file path and execution mode (sequential/parallel)
 ---
 

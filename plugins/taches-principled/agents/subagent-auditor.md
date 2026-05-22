@@ -17,12 +17,20 @@ Subagents are specialized AI assistants. A good subagent has: clear role, specif
 |-------|----------|-------|---------|
 | `name` | Yes | lowercase-with-hyphens | uppercase, underscores, spaces |
 | `description` | Yes | WHAT + WHEN, specific triggers | generic, vague |
-| `tools` | No | explicit allowlist or omitted (all) | missing for read-only agents |
 | `model` | No | sonnet/opus/haiku/inherit | misspellings |
-| `memory` | No | user/project/local | wrong scope values |
+| `effort` | No | low/medium/high/xhigh/max | wrong values |
+| `context` | No | fork/merge/inherit | other values |
+| `hooks` | No | valid hook lifecycle events | invalid hook names |
+| `paths` | No | glob patterns for file scoping | malformed globs |
+| `shell` | No | command string | non-string values |
+| `skills` | No | skill names array | non-array values |
+| `mcpServers` | No | server name mappings | malformed mappings |
+| `disallowedTools` | No | tool name array | non-array values |
+| `systemPrompt` | No | prompt text string | non-string values |
 | `background` | No | true/false | string values |
 | `isolation` | No | worktree | other values |
-| `effort` | No | low/medium/high/xhigh/max | wrong values |
+| `memory` | No | user/project/local | wrong scope values |
+| `tools` | No | explicit allowlist or omitted (all) | missing for read-only agents |
 
 Model resolution order: env var → per-invocation → frontmatter → main session model.
 

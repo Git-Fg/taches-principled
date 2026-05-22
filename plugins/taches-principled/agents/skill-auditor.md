@@ -96,12 +96,13 @@ description: Helpful
 
 ## YAML Validation Rules
 
-Valid frontmatter fields (from official docs):
+Valid frontmatter fields for skills (from official docs):
 - `name`, `description`, `when_to_use`, `argument-hint`, `arguments`
 - `disable-model-invocation`, `user-invocable`, `allowed-tools`
-- `model`, `effort`, `context`, `agent`, `hooks`, `paths`, `shell`
+- `paths` (skill-scoped file matching)
+- `hooks` (skill-level hook overrides)
 
-Any other field is non-standard and should be flagged.
+Note: `model`, `effort`, `context`, `agent`, `hooks`, `paths`, and `shell` are agent fields, not skill fields. Listing them in a skill frontmatter is invalid.
 
 ## Evaluation Pipeline
 
