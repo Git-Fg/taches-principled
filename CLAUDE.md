@@ -80,6 +80,15 @@ Skills must work whether installed as personal (`~/.claude/skills/`), project (`
 
 ---
 
+## Token Economy
+
+- **Commands over skills for on-demand loading** — skills consume context always; commands load when invoked
+- **Specialized agents with narrow context** — broad-context agents hallucinate more
+- **Setup-commands for persistent context** — write to CLAUDE.md rather than relying on skill loading
+- **Token estimation** — every skill should know its approximate cost
+
+---
+
 ## Documentation Sync
 
 README.md lives in two places:
@@ -194,6 +203,21 @@ Generated plans, prompts, scratch notes, and cross-session memory go here. This 
 
 ---
 
+## Explorer Subagent Protocol (Invariant)
+
+When ANY skill in this plugin spawns subagents for exploration/investigation:
+
+1. **Read** existing scratchpad BEFORE spawning
+2. **Write** current context/questions to scratchpad
+3. **Subagent MUST have Write tool** — never use "native" Explore subagents (Haiku, read-only) for investigation work
+4. **Read** scratchpad AFTER subagents return, BEFORE synthesizing
+
+Scratchpad location: `.principled/scratch/{topic}.md`
+
+**This is NOT optional guidance — it is a project invariant that prevents the telephone game problem.** Native Explore subagents cannot write findings to scratchpad. Use a general-purpose subagent with `tools: [Read, Write, Grep, Glob, Bash]` instead.
+
+---
+
 ## Evaluation Pipeline
 
 taches-principled has a multi-agent evaluation system for skill quality assurance:
@@ -266,6 +290,19 @@ Tests skill description reliability with 20 queries:
 | Anti-Pattern Quality | 10% | Concrete wrong/right pairs with consequence |
 
 A perfectly formatted skill that teaches nothing scores 0/10 on teaching. Format without teaching is decoration.
+
+---
+
+## Quality Standards
+
+**Skills are behavior-shaping code, not prose.** Changes to skill content require:
+- Adversarial testing (does it actually trigger when expected?)
+- Eval evidence (does it improve outcomes?)
+- No speculative fixes (must be real problem, not theoretical)
+
+**Human partner protection:** When this plugin produces code destined for external repos, it should protect the human partner from embarrassment. Low-quality PRs waste maintainer time and damage reputation.
+
+**Real problem verification:** Every change should describe a specific session, error, or user experience that motivated it.
 
 ---
 

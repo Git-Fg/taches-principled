@@ -241,6 +241,46 @@ Most efficient orchestration:
 
 Expensive model for thinking, cheap model for doing.
 
+## Memory Scope Decision Tree
+
+Enable memory on every subagent by default. Without it, each invocation starts from scratch — no accumulated patterns, no learned conventions.
+
+| Scope | Location | Git | Use when |
+|-------|----------|-----|----------|
+| `project` | `.claude/agent-memory/<name>/` | Committed | Team-shared knowledge, code patterns, project conventions |
+| `user` | `~/.claude/agent-memory/<name>/` | Not committed | Cross-project expertise, universal patterns |
+| `local` | `.claude/agent-memory.local/<name>/` | Gitignored | Secrets, sensitive findings, project-specific knowledge |
+
+**Decision guide:**
+```
+Is the knowledge project-specific (code patterns, team conventions)?
+  → YES → memory: project (commit it so teammates benefit)
+Is the knowledge universal across all projects?
+  → YES → memory: user (stays on your machine)
+Does the agent handle sensitive output (security findings, credentials)?
+  → YES → memory: local (gitignored, not shared)
+```
+
+## Body Prompt Philosophy — The Waste Test
+
+**Rule:** If you're writing more than ~30 lines of body content, you're duplicating a skill.
+
+The markdown body (after frontmatter) is the subagent's system prompt. Keep it general and concise — a short role statement and a few behavioral guardrails. Never turn it into a manual.
+
+**The test:** If deleting a body section and adding a skill reference produces the same behavior, the body section was waste.
+
+| Good body | Bad body |
+|-----------|----------|
+| 3-5 lines | 30+ lines duplicating a skill |
+| Role + behavioral guardrails | Step-by-step instructions that belong in a skill |
+| "You are X. Never modify files. Report lookups with source." | Detailed field specs, workflow steps, tool descriptions |
+
+**What body should contain:**
+- One paragraph for the role
+- Optional short sections for constraints or output format only if truly needed
+- Never duplicate content that exists in a skill (body references the skill instead)
+- Never enumerate tools — the agent discovers them at runtime
+
 ---
 
 ## Orchestration Patterns
@@ -289,6 +329,49 @@ When orchestrating multiple subagents, treat each as a unit of work for visibili
 
 The orchestrator owns coordination state. Subagents are isolated — they don't see each other's outputs or progress. The orchestrator holds the thread and decides when to proceed, aggregate, or retry.
 
+### Verify-While-Work
+
+Dual-track execution: verify ground-truth while agent investigates a slice. Compare findings before synthesis.
+
+Use when: Unknown root cause, high-stakes findings.
+
+Pattern:
+- You: Read original source, verify facts
+- Agent: Investigate slice, report findings
+- Both: Write to scratchpad, compare before synthesis
+
+### Monitor-Wrapped
+
+Background agent + Monitor for completion. Use when: CI runs, benchmark sweeps, long-running external processes.
+
+Pattern:
+- Background agent: Runs configs, emits results to file
+- Monitor: Fires on completion signal
+- Synthesis agent: Aggregates results from file
+
+### Council Triumvirate (High-Stakes Decisions)
+
+For decisions where getting it wrong is costly, use three adversarial roles:
+
+| Role | Job | Output |
+|------|-----|--------|
+| **Critic** | Devil's advocate — find 2 fatal flaws | Specific mechanism failures |
+| **Creative** | Find genuinely different approaches | Core mechanism alternatives |
+| **Expert** | Validate factual correctness | Verified claims |
+
+**When to use:** Architecture decisions, strategy selection, security reviews.
+
+**Distinct from Contest:** Contest tests competing hypotheses for root cause. Council tests quality of a single proposal.
+
+**Council protocol:**
+1. Present proposal to all three simultaneously
+2. Each writes findings to shared scratchpad
+3. Orchestrator reads scratchpad, identifies conflicts
+4. Conflicts resolved through explicit debate rounds
+5. Consensus requires agreement — not just absence of disagreement
+
+---
+
 ---
 
 ## Workflow Design
@@ -322,6 +405,24 @@ Main Chat: Present results, handle testing/deployment
 ---
 
 ## Anti-Patterns
+
+### ❌ Tool Restriction at Birth
+
+**Critical anti-pattern:** Starting with tool restrictions.
+
+Start with **no tool restrictions**. Omit both `tools` and `disallowedTools` from the initial definition. The agent inherits all tools from the parent.
+
+**Why:** Premature restriction is the most common cause of silent agent failures. An agent that can't complete its task but can't report why is worse than a working unrestricted agent.
+
+**Iterative refinement workflow:**
+1. Ship the agent with no restrictions
+2. Verify it works correctly across multiple delegations
+3. If a specific tool causes problems, add ONE restriction and re-verify
+4. `disallowedTools` (blocklist) — prefer this over allowlists
+
+**When restrictions ARE appropriate from the start:**
+- Read-only agents: `disallowedTools: [Write, Edit]`
+- Agents for narrow purpose where extra tools create noise
 
 ### ❌ Too Generic
 
@@ -417,7 +518,36 @@ Multi-agent systems fail in predictable ways. These eight gotchas account for th
 
 **The telephone game problem:** Information degrades through repeated summarization. LangGraph benchmarks show supervisor architectures perform ~50% worse than optimized versions due to paraphrase degradation.
 
-**Solution:** Use filesystem coordination (shared scratchpads) instead of message-passing for state that multiple agents need to access faithfully.
+**Solution 1 — forward_message:** For final complete outputs, pass directly to user without supervisor synthesis:
+```python
+def forward_message(message: str, to_user: bool = True):
+    if to_user:
+        return {"type": "direct_response", "content": message}
+```
+**Solution 2 — Shared scratchpad:** For state multiple agents need, use `.principled/scratch/{topic}.md` instead of message-passing.
+
+**When swarm over supervisor:** Prefer swarm when sub-agents can respond directly to users — eliminates translation errors entirely.
+
+## Explorer Subagent Protocol
+
+When spawning subagents for investigation/research/exploration:
+
+### Before Spawning
+1. Read existing scratchpad: `.principled/scratch/{topic}.md`
+2. Write current questions and context to that scratchpad
+3. Include explicit instruction for subagent to UPDATE the scratchpad
+
+### Tool Requirements (NON-OPTIONAL)
+- **NEVER** use "native" Explore subagents (Haiku, read-only) for investigation
+- **REQUIRED** minimum tools: `[Read, Write, Grep, Glob, Bash]`
+- Write access is **NON-OPTIONAL** — findings must be persisted to scratchpad
+
+### After Subagents Return
+1. Read scratchpad BEFORE synthesizing
+2. Merge findings into working context
+3. Update scratchpad with synthesis conclusions
+
+**Why:** The telephone game degrades quality by ~50% when orchestrators synthesize without source access. Direct scratchpad access eliminates paraphrase drift.
 
 ---
 

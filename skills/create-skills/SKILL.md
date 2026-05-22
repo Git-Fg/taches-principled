@@ -7,6 +7,12 @@ when_to_use: |
 
 ## Decision Router
 
+IF writing skill body → UNDERSTAND: Skills use 3-level progressive disclosure:
+  - Level 1 (~100 tokens): frontmatter name+description ALWAYS loaded at startup
+  - Level 2 (~5k tokens): SKILL.md body loaded when triggered
+  - Level 3 (0 tokens): scripts/ files run via bash, only output enters context
+  → Read: {baseDir}/references/context-management.md for progressive disclosure pattern
+
 IF naming or describing a skill → FIRST read `{baseDir}/references/cross-skill-discovery.md`
 IF skill might exceed 500 lines or 7 tools → IMMEDIATELY read `{baseDir}/references/context-management.md`
 IF about to commit a new skill → BEFORE commit read `{baseDir}/references/skill-self-testing.md`
@@ -216,7 +222,8 @@ Design principles for skills:
 |--------|-------|-----|
 | Tasks per plan | 12 max (2-3 typical) | Quality degradation at ~50% context |
 | Spawn prompt length | 1500 tokens max | Reliability drop beyond this |
-| Description length | 150 chars max | Truncates at 1,536 combined with when_to_use |
+| Description length | 1024 chars max | Official limit; use the full space |
+| Name constraints | max 64 chars, lowercase letters/hyphens only, no "anthropic"/"claude" | Skill names are identifiers |
 | when_to_use length | 200 chars max | Longer = context bloat, not better routing |
 | Skill body | 500 lines max | Beyond = principle dilution; split or reference |
 | Tools allowed | 7 max (Miller's number) | Beyond = coordination overhead |
@@ -265,6 +272,11 @@ When a subagent prompt needs to be portable across projects, shared between skil
 **When to use agents/ vs inline:**
 - Use `agents/` when: the prompt is reused by multiple skills, needs independent versioning, or must be portable (copied to other projects)
 - Use inline when: the prompt is single-skill-specific, simple, or tied directly to that skill's body text
+
+### Bash Injection Pattern (Level 3 Resources)
+Scripts in scripts/ run via bash — their CODE never enters context, only their OUTPUT does.
+Use for: deterministic operations (validation, formatting, build steps) that would otherwise consume context tokens.
+Example: `{baseDir}/scripts/validate.sh` runs via Bash, only "Validation passed" output counts.
 
 ### Agent File Anatomy
 

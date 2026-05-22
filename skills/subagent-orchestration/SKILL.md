@@ -29,6 +29,27 @@ Four rules that govern every delegation decision:
 3. **Validate before integrating** — run success criteria, never assume
 4. **Persist state to disk** — subagents don't share conversation memory
 
+## Explorer Subagent Protocol
+
+When spawning subagents for investigation/research/exploration:
+
+### Before Spawning
+1. Read existing scratchpad: `.principled/scratch/{topic}.md`
+2. Write current questions and context to that scratchpad
+3. Include explicit instruction for subagent to UPDATE the scratchpad
+
+### Tool Requirements (NON-OPTIONAL)
+- **NEVER** use "native" Explore subagents (Haiku, read-only) for investigation
+- **REQUIRED** minimum tools: `[Read, Write, Grep, Glob, Bash]`
+- Write access is **NON-OPTIONAL** — findings must be persisted to scratchpad
+
+### After Subagents Return
+1. Read scratchpad BEFORE synthesizing
+2. Merge findings into working context
+3. Update scratchpad with synthesis conclusions
+
+**Why:** The telephone game degrades quality by ~50% when orchestrators synthesize without source access. Direct scratchpad access eliminates paraphrase drift.
+
 ## Cost-Capability Spectrum
 
 Match the agent type to the task complexity:
@@ -58,6 +79,15 @@ Structure every spawn prompt with RACE — see the RACE framework reference for 
 
 ## Expectation
 [Output format/schema; success criteria; coverage rule]
+
+## Rollback
+[One-command revert — what to undo if this fails]
+
+## Failure Signal
+[Required JSON schema — see below]
+
+## Approach
+[Numbered step-by-step methodology]
 ```
 
 **Key principles:**
@@ -65,6 +95,26 @@ Structure every spawn prompt with RACE — see the RACE framework reference for 
 - **Minimal high-signal context** — context is currency; every token competes for attention
 - **Explicit scope** — define files owned and files forbidden
 - **Coverage rule** — specify over-report or curated results
+
+### Failure Signal Schema
+
+Every subagent must return structured JSON on completion:
+
+```json
+{"status": "failed" | "success", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+```
+
+Do not guess or produce partial output without flagging it.
+
+### Buffering Gotcha
+
+When using `grep` in pipes for Monitor, **ALWAYS** use `--line-buffered`:
+
+```bash
+tail -f app.log | grep --line-buffered "ERROR"
+```
+
+**Why:** Unix pipe buffering delays output by minutes. `--line-buffered` forces grep to flush each match immediately. Without it, your monitor may never see events that arrived during the delay window.
 
 ## Five Parallel Patterns
 
