@@ -27,6 +27,14 @@ For detailed strategy mechanics → read `references/execution-strategies.md` AF
 
 ---
 
+## Token Cost and Scale Limits
+
+**Coordination overhead principle:** If the coordination graph is denser than the work graph, execute sequentially. Multi-agent only when parallelization saves more time than coordination costs.
+
+**Warning signs:** See Numeric Thresholds for worker/context limits.
+
+---
+
 # Execute Plans Skill
 
 Execute PLAN.md files as prompts. Transform planned work into shipped artifacts.

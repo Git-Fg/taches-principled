@@ -150,6 +150,15 @@ All five categories share one test:
 If the answer is no, the skill is a command alias — it adds a shortcut
 to the same output. Those don't scale. Skills that change default behavior do.
 
+**How the categories map to Policy vs. Mechanism:**
+- **Constraint** is pure mechanism (redirecting default output)
+- **Orchestration** is pure policy (routing decisions without execution)
+- **Domain Expertise** is mechanism (what knowledge to apply)
+- **Quality Assurance** is mechanism (what counts as done)
+- **Creative Direction** is mechanism (what aesthetic standard to apply before generation)
+
+Orchestration skills are primarily policy — they define WHEN to act. Everything else is primarily mechanism — they define WHAT the agent does when it acts.
+
 ---
 
 ## Examples Over Rules
@@ -205,6 +214,8 @@ Design principles for skills:
 
 | Metric | Limit | Why |
 |--------|-------|-----|
+| Tasks per plan | 12 max (2-3 typical) | Quality degradation at ~50% context |
+| Spawn prompt length | 1500 tokens max | Reliability drop beyond this |
 | Description length | 150 chars max | Truncates at 1,536 combined with when_to_use |
 | when_to_use length | 200 chars max | Longer = context bloat, not better routing |
 | Skill body | 500 lines max | Beyond = principle dilution; split or reference |
@@ -397,6 +408,13 @@ WHY: The name "security-audit" is a noun describing a domain, not a verb
 describing an action. This allows Claude to match it against any user utterance
 mentioning that domain — "check for security issues," "audit this code," "look
 for XSS." A name like "helper" or "assistant" has no semantic anchor point.
+
+### Per-file version metadata
+Adding `version:` and `updated:` frontmatter to every file in a system.
+
+WHY: Version numbers per file create maintenance overhead with no value. Git commit history already tracks when files changed. When a file is updated, you bump the version — but the version number never actually controls anything. It's ceremony. If you're adding metadata about when something changed instead of just changing it, stop.
+
+**Signal:** If you find yourself adding `version: 1.0` or `updated: 2026-05-22` to files, that's a sign you're adding metadata instead of just doing the work.
 
 ## Reference Index
 
