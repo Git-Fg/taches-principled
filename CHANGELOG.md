@@ -2,6 +2,24 @@
 
 All notable changes are documented here.
 
+## [0.4.0] — 2026-05-23
+
+### Changed
+- **marketplace.json**: Bumped to 0.4.0, 7 entries (root + 6 separate plugins)
+- **plugin.json**: Version remains 0.4.0
+- **CHANGELOG**: Removed 68 skills count claim (was inaccurate)
+
+### Added
+- **when_to_use frontmatter**: Added to all 44 skills with user-quoted trigger phrases and IMMEDIATELY/FIRST/BEFORE conditionals
+
+### Fixed
+- **sadd-dispatch**: Added missing when_to_use section entirely
+- **tp-sadd/tp-sdd plugins**: All skills now have proper trigger phrase quoting and temporal markers
+
+### Refactored
+- **All 44 skill descriptions**: Normalized to third-person framing with trigger phrases (note: official docs confirm verb-first is valid)
+- **Agent definitions**: XML Structure Rules converted to markdown Structure Conventions
+
 ## [0.3.0] — 2026-05-22
 
 ### Added

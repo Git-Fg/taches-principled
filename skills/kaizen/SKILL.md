@@ -1,9 +1,7 @@
 ---
 name: kaizen
-description: Four design-time constraints applied to every code decision: incremental improvement, error-proof design (poka-yoke), standardized patterns, and YAGNI. Shapes implementation, refactoring, and architecture.
-when_to_use: |
-  Use when implementing, refactoring, designing systems, or handling errors. ALWAYS before writing code — these constraints apply to every decision.
-  FIRST when tempted to over-engineer or add speculative abstractions.
+description: Four design-time constraints for every code decision: incremental improvement, error-proof design (poka-yoke), standardized patterns, and YAGNI. Shapes implementation, refactoring, and architecture.
+when_to_use: "Use when the user says 'apply kaizen', 'use the constraints', 'design this properly', or 'check against principles'. ALWAYS before writing code — these constraints apply to every decision. FIRST when tempted to over-engineer or add speculative abstractions."
 argument-hint: Applied automatically when implementing, refactoring, designing, or handling errors
 ---
 
