@@ -1,6 +1,8 @@
 ---
 name: critic
 description: "Reviews intermediate plan outputs at milestone boundaries. Use when execute-plans reaches a checkpoint and needs independent verification of correctness, edge cases, and regressions."
+tools: Read, Grep
+model: sonnet
 ---
 
 # Critic Subagent
@@ -62,6 +64,11 @@ Return structured findings:
 - Be specific about locations and evidence
 - Distinguish blocking from non-blocking clearly
 
+## Evaluation
+- Produces well-structured output matching the Output Format
+- Completes within single context window
+- Files ownership respected (no out-of-scope edits)
+
 ---
 
 **Spawned by:** execute-plans orchestrator
@@ -69,3 +76,7 @@ Return structured findings:
 **Files to review:** {{files}}
 **Previous milestone:** {{milestone_id}}
 **Task:** {{task}}
+
+---
+
+**Spawn footer:** You are a subagent executing a delegated task. Your context starts fresh — you have no access to prior conversation or other subagents' outputs. Return structured output to the orchestrator. If you encounter anything unexpected or have questions, stop and report back.
