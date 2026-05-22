@@ -10,9 +10,17 @@ All notable changes are documented here.
 - **create-skills skill**: Added Success Criteria section with measurable outcomes
 - **execute-plans skill**: Decision Router with strategy selection based on checkpoint types
 - **execute-plans skill**: Added Numeric Thresholds section
-- **execute-prompts skill**: Decision Router and Success Criteria
-- **create-prompts skill**: Decision Router
-- **create-subagents skill**: Decision Router with five imperative conditionals
+- **create-subagents skill**: Multi-agent patterns import from taches-modernized research
+  - `references/gotchas.md` (443 lines): Eight critical production gotchas (supervisor bottleneck with 3-5 worker cap, 15x token cost, sycophantic consensus, agent sprawl, telephone game, error propagation cascades, over-decomposition, missing shared state)
+  - `references/fault-tolerance.md` (310 lines): Circuit breaker pattern, checkpoint/resume, exponential backoff, idempotent operations
+  - `references/token-economics.md` (230 lines): Real multi-agent cost breakdown (~15x baseline), when justified, model selection vs token budget
+  - `references/consensus.md` (386 lines): Weighted voting (confidence × expertise), debate protocol, adversarial critique, convergence detection
+- **create-subagents skill**: Extended decision router with 5 new routes to new references
+- **create-subagents skill**: Added Multi-Agent Gotchas section with hard cap enforcement
+- **orchestration-patterns.md**: Added Swarm pattern (peer-to-peer), forward_message pattern (telephone game mitigation), 4 new anti-patterns
+- **context-management.md**: Added Context Isolation Mechanisms (3-mechanism taxonomy), Context Degradation Signals
+- **execute-plans skill**: Added supervisor bottleneck warning with 3-5 worker cap enforcement
+- **create-plans skill**: Added context degradation signals to scope-estimation.md
 - **execute-plans skill**: Critical fixes from second round of critic review
 - **create-skills skill**: Comprehensive improvements from critic review
 - **create-skills skill**: Now teaches bundled agents pattern

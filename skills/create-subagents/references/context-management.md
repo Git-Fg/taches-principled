@@ -362,3 +362,88 @@ Better to retrieve information on-demand than keep it in context always.
 - Key decisions
 - Active workflow
 - Immediate next steps
+
+---
+
+## Context Isolation Mechanisms (Multi-Agent)
+
+When delegating to subagents, choose the right isolation mechanism based on task complexity.
+
+### Three Mechanisms
+
+| Mechanism | Description | Use When | Trade-off |
+|-----------|-------------|----------|-----------|
+| **Full context delegation** | Pass entire orchestrator context to subagent | Complex tasks requiring complete understanding | Partially defeats context isolation purpose |
+| **Instruction passing** | Create instructions via function call; subagent receives only objective/constraints/inputs/outputs | Simple, well-defined subtasks | Maintains isolation but limits subagent flexibility |
+| **File system memory** | Subagent reads/writes persistent storage | Complex tasks requiring shared state | Introduces latency; scales better than message-passing |
+
+### Default to Instruction Passing
+
+Start with instruction passing — pass only what the subtask needs:
+- Objective: What to accomplish
+- Constraints: What to avoid
+- Inputs: What to work with
+- Outputs: What format to produce
+
+**Example:**
+```markdown
+<Objective>
+Analyze security of auth.ts for SQL injection vulnerabilities.
+</Objective>
+<Constraints>
+- Do NOT modify any code
+- Do NOT run commands that modify state
+- Focus only on SQL injection
+</Constraints>
+<Inputs>
+- File: src/auth.ts
+- Recent changes: git diff HEAD~5 src/auth.ts
+</Inputs>
+<Outputs>
+- List of findings with severity, location, and specific remediation
+</Outputs>
+```
+
+### When to Escalate to Filesystem
+
+Use shared scratchpads (`.principled/scratch/multi-agent-state.md`) when:
+- Multiple agents must access the same data
+- Results from one agent feed into another agent's task
+- State must persist across agent invocations
+- No single agent has the complete picture
+
+**See also:** `{baseDir}/references/gotchas.md` — Missing shared state gotcha for when this matters.
+
+### When Full Context Is Appropriate
+
+Full context delegation is appropriate only when:
+- Subtask genuinely requires understanding the entire system state
+- Orchestrator has already distilled the context to only relevant portions
+- The alternative would require passing a complex dependency graph
+
+**Warning:** Full context delegation partially defeats the purpose of context isolation. Only use when the isolation cost exceeds the coordination cost.
+
+---
+
+## Context Degradation Signals
+
+Three signals indicate context is degrading quality before hitting hard limits:
+
+| Signal | What Happens | Mitigation |
+|--------|-------------|------------|
+| **Lost-in-middle effect** | Attention weakens for mid-context content | Move critical info to start/end of context |
+| **Attention scarcity** | Too many competing items in context | Aggressive prioritization; split to scratchpads |
+| **Context poisoning** | Irrelevant content displaces useful content | Strict context hygiene; exclude noise |
+
+**The quality degradation curve:**
+
+```
+Context Usage  │  Quality Level   │  Mental State
+─────────────────────────────────────────────────────
+0-30%          │  PEAK           │  "I can be thorough"
+30-50%         │  GOOD           │  "Still have room"
+50-70%         │  DEGRADING      │  "Getting tight"
+70%+           │  POOR           │  "Running out"
+```
+
+**Target:** Plans should complete within ~50% of context usage. Stop before quality degrades, not at context limit. See `{baseDir}/references/token-economics.md` for full explanation of token economics.

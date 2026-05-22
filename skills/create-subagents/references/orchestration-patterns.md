@@ -205,6 +205,84 @@ Workers (5 concurrent instances of security-reviewer):
 - Independent execution (no inter-worker communication)
 ```
 
+**WARNING — Supervisor bottleneck:** The orchestrator pattern is susceptible to the supervisor bottleneck problem. Supervisor context grows non-linearly with worker count. At 5+ workers, the supervisor spends more tokens processing summaries than workers spend on actual tasks.
+
+**HARD CAP: 3-5 workers per supervisor.** When you need more workers, add a second-tier supervisor rather than overloading one. See `{baseDir}/references/gotchas.md` for full explanation.
+
+---
+
+### Swarm Pattern (Peer-to-Peer)
+
+Remove central control. Agents communicate directly based on predefined protocols.
+
+**Characteristics:**
+- No central coordinator or supervisor
+- Any agent can transfer control to any other through explicit handoff
+- Dynamic routing based on task requirements
+- No single point of failure
+
+**Ideal for:**
+- Tasks requiring flexible exploration
+- Dynamic requirements that defy upfront decomposition
+- Systems where any agent might be best suited for next step
+
+**The Handoff Protocol:**
+```python
+def handle_customer_request(request):
+    if request.type == "billing":
+        return billing_agent  # Direct handoff, no supervisor intermediary
+    elif request.type == "technical":
+        return technical_agent
+    elif request.type == "sales":
+        return sales_agent
+    else:
+        return general_agent
+```
+
+**vs. Supervisor Pattern:**
+
+| Aspect | Supervisor | Swarm |
+|--------|------------|-------|
+| Control | Centralized | Distributed |
+| Bottleneck risk | High (supervisor context) | Low (no central point) |
+| Coordination overhead | High (supervisor routes all) | Low (direct handoff) |
+| Failure mode | Single point of failure | No single point of failure |
+| Best for | Well-defined workflows | Exploratory/dynamic tasks |
+
+**Anti-pattern alert:** Swarm only works when handoff protocols are explicit and well-defined. Without clear protocols, agents drift. The swarm pattern requires more upfront design than supervisor.
+
+---
+
+### The forward_message Pattern (Telephone Game Mitigation)
+
+**The problem:** Information degrades through repeated summarization as it passes between agents. LangGraph benchmarks show supervisor architectures initially perform ~50% worse than optimized versions due to paraphrase degradation.
+
+**The mechanism:** Subagents pass responses directly to users, bypassing supervisor synthesis.
+
+```markdown
+<workflow>
+1. Worker completes analysis
+2. If output is final and complete:
+   - Write findings to shared scratchpad
+   - Use forward_message to respond directly to user
+   - Supervisor synthesis not needed
+3. If output feeds into next stage:
+   - Write to shared scratchpad
+   - Next agent reads scratchpad directly
+   - Supervisor does not summarize and re-pass
+</workflow>
+```
+
+**When to use forward_message:**
+- Subagent response is final and complete
+- Supervisor synthesis would lose important details
+- Response format must be preserved exactly
+- Subagent has unique expertise that should be preserved in output
+
+**Implementation:** Use shared scratchpads (`.principled/scratch/multi-agent-state.md`) instead of message-passing. Agents write findings, next agent reads directly. No supervisor summarization in between.
+
+**See:** `{baseDir}/references/gotchas.md` — The Telephone Game gotcha for full explanation.
+
 ---
 
 ## Sonnet + Haiku Orchestration
@@ -320,6 +398,8 @@ Coordinator:
 
 **Fix:** Reserve multi-agent for genuinely complex tasks. Single capable agent often better than coordinating multiple simple agents.
 
+**Warning:** See gotchas.md — Over-decomposition. If a subagent's task can be described in one sentence, it's probably too narrow. Each handoff is an opportunity for context loss.
+
 ### No Coordination
 
 ❌ Launching multiple agents with no coordination or synthesis
@@ -327,6 +407,8 @@ Coordinator:
 **Problem:** User gets conflicting reports, no coherent output, unclear which to trust.
 
 **Fix:** Always synthesize multi-agent outputs into coherent final result.
+
+**Warning:** See gotchas.md — Missing shared state. Agents without shared scratchpads duplicate work and produce inconsistent outputs.
 
 ### Sequential When Parallel
 
@@ -349,13 +431,47 @@ Agent 2: Can't effectively act on vague input
 
 **Fix:** Structured handoff format with complete context.
 
+**Warning:** See gotchas.md — Telephone game. Information degrades through paraphrasing. Use shared scratchpads, not message-passing.
+
 ### No Error Recovery
 
 ❌ Orchestration with no fallback when agent fails
 
 **Problem:** One agent failure causes entire workflow failure.
 
-**Fix:** Graceful degradation, retry logic, alternative agents, partial results.
+**Fix:** Graceful degradation, retry logic, alternative agents, partial results. See `{baseDir}/references/fault-tolerance.md`.
+
+**Warning:** See gotchas.md — Error propagation cascades. One agent's hallucination becomes another's fact. Add verification checkpoints.
+
+### Agent Sprawl
+
+❌ Adding more agents "for parallelism" without context isolation benefit
+
+**Problem:** Each additional agent adds communication channels quadratically. At 10 agents, 45 potential coordination points.
+
+**Fix:** Start with minimum viable number (3-5). Add only when clear context isolation benefit exists.
+
+**Warning:** See gotchas.md — Agent sprawl. Diminishing returns past 3-5 agents, coordination overhead grows quadratically.
+
+### Supervisor Bottleneck
+
+❌ Routing 6+ workers through single supervisor
+
+**Problem:** Supervisor context grows non-linearly with worker count. At 5+ workers, supervisor spends more tokens processing summaries than workers spend on actual tasks.
+
+**Fix:** Hard cap at 3-5 workers per supervisor. Add second-tier supervisor for more workers.
+
+**Warning:** See gotchas.md — Supervisor bottleneck. This is the #1 reason multi-agent systems degrade. It happens to every team that doesn't cap workers.
+
+### Sycophantic Consensus
+
+❌ Accepting "everyone agrees" as correctness signal
+
+**Problem:** LLM bias toward agreement. Multi-agent discussions converge on agreeable answers, not correct ones.
+
+**Fix:** Weighted voting by confidence × expertise. Assign adversarial roles requiring explicit disagreement before convergence.
+
+**Warning:** See gotchas.md — Sycophantic consensus. Quick agreement is a sycophancy signal, not a reliability signal.
 
 ---
 

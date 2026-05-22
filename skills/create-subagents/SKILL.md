@@ -12,6 +12,10 @@ IF choosing orchestration pattern → IMMEDIATELY read `{baseDir}/references/orc
 IF managing subagent context → BEFORE spawning read `{baseDir}/references/context-management.md`
 IF configuring subagent tools → BEFORE setting restrictions read `{baseDir}/references/subagents.md`
 IF evaluating subagent quality → BEFORE testing read `{baseDir}/references/evaluation-and-testing.md`
+IF designing multi-agent coordination → IMMEDIATELY read `{baseDir}/references/gotchas.md`
+IF handling failures in multi-agent workflows → IMMEDIATELY read `{baseDir}/references/fault-tolerance.md`
+IF understanding token cost of multi-agent → BEFORE budgeting read `{baseDir}/references/token-economics.md`
+IF reconciling conflicting agent outputs → BEFORE deciding read `{baseDir}/references/consensus.md`
 
 ---
 
@@ -225,9 +229,12 @@ For each issue found:
 | Tools per subagent | 7 max | Miller's number; beyond this is coordination overhead |
 | Spawn prompt length | 1500 tokens max | Degradation past this; split into multiple agents |
 | Files in scope | 10 max per agent | Scope creep = quality loss |
-| Concurrent subagents | 5 max | Context contention; beyond this is coordination cost |
+| **Concurrent workers per supervisor** | **3-5 max** | Non-linear context growth; beyond this supervisor saturates |
+| **Token budget for multi-agent** | **~15x baseline** | Coordination overhead, retries, consensus rounds all add cost |
 
 **Split signal:** If a task needs >10 files or >7 tools or has >1500 tokens of context — decompose first.
+
+**Worker cap enforcement:** When you need more than 5 workers, add a second-tier supervisor rather than overloading one. See `{baseDir}/references/gotchas.md` for the full supervisor bottleneck explanation.
 
 ### The Sonnet-Haiku Pattern
 
@@ -396,6 +403,29 @@ Spawn prompt without stated rollback = no recovery path if agent goes wrong.
 
 ---
 
+## Multi-Agent Gotchas (Critical)
+
+**BEFORE adding agents, read `{baseDir}/references/gotchas.md`.**
+
+Multi-agent systems fail in predictable ways. These eight gotchas account for the majority of production failures:
+
+| Gotcha | Cap | Prevention |
+|--------|-----|------------|
+| Supervisor bottleneck | 3-5 workers/supervisor | Second-tier supervisors |
+| Token cost underestimation | 15x baseline | Budget 15x, treat less as bonus |
+| Sycophantic consensus | Weighted voting | Adversarial roles required |
+| Agent sprawl | 3-5 agents minimum | Start minimal |
+| Telephone game | Direct response | forward_message or shared files |
+| Error propagation cascades | Circuit breaker | Verification checkpoints |
+| Over-decomposition | 2-4 tool ops/agent | Meaningful task scope |
+| Missing shared state | Scratchpad | Shared persistent storage |
+
+**The telephone game problem:** Information degrades through repeated summarization. LangGraph benchmarks show supervisor architectures perform ~50% worse than optimized versions due to paraphrase degradation.
+
+**Solution:** Use filesystem coordination (shared scratchpads) instead of message-passing for state that multiple agents need to access faithfully.
+
+---
+
 ## Reference Index
 
 | Reference | Purpose |
@@ -404,6 +434,10 @@ Spawn prompt without stated rollback = no recovery path if agent goes wrong.
 | `{baseDir}/references/orchestration-patterns.md` | Sequential, parallel, hierarchical, coordinator patterns |
 | `{baseDir}/references/subagents.md` | Configuration, model selection, tool security |
 | `{baseDir}/references/context-management.md` | STM, LTM, working memory, context strategies |
+| `{baseDir}/references/gotchas.md` | Eight critical multi-agent gotchas from production |
+| `{baseDir}/references/fault-tolerance.md` | Circuit breaker, checkpoint/resume, exponential backoff |
+| `{baseDir}/references/token-economics.md` | Real cost of multi-agent (~15x baseline), when justified |
+| `{baseDir}/references/consensus.md` | Weighted voting, debate protocol, adversarial critique |
 
 ---
 

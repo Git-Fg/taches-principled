@@ -236,3 +236,32 @@ Each commit tells a story. Each is reviewable. Each is revertable.
 **The principle:** Aggressive atomicity. More plans, smaller scope, consistent quality.
 
 **The rule:** If in doubt, split. Quality over consolidation. Always.
+
+---
+
+## Context Degradation Signals
+
+Plans must maintain consistent quality from first task to last. Three signals indicate context is degrading quality before hitting hard limits:
+
+| Signal | What Happens | Prevention |
+|--------|-------------|------------|
+| **Lost-in-middle effect** | Attention weakens for mid-context content | Put critical info at start/end of context |
+| **Attention scarcity** | Too many competing items in context | Aggressive prioritization |
+| **Context poisoning** | Irrelevant content displaces useful content | Strict context hygiene |
+
+**The quality degradation curve:**
+
+```
+Context Usage  │  Quality Level   │  Mental State
+─────────────────────────────────────────────────────
+0-30%          │  PEAK           │  "I can be thorough"
+30-50%         │  GOOD           │  "Still have room"
+50-70%         │  DEGRADING      │  "Getting tight"
+70%+           │  POOR           │  "Running out"
+```
+
+**The 40-50% inflection point:** This is where quality breaks. Claude perceives context mounting and enters "completion mode" — "I'll complete the remaining tasks more concisely."
+
+**The rule:** Stop BEFORE quality degrades, not at context limit. If in doubt, split.
+
+**See also:** The `token-economics.md` reference in create-subagents for the real cost of multi-agent systems.
