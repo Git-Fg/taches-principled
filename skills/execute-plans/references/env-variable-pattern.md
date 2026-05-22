@@ -14,7 +14,6 @@ When to use `{baseDir}` vs `${CLAUDE_SKILL_DIR}` for path references in skills.
 |---------|---------|----------|
 | `{baseDir}/agents/critic.md` | Read reference | Internal agent templates |
 | `{baseDir}/references/checkpoint-protocols.md` | Cross-reference | Other reference docs in same skill |
-| `{baseDir}/../create-plans/references/plan-format.md` | Adjacent skill reference | References in sibling skills |
 
 **Why:** The SKILL.md body uses Read/Grep tools, not Bash. `{baseDir}` is the correct substitution for file-to-file references within the skill.
 

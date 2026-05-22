@@ -110,4 +110,4 @@ Before calling a description "tested":
 
 ---
 
-For full skill verification before commit, see `{baseDir}/references/skill-self-testing.md`.
+For full skill verification before commit, see skill-self-testing.md.
