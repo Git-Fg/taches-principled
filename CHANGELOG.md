@@ -19,6 +19,14 @@ All notable changes are documented here.
 - **create-skills skill**: Native task lists + semantic-first skill refactor
 - **execute-plans skill**: Added agents/critic.md for milestone self-review
 - **create-plans skill**: Added agents folder with subagent prompt templates
+- **execute-plans skill**: Added env-variable-pattern reference doc for portable skill paths
+
+### Fixed
+- **execute-plans skill**: Use agents/critic.md template for milestone reviews
+- **create-plans skill**: Resolve inconsistencies found during reference review
+- **create-plans skill**: Resolve critical issues found during reference review
+- **execute-plans skill**: Fixed agent template paths to use {baseDir} for plugin portability
+- **create-plans skill**: Fixed agent folder references to use {baseDir} for plugin portability
 
 ### Fixed
 - **execute-plans skill**: Use agents/critic.md template for milestone reviews
