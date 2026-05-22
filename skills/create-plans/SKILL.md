@@ -110,6 +110,18 @@ Claude automates everything that has a CLI or API. If a tool exists, use it.
 - If verification fails → fix it and retry
 - Only ask you to verify things that genuinely require human judgment (visual appearance, UX feel)
 
+### Bash Injection = 0 Context Cost
+
+Bash commands embedded in plan verification use `!<command>` syntax — the command CODE
+never enters context, only its OUTPUT counts. This means complex validation scripts cost nothing.
+
+Example:
+- Verbose: "Run `npm test` to verify" (test output goes in context)
+- Efficient: `!npm test` (only "X tests passed" output enters context, not the test suite code)
+
+**When to use:** Build verification, test runs, lint checks, health endpoints.
+**URL:** https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview#level-3-resources-and-code-loaded-as-needed
+
 ### Deviation Rules
 
 Plans are guides, not straitjackets. Real development involves discoveries. Handle deviations automatically:
