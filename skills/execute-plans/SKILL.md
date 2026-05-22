@@ -116,6 +116,28 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 **Why:** No user interaction needed. Executor operates as intelligent orchestrator with parallel execution for speed and self-review for quality. Overhead: ~10-15% main context (higher than old single-subagent approach due to coordination, but better quality through parallelism and review).
 
+### Explorer Subagent Protocol
+
+When spawning subagents for investigation (exploring project structure, finding relevant files, understanding codebase organization), follow this protocol:
+
+**Before spawning:**
+1. Check centralized scratchpad at `.principled/scratch/{plan-id}.md`
+2. Write current execution context to scratchpad (what task, why spawning, expected output)
+3. Verify subagent has **Write tool access** — explorer needs to update scratchpad
+4. **NEVER** use "native" Explore subagents (Haiku, read-only) for investigation
+
+**Subagent tool requirements for investigation:**
+- REQUIRED minimum: `[Read, Write, Grep, Glob, Bash]`
+- Write access is NON-OPTIONAL — findings must be persisted
+
+**After spawning:**
+5. Subagent reads scratchpad for any prior findings (avoid duplicate work)
+6. Subagent writes findings to scratchpad before returning
+7. Orchestrator reads scratchpad after subagents return
+8. Consolidate findings before proceeding
+
+**Why:** Prevents telephone-game information degradation. Explorer findings are shared via scratchpad, not passed through summarization rounds.
+
 ---
 
 **Pre-execution self-critique (devil's advocate):**

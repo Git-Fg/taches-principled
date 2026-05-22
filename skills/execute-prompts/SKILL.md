@@ -83,6 +83,14 @@ Use when: multiple prompts with no interdependencies.
 7. Commit all work
 8. Return consolidated results
 
+**Explorer Subagent Protocol:**
+When executing multiple prompts in parallel, coordination through shared state:
+1. Check `.principled/scratch/multi-agent-state.md` for any prior execution context
+2. Write current execution batch info to scratchpad
+3. Each subagent should have **Write tool access** to update scratchpad
+4. After completion, read scratchpad for any cross-agent findings
+5. Consolidate results before archival
+
 ### Sequential Execution
 
 Use when: prompts have dependencies (output of one feeds into another).
@@ -212,6 +220,25 @@ Never `git add .` — stage only files you modified.
 | Documentation | `docs:` |
 | Tests | `test:` |
 | Maintenance | `chore:` |
+
+---
+
+## Execution Gotchas
+
+### Thought/Action/Observation Anti-Pattern
+
+**The Problem:**
+When Claude sees code blocks with `Thought:`, `Action:`, `Observation:` patterns, it interprets them as output templates to mimic, not as instructions to execute. Instead of calling Write() tool, it generates text that says "Thought: Let me analyze... Action: Write(...)".
+
+**Why This Happens:**
+1. Code blocks look like output format — Claude thinks "this is what my response should look like"
+2. Pattern mimicking — The agent copies the structure as text instead of executing
+3. Pseudo-code confusion — `Action: Write(...)` looks like code to output, not a command to run
+
+**The Fix:**
+Replace all Thought/Action/Observation examples with imperative natural language:
+- Instead of: "Thought: I need to read the prompt file..."
+- Write: "First, use the Read tool to load the prompt file."
 
 ---
 
