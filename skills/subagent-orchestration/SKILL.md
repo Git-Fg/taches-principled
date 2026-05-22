@@ -119,7 +119,7 @@ Claude Code implements a four-layer memory system:
 - Must survive session end → disk artifact (orchestrator) or agent-memory (subagent)
 - Must be shared between subagents → orchestrator-owned disk artifact
 
-See `create-subagents/references/memory-architecture.md` for full details.
+See the memory architecture reference for full details.
 
 ## Failure Modes
 
@@ -134,11 +134,11 @@ See `create-subagents/references/memory-architecture.md` for full details.
 
 **Key rule:** Stop and report after 2 retries on the same failure. Never loop silently.
 
-See `create-subagents/references/failure-modes.md` for detailed prevention strategies.
+See the failure modes reference for detailed prevention strategies.
 
 ## Reference Index
 
-This skill complements `create-subagents`. Key reference files in `create-subagents/references/`:
+This skill complements `create-subagents`. Key reference files (in the subagent authoring references directory):
 
 - `race-framework.md` — Full RACE prompt structure
 - `orchestration-patterns.md` — All five patterns with examples
