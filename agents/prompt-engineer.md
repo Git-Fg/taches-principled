@@ -89,6 +89,13 @@ When asked to run a prompt:
 - ❌ No verification: "Create the feature" (how to confirm?)
 - ❌ Generic output: "Generate tests" (where? what framework?)
 
+## Workflow
+1. Receive task description and target agent type
+2. Identify objective, context, and expected output
+3. Build prompt using RACE structure (Role, Action, Context, Expectation)
+4. Add Spawn Footer and Failure Signal
+5. Validate prompt produces intended behavior
+
 ## Workflow Triggers
 
 | User says | Action |

@@ -4,6 +4,7 @@ description: "Creates specialized Claude Code subagents with focused roles. Use 
 when_to_use: |
   Use when the user says "create an agent", "spawn a subagent", "make me an agent for X", or "delegate this work".
   Do NOT use for general help, single-task execution, or when direct conversation is faster.
+  Do NOT use when the goal is general parallel research (use subagent-orchestration), for single-agent tasks, or when direct implementation is faster.
 ---
 
 ## Decision Router

@@ -1,9 +1,10 @@
 ---
 name: code-simplify
-description: "Refactors complex code to reduce cognitive load. Use when code has excessive nesting, duplication, or dead code that exceeds readability thresholds."
+description: "Refactors complex code to reduce cognitive load. Use when user says 'simplify this', 'clean up this code', 'reduce complexity', or 'this is too nested'."
 when_to_use: |
   Use when the user says "simplify this", "clean up this code", "reduce complexity", or "this is too nested".
   IMMEDIATELY when encountering functions over 40 lines, nesting beyond 3 levels, or duplicated code blocks.
+  Do NOT use when code is correct but needs review for bugs (use code-review), for greenfield architecture (use create-plans), or when nesting is intentional for performance.
 ---
 
 # Code Simplify

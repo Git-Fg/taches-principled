@@ -4,6 +4,7 @@ description: "Multi-agent code review for PRs and local changes. Use when user s
 when_to_use: |
   Use when the user says "review this PR", "check my changes", "review the code", or "audit this pull request".
   IMMEDIATELY before merging or committing significant code changes.
+  Do NOT use when code needs to be simplified or reduced (use code-simplify), when work was already completed and needs reflection (use reflexion), or for architectural decisions (use create-plans).
 argument-hint: "[focus-areas] [--min-impact critical|high|medium|medium-low|low]"
 ---
 

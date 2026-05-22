@@ -1,9 +1,10 @@
 ---
 name: create-prompts
-description: "Creates executable prompts for Claude Code. Use when user says 'create a prompt', 'generate a prompt for a task', or 'write a prompt for another agent'."
+description: "Creates executable prompts for Claude Code. Use when user says 'write me a prompt', 'generate a prompt', or 'create a prompt for this task'."
 when_to_use: |
   Use when the user says "write me a prompt", "generate a prompt", "create a prompt for this task", or "write a prompt for another agent".
   Do NOT use for executing prompts directly, reviewing existing prompts, or one-off questions.
+  Do NOT use when the goal is to create a reusable Claude Code skill (use create-skills), for execution of prompts (use execute-prompts), or for one-off questions.
 ---
 
 ## Decision Router

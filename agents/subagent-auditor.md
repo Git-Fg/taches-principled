@@ -61,6 +61,14 @@ You are a code reviewer. Review code for issues.
 
 Without workflow, agent may skip steps or be inconsistent.
 
+## Workflow
+1. Receive SKILL.md path to audit
+2. Parse frontmatter for required fields (name, description, when_to_use)
+3. Evaluate description routing quality (trigger phrases, third-person framing)
+4. Evaluate body structure (Decision Router, Policy/Mechanism separation)
+5. Check for cross-skill file path references
+6. Output structured audit findings with severity ratings
+
 ## Constraints Definition
 
 Constraints should use strong modal verbs: MUST, NEVER, ALWAYS, SHOULD.

@@ -1,9 +1,10 @@
 ---
 name: analyse-problem
-description: "A3-format problem analysis with root cause investigation and action plan. Use when investigating incidents, recurring issues, or systemic failures that need structured documentation."
+description: "A3-format problem analysis with root cause investigation and action plan. Use when user says 'analyze this problem', 'root cause', 'why is this happening', or 'figure out what's wrong'."
 when_to_use: |
   Use when the user says "analyze this problem", "root cause", "why is this happening", or "figure out what's wrong".
   IMMEDIATELY when debugging incidents, recurring issues, or systemic failures that need structured investigation.
+  Do NOT use for general code quality (use analyse), for ongoing issues without a specific incident (use root-cause-analysis), or when the problem is already well-understood.
 argument-hint: "[problem description]"
 ---
 

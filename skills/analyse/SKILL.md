@@ -4,6 +4,7 @@ description: "Auto-selects improvement method (code exploration, workflow mappin
 when_to_use: |
   Use when the user says "analyze this", "look into this code", "what's wrong here", or "find the problem".
   IMMEDIATELY when investigating code quality, process bottlenecks, or implementation gaps.
+  Do NOT use when the problem is a specific incident (use analyse-problem instead), when code already exists and needs review (use code-review), or when complexity reduction is the goal (use code-simplify).
 argument-hint: "[target description]"
 ---
 
