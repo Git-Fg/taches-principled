@@ -194,6 +194,81 @@ Generated plans, prompts, scratch notes, and cross-session memory go here. This 
 
 ---
 
+## Evaluation Pipeline
+
+taches-principled has a multi-agent evaluation system for skill quality assurance:
+
+### The Four Evaluation Agents
+
+| Agent | Purpose | Output |
+|-------|---------|--------|
+| **Grader** | Measures teaching effectiveness (not format compliance) | Dimension scores (routing, delta, posture, anti-patterns) |
+| **Comparator** | Compares skill versions to understand what changed | Delta analysis with teaching impact |
+| **Skill Auditor** | Quality signals and format audit | Severity-ranked findings |
+| **Analyzer** | Synthesizes into prioritized improvement path | Max 3 changes with teaching outcomes |
+
+### The Evaluation Pipeline
+
+```
+Skill Author creates/changes a skill
+    ↓
+[Grader] → Dimension scores (what to improve)
+    ↓
+[Comparator] → Delta analysis (what changed between versions)
+    ↓
+[Skill Auditor] → Quality signals (format, structure, frontmatter)
+    ↓
+[Trigger Benchmark] → 20-query routing accuracy test
+    ↓
+[Analyzer] → 3 prioritized changes with teaching outcomes
+    ↓
+Skill Improved
+```
+
+### Invoking the Pipeline
+
+**Quick audit** (format + quality only):
+```markdown
+Agent(description = "Audit [skill] for quality",
+      prompt = "Read [path]/SKILL.md and audit following skill-auditor.md.")
+```
+
+**Full evaluation** (teaching + routing + format):
+```markdown
+1. Grader: Grade for teaching effectiveness
+2. Comparator: Compare versions if applicable
+3. Skill Auditor: Audit for quality signals
+4. Trigger Benchmark: python3 ${CLAUDE_SKILL_DIR}/scripts/run_trigger_benchmark.py [skill] --interactive
+5. Analyzer: Synthesize into 3 prioritized changes
+```
+
+### Trigger Benchmark
+
+Tests skill description reliability with 20 queries:
+
+| Category | Count | Exit Target |
+|----------|-------|------------|
+| Core positive (must trigger) | 5 | 100% |
+| Edge positive (should trigger) | 3 | >60% |
+| Core negative (must not trigger) | 5 | 100% |
+| Edge negative (should not) | 3 | >40% |
+| Held-out (blind test) | 4 | >70% |
+
+**The benchmark is a teaching instrument, not a gate.** Failed test cases teach where the description is unclear. If held-out < 70%, the description overfit to test cases — rebuild with genuinely different queries.
+
+### Grading Dimensions
+
+| Dimension | Weight | What It Measures |
+|-----------|--------|-----------------|
+| Routing Signal | 40% | Description gives clear trigger phrases |
+| Delta Clarity | 30% | Skill states what it adds vs. default |
+| Teaching Posture | 20% | Principles over procedures |
+| Anti-Pattern Quality | 10% | Concrete wrong/right pairs with consequence |
+
+A perfectly formatted skill that teaches nothing scores 0/10 on teaching. Format without teaching is decoration.
+
+---
+
 ## References
 
 - [Claude Code Skills Documentation](https://docs.claude.com)

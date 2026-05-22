@@ -103,6 +103,35 @@ Valid frontmatter fields (from official docs):
 
 Any other field is non-standard and should be flagged.
 
+## Evaluation Pipeline
+
+The skill-auditor is part of a multi-agent evaluation pipeline. To get a complete picture, invoke the pipeline in order:
+
+**Step 1 — Grader**: Get dimension scores for teaching effectiveness
+```
+Agent(description = "Grade [skill-name] for teaching effectiveness",
+      prompt = "Read [skill-path]/SKILL.md and produce a grading following grader.md.
+               Include the structured JSON output block for analyzer consumption.")
+```
+
+**Step 2 — Trigger Benchmark** (if routing issues suspected):
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/run_trigger_benchmark.py <skill-name> --interactive
+```
+
+**Step 3 — Skill Auditor**: Get quality signals and format audit
+```
+Agent(description = "Audit [skill-name] for quality and format",
+      prompt = "Read [skill-path]/SKILL.md and audit following skill-auditor.md.")
+```
+
+**Step 4 — Analyzer**: Synthesize into prioritized recommendations
+```
+Agent(description = "Synthesize [skill-name] evaluation into improvement plan",
+      prompt = "Synthesize outputs from grader.json and auditor.json following analyzer.md.
+               Produce the 3-priority change list with teaching outcomes.")
+```
+
 ## Output Format
 
 Provide audit results with severity-based findings:
@@ -133,6 +162,9 @@ What's working well:
 Minor issues easily resolved:
 1. [Issue] at [file:line] → [one-line fix]
 
+**Pipeline Note**
+If grader dimension scores are available, incorporate them here. If trigger benchmark data is available, reference it under Critical Issues or Recommendations as appropriate.
+
 ## Constraints
 
 - Don't audit for XML tag compliance — markdown sections are fine
@@ -140,3 +172,42 @@ Minor issues easily resolved:
 - Don't conflate "I wouldn't write it this way" with "this is wrong"
 - Description field is critical for routing — vague = poor invocation
 - If reference files are missing, note under "Configuration Issues" and proceed
+
+---
+
+## Trigger Benchmark Integration
+
+When auditing a skill, trigger benchmark data clarifies ambiguous routing findings.
+
+### When to Invoke the Benchmark
+
+| Signal | What It Means | Benchmark Action |
+|--------|--------------|-----------------|
+| Description score is borderline | May be too narrow or too broad | Run core positive/negative queries |
+| Routing score uncertain | Need quantitative data | Run full 20-query benchmark |
+| Skill description recently changed | Need before/after comparison | Run comparator agent |
+
+### How to Combine Audit + Benchmark
+
+The audit evaluates **teaching quality**. The benchmark evaluates **routing accuracy**. Together they give a complete picture:
+
+| Dimension | Evaluated by |
+|-----------|--------------|
+| Description specificity | Auditor (qualitative) + Benchmark (quantitative) |
+| Teaching posture | Auditor |
+| Delta clarity | Auditor |
+| Routing accuracy | Benchmark |
+| Anti-pattern quality | Auditor |
+| Threshold rationale | Auditor |
+
+### When to Flag Benchmark Issues
+
+**If core positive < 100%:** Flag in audit under "Critical Issues" — the skill fundamentally doesn't trigger for its primary use case.
+
+**If core negative < 100%:** Flag in audit under "Critical Issues" — the skill triggers on off-topic queries, destroying routing trust.
+
+**If held-out < 70%:** Flag in audit under "Recommendations" — description is overfit to test cases.
+
+**If edge positive < 60%:** Flag in audit under "Recommendations" — description is too narrow.
+
+Always note in your audit when benchmark data would clarify an ambiguous finding.

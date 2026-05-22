@@ -438,6 +438,11 @@ Multi-agent systems fail in predictable ways. These eight gotchas account for th
 | `{baseDir}/references/fault-tolerance.md` | Circuit breaker, checkpoint/resume, exponential backoff |
 | `{baseDir}/references/token-economics.md` | Real cost of multi-agent (~15x baseline), when justified |
 | `{baseDir}/references/consensus.md` | Weighted voting, debate protocol, adversarial critique |
+| `{baseDir}/references/orchestration-core.md` | Four rules, orchestrator checklist, cost-capability spectrum |
+| `{baseDir}/references/automation-layers.md` | Hooks, Monitor, ScheduleWakeup patterns |
+| `{baseDir}/references/memory-architecture.md` | Four-layer memory, context window discipline |
+| `{baseDir}/references/tools-reference.md` | TaskGet, TaskOutput, TaskStop, SendMessage |
+| `{baseDir}/references/failure-modes.md` | Detection, recovery, prevention table |
 
 ---
 

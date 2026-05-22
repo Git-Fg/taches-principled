@@ -8,8 +8,18 @@ All notable changes are documented here.
 - **create-skills skill**: Decision Router with IF→FIRST/IMMEDIATELY/BEFORE imperative conditionals at top
 - **create-skills skill**: Five skill categories with inspirational examples (Constraint/Guardrail, Orchestration, Domain Expertise, QA, Creative Direction)
 - **create-skills skill**: Added Success Criteria section with measurable outcomes
+- **create-skills skill**: Added `trigger-benchmark.md` reference (305 lines): 20-query framework, exit criteria, overfitting detection, headless testing method
+- **create-skills skill**: Added Automated Checks section to `skill-self-testing.md`: programmatic pre-commit validation script
+- **create-skills skill**: Added `scripts/run_trigger_benchmark.py`: automated 20-query test harness with streaming JSONL detection
+- **create-skills skill**: Added `scripts/grader-output-template.md`: structured output format for grader → analyzer pipeline
 - **execute-plans skill**: Decision Router with strategy selection based on checkpoint types
 - **execute-plans skill**: Added Numeric Thresholds section
+- **agents/**: New grader, comparator, and analyzer agents for evaluation pipeline
+  - `grader.md` (162 lines): Teaching effectiveness rubric with 4 dimensions (Routing Signal, Delta Clarity, Teaching Posture, Anti-Pattern Quality)
+  - `comparator.md` (145 lines): Skill version comparison for delta analysis
+  - `analyzer.md` (140 lines): Synthesizes evaluations into prioritized improvement path
+- **agents/skill-auditor.md**: Added Trigger Benchmark Integration section; added Evaluation Pipeline section documenting multi-agent evaluation workflow
+- **CLAUDE.md**: Added Evaluation Pipeline section documenting the grader/comparator/auditor/benchmark/analyzer multi-agent system
 - **create-subagents skill**: Multi-agent patterns import from taches-modernized research
   - `references/gotchas.md` (443 lines): Eight critical production gotchas (supervisor bottleneck with 3-5 worker cap, 15x token cost, sycophantic consensus, agent sprawl, telephone game, error propagation cascades, over-decomposition, missing shared state)
   - `references/fault-tolerance.md` (310 lines): Circuit breaker pattern, checkpoint/resume, exponential backoff, idempotent operations

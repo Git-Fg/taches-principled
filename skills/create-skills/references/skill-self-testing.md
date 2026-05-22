@@ -177,3 +177,91 @@ done < <(grep -E '@[a-zA-Z]' SKILL.md | sed 's/@//')
 - [ ] No broken `@file` references
 - [ ] Trigger test passes
 - [ ] Off-topic test returns 0
+
+---
+
+## Automated Checks
+
+Run these programmatic checks before committing a new skill:
+
+```bash
+#!/bin/bash
+# Self-testing checks — verifies minimum structural requirements
+
+SKILL="SKILL.md"
+errors=0
+
+# Description length (max 150)
+desc_len=$(echo -n "$(grep -A1 '^description:' "$SKILL" | tail -1)" | wc -c)
+if [ "$desc_len" -gt 150 ]; then
+  echo "FAIL: description $desc_len/150 chars"
+  errors=$((errors + 1))
+else
+  echo "PASS: description $desc_len/150 chars"
+fi
+
+# when_to_use length (max 200)
+when_len=$(echo -n "$(grep -A10 '^when_to_use:' "$SKILL" | tail -1)" | wc -c)
+if [ "$when_len" -gt 200 ]; then
+  echo "FAIL: when_to_use $when_len/200 chars"
+  errors=$((errors + 1))
+else
+  echo "PASS: when_to_use $when_len/200 chars"
+fi
+
+# Body lines (max 500)
+body_lines=$(sed -n '/^---$/,/^---$/!p' "$SKILL" | wc -l)
+if [ "$body_lines" -gt 500 ]; then
+  echo "FAIL: body $body_lines/500 lines"
+  errors=$((errors + 1))
+else
+  echo "PASS: body $body_lines/500 lines"
+fi
+
+# Valid frontmatter fields only
+for field in name description when_to_use user-invocable allowed-tools disable-model-invocation paths hooks shell context agent effort model arguments argument-hint; do
+  if grep -q "^${field}:" "$SKILL"; then
+    echo "PASS: frontmatter field '$field' is valid"
+  fi
+done
+
+# Check for invalid fields (metadata, related_skills, tags, etc.)
+for invalid in metadata related_skills tags; do
+  if grep -q "^${invalid}:" "$SKILL"; then
+    echo "FAIL: invalid frontmatter field '$invalid'"
+    errors=$((errors + 1))
+  fi
+done
+
+# Skill name format (kebab-case)
+skill_name=$(grep '^name:' "$SKILL" | sed 's/^name: //')
+if echo "$skill_name" | grep -qv '^[a-z][a-z0-9-]*$'; then
+  echo "FAIL: name '$skill_name' is not kebab-case"
+  errors=$((errors + 1))
+else
+  echo "PASS: name '$skill_name' is kebab-case"
+fi
+
+if [ "$errors" -eq 0 ]; then
+  echo ""
+  echo "All structural checks passed."
+else
+  echo ""
+  echo "Structural checks: $errors error(s) found."
+fi
+exit $errors
+```
+
+**What these checks verify:**
+- Description ≤ 150 chars
+- when_to_use ≤ 200 chars
+- Body ≤ 500 lines
+- Skill name in kebab-case
+- No invalid frontmatter fields
+
+**What they do NOT verify:**
+- Teaching effectiveness
+- Routing accuracy
+- Trigger reliability
+
+For full evaluation, use the grader and trigger benchmark. These automated checks are structural minimums only.
