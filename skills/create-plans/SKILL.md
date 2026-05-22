@@ -318,6 +318,15 @@ Read agent templates from `{baseDir}/agents/`, then dispatch parallel subagents 
 
 After all complete, aggregate findings into understanding of the project.
 
+**Spawned subagent handoff:** Every subagent must receive explicit handoff with:
+- Who spawned it and why (role and purpose)
+- What context it needs to work with
+- What scope to cover (specific files/areas)
+- What success criteria to meet (pass/fail conditions)
+- How to report back (structured format)
+
+Without clear handoff, subagents operate without proper scope boundaries. The orchestrator must provide all context inline — subagents start cold with no conversation history.
+
 **Using critic agents during planning:**
 
 After the fan-out exploration, before writing the plan, spawn a critic agent to challenge the emerging approach:
