@@ -100,8 +100,8 @@ Claude automates everything that has a CLI or API. If a tool exists, use it.
 **The rule:** If Claude CAN do it via CLI, API, or tool, Claude MUST do it. Never ask you to:
 - Deploy to Vercel/Railway/Fly (use CLI)
 - Create Stripe webhooks (use CLI/API)
-- Run builds/tests (use Bash)
-- Write .env files (use Write tool)
+- Run builds/tests
+- Write .env files
 - Create database resources (use provider CLI)
 
 **How verification works:**

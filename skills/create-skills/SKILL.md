@@ -25,17 +25,145 @@ A skill fails when Claude cannot decide whether to load it.
 
 ---
 
-## What This Skill Teaches
+## Skill Categories
 
-Skills encode domain-specific judgment — when to act, how to decide, what "done" looks like. This separates domain knowledge from general knowledge:
+Skills fall into five categories. Each has a different purpose and design pattern.
+Choose based on your goal — not a template.
 
-| General Knowledge (Don't Explain) | Domain Judgment (Teach This) |
-|-----------------------------------|------------------------------|
-| What skills are, how context works | Trigger patterns for this domain |
-| Tool syntax and parameters | Success metrics and completion criteria |
-| Claude's capabilities | Decomposition logic and tradeoffs |
+### 1. Constraint/Guardrail (Delta) Skills
 
-If your skill teaches what Claude already knows, it has no value.
+**Purpose:** Override the agent's DEFAULT behavior for your context.
+
+These skills say "Never do X" or "Do Y instead of Z" — they redirect existing
+behavior, not teach new procedures.
+
+**Example that works:**
+> "NEVER use console.log. Always use src/lib/logger.ts structured logging."
+
+This changes what the agent produces BY DEFAULT. Without this skill, the agent
+uses console.log. With it, the agent uses the logger.
+
+**What makes it work:** One clear delta. No explanation needed — the constraint
+is the teaching.
+
+**When to use:** When the agent would do X by default, but your context requires Y.
+
+Real example: A security skill with one constraint — "ALL DB queries via tx wrapper"
+— changed agent behavior across 200+ code generation sessions without explaining
+why transactions matter.
+
+### 2. Orchestration (Workflow Router) Skills
+
+**Purpose:** Route work to the right specialist at the right time.
+
+These skills say "WHEN to delegate" — not how to delegate, not what to do,
+just when to pass work to someone else.
+
+**Example that works:**
+> "When scope is unclear → delegate to explorer agent. When scope is clear
+> but implementation is complex → delegate to implementer agent. When at a
+> milestone → spawn critic to review."
+
+This is a decision tree, not a script. The agent decides based on conditions.
+
+**What makes it work:** Phase boundaries with success criteria. The skill defines
+what "done" looks like per phase, not how to execute each step.
+
+**When to use:** When the agent doesn't know when to escalate or which specialist to use.
+
+Real example: The create-plans skill routes "execute" to execute-plans — it doesn't
+explain how to run plans, just when to load that skill.
+
+### 3. Domain Expertise Skills
+
+**Purpose:** Provide deep knowledge the base model lacks or gets wrong.
+
+These skills organize reference material for on-demand loading. They say
+"If you need to know about X, go here."
+
+**Example that works:**
+> "If working with animations → read references/animation-patterns.md
+> If working with audio → read references/audio-sync.md
+> If optimizing render → read references/lambda-optimization.md"
+
+**What makes it work:** TOC for files >100 lines, "if X then Y" triggers,
+principles separated from implementation details. Organized for retrieval,
+not sequential reading.
+
+**When to use:** When the base model produces plausible-but-wrong outputs on
+domain-specific topics.
+
+Real example: A billing system skill that encodes company-specific pricing logic —
+without it, the agent generates generic pricing that doesn't match actual contracts.
+
+### 4. Quality Assurance Skills
+
+**Purpose:** Enforce verification gates BEFORE completion.
+
+These skills say "No task is complete until X is proven" — they define what
+evidence must exist, not what steps to run.
+
+**Example that works:**
+> "Before marking complete: (1) All new functions have tests, (2) No type errors,
+> (3) Screenshot of UI change attached. If any check fails, loop back and fix."
+
+**What makes it work:** Measurable criteria with pass/fail. Evidence over output
+— test passes, screenshot exists, error log clean. Not "looks good."
+
+**When to use:** When the agent marks work complete before verification,
+or when quality gates are consistently skipped.
+
+Real example: A systematic debugging skill that enforces: reproduce → isolate →
+hypothesize → test → fix. Each step produces evidence before the next begins.
+
+### 5. Creative Direction Skills
+
+**Purpose:** Break output convergence toward generic responses.
+
+These skills say "Before generating, establish direction" — they prevent the
+"AI slop" problem where all output looks the same.
+
+**Example that works:**
+> "We reject generic AI aesthetics. Pick one direction per project:
+> Brutalist (raw elements, visible grid, system fonts) OR
+> Maximalist (dense information, rich color, no whitespace) OR
+> Retro-futuristic (CRT effects, monospace, neon accents).
+> NEVER default to Inter font + purple gradient."
+
+**What makes it work:** Concrete options with anti-examples. Establishes
+direction BEFORE generation, not during review.
+
+**When to use:** When the agent's output converges to generic templates
+regardless of context.
+
+Real example: A frontend-design skill that changed default from "blue gradient + Inter"
+to "brutalist or maximalist" — user satisfaction with AI-generated UI increased 3x.
+
+---
+
+## The Common Thread
+
+All five categories share one test:
+
+> **"Does this skill change what the agent produces by default?"**
+
+If the answer is no, the skill is a command alias — it adds a shortcut
+to the same output. Those don't scale. Skills that change default behavior do.
+
+---
+
+## Examples Over Rules
+
+The teaching should be example-forward, not rule-forward:
+
+- Instead of "You MUST use structured logging" → "Example: Without this skill,
+  agent uses console.log. With it, agent uses src/lib/logger.ts. That's the delta."
+- Instead of "Follow these steps exactly" → "Pattern: Phase router with success
+  criteria per phase. Here's how it works in practice."
+- Instead of "Never do X" → "Real example: A security skill that changed default
+  behavior — agent stopped using raw SQL queries after one constraint was added."
+
+The goal is to TEACH judgment through examples, not enforce compliance through rules.
 
 ---
 

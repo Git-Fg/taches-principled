@@ -51,30 +51,30 @@ For each identifier, resolve to concrete file:
 ### Single Prompt
 
 1. Read complete prompt file
-2. Dispatch via `Task` tool with `subagent_type="general-purpose"`
+2. Dispatch to subagent for execution
 3. Wait for completion
 4. Proceed to archival
 
 ### Parallel Execution
 
-**Critical:** ALL `Task` calls in a SINGLE message.
+**Critical:** ALL subagent dispatches in a SINGLE message.
 
 ```
-[Task: prompt 005]
-[Task: prompt 006]
-[Task: prompt 007]
+[Subagent: prompt 005]
+[Subagent: prompt 006]
+[Subagent: prompt 007]
 (All in one message - concurrent dispatch)
 ```
 
 1. Read all prompt files
-2. Dispatch ALL `Task` tools in one message
+2. Dispatch ALL subagents in one message
 3. Wait for all completions
 4. Proceed to archival
 
 ### Sequential Execution
 
 1. Read first prompt file
-2. Dispatch via `Task` tool
+2. Dispatch to subagent for execution
 3. Wait for completion
 4. Archive completed prompt
 5. Read next prompt file
@@ -123,6 +123,6 @@ git commit -m "[type]: [specific description]"
 
 - Target prompt correctly identified
 - File resolution returns exactly one match
-- Task tool called with correct prompt content
+- Subagent dispatched with correct prompt content
 - Prompts archived after completion
 - Git commit with explicit file staging

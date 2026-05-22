@@ -191,12 +191,11 @@
 ## Environment Configuration
 
 ### .env Files
-**Tool:** Write tool
 
 **What Claude automates:**
-- Create .env files: Use Write tool
-- Append variables: Use Edit tool
-- Read current values: Use Read tool
+- Create .env files: write directly
+- Append variables: edit in place
+- Read current values: read file contents
 
 **Pattern:**
 ```markdown
@@ -231,7 +230,7 @@ For these cases: Present clearly what Claude needs and why.
 | Deploy to Vercel | ✅ `vercel` | YES |
 | Create Stripe webhook | ✅ Stripe API | YES |
 | Run xcodebuild | ✅ `xcodebuild` | YES |
-| Write .env file | ✅ Write tool | YES |
+| Write .env file | ✅ write directly | YES |
 | Create Upstash DB | ✅ `upstash` CLI | YES |
 | Install npm packages | ✅ `npm` | YES |
 | Create GitHub repo | ✅ `gh` | YES |
