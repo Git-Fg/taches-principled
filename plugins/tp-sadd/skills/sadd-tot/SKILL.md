@@ -33,7 +33,7 @@ Proposals saved to `.specs/research/{name}-{date}.proposals.[a|b|c].md`.
 
 Launch a pruning meta-judge in parallel with exploration agents. The meta-judge generates an evaluation specification YAML for evaluating high-level proposals. Criteria focus on feasibility, alignment with requirements, potential for quality, and risk manageability.
 
-Follow the meta-judge evaluation pattern (see `meta-judge-pattern.md` in this plugin's references directory).
+Follow the meta-judge evaluation pattern documentation (see the meta-judge evaluation pattern documentation).
 
 ### Phase 2: Pruning (3 judges, select top 3 proposals)
 
@@ -51,7 +51,7 @@ Expansion agents use CoT reasoning + self-critique. Solutions saved with unique 
 
 Launch a second meta-judge in parallel with expansion agents. Generates an evaluation specification YAML for evaluating full solution implementations. Criteria focused on comparative evaluation across multiple solutions.
 
-See `meta-judge-pattern.md` in this plugin's references directory.
+See the meta-judge evaluation pattern documentation.
 
 ### Phase 4: Evaluation (3 judges)
 

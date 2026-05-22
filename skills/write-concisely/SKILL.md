@@ -1,6 +1,6 @@
 ---
 name: write-concisely
-description: Make documentation clearer and more professional using Strunk & White's principles: active voice, positive form, concrete language, omit needless words.
+description: Make documentation clearer and more professional using Strunk & White's principles. Use when user says 'make this clearer', 'write this more concisely', 'clean up this text', or 'improve the writing'.
 when_to_use: |
   Use when the user says "make this clearer", "write this more concisely", "clean up this text", or "improve the writing".
   IMMEDIATELY when producing documentation, READMEs, or any human-readable text.

@@ -107,7 +107,7 @@ Any other field is non-standard and should be flagged.
 
 The skill-auditor is part of a multi-agent evaluation pipeline. To get a complete picture, invoke the pipeline in order:
 
-**Step 1 — Grader**: Get dimension scores for teaching effectiveness
+**Step 1 — Grading agent** (evaluates teaching effectiveness): Get dimension scores for teaching effectiveness
 ```
 Agent(description = "Grade [skill-name] for teaching effectiveness",
       prompt = "Read [skill-path]/SKILL.md and produce a grading following grader.md.
@@ -119,13 +119,13 @@ Agent(description = "Grade [skill-name] for teaching effectiveness",
 python3 ${CLAUDE_SKILL_DIR}/scripts/run_trigger_benchmark.py <skill-name> --interactive
 ```
 
-**Step 3 — Skill Auditor**: Get quality signals and format audit
+**Step 3 — Comparison agent** (analyzes version deltas): Get quality signals and format audit
 ```
 Agent(description = "Audit [skill-name] for quality and format",
       prompt = "Read [skill-path]/SKILL.md and audit following skill-auditor.md.")
 ```
 
-**Step 4 — Analyzer**: Synthesize into prioritized recommendations
+**Step 4 — Synthesis agent** (produces prioritized recommendations): Synthesize into prioritized recommendations
 ```
 Agent(description = "Synthesize [skill-name] evaluation into improvement plan",
       prompt = "Synthesize outputs from grader.json and auditor.json following analyzer.md.

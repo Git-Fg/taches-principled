@@ -11,7 +11,7 @@
       "name": "taches-principled",
       "version": "0.4.0",
       "source": {
-        "url": "https://github.com/Git-Fg/taches-principled.git"
+        "url": "./"
       },
       "description": "Core: principle-based skills for the full development lifecycle — plan, execute, author, review, analyze, improve, ideate, implement, document, and refine. 22 skills with decision routers, plus TypeScript best-practice rules."
     },

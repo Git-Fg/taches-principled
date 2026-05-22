@@ -1,6 +1,6 @@
 # TÂCHES Principled
 
-**Version:** 0.3.0
+**Version:** 0.4.0
 
 A principle-based Claude Code plugin for building skills, subagents, and project plans.
 

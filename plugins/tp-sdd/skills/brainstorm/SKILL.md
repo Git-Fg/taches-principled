@@ -2,7 +2,7 @@
 name: brainstorm
 description: "Refine rough ideas into fully-formed designs through collaborative questioning, alternative exploration, and incremental validation — before writing implementation plans"
 when_to_use: |
-  When user says 'brainstorm', 'design this', 'think through', 'explore approaches', 'help me figure out', 'what's the best way to'. FIRST when facing ambiguous problem with no clear implementation path. DO NOT use when path is obvious.
+  When user says 'help me figure out', 'design this', 'think through', 'explore approaches', 'what's the best way to'. FIRST when facing ambiguous problem with no clear implementation path. DO NOT use when path is obvious or user wants enumeration of options.
 argument-hint: Optional initial feature concept or topic to brainstorm
 ---
 

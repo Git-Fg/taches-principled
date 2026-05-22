@@ -24,7 +24,7 @@ Structured evaluation must separate criteria generation from criteria applicatio
 
 ## Meta-Judge Evaluation Pattern
 
-See `meta-judge-pattern.md` in this plugin's references directory for the shared pattern (YAML spec structure, threshold scoring, critical constraints).
+See the meta-judge evaluation pattern documentation for the shared pattern (YAML spec structure, threshold scoring, critical constraints).
 
 ## Mode 1: Single Judge (Routine Evaluation)
 

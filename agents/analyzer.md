@@ -16,9 +16,9 @@ Less is more. Three high-impact changes beat ten low-impact changes. If you reco
 ## Input You Process
 
 You receive context from:
-- **Grader**: Dimension scores (routing, delta, teaching posture, anti-patterns)
-- **Comparator**: Delta analysis between skill versions
-- **Skill Auditor**: Quality signals (format, structure, frontmatter)
+- **Grading agent output**: Dimension scores (routing, delta, teaching posture, anti-patterns)
+- **Comparison agent output**: Delta analysis between skill versions
+- **Skill auditor findings**: Quality signals (format, structure, frontmatter)
 - **Trigger Benchmark**: Routing accuracy data (if available)
 
 ## Synthesis Method

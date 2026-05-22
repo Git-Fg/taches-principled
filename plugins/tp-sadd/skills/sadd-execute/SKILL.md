@@ -12,7 +12,7 @@ IF single self-contained task needs implementation with quality verification →
 IF task decomposes into ordered steps where each depends on previous → sequential mode: decompose into steps with per-step meta-judge + judge
 IF multiple independent targets that can execute simultaneously → parallel mode: independence validation, requirement grouping, parallel dispatch, isolated retries
 IF high-stakes best-of-N where quality matters more than speed → competitive mode: 3 generators + meta-judge in parallel, 3 judges, adaptive strategy
-IF task is trivial (no verification needed) → use launch-sub-agent instead
+IF task is trivial (no verification needed) → use a simple subagent dispatch without verification overhead
 IF retries exceed max without passing any mode → escalate to user with failure analysis
 
 # Execute with Verification
@@ -25,7 +25,7 @@ The orchestrator dispatches, never implements. Reading files, writing code, or r
 
 ## Meta-Judge Verification Pattern
 
-See `meta-judge-pattern.md` in this plugin's references directory for the core loop, YAML specification structure, threshold scoring, and critical constraints.
+See the meta-judge evaluation pattern documentation for the core loop, YAML specification structure, threshold scoring, and critical constraints.
 
 ## Model Selection
 
