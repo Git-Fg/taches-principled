@@ -11,7 +11,6 @@
       "name": "taches-principled",
       "version": "0.4.0",
       "source": {
-        "source": "url",
         "url": "https://github.com/Git-Fg/taches-principled.git"
       },
       "description": "Core: principle-based skills for the full development lifecycle — plan, execute, author, review, analyze, improve, ideate, implement, document, and refine. 22 skills with decision routers, plus TypeScript best-practice rules."
@@ -20,8 +19,8 @@
       "name": "tp-sadd",
       "version": "0.2.0",
       "source": {
-        "source": "url",
-        "url": "https://github.com/Git-Fg/taches-principled.git"
+        "url": "https://github.com/Git-Fg/taches-principled.git",
+        "path": "plugins/tp-sadd"
       },
       "description": "Structured agent-driven development with meta-judge verification — single/competitive/sequential/parallel execution, sub-agent dispatch, and multi-perspective judging."
     },
@@ -29,8 +28,8 @@
       "name": "tp-fpf",
       "version": "0.2.0",
       "source": {
-        "source": "url",
-        "url": "https://github.com/Git-Fg/taches-principled.git"
+        "url": "https://github.com/Git-Fg/taches-principled.git",
+        "path": "plugins/tp-fpf"
       },
       "description": "First Principles Framework — query knowledge, manage evidence freshness, reconcile with code changes, and run full hypothesis cycles for auditable decisions."
     },
@@ -38,8 +37,8 @@
       "name": "tp-git",
       "version": "0.2.0",
       "source": {
-        "source": "url",
-        "url": "https://github.com/Git-Fg/taches-principled.git"
+        "url": "https://github.com/Git-Fg/taches-principled.git",
+        "path": "plugins/tp-git"
       },
       "description": "Git workflow automation — issue management, conventional commits, PR creation, inline PR reviews, git notes, and worktree-based parallel development."
     },
@@ -47,8 +46,8 @@
       "name": "tp-sdd",
       "version": "0.2.0",
       "source": {
-        "source": "url",
-        "url": "https://github.com/Git-Fg/taches-principled.git"
+        "url": "https://github.com/Git-Fg/taches-principled.git",
+        "path": "plugins/tp-sdd"
       },
       "description": "Spec-driven development workflow — brainstorm ideas, add tasks, plan with multi-agent analysis, and implement with verification."
     },
@@ -56,8 +55,8 @@
       "name": "tp-tdd",
       "version": "0.2.0",
       "source": {
-        "source": "url",
-        "url": "https://github.com/Git-Fg/taches-principled.git"
+        "url": "https://github.com/Git-Fg/taches-principled.git",
+        "path": "plugins/tp-tdd"
       },
       "description": "Test-driven development — strict red-green-refactor, retroactive coverage for existing code, and test repair after logic changes."
     },
@@ -65,8 +64,8 @@
       "name": "tp-ddd",
       "version": "0.1.0",
       "source": {
-        "source": "url",
-        "url": "https://github.com/Git-Fg/taches-principled.git"
+        "url": "https://github.com/Git-Fg/taches-principled.git",
+        "path": "plugins/tp-ddd"
       },
       "description": "Domain-driven design rules — clean architecture, command-query separation, domain naming, and explicit control flow patterns."
     }

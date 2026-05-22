@@ -3,6 +3,7 @@ name: debug
 skill: root-cause-tracing
 description: Apply systematic debugging methodology to investigate issues deeply
 argument-hint: [issue description]
+disable-model-invocation: true
 ---
 
 Debug this issue: $ARGUMENTS

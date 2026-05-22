@@ -3,6 +3,7 @@ name: simplify
 skill: code-simplify
 description: Simplify and refine recently modified code for clarity and maintainability
 argument-hint: [file-pattern]
+disable-model-invocation: true
 ---
 
 # simplify

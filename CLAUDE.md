@@ -29,12 +29,13 @@ git push
 
 Skill authoring is taught by the `create-skills` skill. See that skill for:
 - **Skill categories**: Constraint/Guardrail, Orchestration, Domain Expertise, Quality Assurance, Creative Direction
-- **Policy vs. Mechanism**: The unifying principle for skill design
+- **Policy vs. Mechanism**: The unifying principle for skill design (official term: progressive disclosure)
 - **Delta principle**: Only document what differs from default behavior
 - **Skill anatomy**: Frontmatter and body structure
 - **Anti-patterns**: What to avoid in skill design
 - **Cross-skill references**: Never cite other skills' files with paths (e.g., `skills/create-plans/references/X.md`) — use natural language: "see the X.md file in the create-plans skill's references"
 - **Decision router**: How to structure SKILL.md for strong reference steering
+- **Description length**: Official cap is 1,536 combined description+when_to_use (raised April 2026); routing density ideal is ~200 chars for optimal trigger clarity
 
 ---
 
@@ -86,6 +87,7 @@ Skills must work whether installed as personal (`~/.claude/skills/`), project (`
 - **Specialized agents with narrow context** — broad-context agents hallucinate more
 - **Setup-commands for persistent context** — write to CLAUDE.md rather than relying on skill loading
 - **Token estimation** — every skill should know its approximate cost
+- **500-line guideline** — official stance is under 500 lines for optimal performance; split into separate reference files via progressive disclosure if content exceeds this
 
 ---
 
@@ -229,7 +231,7 @@ Skill Author creates/changes a skill
     ↓
 [Skill Auditor] → Quality signals (format, structure, frontmatter)
     ↓
-[Trigger Benchmark] → 20-query routing accuracy test
+[Two-Claude Ad-hoc Test] → Evaluation-driven routing verification
     ↓
 [Analyzer] → 3 prioritized changes with teaching outcomes
     ↓
@@ -249,15 +251,21 @@ Agent(description = "Audit [skill] for quality",
 1. Grader: Grade for teaching effectiveness
 2. Comparator: Compare versions if applicable
 3. Skill Auditor: Audit for quality signals
-4. Trigger Benchmark: python3 ${CLAUDE_SKILL_DIR}/scripts/run_trigger_benchmark.py [skill] --interactive
+4. Two-Claude Ad-hoc Test: Run evaluation-driven routing verification
 5. Analyzer: Synthesize into 3 prioritized changes
 ```
 
-### Trigger Benchmark
+### Two-Claude Ad-hoc Testing
 
-Tests skill description reliability with 20 queries across five categories. Core positive cases (5 queries covering essential triggers) must route at 100%. Edge positive cases (3 queries) should route above 60%. Core negative cases (5 queries) must not trigger at 100%. Edge negative cases (3 queries) should not trigger above 40%. Held-out blind-test queries (4 queries) should route correctly above 70%.
+Official approach for trigger verification: create evaluations before writing documentation, then test with two independent Claude instances. The goal is evaluation-driven development — verify routing works with real queries before committing to description language.
 
-**The benchmark is a teaching instrument, not a gate.** Failed test cases teach where the description is unclear. If held-out performance drops below 70%, the description has overfit to specific test cases — rebuild with genuinely different queries.
+**Process:**
+1. Draft candidate descriptions for the skill
+2. Create a small eval set of representative queries
+3. Test routing with two Claude instances (ad-hoc, not scripted benchmark)
+4. Refine description based on routing results
+
+**The eval is a teaching instrument, not a gate.** Failed test cases teach where the description is unclear. If ad-hoc performance is poor, rebuild with genuinely different query language.
 
 ### Grading Dimensions
 
