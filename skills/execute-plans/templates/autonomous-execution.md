@@ -93,6 +93,8 @@ Spawn one worker, wait for completion, then spawn next.
 
 ### Worker Prompt Structure
 
+**Critical:** Subagents start with FRESH context — no inheritance from orchestrator. Every piece of context needed must be explicitly included in the prompt below. A subagent cannot reference "as we discussed" or "from earlier" — it has no idea what that means.
+
 Each worker receives:
 
 ```
