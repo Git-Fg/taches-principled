@@ -354,7 +354,7 @@ The frontmatter provides the routing signal. The H1 title establishes identity. 
 
 When SKILL.md delegates to an agent file, reference it semantically — not with JSON or tool syntax:
 
-> "Delegate to the explorer agent to map the project structure. Read `agents/explorer.md` for the agent briefing and pass it alongside the task context."
+> "Delegate to the explorer agent to map the project structure. Read `{baseDir}/agents/explorer.md` for the agent briefing and pass it alongside the task context."
 
 The skill body describes intent and scope. The agent file provides the executable prompt. This separation keeps SKILL.md readable and agent prompts portable.
 
