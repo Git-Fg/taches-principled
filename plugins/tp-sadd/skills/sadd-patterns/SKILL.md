@@ -2,10 +2,7 @@
 name: sadd-patterns
 description: "Design multi-agent architectures — context isolation, supervisor/swarm/hierarchical structures, debate protocols, and coordination patterns"
 when_to_use: |
-  Use when the user says "design architecture", "multi-agent", "supervisor pattern",
-  "swarm", "coordinate agents", "agent hierarchy", or "how should agents communicate".
-  IMMEDIATELY when user asks to design a system that spans multiple agent invocations
-  with coordination needs.
+  When user says 'design architecture', 'multi-agent', 'supervisor pattern', 'swarm', 'coordinate agents', 'agent hierarchy', 'how should agents communicate'. IMMEDIATELY when user asks to design a system that spans multiple agent invocations with coordination needs. FIRST when choosing between supervisor, swarm, or hierarchical patterns.
 argument-hint: Architecture requirements and coordination pattern
 ---
 

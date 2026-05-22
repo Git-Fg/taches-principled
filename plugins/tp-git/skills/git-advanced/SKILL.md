@@ -1,11 +1,7 @@
 ---
 name: git-advanced
-description: Attach metadata to commits without rewriting history and work on multiple branches simultaneously with worktrees
-argument-hint: notes <command> | worktrees <command>
-when_to_use: |
-  Use when the user says "git notes", "add note to commit", "annotate commit", "attach metadata", or "worktree".
-  IMMEDIATELY when the user asks to "work on multiple branches", "switch branches without stashing", "checkout multiple branches", "parallel branches", or "branch in parallel".
-  BEFORE stashing changes to switch contexts — offer worktree as an alternative.
+description: "Attach metadata to commits without rewriting history and work on multiple branches simultaneously with worktrees."
+when_to_use: "Use when the user says 'git notes', 'add note to commit', 'annotate commit', 'attach metadata', or 'worktree'. IMMEDIATELY when the user asks to 'work on multiple branches', 'switch branches without stashing', 'checkout multiple branches', 'parallel branches', or 'branch in parallel'. BEFORE stashing changes to switch contexts — offer worktree as an alternative."
 ---
 
 ## Decision Router

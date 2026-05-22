@@ -1,7 +1,8 @@
 ---
 name: execute-prompts
-description: "Execute prompts from .principled/prompts/ via delegated sub-tasks. Use when user asks to run, execute, or launch prompts."
+description: "Executes prompts from .principled/prompts/ via delegated sub-tasks. Use when user says 'run prompts', 'execute prompts', or 'launch prompts'."
 when_to_use: |
+  Use when the user says "run prompts", "execute prompts", "launch the prompts", or "run my prompt file".
   Do NOT use for interactive debugging, single-file edits, or one-off questions that don't involve prompt files.
 ---
 

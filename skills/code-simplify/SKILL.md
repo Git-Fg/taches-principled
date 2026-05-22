@@ -1,11 +1,9 @@
 ---
 name: code-simplify
-description: >-
-  Refactor complex code by reducing cognitive load through extraction,
-  flattening, deduplication, and dead-code elimination.
-when_to_use: >-
-  A function, class, or module exceeds readability thresholds, has excessive
-  nesting or duplication, or contains dead or commented-out code.
+description: "Refactors complex code to reduce cognitive load. Use when code has excessive nesting, duplication, or dead code that exceeds readability thresholds."
+when_to_use: |
+  Use when the user says "simplify this", "clean up this code", "reduce complexity", or "this is too nested".
+  IMMEDIATELY when encountering functions over 40 lines, nesting beyond 3 levels, or duplicated code blocks.
 ---
 
 # Code Simplify

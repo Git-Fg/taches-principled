@@ -1,9 +1,9 @@
 ---
 name: kaizen
-description: Guardrails for continuous improvement — incremental progress, error-proof design, standardized patterns, and YAGNI built into every code decision
+description: Four design-time constraints applied to every code decision: incremental improvement, error-proof design (poka-yoke), standardized patterns, and YAGNI. Shapes implementation, refactoring, and architecture.
 when_to_use: |
-  Use automatically when implementing, refactoring, designing systems, or making architectural decisions.
-  IMMEDIATELY when writing code — this skill shapes every decision as a design-time constraint.
+  Use when implementing, refactoring, designing systems, or handling errors. ALWAYS before writing code — these constraints apply to every decision.
+  FIRST when tempted to over-engineer or add speculative abstractions.
 argument-hint: Applied automatically when implementing, refactoring, designing, or handling errors
 ---
 

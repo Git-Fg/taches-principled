@@ -1,7 +1,8 @@
 ---
 name: create-subagents
-description: "Create specialized Claude Code subagents with focused roles. Use when user asks to create an agent, delegate work, or set up automated subagents."
+description: "Creates specialized Claude Code subagents with focused roles. Use when user says 'create an agent', 'delegate work', or 'set up automated subagents'."
 when_to_use: |
+  Use when the user says "create an agent", "spawn a subagent", "make me an agent for X", or "delegate this work".
   Do NOT use for general help, single-task execution, or when direct conversation is faster.
 ---
 

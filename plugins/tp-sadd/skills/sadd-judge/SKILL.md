@@ -2,10 +2,7 @@
 name: sadd-judge
 description: "Evaluate work using meta-judge then judge sub-agents: single judge for routine checks, 3-judge debate for high-stakes consensus"
 when_to_use: |
-  Use when the user says "judge this", "evaluate", "assess quality", "verify this",
-  "check my work", "review this solution", "grade this", or "is this any good".
-  IMMEDIATELY when user asks for LLM-as-Judge verification or quality assessment.
-  FIRST when evaluation requires independent criteria (not hardcoded).
+  When user says 'judge this', 'evaluate', 'assess quality', 'verify this', 'check my work', 'review this solution', 'grade this', 'is this any good'. IMMEDIATELY when user asks for LLM-as-Judge verification or quality assessment. FIRST when evaluation requires independent criteria (not hardcoded).
 argument-hint: "[evaluation-focus] [--debate]"
 ---
 

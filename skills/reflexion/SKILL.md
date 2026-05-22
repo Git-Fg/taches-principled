@@ -1,9 +1,9 @@
 ---
 name: reflexion
-description: Structured quality workflows — self-reflection, multi-perspective critique, and durable learning capture for any completed work
+description: Self-critique completed work with severity-rated findings, multi-perspective judge review for high-stakes decisions, and learning capture into project memory. Three modes: reflect, critique, memorize.
 when_to_use: |
   Use when the user says "reflect on this", "review my work", "critique this", or "what could be better".
-  IMMEDIATELY after completing significant work that needs quality verification or cross-session learning.
+  IMMEDIATELY after completing significant work that needs quality verification. FIRST before any high-stakes shipping decision.
 argument-hint: Optional method (reflect/critique/memorize) and focus area or confidence threshold
 ---
 

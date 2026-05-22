@@ -1,10 +1,8 @@
 ---
 name: implement-task
-description: "Execute task implementation steps with automated quality verification using sub-agent dispatch, panel evaluation, and iterative refinement"
+description: "Orchestrate multi-step task implementation with automated quality verification using sub-agent dispatch, panel evaluation, and iterative refinement"
 when_to_use: |
-  Use when the user says "implement this", "start building", "execute the plan", "work on this task",
-  "build it", or "code this up". IMMEDIATELY after a task has been refined and is ready for
-  implementation. Use --continue to resume interrupted work, --refine to re-verify after edits.
+  When user says 'implement this', 'start building', 'execute the plan', 'work on this task', 'build it', 'code this up'. IMMEDIATELY after task has been refined and is ready for implementation. Use --continue to resume interrupted work, --refine to re-verify after edits.
 argument-hint: "[task file] [--continue] [--refine] [--human-in-the-loop] [--target-quality X.X] [--skip-judges]"
 ---
 

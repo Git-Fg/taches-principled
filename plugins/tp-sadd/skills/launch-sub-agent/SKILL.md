@@ -1,11 +1,8 @@
 ---
 name: launch-sub-agent
-description: Launch a focused sub-agent with automatic model selection based on task complexity, Zero-shot CoT reasoning, and mandatory self-critique verification - use when delegating work to a sub-agent and wanting optimal configuration
+description: "Launch focused sub-agent with automatic model selection based on task complexity, Zero-shot CoT reasoning, and mandatory self-critique verification"
 when_to_use: |
-  Use when the user says "launch sub-agent", "dispatch agent", "delegate to agent",
-  "spawn agent", "send to background", or "run this in a subagent".
-  IMMEDIATELY when user wants to delegate work with optimal model selection.
-  FIRST when task requires context isolation and self-critique verification.
+  When user says 'launch sub-agent', 'dispatch agent', 'delegate to agent', 'spawn agent', 'send to background', 'run this in a subagent'. IMMEDIATELY when user wants to delegate work with optimal model selection. FIRST when task requires context isolation and self-critique verification.
 argument-hint: Task description and optional model/agent/output flags
 ---
 

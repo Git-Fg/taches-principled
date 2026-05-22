@@ -1,9 +1,9 @@
 ---
 name: root-cause-tracing
-description: Traces bugs backward through the call stack to find the original invalid data or incorrect behavior trigger
+description: Trace bugs backward through the call stack to find the original trigger. Instruments before the failure point to capture cause context.
 when_to_use: |
   Use when the user says "trace this bug", "find where it started", "what called this", or "where did this come from".
-  IMMEDIATELY when an error occurs deep in execution with a long call chain.
+  IMMEDIATELY when an error surfaces deep in execution with a long call chain — BEFORE applying symptom-level fixes.
 argument-hint: "[error description or symptom]"
 ---
 

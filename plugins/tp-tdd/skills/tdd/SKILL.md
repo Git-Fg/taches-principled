@@ -1,12 +1,7 @@
 ---
 name: tdd
-description: Complete test lifecycle — Red-Green-Refactor TDD, post-hoc coverage addition, and failing test repair for any codebase
-argument-hint: Optional method (tdd/write/fix) and what to focus on
-when_to_use: |
-  Use when the user says "TDD", "test-driven", "RED-GREEN", "write the test first", "test first", or "red green refactor".
-  IMMEDIATELY when the user says "write tests", "add coverage", "test this code", "coverage for", or "tests needed".
-  IMMEDIATELY when the user says "fix tests", "fix failing tests", "tests are broken", "restore test suite", or "update assertions".
-  BEFORE implementing any new feature or bug fix when tests do not yet exist.
+description: "Complete test lifecycle — Red-Green-Refactor TDD, post-hoc coverage addition, and failing test repair."
+when_to_use: "Use when the user says 'TDD', 'test-driven', 'RED-GREEN', 'write the test first', 'test first', or 'red green refactor'. IMMEDIATELY when the user says 'write tests', 'add coverage', 'test this code', 'coverage for', or 'tests needed'. IMMEDIATELY when the user says 'fix tests', 'fix failing tests', 'tests are broken', 'restore test suite', or 'update assertions'. BEFORE implementing any new feature or bug fix when tests do not yet exist."
 ---
 
 ## Decision Router

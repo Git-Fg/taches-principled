@@ -1,11 +1,8 @@
 ---
 name: judge-with-debate
-description: Evaluate solutions through multi-round debate between independent judges until consensus - use for high-stakes evaluation where multiple perspectives and rigorous argumentation improve assessment accuracy
+description: "Multi-round debate between independent judges until consensus — for high-stakes evaluation where rigorous argumentation improves assessment accuracy"
 when_to_use: |
-  Use when the user says "debate this", "multi-judge debate", "reach consensus",
-  "adversarial evaluation", or "multiple perspectives on quality".
-  IMMEDIATELY when user asks for evaluation through structured debate between judges.
-  FIRST when high-stakes decisions require arguing positions before consensus.
+  When user says 'debate this', 'multi-judge debate', 'reach consensus', 'adversarial evaluation', 'multiple perspectives on quality'. IMMEDIATELY when user asks for evaluation through structured debate between judges. FIRST when high-stakes decisions require arguing positions before consensus.
 argument-hint: Solution path(s) and evaluation criteria
 ---
 

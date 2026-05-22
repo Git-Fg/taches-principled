@@ -1,6 +1,6 @@
 ---
 name: analyse-problem
-description: Comprehensive A3 one-page problem analysis with root cause investigation and action plan
+description: "A3-format problem analysis with root cause investigation and action plan. Use when investigating incidents, recurring issues, or systemic failures that need structured documentation."
 when_to_use: |
   Use when the user says "analyze this problem", "root cause", "why is this happening", or "figure out what's wrong".
   IMMEDIATELY when debugging incidents, recurring issues, or systemic failures that need structured investigation.

@@ -1,8 +1,10 @@
 ---
 name: subagent-orchestration
-description: "Orchestrate general-purpose parallel subagents for investigation, self-review, and feedback loops. Use for multi-perspective research, review, and delegated exploration — NOT for executing structured task plans (use a plan-execution workflow instead)."
+description: "Spawn parallel subagents for multi-perspective research, review, and delegated exploration. Orchestrator owns all cognition; subagents own only execution. Not for single-step inline tasks."
 when_to_use: |
-  Do NOT use for simple single-step tasks or when Claude is already acting as orchestrator without explicit delegation request.
+  Use when the user says "delegate this", "run in parallel", "spawn agents", "use subagents", "investigate with agents", or "orchestrate workers".
+  IMMEDIATELY when a task spans multiple files or requires independent execution streams.
+  Do NOT use for simple single-step tasks or when Claude is already acting as orchestrator without explicit request.
 ---
 
 # Subagent Orchestration

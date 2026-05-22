@@ -1,6 +1,6 @@
 ---
 name: add-task
-description: "Create a draft task file in .specs/tasks/draft/ from user intent — sets up folder structure, type classification, naming convention, and preserves original prompt"
+description: "Creates draft task files in .specs/tasks/draft/ from user intent. Use when user says 'capture this task', 'create a task', 'add to backlog', or 'log this as something to do'."
 when_to_use: |
   Use when the user says "capture this task", "create a task", "add to my backlog", or "log this as something to do".
   IMMEDIATELY when the user expresses intent that should be tracked, refined, and implemented later.
