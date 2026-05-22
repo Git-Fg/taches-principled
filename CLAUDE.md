@@ -33,6 +33,7 @@ Skill authoring is taught by the `create-skills` skill. See that skill for:
 - **Delta principle**: Only document what differs from default behavior
 - **Skill anatomy**: Frontmatter and body structure
 - **Anti-patterns**: What to avoid in skill design
+- **Cross-skill references**: Never cite other skills' files with paths (e.g., `skills/create-plans/references/X.md`) — use natural language: "see the X.md file in the create-plans skill's references"
 - **Decision router**: How to structure SKILL.md for strong reference steering
 
 ---
@@ -140,7 +141,7 @@ EOF
 - [ ] README updated if structure changed
 - [ ] CHANGELOG entry added
 - [ ] No MCP references (plugin is MCP-free)
-- [ ] No broken cross-references between skills
+- [ ] No broken cross-references between skills (never use file paths to other skills' references/agents/workflows — use natural language like "see the plan-format.md file in the create-plans skill")
 - [ ] User interaction uses clear, structured options
 
 For skill-authoring self-check, see `create-skills` skill.
