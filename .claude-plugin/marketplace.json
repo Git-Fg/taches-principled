@@ -1,5 +1,6 @@
 {
   "name": "taches-principled",
+  "description": "Principle-based plugin ecosystem for Claude Code — teaches goal-oriented skill authoring, multi-agent orchestration, and autonomous project execution.",
   "owner": {
     "name": "Felix",
     "email": "felix@example.com"
