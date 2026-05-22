@@ -2,7 +2,35 @@
 
 All notable changes are documented here.
 
-## [Unreleased]
+## [0.3.0] — 2026-05-22
+
+### Added
+- **22 root skills**: Integrated review (review-pr, review-local-changes), kaizen (kaizen, analyse, analyse-problem, cause-and-effect, plan-do-check-act, root-cause-tracing, why), and docs (update-docs, write-concisely) into root plugin
+- **6 separate plugins**: Ported from context-engineering-kit — tp-sadd (9 skills), tp-fpf (3 skills), tp-git (4 skills), tp-tdd (1 skill), tp-sdd (5 skills), tp-ddd (14 rules)
+- **Decision routers**: All 68 skills now have IF/THEN decision routers at top
+- **Semantic vocabulary**: Cross-plugin synergy through shared workflow vocabulary (no plugin name references)
+- **Integration architecture**: `.principled/plans/BRIEF.md`, `ROADMAP.md`, `scratch/integration-architecture.md`, `scratch/fan-out-plan.md`
+- **Phase summaries**: `.principled/plans/phases/00-scaffold/SUMMARY.md`, `01-reflexion/SUMMARY.md`
+
+### Changed
+- **plugin.json**: Bumped to 0.3.0, updated description with full lifecycle scope
+- **marketplace.json**: Bumped to 0.4.0, 7 entries (root + 6 separate plugins)
+- **CLAUDE.md**: Added Plugin Management section for multi-plugin marketplace operations
+
+### Fixed
+- Cross-plugin naming violations: all 68 skills use semantic vocabulary instead of plugin name references
+- XML tags removed from all ported content (markdown headings only)
+- Threatening language removed from SADD and reflexion skills (professional tone)
+- Meta-judge pattern deduplicated across 10 SADD skills (was 4,000 lines of copy-paste)
+
+## [0.2.0] — 2026-05-22
+
+### Added
+- **code-simplify skill**: Simplification pipeline with 5 stages (Extract & Name, Reduce Nesting, Remove Duplication, Eliminate Dead Code, Replace State Machines with Data), anti-patterns with wrong/right pairs, inline agent template, Policy/Mechanism framing, numeric thresholds, and language-specific references for JS/TS, Python, Go, and Ruby
+- **code-simplify skill**: `references/language-patterns.md` with language-specific patterns
+- **code-simplify skill**: `references/simplification-scope.md` with scope boundaries and file ownership rules
+- **commands/simplify.md**: `/simplify` command for direct invocation with optional file-pattern argument
+- **plugin.json**: Bumped to 0.2.0, added code-simplify keyword
 
 ## [0.1.0] — 2026-05-22
 

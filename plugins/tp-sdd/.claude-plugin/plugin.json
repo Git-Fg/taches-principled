@@ -1,0 +1,18 @@
+{
+  "name": "tp-sdd",
+  "displayName": "TP Software Design & Delivery",
+  "version": "0.2.0",
+  "description": "Software design and delivery workflow — brainstorm ideas, add tasks, create plans, and implement with LLM-as-Judge verification.",
+  "author": {
+    "name": "Felix"
+  },
+  "license": "MIT",
+  "keywords": [
+    "taches-principled",
+    "claude-code",
+    "sdd",
+    "design",
+    "delivery",
+    "workflow"
+  ]
+}

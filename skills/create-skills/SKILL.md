@@ -460,7 +460,7 @@ When optimizing a description on test cases, keep 4-5 held out. If 100% on train
 
 ### Focused skill with single responsibility
 
-**Good:** "create-skills" teaches skill creation only. "create-subagents" teaches subagent configuration only. Each has one job.
+**Good:** A skill for authoring skills covers skill creation only. A skill for configuring workers covers subagent configuration only. Each has one job.
 
 **Why:** Focused skills provide clear routing signals. Claude knows exactly when to load them and what they cover. Focused skills also compose naturally — the orchestrator coordinates, the specialists execute.
 

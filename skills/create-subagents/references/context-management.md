@@ -412,7 +412,7 @@ Use shared scratchpads (`.principled/scratch/multi-agent-state.md`) when:
 - State must persist across agent invocations
 - No single agent has the complete picture
 
-**See also:** `{baseDir}/references/gotchas.md` — Missing shared state gotcha for when this matters.
+**See also:** `../references/gotchas.md` — Missing shared state gotcha for when this matters.
 
 ### When Full Context Is Appropriate
 
@@ -446,4 +446,4 @@ Context Usage  │  Quality Level   │  Mental State
 70%+           │  POOR           │  "Running out"
 ```
 
-**Target:** Plans should complete within ~50% of context usage. Stop before quality degrades, not at context limit. See `{baseDir}/references/token-economics.md` for full explanation of token economics.
+**Target:** Plans should complete within ~50% of context usage. Stop before quality degrades, not at context limit. See `../references/token-economics.md` for full explanation of token economics.

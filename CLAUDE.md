@@ -8,7 +8,7 @@ Development practices for maintaining this plugin. These are operational rules, 
 
 **Marketplace version** and **plugin version** are independent:
 
-- **Plugin version** (`0.0.2-alpha`): Incremented for any content change to this plugin
+- **Plugin version** (`0.3.0`): Incremented for any content change to this plugin
 - **Marketplace version** (root `marketplace.json`): Incremented when releasing a collective update across all plugins
 
 **Update sequence:**
@@ -186,13 +186,7 @@ Generated plans, prompts, scratch notes, and cross-session memory go here. This 
 ```
 .principled/
 ├── plans/           # Plans, briefs, roadmaps, phases
-│   ├── phases/     # Phase-specific plans and summaries
-│   └── .attic/     # Archived completed phases
-├── prompts/        # Generated prompts
-│   ├── analyses/
-│   ├── research/
-│   ├── completed/
-│   └── .attic/
+│   └── phases/     # Phase-specific plans and summaries
 ├── scratch/        # Debug sessions, temp artifacts
 └── memory/         # Architecture state, cross-session notes
 ```
@@ -203,18 +197,16 @@ Generated plans, prompts, scratch notes, and cross-session memory go here. This 
 
 ---
 
-## Explorer Subagent Protocol (Invariant)
+## Explorer Subagent Protocol
 
-When ANY skill in this plugin spawns subagents for exploration/investigation:
+When spawning subagents for exploration/investigation, the orchestrator should:
 
-1. **Read** existing scratchpad BEFORE spawning
-2. **Write** current context/questions to scratchpad
-3. **Subagent MUST have Write tool** — never use "native" Explore subagents (Haiku, read-only) for investigation work
-4. **Read** scratchpad AFTER subagents return, BEFORE synthesizing
+1. **Read** any existing scratch notes BEFORE spawning — avoid redundant work
+2. **Write** current context and questions to the scratch area — preserve institutional memory
+3. **Use a general-purpose subagent with Write tool** — Haiku Explore subagents are read-only and cannot write findings; a general-purpose subagent with `[Read, Write, Grep, Glob, Bash]` is needed for investigation work
+4. **Read** scratch notes AFTER subagents return, BEFORE synthesizing
 
-Scratchpad location: `.principled/scratch/{topic}.md`
-
-**This is NOT optional guidance — it is a project invariant that prevents the telephone game problem.** Native Explore subagents cannot write findings to scratchpad. Use a general-purpose subagent with `tools: [Read, Write, Grep, Glob, Bash]` instead.
+**Guidance, not rigidity:** The goal is preventing the telephone game — information degrading as it passes through multiple agents. Writing findings to a shared artifact (rather than relying on subagent output alone) keeps the chain intact. The scratch area location is `.principled/scratch/` — use descriptive topic filenames.
 
 ---
 
@@ -305,6 +297,49 @@ A perfectly formatted skill that teaches nothing scores 0/10 on teaching. Format
 **Real problem verification:** Every change should describe a specific session, error, or user experience that motivated it.
 
 ---
+
+## Plugin Management
+
+This repository serves as both a **single plugin** (taches-principled) and a **marketplace** hosting multiple plugins under `plugins/`.
+
+### Directory Structure
+
+```
+plugins/{tp-sadd,tp-sdd,tp-fpf,tp-git,tp-tdd,tp-ddd}/
+├── .claude-plugin/plugin.json     # Plugin manifest (name, version, author)
+├── skills/{name}/SKILL.md         # One directory per skill
+├── agents/                        # Bundled subagent definitions
+└── rules/                         # Always-active guardrails (DDD, tech-stack)
+```
+
+### Naming Convention
+
+All imported/ported plugins use the `tp-` prefix: `tp-sadd`, `tp-sdd`, `tp-fpf`, `tp-git`, `tp-tdd`, `tp-ddd`.
+
+### Adding a New Plugin
+
+1. Create `plugins/{name}/.claude-plugin/plugin.json` with version `0.1.0`
+2. Create `plugins/{name}/skills/{skill-name}/` directories
+3. Write SKILL.md files following the decision router + policy/mechanism patterns used by existing skills
+4. Add plugin entry to `.claude-plugin/marketplace.json`
+5. Bump marketplace version
+
+### Plugin Isolation Principle
+
+Each plugin must:
+- Work when installed alone (zero dependencies on other plugins)
+- Describe its workflow stage using semantic vocabulary (not plugin names)
+- Include a decision router for trigger routing
+
+### Non-Brittle Cross-Plugin Communication
+
+Skills must NOT reference other plugins by name. Use shared workflow vocabulary:
+- ❌ "Use tp-sadd:judge for verification"
+- ✅ "For independent evaluation, dispatch a judge with isolated context"
+- ❌ "Feeds into tp-kaizen:analyse"
+- ✅ "Produces analysis output for downstream improvement processes"
+
+See the synergy map in the integration architecture document for the full shared vocabulary.
 
 ## References
 

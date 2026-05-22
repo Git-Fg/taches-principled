@@ -1,0 +1,17 @@
+{
+  "name": "tp-sadd",
+  "displayName": "TP Structured Agent-Driven Development",
+  "version": "0.2.0",
+  "description": "Structured agent-driven development with multi-pattern evaluation \u2014 judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
+  "author": {
+    "name": "Felix"
+  },
+  "license": "MIT",
+  "keywords": [
+    "taches-principled",
+    "claude-code",
+    "evaluation",
+    "subagents",
+    "judge"
+  ]
+}

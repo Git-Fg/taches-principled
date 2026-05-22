@@ -1,0 +1,64 @@
+---
+name: ideation
+description: "Refine vague concepts through collaborative questioning or generate diverse creative options using structured probability sampling. Two modes: collaborative dialogue for concept refinement, divergent generation for creative exploration."
+argument-hint: "[feature concept, problem, or topic]"
+---
+
+## Decision Router
+
+IF user has an unformed idea or vague concept → use brainstorm mode: collaborative questioning to refine
+IF user needs creative idea generation on a subject → use create-ideas mode: probability sampling
+IF user already knows exactly what they want → skip to design capture directly
+IF combining with development workflow → produce `.specs/plans/<topic>.design.md` then create task file
+IF user needs structured evaluation rather than generation → use evaluation workflow instead
+IF idea is fully formed and documented → no need for this skill
+
+# Brainstorm Mode
+
+Collaborative dialogue that turns rough ideas into documented designs. Operates before implementation planning. Uses structured questioning to surface purpose, constraints, and success criteria, then incrementally validates a design section by section. One question per message builds clarity without overwhelming.
+
+## Core Principle
+
+Designs emerge through exploration, not dictation. Single questions answered one at a time build clarity without overwhelming the participant.
+
+## Process
+
+### Phase 1: Understand the Idea
+1. Read current project context (files, docs, recent commits) for grounding
+2. Ask one question per turn to refine the idea — prefer multiple choice when possible
+3. Focus on: purpose, constraints, success criteria
+4. Verification: can you state the core problem in one sentence?
+
+### Phase 2: Explore Approaches
+1. Generate 6 possible approaches with trade-offs: 3 high-probability (>0.80) as anchors, 3 diverse tail explorations (<0.10)
+2. Present options with your recommendation and reasoning
+3. Verification: do the approaches cover distinct solution regions (not minor variations of each other)?
+
+### Phase 3: Present the Design
+1. Break the design into sections of 200-300 words each
+2. Present each section and confirm "does this look right?" before proceeding
+3. Cover: architecture, components, data flow, error handling, testing
+4. Be ready to revisit and clarify when something does not make sense
+5. Verification: every section validated before the next begins
+
+## Output
+
+Validated design written to `.specs/plans/<topic>.design.md`, committed to git.
+
+## Design Decisions
+
+### One question at a time
+Multiple questions overwhelm and cause topic abandonment. Single questions force prioritization and make it easy to say "no."
+
+### Probability-based exploration
+High-probability options establish the expected path; low-probability options prevent premature convergence. Sampling from both tails avoids confirmation bias.
+
+### Section-by-section validation
+Presenting the full design at once invites rubber-stamping. Incremental validation catches misunderstandings early.
+
+### Relationship to development pipeline
+Produces validated design specifications that feed into task creation and implementation planning. Operates at the earliest stage of the development lifecycle.
+
+# Create Ideas Mode
+
+Generate 6 distinct responses for a given topic: 3 high-probability anchors (>0.80) representing central solutions, and 3 diverse tail explorations (<0.10) exploring different solution regions. Each response includes explanatory text and a numeric probability. Responses must be genuinely distinct from one another — no overlapping or minor-variation responses.

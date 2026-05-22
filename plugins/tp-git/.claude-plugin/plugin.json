@@ -1,0 +1,16 @@
+{
+  "name": "tp-git",
+  "displayName": "TP Git",
+  "version": "0.2.0",
+  "description": "Git workflow automation \u2014 conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
+  "author": {
+    "name": "Felix"
+  },
+  "license": "MIT",
+  "keywords": [
+    "taches-principled",
+    "claude-code",
+    "git",
+    "version-control"
+  ]
+}

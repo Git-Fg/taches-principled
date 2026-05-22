@@ -1,0 +1,16 @@
+{
+  "name": "tp-tdd",
+  "displayName": "TP Test-Driven Development",
+  "version": "0.2.0",
+  "description": "Test-driven development \u2014 write tests first, watch them fail, implement to pass. Fix broken tests after refactoring with verification.",
+  "author": {
+    "name": "Felix"
+  },
+  "license": "MIT",
+  "keywords": [
+    "taches-principled",
+    "claude-code",
+    "tdd",
+    "testing"
+  ]
+}

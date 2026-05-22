@@ -1,6 +1,6 @@
 ---
 name: subagent-orchestration
-description: "Orchestrate parallel subagents for delegated investigation, self-review, and iterative loops. Use when user says 'delegate', 'run in parallel', 'spawn agents', 'use subagents', 'background', 'investigate with agents', 'orchestrate workers', 'monitor in background', or 'task list'."
+description: "Orchestrate general-purpose parallel subagents for investigation, self-review, and feedback loops. Use for multi-perspective research, review, and delegated exploration — NOT for executing structured task plans (use a plan-execution workflow instead)."
 when_to_use: |
   Do NOT use for simple single-step tasks or when Claude is already acting as orchestrator without explicit delegation request.
 ---
@@ -295,7 +295,7 @@ See the failure modes reference for detailed prevention strategies.
 
 ## Reference Index
 
-This skill complements `create-subagents`. Key reference files (in the subagent authoring references directory):
+Key reference files for subagent authoring and orchestration include:
 
 - `race-framework.md` — Full RACE prompt structure
 - `orchestration-patterns.md` — All five patterns with examples

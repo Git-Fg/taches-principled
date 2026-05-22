@@ -1,6 +1,6 @@
 # TÂCHES Principled
 
-**Version:** 0.1.0
+**Version:** 0.3.0
 
 A principle-based Claude Code plugin for building skills, subagents, and project plans.
 
@@ -36,7 +36,7 @@ cp -r skills/* commands/* agents/* ~/.claude/
 
 ## What's Inside
 
-### 7 Skills
+### 22 Skills
 
 Skills load on demand and give Claude domain expertise without bloating every conversation.
 
@@ -49,8 +49,23 @@ Skills load on demand and give Claude domain expertise without bloating every co
 | **execute-prompts** | Executing prompts via delegated sub-tasks | Policy/Mechanism, Anti-Patterns, Thresholds |
 | **execute-plans** | Executing PLAN.md files via parallel subagent orchestration | Policy/Mechanism, Anti-Patterns, Thresholds |
 | **subagent-orchestration** | Orchestrating parallel subagents for delegated work with self-review loops | RACE Framework, 5 Parallel Patterns, Three Automation Layers |
+| **code-simplify** | Simplifying code post-hoc for clarity and maintainability | Pipeline, Policy/Mechanism, Anti-Patterns, Thresholds |
+| **add-task** | Capturing a task idea for structured development | Standardized folder structure, type classification |
+| **analyse** | Analyzing problems with structured investigation methods | Fishbone, A3, Five Whys |
+| **analyse-problem** | Comprehensive A3 problem analysis with root cause and action plan | A3 one-page format |
+| **code-review** | Reviewing code diffs for correctness bugs | Multi-effort review levels |
+| **ideation** | Generating and refining ideas systematically | Creative sampling, collaborative brainstorming |
+| **implement-task** | Implementing refined task specs with LLM-as-Judge verification | Quality-gated implementation |
+| **kaizen** | Continuous improvement with multiple Kaizen methods | Gemba Walk, Value Stream, Muda |
+| **plan-do-check-act** | Iterative experimentation cycles for systematic improvement | PDCA cycle |
+| **plan-task** | Refining draft specs into implementation-ready tasks | Multi-phase refinement, quality gates |
+| **reflexion** | Reflecting on past work to extract lasting insights | Agentic Context Engineering |
+| **root-cause-analysis** | Systematic root cause investigation using structured methods | Multiple RCA methods |
+| **root-cause-tracing** | Debugging by tracing backward through call stacks | Systematic backtracing with instrumentation |
+| **update-docs** | Maintaining project documentation via multi-agent workflow | Tech-writer agents, quality review |
+| **write-concisely** | Clear, professional writing for human-readable docs | Writing rules and standards |
 
-### 2 Commands
+### 3 Commands
 
 Slash commands for quick, focused workflows.
 
@@ -58,6 +73,7 @@ Slash commands for quick, focused workflows.
 |---------|-------------|
 | `/debug` | Apply systematic debugging methodology |
 | `/whats-next` | Create a handoff for a fresh session |
+| `/simplify` | Simplify and refine recently modified code |
 
 ### 7 Agents
 
@@ -72,6 +88,19 @@ Specialized agents for quality, review, and evaluation work.
 | **grader** | Evaluates skill teaching effectiveness on 4 dimensions |
 | **comparator** | Compares skill versions for delta analysis |
 | **analyzer** | Synthesizes evaluation results into improvement plans |
+
+### 6 Separate Plugins
+
+Six standalone plugins are hosted under `plugins/`, each independently installable from the marketplace:
+
+| Plugin | Focus |
+|--------|-------|
+| **tp-sadd** | Subagent-driven development with parallel dispatch, competitive generation, and LLM-as-Judge verification |
+| **tp-sdd** | Structured design and development workflow from ideation to implementation |
+| **tp-fpf** | Hypothesis-driven decision making with evidence lifecycle management |
+| **tp-git** | Git workflow automation for commits, PRs, and issue analysis |
+| **tp-tdd** | Test-driven development automation with fix workflows |
+| **tp-ddd** | Domain-driven design guardrails and conventions |
 
 ## Skills vs Commands
 
@@ -102,6 +131,7 @@ For those contributing to this plugin, see [CLAUDE.md](./CLAUDE.md) for developm
 | `execute-prompts` | When to use parallel vs. sequential | How to parse, resolve, and execute |
 | `execute-plans` | When to use autonomous/segmented/sequential | How to orchestrate parallel workers and milestone reviews |
 | `subagent-orchestration` | When to delegate vs. do inline | How to orchestrate parallel subagents and review loops |
+| `code-simplify` | When to simplify vs leave alone | The 5-stage simplification pipeline |
 
 ## The Principle-Based Approach
 

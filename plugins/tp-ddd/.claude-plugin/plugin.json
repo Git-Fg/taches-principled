@@ -1,0 +1,9 @@
+{
+  "name": "tp-ddd",
+  "displayName": "TP Domain-Driven Design",
+  "version": "0.1.0",
+  "description": "Domain-driven design rules — clean architecture, command-query separation, domain naming, explicit control flow, error handling patterns.",
+  "author": { "name": "Felix" },
+  "license": "MIT",
+  "keywords": ["taches-principled", "claude-code", "ddd", "architecture"]
+}

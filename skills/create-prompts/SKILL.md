@@ -481,4 +481,4 @@ Every prompt should include clear success criteria and verification steps.
 
 ## Reference Index
 
-**Self-contained:** This skill does not reference other skills by name or invocation pattern. Prompts created by this skill are executed by `execute-prompts`.
+**Self-contained:** This skill produces prompts as standalone artifacts. Prompts created by this skill flow to a companion execution skill as a compositional pair (see CLAUDE.md for the compositional pair exemption).
