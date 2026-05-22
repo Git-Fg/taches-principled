@@ -153,6 +153,8 @@ Every 2-3 tasks (whichever comes first):
 
 **Why:** The critic agent template provides structured output with blocking/non-blocking classification. Using it instead of inline prose ensures consistent review format and easier maintenance.
 
+Note: When referencing `{baseDir}/agents/critic.md` from within the `templates/` directory, the path resolves correctly because `{baseDir}` is evaluated at skill-root level, not templates level.
+
 ---
 
 ## Phase 5: Aggregate

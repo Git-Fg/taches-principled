@@ -196,6 +196,8 @@ At segment midpoint (every 2-3 tasks), trigger a self-review:
 
 **Spawn the reviewer** using `{baseDir}/agents/critic.md` as the spawn prompt. Fill the placeholders with the current segment state, files modified so far, milestone number, and review task.
 
+Note: When referencing `{baseDir}/agents/critic.md` from within the `templates/` directory, the path resolves correctly because `{baseDir}` is evaluated at skill-root level, not templates level.
+
 The reviewer returns structured output with blocking/non-blocking classification. If blocking issues are found, fix before proceeding to next task.
 
 **Do not skip the review** even if tasks appear to be running cleanly. Integration issues often surface at milestone boundaries.
