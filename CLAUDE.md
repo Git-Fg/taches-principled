@@ -60,6 +60,26 @@ This is not a violation of the self-contained principle — it's explicit compos
 
 ---
 
+## Plugin Path Portability
+
+Skills must work whether installed as personal (`~/.claude/skills/`), project (`.claude/skills/`), or plugin (`~/.claude/plugins/cache/*/`).
+
+**Rule:** In SKILL.md body and templates, use `{baseDir}` for all skill-internal paths:
+
+| Type | Use | Example |
+|------|-----|---------|
+| Read/Grep tool references | `{baseDir}` | `Read({baseDir}/agents/critic.md)` |
+| Bash tool / script execution | `${CLAUDE_SKILL_DIR}` | `python3 ${CLAUDE_SKILL_DIR}/scripts/validate.py` |
+| Reference files (references/*.md) | Relative or natural language | "see plan-format.md in the create-plans skill" |
+
+**Why:** `{baseDir}` is a prompt-injection variable resolved when the skill loads. `${CLAUDE_SKILL_DIR}` is an environment variable available to Bash tool at runtime. Plugin-installed skills have a known bug where relative paths resolve from CWD on first attempt — using both variables ensures portability.
+
+**Never use:**
+- Hard-coded paths like `skills/create-plans/agents/explorer.md`
+- Paths pointing to other skills' internals (use natural language instead)
+
+---
+
 ## Documentation Sync
 
 README.md lives in two places:
