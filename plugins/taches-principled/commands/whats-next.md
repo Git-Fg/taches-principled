@@ -2,7 +2,6 @@
 name: whats-next
 skill: plan-task
 description: Create a handoff document for continuing work in a fresh session
-disable-model-invocation: true
 ---
 
 Create a handoff document at `whats-next.md` capturing everything needed to continue this work.

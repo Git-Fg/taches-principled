@@ -1,7 +1,7 @@
 ---
 name: plan-task
 description: "Refine task specification from .specs/tasks/draft/ into implementation-ready task through parallel analysis, architecture synthesis, decomposition, and quality verification."
-when_to_use: "Use when the user says 'plan this', 'break this down', 'refine this task', 'spec this out', 'plan the implementation', or 'how should I approach this'. FIRST when a draft task needs analysis, architecture, or decomposition before implementation. Use --fast for quick turnaround."
+when_to_use: "Use when the user says 'plan this', 'break this down', 'refine this task', 'spec this out', 'plan the implementation', or 'how should I approach this'. FIRST when a draft task needs analysis, architecture, or decomposition before implementation. Do NOT use when the user provides a generic task without a specific file path — use the core plan-task skill instead. Use --fast for quick turnaround."
 argument-hint: ".specs/tasks/draft/<file>.md [--fast] [--target-quality X.X] [--skip-judges] [--human-in-the-loop phase,phase,...]"
 ---
 

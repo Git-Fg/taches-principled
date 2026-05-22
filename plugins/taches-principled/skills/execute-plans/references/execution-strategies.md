@@ -53,7 +53,7 @@ Three strategies for plan execution, differentiated by checkpoint structure and 
 - Milestone reviews: ~2% each
 - Total: <30% overhead target (orchestrator ~10-15% + workers + milestone reviews)
 
-**See also:** `{baseDir}/../create-subagents/references/gotchas.md` for the eight critical multi-agent gotchas.
+**See also:** the gotchas.md file in the create-subagents skill's references for the eight critical multi-agent gotchas.
 
 ---
 

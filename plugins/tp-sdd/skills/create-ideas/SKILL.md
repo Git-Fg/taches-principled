@@ -2,7 +2,7 @@
 name: create-ideas
 description: "Generate diverse idea set using probability sampling — produces high-probability options and creative alternatives with probability estimates"
 when_to_use: |
-  When user says 'generate ideas', 'brainstorm options', 'come up with alternatives', 'what if we', 'list possibilities', 'enumerate options'. IMMEDIATELY when user wants a diverse set of options rather than a single recommended approach. Probability sampling produces high-probability options and creative alternatives with estimates. DO NOT use for collaborative refinement of a single idea — use brainstorm instead.
+  When user says 'generate ideas', 'brainstorm options', 'come up with alternatives', 'what if we', 'list possibilities', 'enumerate options'. IMMEDIATELY when user wants a diverse set of options rather than a single recommended approach. Probability sampling produces high-probability options and creative alternatives with estimates. DO NOT use for collaborative refinement of a single idea — use brainstorm instead. DO NOT use when user wants dialogue and iterative refinement — use ideation instead.
 argument-hint: Topic or problem to generate ideas for [optional: number of ideas]
 ---
 

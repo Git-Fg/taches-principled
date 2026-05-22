@@ -2,7 +2,7 @@
 name: implement-task
 description: "Orchestrate multi-step task implementation with automated quality verification using sub-agent dispatch, panel evaluation, and iterative refinement"
 when_to_use: |
-  When user says 'implement this', 'start building', 'execute the plan', 'work on this task', 'build it', 'code this up'. IMMEDIATELY after task has been refined and is ready for implementation. Use --continue to resume interrupted work, --refine to re-verify after edits.
+  When user says 'implement this', 'start building', 'execute the plan', 'work on this task', 'build it', 'code this up'. IMMEDIATELY after task has been refined and is ready for implementation. Use --continue to resume interrupted work, --refine to re-verify after edits. Do NOT use for executing a PLAN.md file — use execute-plans instead. Do NOT use when the task is still in draft form — use plan-task to refine it first.
 argument-hint: "[task file] [--continue] [--refine] [--human-in-the-loop] [--target-quality X.X] [--skip-judges]"
 ---
 
