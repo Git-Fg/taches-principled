@@ -50,6 +50,23 @@ When spawning subagents for investigation/research/exploration:
 
 **Why:** The telephone game degrades quality by ~50% when orchestrators synthesize without source access. Direct scratchpad access eliminates paraphrase drift.
 
+## Orchestrator Pre-Commit Checklist
+
+Before spawning any subagent, validate:
+
+- [ ] Task is >5 minutes inline work (never delegate trivial tasks)
+- [ ] Scope is unambiguous (single file ownership or file-disjoint decomposition)
+- [ ] Success criteria are explicit (output format + coverage rule defined)
+- [ ] Rollback command is documented (one-command revert for each spawned agent)
+- [ ] Failure signal JSON schema is included in prompt
+- [ ] Subagent has REQUIRED Write tool access (never spawn read-only for investigation)
+- [ ] Scratchpad path is defined (`.principled/scratch/{topic}.md`)
+- [ ] Subagent instructed to update scratchpad before returning
+- [ ] Orchestrator will read scratchpad before synthesizing (telephone game prevention)
+- [ ] No overlapping file ownership between parallel agents
+- [ ] Context is minimal high-signal (no speculative background)
+- [ ] Iteration limit set (stop after 2 retries, never loop silently)
+
 ## Cost-Capability Spectrum
 
 Match the agent type to the task complexity:
@@ -128,6 +145,79 @@ See the orchestration patterns reference for full patterns and use-case examples
 | **Contest** | Unknown root cause — test competing hypotheses |
 | **Aggregator Fan-out/Fan-in** | N parallel workers → 1 aggregator synthesizes |
 
+### Inspiration Use Cases
+
+1. **Parallel Code Review** — Horizontal split by concern (security, perf, style)
+   ```
+   Lead → @security "Audit auth/ for vulnerabilities"
+        → @perf "Analyze db queries for N+1"
+        → @style "Check code style violations"
+   ```
+
+2. **Bug Investigation with Competing Theories** — Contest pattern for unknown root cause
+   ```
+   Lead → @theory-A "Test: race condition in async handler"
+        → @theory-B "Test: memory leak in connection pool"
+        → @theory-C "Test: deadlocks in goroutine scheduler"
+   ```
+
+3. **Multi-Domain Migration** — Vertical slice by layer (data, API, UI)
+   ```
+   Lead → @service-A "Migrate auth/, own files: auth/*"
+        → @service-B "Migrate user/, own files: user/*"
+        → @service-C "Migrate order/, own files: order/*"
+   ```
+
+4. **Library Evaluation** — Pipeline (research → compare → recommend)
+   ```
+   Lead → @researcher "Research X alternatives → /tmp/research.json"
+   [lead waits, then:]
+   └── @implementer "Implement using /tmp/research.json"
+   ```
+
+5. **Architecture Review** — Fan-out by subsystem, fan-in for decision
+   ```
+   Lead → @data-arch "Review data layer: schemas, queries, indexes"
+        → @api-arch "Review API layer: endpoints, auth, rate limits"
+        → @infra-arch "Review infra: deployment, scaling, monitoring"
+   [lead synthesizes: unified recommendations]
+   ```
+
+6. **Test Coverage Expansion** — Parallel workers by module, aggregator merges
+   ```
+   Lead → @unit-tests "Generate tests for src/models/"
+        → @unit-tests "Generate tests for src/services/"
+        → @unit-tests "Generate tests for src/api/"
+   [lead merges: dedupe → combined suite]
+   ```
+
+7. **Documentation Audit** — Parallel readers across doc sections
+   ```
+   Lead → @docs-review "Audit docs/api/ for completeness"
+        → @docs-review "Audit docs/guides/ for accuracy"
+        → @docs-review "Audit docs/reference/ for consistency"
+   ```
+
+8. **Dependency Audit** — Contest (safe vs unsafe upgrade paths)
+   ```
+   Lead → @safe-upgrade "Test upgrade path: minor versions only"
+        → @risky-upgrade "Test upgrade path: major versions with deprecations"
+   ```
+
+9. **Performance Profiling** — Horizontal split (CPU, memory, network)
+   ```
+   Lead → @perf-cpu "Profile CPU usage in src/"
+        → @perf-memory "Profile memory allocations"
+        → @perf-network "Profile network call latency"
+   ```
+
+10. **Refactoring Safety Check** — Fan-out by risk level, aggregator synthesizes
+    ```
+    Lead → @safe-refactor "Refactor low-risk: utils, helpers"
+         → @risky-refactor "Refactor high-risk: core business logic"
+    [lead synthesizes: migration plan with risk assessment]
+    ```
+
 ## Self-Review Loop
 
 After implementing a solution, run a maker-checker loop:
@@ -185,6 +275,23 @@ See the memory architecture reference for full details.
 **Key rule:** Stop and report after 2 retries on the same failure. Never loop silently.
 
 See the failure modes reference for detailed prevention strategies.
+
+## Delegation Guardrails
+
+### Never Do These
+- Delegate <5 min inline tasks
+- Spawn read-only agents for investigation (Write is REQUIRED)
+- Skip success criteria in spawn prompts
+- Omit rollback commands
+- Forget iteration limits (stop after 2 retries)
+- Assume completion without validation
+
+### Never Delegate These
+- Single-context-window tasks
+- Tasks requiring conversation memory between steps
+- Work requiring real-time synthesis during execution
+- Decisions where downstream judgment depends on upstream reasoning
+- File edits that require understanding orchestrator's broader context
 
 ## Reference Index
 

@@ -1,6 +1,6 @@
 # TÂCHES Principled
 
-**Version:** 0.0.2-alpha
+**Version:** 0.1.0
 
 A principle-based Claude Code plugin for building skills, subagents, and project plans.
 
@@ -36,7 +36,7 @@ cp -r skills/* commands/* agents/* ~/.claude/
 
 ## What's Inside
 
-### 6 Skills
+### 7 Skills
 
 Skills load on demand and give Claude domain expertise without bloating every conversation.
 
@@ -48,6 +48,7 @@ Skills load on demand and give Claude domain expertise without bloating every co
 | **create-prompts** | Creating executable prompts for Claude Code sessions | Policy/Mechanism, Anti-Patterns, Thresholds |
 | **execute-prompts** | Executing prompts via delegated sub-tasks | Policy/Mechanism, Anti-Patterns, Thresholds |
 | **execute-plans** | Executing PLAN.md files via parallel subagent orchestration | Policy/Mechanism, Anti-Patterns, Thresholds |
+| **subagent-orchestration** | Orchestrating parallel subagents for delegated work with self-review loops | RACE Framework, 5 Parallel Patterns, Three Automation Layers |
 
 ### 2 Commands
 
@@ -58,9 +59,9 @@ Slash commands for quick, focused workflows.
 | `/debug` | Apply systematic debugging methodology |
 | `/whats-next` | Create a handoff for a fresh session |
 
-### 4 Agents
+### 7 Agents
 
-Specialized agents for quality and review work.
+Specialized agents for quality, review, and evaluation work.
 
 | Agent | Purpose |
 |-------|---------|
@@ -68,6 +69,9 @@ Specialized agents for quality and review work.
 | **prompt-engineer** | Reviews prompts for clarity and effectiveness |
 | **skill-auditor** | Reviews skills for clarity and routing |
 | **subagent-auditor** | Reviews subagents for effectiveness |
+| **grader** | Evaluates skill teaching effectiveness on 4 dimensions |
+| **comparator** | Compares skill versions for delta analysis |
+| **analyzer** | Synthesizes evaluation results into improvement plans |
 
 ## Skills vs Commands
 
@@ -97,6 +101,7 @@ For those contributing to this plugin, see [CLAUDE.md](./CLAUDE.md) for developm
 | `create-prompts` | What a good prompt contains | How to gather requirements and generate |
 | `execute-prompts` | When to use parallel vs. sequential | How to parse, resolve, and execute |
 | `execute-plans` | When to use autonomous/segmented/sequential | How to orchestrate parallel workers and milestone reviews |
+| `subagent-orchestration` | When to delegate vs. do inline | How to orchestrate parallel subagents and review loops |
 
 ## The Principle-Based Approach
 

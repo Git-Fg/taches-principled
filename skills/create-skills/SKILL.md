@@ -29,6 +29,21 @@ A skill succeeds when:
 
 A skill fails when Claude cannot decide whether to load it.
 
+## Pre-Flight Validation Checklist
+
+Before committing a skill, verify:
+
+- [ ] Description triggers on intended inputs (test with `claude -p`)
+- [ ] Description does NOT trigger on off-topic inputs (expect 0)
+- [ ] Description ≤ 150 chars
+- [ ] when_to_use ≤ 200 chars
+- [ ] Body ≤ 500 lines
+- [ ] No invalid frontmatter fields (metadata, related_skills, tags)
+- [ ] Skill name is kebab-case
+- [ ] Numeric thresholds present if applicable
+- [ ] Anti-Patterns section with concrete wrong/right pairs
+- [ ] No broken cross-references
+
 ---
 
 ## Skill Categories
@@ -368,65 +383,112 @@ This convention ensures subagents self-report rather than silently making assump
 
 ## Testing Your Skill
 
-Invoke it: mention the skill name or topic in conversation. Check that Claude loads it correctly and produces expected results. Iterate.
+### Headless Trigger Validation
+
+Test skill loading with `claude -p`:
+
+```bash
+claude -p "<test-query>" \
+  --output-format stream-json \
+  --include-partial-messages \
+  2>&1 | grep -o '"create-skills"'
+```
+
+**Stream events to observe:**
+- `content_block_start` with `tool_use` = skill was evaluated
+- `content_block_delta` with `input_json_delta` = skill name transmitted
+
+**Quick grep validation:**
+```bash
+# Should trigger — returns skill name
+grep -o '"create-skills"' /tmp/trigger-test.jsonl
+
+# Should NOT trigger — returns nothing
+grep -c '"create-skills"' /tmp/trigger-test.jsonl  # expect 0
+```
+
+**Exit codes:** Exit 0 = command completed. Exit 1 = crash/error. Exit code does NOT indicate whether skill triggered — check JSONL content.
+
+### Train/Test Split for Descriptions
+
+When optimizing a description on test cases, keep 4-5 held out. If 100% on training cases but fails on held-out, you've overfit to the test suite — not learned the routing logic.
+
+**The test:** If core_positive = 100% AND held_out < 70% → overfit. Rebuild with genuinely different held-out queries.
+
+**Collect test queries:**
+- Real user prompts that should trigger your skill
+- Synthesize edge cases (variations, paraphrases)
+- Include negative cases (queries that should NOT trigger)
+
+### Description Tuning Guide
+
+| Symptom | Fix |
+|---------|-----|
+| Never triggers | Add explicit trigger phrases: "Use when user says 'X', 'Y', or 'Z'" |
+| Triggers on everything | Narrow action verb + add "Do NOT use for..." exclusion |
+| Triggers on wrong intent | Add boundary conditions in when_to_use |
+| Edge cases fail | Broader trigger language covering adjacent use cases |
+| Held-out tests fail | Overfit — rebuild test suite with genuinely different queries
 
 ## Anti-Patterns
 
 **Unifying principle:** All anti-patterns share low routing signal density — they give Claude no basis to distinguish this skill from others. All correct patterns share high routing signal density — they give Claude specific, unambiguous triggers that make routing decisions obvious.
 
 ### Vague description that won't route
-"Helps with coding tasks" — triggers on everything, means nothing.
 
-WHY: Without specific trigger phrases, Claude has no basis to decide
-when to load this skill vs. another. Vague descriptions provide no
-routing signal, making the skill invisible to the trigger system.
+**Avoid:** "Helps with coding tasks" — triggers on everything, means nothing.
+
+**Why:** Without specific trigger phrases, Claude has no basis to decide when to load this skill vs. another. Vague descriptions provide no routing signal, making the skill invisible to the trigger system.
+
+**Gotcha:** Generic descriptions produce generic routing. Specific phrases like "'write tests'" anchor the trigger to specific user intent.
 
 ### Specific description with trigger keywords
-"Creates unit tests with edge cases. Use when user asks to 'write tests', 'add test coverage', or 'generate tests'."
 
-WHY: Specific phrases like "'write tests'" and "'add test coverage'" give Claude
-concrete anchor points for the trigger matching algorithm. Each phrase maps to a
-specific user intent. When a user says "write tests," Claude can route with
-confidence. Generic phrases like "helps with coding" match everything and nothing.
+**Good:** "Creates unit tests with edge cases. Use when user asks to 'write tests', 'add test coverage', or 'generate tests'."
+
+**Why:** Specific phrases like "'write tests'" and "'add test coverage'" give Claude concrete anchor points for the trigger matching algorithm. Each phrase maps to a specific user intent. When a user says "write tests," Claude can route with confidence.
+
+**Gotcha:** Quote trigger phrases literally — they must match what users actually say.
 
 ### Overloaded skill doing too much
-A single skill that handles skill creation, agent configuration, AND hook setup has no clear identity.
 
-WHY: Routing is a classification problem — Claude must decide whether the
-current task matches this skill's domain. When a skill covers three unrelated
-domains, the trigger description must either enumerate all of them (making it
-vague) or focus on one (making it incomplete). Either way, the match score for
-any given task becomes ambiguous. Specificity requires bounded scope.
+**Avoid:** A single skill that handles skill creation, agent configuration, AND hook setup has no clear identity.
+
+**Why:** Routing is a classification problem — Claude must decide whether the current task matches this skill's domain. When a skill covers three unrelated domains, the trigger description must either enumerate all of them (making it vague) or focus on one (making it incomplete). Either way, the match score for any given task becomes ambiguous. Specificity requires bounded scope.
+
+**Gotcha:** If your description says "and" more than once, the skill is doing too much. Split at the conjunction.
 
 ### Focused skill with single responsibility
-"create-skills" teaches skill creation only. "create-subagents" teaches subagent configuration only. Each has one job.
 
-WHY: Focused skills provide clear routing signals. Claude knows
-exactly when to load them and what they cover. Focused skills also
-compose naturally — the orchestrator coordinates, the specialists execute.
+**Good:** "create-skills" teaches skill creation only. "create-subagents" teaches subagent configuration only. Each has one job.
+
+**Why:** Focused skills provide clear routing signals. Claude knows exactly when to load them and what they cover. Focused skills also compose naturally — the orchestrator coordinates, the specialists execute.
+
+**Gotcha:** A skill named after what it does (create-skills) beats a skill named after who uses it (developer-helper).
 
 ### Generic frontmatter fields
-"name: helper, description: helpful" — provides no routing signal.
 
-WHY: The name is how Claude identifies the skill. "helper" tells
-Claude nothing about what the skill does. A generic name means Claude
-cannot distinguish this skill from any other. Skill names should be
-nouns that describe the domain, not generic helpers.
+**Avoid:** "name: helper, description: helpful" — provides no routing signal.
+
+**Why:** The name is how Claude identifies the skill. "helper" tells Claude nothing about what the skill does. A generic name means Claude cannot distinguish this skill from any other.
+
+**Gotcha:** Skill names should be nouns describing the domain, not generic helpers. "security-audit" works; "helper" does not.
 
 ### Specific frontmatter
-"name: security-audit, description: 'Audits code for OWASP Top 10. Use when user mentions security, vulnerabilities, or XSS.'"
 
-WHY: The name "security-audit" is a noun describing a domain, not a verb
-describing an action. This allows Claude to match it against any user utterance
-mentioning that domain — "check for security issues," "audit this code," "look
-for XSS." A name like "helper" or "assistant" has no semantic anchor point.
+**Good:** "name: security-audit, description: 'Audits code for OWASP Top 10. Use when user mentions security, vulnerabilities, or XSS.'"
+
+**Why:** The name "security-audit" is a noun describing a domain, allowing Claude to match it against any user utterance mentioning that domain — "check for security issues," "audit this code," "look for XSS."
+
+**Gotcha:** A name like "helper" or "assistant" has no semantic anchor. "security-audit" anchors to security conversations.
 
 ### Per-file version metadata
-Adding `version:` and `updated:` frontmatter to every file in a system.
 
-WHY: Version numbers per file create maintenance overhead with no value. Git commit history already tracks when files changed. When a file is updated, you bump the version — but the version number never actually controls anything. It's ceremony. If you're adding metadata about when something changed instead of just changing it, stop.
+**Avoid:** Adding `version:` and `updated:` frontmatter to every file in a system.
 
-**Signal:** If you find yourself adding `version: 1.0` or `updated: 2026-05-22` to files, that's a sign you're adding metadata instead of just doing the work.
+**Why:** Version numbers per file create maintenance overhead with no value. Git commit history already tracks when files changed. When a file is updated, you bump the version — but the version number never actually controls anything. It's ceremony.
+
+**Gotcha:** If you find yourself adding `version: 1.0` or `updated: 2026-05-22` to files, that's a sign you're adding metadata instead of just doing the work. Git history is the source of truth.
 
 ## Reference Index
 

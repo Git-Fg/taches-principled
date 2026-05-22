@@ -4,6 +4,8 @@ All notable changes are documented here.
 
 ## [Unreleased]
 
+## [0.1.0] — 2026-05-22
+
 ### Added
 - **create-skills skill**: Decision Router with IF→FIRST/IMMEDIATELY/BEFORE imperative conditionals at top
 - **create-skills skill**: Five skill categories with inspirational examples (Constraint/Guardrail, Orchestration, Domain Expertise, QA, Creative Direction)
@@ -15,9 +17,9 @@ All notable changes are documented here.
 - **execute-plans skill**: Decision Router with strategy selection based on checkpoint types
 - **execute-plans skill**: Added Numeric Thresholds section
 - **agents/**: New grader, comparator, and analyzer agents for evaluation pipeline
-  - `grader.md` (162 lines): Teaching effectiveness rubric with 4 dimensions (Routing Signal, Delta Clarity, Teaching Posture, Anti-Pattern Quality)
-  - `comparator.md` (145 lines): Skill version comparison for delta analysis
-  - `analyzer.md` (140 lines): Synthesizes evaluations into prioritized improvement path
+  - `grader.md` (161 lines): Teaching effectiveness rubric with 4 dimensions (Routing Signal, Delta Clarity, Teaching Posture, Anti-Pattern Quality)
+  - `comparator.md` (115 lines): Skill version comparison for delta analysis
+  - `analyzer.md` (96 lines): Synthesizes evaluations into prioritized improvement path
 - **agents/skill-auditor.md**: Added Trigger Benchmark Integration section; added Evaluation Pipeline section documenting multi-agent evaluation workflow
 - **CLAUDE.md**: Added Evaluation Pipeline section documenting the grader/comparator/auditor/benchmark/analyzer multi-agent system
 - **create-subagents skill**: Multi-agent patterns import from taches-modernized research
@@ -38,8 +40,22 @@ All notable changes are documented here.
 - **execute-plans skill**: Added agents/critic.md for milestone self-review
 - **create-plans skill**: Added agents folder with subagent prompt templates
 - **execute-plans skill**: Added env-variable-pattern reference doc for portable skill paths
+- **subagent-orchestration skill**: Integrated as 7th skill with RACE framework, five parallel patterns, three automation layers, memory architecture, and failure modes
+- **create-subagents skill**: Added plugin scope gotcha (hooks/mcpServers/permissionMode silently ignored for plugin subagents), Task→Agent renaming note (v2.1.63), missing frontmatter fields (skills, memory, background, maxTurns, isolation)
+- **create-skills skill**: Added 3-level progressive disclosure pattern (Level 1 ~100 tokens always, Level 2 ~5k on trigger, Level 3 0 via bash injection)
+- **create-plans skill**: Added bash injection = 0 context cost pattern
+- **execute-plans skill**: Added Explorer Subagent Protocol for investigation tasks via scratchpad coordination
+- **execute-prompts skill**: Added Explorer Subagent Protocol and Thought/Action/Observation anti-pattern
+- **create-skills skill**: Added Fresh Context Warning for subagent spawning (no inheritance from orchestrator)
+- **all root agents**: Added spawn footers and failure signal sections to all 7 root-level agents
 
 ### Fixed
+- **execute-plans skill**: Fixed broken {baseDir} reference — orchestration-patterns.md now uses natural language (file lives in create-plans skill)
+- **execute-plans skill**: Fixed critic agent name collision with create-plans (critic → execute-critic)
+- **README.md**: Fixed skill count (6→7) and agent count (4→7), added subagent-orchestration rows
+- **CLAUDE.md**: Fixed stale version example (1.1.0→0.1.0)
+- **marketplace.json**: Added missing top-level description for validation cleanliness
+- **CHANGELOG.md**: Fixed stale agent line counts for comparator.md and analyzer.md
 - **execute-plans skill**: Use agents/critic.md template for milestone reviews
 - **create-plans skill**: Resolve inconsistencies found during reference review
 - **create-plans skill**: Resolve critical issues found during reference review
@@ -48,6 +64,7 @@ All notable changes are documented here.
 - Corrected GitHub repo references across plugin
 
 ### Changed
+- **Version**: Bumped from 0.0.2-alpha to 0.1.0 (plugin now has 7 skills, 7 root agents, evaluation pipeline)
 - **CLAUDE.md**: Reduced from ~475 lines to ~178 lines by moving teaching content to skills ( marketplace operations only)
 - **create-plans skill**: Complete remaining deferred improvements from reference review
 - Marked all deferred improvements from reference review as resolved

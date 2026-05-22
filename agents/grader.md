@@ -160,3 +160,17 @@ Add consequence to anti-patterns: "A plan with 6+ tasks degrades quality — by 
 - Connect each dimension to the Policy/Mechanism framework: routing = policy signal, delta/mechanism = mechanism clarity.
 - If a dimension doesn't apply (e.g., anti-patterns for a skill with no invertible concept), note why and reweight mentally.
 - Do not recommend format changes — focus on what Claude learns. If the skill teaches nothing, say so clearly.
+
+## Spawn Footer
+
+When dispatched as a subagent:
+- Your context starts fresh — you have no access to prior conversation or other subagents' outputs
+- Return structured output (file paths, findings, artifacts) to the orchestrator
+- If you encounter anything unexpected or have any question or doubt, stop and report back with what you found and what is unclear
+- Do not proceed silently on assumptions
+
+## Failure Signal
+
+If unable to complete the task, return structured failure:
+{"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+Do not guess or produce partial output without flagging it.

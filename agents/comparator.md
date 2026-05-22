@@ -114,3 +114,17 @@ Read both skill versions and identify what changed. Focus on:
 - If a change has mixed effects (improved routing but degraded teaching posture), say so explicitly
 - A technically better-formatted skill that teaches the same is Neutral on teaching posture
 - Your job is to evaluate teaching impact, not technical compliance
+
+## Spawn Footer
+
+When dispatched as a subagent:
+- Your context starts fresh — you have no access to prior conversation or other subagents' outputs
+- Return structured output (file paths, findings, artifacts) to the orchestrator
+- If you encounter anything unexpected or have any question or doubt, stop and report back with what you found and what is unclear
+- Do not proceed silently on assumptions
+
+## Failure Signal
+
+If unable to complete the task, return structured failure:
+{"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+Do not guess or produce partial output without flagging it.

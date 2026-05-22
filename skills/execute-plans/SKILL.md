@@ -11,7 +11,7 @@ when_to_use: |
 IF plan has zero checkpoints or only checkpoint:human-verify → Strategy A: Fully Autonomous
 IF plan has checkpoint:human-verify markers → Strategy B: Segmented Execution
 IF plan has checkpoint:decision or checkpoint:human-action → Strategy C: Sequential Execution
-IF spawning parallel workers → FIRST read `{baseDir}/references/orchestration-patterns.md` for pattern selection
+IF spawning parallel workers → FIRST read the orchestration-patterns.md file in the create-plans skill's references for pattern selection
 
 For detailed strategy mechanics → read `{baseDir}/references/execution-strategies.md` AFTER selecting strategy
 
@@ -103,7 +103,7 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 **Milestone self-review:**
 - Trigger: every 2-3 tasks completed, or at phase boundary
-- Spawn CRITIC subagent (haiku, read-only) to review what was done
+- Spawn CRITIC subagent (sonnet, with Write) to review what was done
 - Critic checks: correctness, edge cases, regressions, deviation handling
 - If critic finds issues: executor fixes before continuing to next milestone
 - This is internal review, not user interaction
@@ -577,8 +577,8 @@ IF checkpoint type is decision → BEFORE presenting read `{baseDir}/references/
 IF handling deviations → read `{baseDir}/references/deviation-rules.md`
 IF spawning autonomous worker → read `{baseDir}/templates/autonomous-execution.md`
 IF spawning segment worker → read `{baseDir}/templates/segment-execution.md`
-IF spawning milestone critic → read `{baseDir}/agents/critic.md`
-**Orchestration:** `{baseDir}/references/orchestration-patterns.md` — Five parallel patterns for subagent work
+IF spawning milestone critic → read `{baseDir}/agents/critic.md` (name: execute-critic)
+**Orchestration:** the orchestration-patterns.md file in the create-plans skill's references — Five parallel patterns for subagent work
 
 ---
 

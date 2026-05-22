@@ -76,11 +76,15 @@ Plans must complete within ~50% of context usage to maintain consistent quality.
 | 0-30% | PEAK | "I can be thorough" |
 | 30-50% | GOOD | "Still have room" |
 | 50-70% | DEGRADING | "Need to be efficient" |
-| 70%+ | POOR | "Must finish quickly" |
+| 70%+ | **POOR — Self-lobotomization** | "Must finish quickly" |
 
 **Critical insight:** Claude degrades at ~40-50% when it perceives context pressure and enters "completion mode."
 
 **Solution:** Aggressive atomicity—split phases into many small, focused plans. Each plan: 2-3 tasks maximum.
+
+**Critical:** At 70%+, Claude begins "self-lobotomization" — cutting corners, giving cursory answers, skipping verification to race to completion. This is invisible degradation. The output looks complete but quality has collapsed.
+
+**Prevention:** Aggressive atomicity. If a plan might exceed 50% context, split it proactively. Small plans are reliable plans.
 
 ### Numeric Thresholds
 
@@ -339,12 +343,35 @@ After all complete, aggregate findings into understanding of the project.
 
 Without clear handoff, subagents operate without proper scope boundaries. The orchestrator must provide all context inline — subagents start cold with no conversation history.
 
+### Centralized Scratchpad Protocol
+
+When fanning out subagents for exploration, ALL findings MUST be written to a centralized scratchpad:
+
+**Location:** `.principled/scratch/{plan-id}-exploration.md`
+
+**Before spawning subagents:**
+1. Read any existing scratchpad for prior findings (avoid duplicate work)
+2. Write exploration questions and current context to scratchpad
+3. Define what "success" looks like for each subagent's findings
+
+**Subagent tool requirements for exploration (NON-OPTIONAL):**
+- **NEVER** use "native" Explore subagents (Haiku, read-only)
+- **REQUIRED** minimum: `[Read, Write, Grep, Glob, Bash]`
+- Write access is **NON-OPTIONAL** — findings must be persisted
+
+**After subagents return:**
+1. Read scratchpad BEFORE synthesizing findings
+2. Merge findings from scratchpad, not from subagent reports
+3. Write synthesis conclusions to scratchpad
+
+**Why:** Prevents telephone-game degradation. Direct scratchpad access eliminates paraphrase drift that occurs when orchestrators synthesize without source access.
+
 **Using critic agents during planning:**
 
-After the fan-out exploration, before writing the plan, spawn a critic agent to challenge the emerging approach:
+After the fan-out exploration, before writing the plan, spawn a critic subagent to challenge the emerging approach:
 
 ```
-Spawn critic subagent (haiku, read-only):
+Spawn critic subagent (general-purpose with Write tool access):
 Focus: Challenge the proposed approach as devil's advocate
 - What assumptions does the approach make that might be wrong?
 - What could go wrong with this direction?
@@ -498,23 +525,29 @@ After completion, create `.principled/plans/phases/01-foundation/SUMMARY.md`
 
 ## Anti-Patterns
 
-### ❌ 500-line mega-plan
-A single PLAN.md that tries to cover 8 phases with 40 tasks is a compilation target, not a prompt. Claude degrades at ~50% context usage — the back half will be implemented poorly.
+### 500-line Mega-Plan
 
-### ✅ Split into focused phases
-Each plan: 2-3 tasks, ~15-60 min of work. Dependencies declared explicitly. Context stays under 40%.
+**Avoid:** A single PLAN.md covering 8 phases with 40 tasks — context degrades at 50%, back half gets implemented poorly.
 
-### ❌ Vague task definitions
-"Implement auth" has no verification, no scope, no exit criteria. Claude can't know when it's done.
+**Good:** Each plan: 2-3 tasks, ~15-60 min of work. Dependencies declared explicitly. Context stays under 40%.
 
-### ✅ Concrete task anatomy
-`Files: src/auth/login.ts + src/auth/register.ts` | `Action: Implement JWT login with refresh tokens` | `Verify: POST /api/auth/login returns 200 + sets HttpOnly cookie` | `Done: Login works, register works, refresh flow works`
+**Gotcha:** Quality degradation is invisible until it's too late. By the time Claude starts cutting corners, the plan is already compromised.
 
-### ❌ Missing deviation handling
-A plan that doesn't account for discoveries will stop and ask for every exception.
+### Vague Task Definitions
 
-### ✅ Embedded deviation rules
-Auto-fix bugs, auto-add missing criticals, auto-fix blockers — all documented in the plan itself. Only ask about architectural changes.
+**Avoid:** "Implement auth" has no verification, no scope, no exit criteria. Claude can't know when it's done.
+
+**Good:** `Files: src/auth/login.ts + src/auth/register.ts` | `Action: Implement JWT login with refresh tokens` | `Verify: POST /api/auth/login returns 200 + sets HttpOnly cookie` | `Done: Login works, register works, refresh flow works`
+
+**Gotcha:** Without concrete task anatomy, every deviation becomes a blocking question.
+
+### Missing Deviation Handling
+
+**Avoid:** A plan that doesn't account for discoveries will stop and ask for every exception.
+
+**Good:** Auto-fix bugs, auto-add missing criticals, auto-fix blockers — all documented in the plan itself. Only ask about architectural changes.
+
+**Gotcha:** Plans without deviation rules degenerate into endless clarification loops.
 
 ---
 

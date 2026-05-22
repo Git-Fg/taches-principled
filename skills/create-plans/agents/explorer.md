@@ -1,7 +1,7 @@
 ---
 name: explorer
 description: Explores project structure, files, and codebase organization. Use for understanding existing code layout, finding relevant files, and mapping project architecture.
-tools: Read, Grep, Glob, Bash
+tools: Read, Write, Grep, Glob, Bash
 model: haiku
 ---
 

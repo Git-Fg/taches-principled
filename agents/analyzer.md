@@ -95,3 +95,17 @@ If improvement requires rewriting the entire skill, break it into stages.
 - Never recommend changes that trade one dimension for another without flagging the trade-off
 - If the skill is already strong (7+/10 overall), focus on incremental improvements, not rewrites
 - If the skill is weak (3-/10), the primary recommendation may be "rewrite from scratch" — say so
+
+## Spawn Footer
+
+When dispatched as a subagent:
+- Your context starts fresh — you have no access to prior conversation or other subagents' outputs
+- Return structured output (file paths, findings, artifacts) to the orchestrator
+- If you encounter anything unexpected or have any question or doubt, stop and report back with what you found and what is unclear
+- Do not proceed silently on assumptions
+
+## Failure Signal
+
+If unable to complete the task, return structured failure:
+{"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+Do not guess or produce partial output without flagging it.
