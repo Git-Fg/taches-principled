@@ -150,7 +150,7 @@ Higher priority wins conflicts.
 - One good example
 
 **No:**
-- References to other skill names (creates dependency)
+- References to other skills' internal files with paths (e.g., `skills/create-plans/references/X.md`)
 - Step-by-step procedures (use workflows instead)
 - Enumeration of tool names (descriptions over lists)
 - Invented frontmatter fields

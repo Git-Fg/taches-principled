@@ -1,6 +1,9 @@
 ---
 name: analyse
 description: Auto-selects best improvement method (code exploration, workflow mapping, or waste identification) for a given target
+when_to_use: |
+  Use when the user says "analyze this", "look into this code", "what's wrong here", or "find the problem".
+  IMMEDIATELY when investigating code quality, process bottlenecks, or implementation gaps.
 argument-hint: "[target description]"
 ---
 

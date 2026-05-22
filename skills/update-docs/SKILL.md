@@ -1,6 +1,9 @@
 ---
 name: update-docs
 description: Update project documentation for code changes using multi-agent workflow with specialized tech-writer agents. Covers READMEs, guides, API docs, and JSDoc.
+when_to_use: |
+  Use when the user says "update the docs", "document this", "write documentation for this", or "the docs need updating".
+  IMMEDIATELY after code changes that affect user-facing APIs or workflows, before committing.
 argument-hint: "Optional: documentation type or area (api, guides, readme, jsdoc)"
 ---
 

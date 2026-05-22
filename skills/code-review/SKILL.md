@@ -1,6 +1,9 @@
 ---
 name: code-review
 description: Multi-agent code review for pull requests and local changes — security, bugs, contracts, and coverage analysis with confidence-scored filtering.
+when_to_use: |
+  Use when the user says "review this PR", "check my changes", "review the code", or "audit this pull request".
+  IMMEDIATELY before merging or committing significant code changes.
 argument-hint: "[focus-areas] [--min-impact critical|high|medium|medium-low|low]"
 ---
 

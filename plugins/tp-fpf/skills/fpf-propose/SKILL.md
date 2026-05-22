@@ -3,6 +3,10 @@ name: fpf-propose
 description: Execute the complete First Principles Framework cycle — generate competing hypotheses, verify logic, validate evidence, audit trust, and produce a decision with full traceability.
 argument-hint: Problem statement to analyze
 allowed-tools: Task, Read, Write, Bash, AskUserQuestion
+when_to_use: |
+  Use when the user says "first principles", "hypothesize", "propose options", "FPF", "evaluate from first principles", "reason from scratch", or "generate hypotheses".
+  IMMEDIATELY when the user asks to "analyze this problem", "evaluate alternatives", "compare solutions", "make a decision with rationale", or "think through this carefully".
+  BEFORE committing to a major technical decision, architectural choice, or complex problem solution.
 ---
 
 ## Decision Router

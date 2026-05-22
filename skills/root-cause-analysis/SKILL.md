@@ -1,6 +1,9 @@
 ---
 name: root-cause-analysis
 description: Root cause analysis methods — Five Whys for single-path causes and Fishbone for multi-category exploration. Use when debugging incidents or analyzing problems.
+when_to_use: |
+  Use when the user says "find the root cause", "why did this happen", "trace this back", or "what's causing this".
+  IMMEDIATELY when debugging — before applying fixes, not after.
 argument-hint: "[problem description] [--depth N]"
 ---
 

@@ -2,6 +2,10 @@
 name: git-issues
 description: Load all open issues from GitHub and create structured technical specifications for implementation
 argument-hint: fetch | analyze <number>
+when_to_use: |
+  Use when the user says "load issues", "fetch issues", "get GitHub issues", "list issues", or "pull issues from GitHub".
+  IMMEDIATELY when the user says "analyze issue", "analyze GitHub issue", "create spec for issue", "technical specification", or "break down this issue".
+  BEFORE implementing any GitHub issue — load and analyze it first to create a technical spec.
 ---
 
 ## Decision Router

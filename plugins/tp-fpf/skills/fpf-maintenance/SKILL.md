@@ -1,6 +1,11 @@
 ---
 name: fpf-maintenance
 description: Manage FPF lifecycle operations — reset reasoning cycles (soft archive or hard clear), reconcile knowledge base with code changes (detect drift, flag stale evidence), and manage evidence freshness (classify, refresh, deprecate, waive).
+when_to_use: |
+  Use when the user says "reset FPF", "soft reset", "hard reset", "archive FPF", "clear FPF state", "fresh start with FPF".
+  IMMEDIATELY when the user asks to "actualize", "reconcile FPF", "sync FPF with code", "detect drift", or "check for stale evidence".
+  BEFORE starting a new hypothesis cycle after significant codebase changes.
+  BEFORE major releases to review outstanding evidence.
 ---
 
 ## Decision Router

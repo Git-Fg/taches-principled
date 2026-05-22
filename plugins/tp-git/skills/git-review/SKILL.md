@@ -2,6 +2,10 @@
 name: git-review
 description: Add line-specific review comments on pull requests — single comments and batched multi-file reviews
 argument-hint: PR number (optional)
+when_to_use: |
+  Use when the user says "review PR", "inline comment", "add comment to PR", "comment on PR", "review comment", "leave feedback on PR", or "GitHub review".
+  IMMEDIATELY when the user asks to "add a comment on line X", "review this pull request", "post review comments", or "add inline feedback".
+  BEFORE merging any PR — use when the user wants to provide specific line-by-line feedback.
 ---
 
 ## Decision Router

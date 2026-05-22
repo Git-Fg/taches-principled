@@ -1,6 +1,9 @@
 ---
 name: plan-task
 description: "Refine draft task specification into implementation-ready task through parallel analysis, architecture synthesis, decomposition, and quality verification"
+when_to_use: |
+  Use when the user says "refine this task", "plan this out", "make this actionable", or "/plan".
+  IMMEDIATELY after a task is drafted and needs analysis, architecture, and verification criteria before implementation.
 argument-hint: ".specs/tasks/draft/<file>.md [--fast] [--target-quality X.X] [--skip-judges] [--human-in-the-loop phase,phase,...]"
 ---
 

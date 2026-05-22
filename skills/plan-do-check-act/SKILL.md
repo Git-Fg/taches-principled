@@ -1,6 +1,9 @@
 ---
 name: plan-do-check-act
 description: Iterative PDCA cycle for systematic experimentation — plan a change, implement it, measure results, then standardize or adjust
+when_to_use: |
+  Use when the user says "let's try an experiment", "test this hypothesis", "run a PDCA cycle", or "try this and measure it".
+  IMMEDIATELY when solving problems where outcomes need measurement before concluding.
 argument-hint: "[improvement goal or problem to address] [--cycle N]"
 ---
 

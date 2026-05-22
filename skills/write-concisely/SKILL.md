@@ -1,6 +1,9 @@
 ---
 name: write-concisely
 description: Apply Strunk & White's Elements of Style to make documentation clearer, stronger, and more professional. Active voice, positive form, concrete language, omit needless words.
+when_to_use: |
+  Use when the user says "make this clearer", "write this more concisely", "clean up this text", or "improve the writing".
+  IMMEDIATELY when producing documentation, READMEs, or any human-readable text that needs polishing.
 ---
 
 ## Decision Router

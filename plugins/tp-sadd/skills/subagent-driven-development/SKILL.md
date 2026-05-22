@@ -1,6 +1,11 @@
 ---
 name: subagent-driven-development
 description: Execute implementation plans by dispatching fresh subagent per task with code review between tasks - use when implementing plans with multiple independent tasks or investigating 3+ unrelated issues
+when_to_use: |
+  Use when the user says "implement this plan", "execute plan", "dispatch per task",
+  "subagent implementation", "run the tasks", or "execute these items".
+  IMMEDIATELY when user provides a plan with multiple tasks to implement.
+  FIRST when tasks are independent or sequential with code review between them.
 argument-hint: Plan file path and execution mode (sequential/parallel)
 ---
 

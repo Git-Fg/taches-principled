@@ -1,6 +1,11 @@
 ---
 name: do-competitively
 description: Execute high-stakes tasks through competitive multi-agent generation, meta-judge evaluation, and adaptive synthesis - use when quality matters more than speed and parallel exploration would reveal different approaches
+when_to_use: |
+  Use when the user says "do this competitively", "generate multiple approaches",
+  "best-of-N", "compare approaches", "competing solutions", or "quality over speed".
+  IMMEDIATELY when user wants to generate 3+ alternative solutions and select the best
+  through structured evaluation.
 argument-hint: Task description and optional output path
 ---
 

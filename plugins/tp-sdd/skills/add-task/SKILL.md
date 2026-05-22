@@ -1,6 +1,10 @@
 ---
 name: add-task
 description: "Create a draft task file in .specs/tasks/draft/ from user intent — sets up folder structure, type classification, naming convention, and preserves original prompt"
+when_to_use: |
+  Use when the user says "add a task", "capture this", "create a task", "log this",
+  "I need to do", "remind me to", "track this", or "file this away". FIRST when the
+  user expresses intent to work on something that needs specification.
 argument-hint: "[task title or description] [dependencies:task-file.md]"
 ---
 

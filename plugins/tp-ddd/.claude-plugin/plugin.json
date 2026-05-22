@@ -3,7 +3,12 @@
   "displayName": "TP Domain-Driven Design",
   "version": "0.1.0",
   "description": "Domain-driven design rules — clean architecture, command-query separation, domain naming, explicit control flow, error handling patterns.",
-  "author": { "name": "Felix" },
+  "author": {
+    "name": "Felix",
+    "email": "felix@example.com"
+  },
+  "homepage": "https://github.com/Git-Fg/taches-principled",
+  "repository": "https://github.com/Git-Fg/taches-principled",
   "license": "MIT",
   "keywords": ["taches-principled", "claude-code", "ddd", "architecture"]
 }

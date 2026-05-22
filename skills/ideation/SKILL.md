@@ -1,6 +1,9 @@
 ---
 name: ideation
 description: "Refine vague concepts through collaborative questioning or generate diverse creative options using structured probability sampling. Two modes: collaborative dialogue for concept refinement, divergent generation for creative exploration."
+when_to_use: |
+  Use when the user says "I have an idea", "let's brainstorm", "what are my options", or "help me think through this".
+  IMMEDIATELY when the user has a rough concept that needs shaping before implementation.
 argument-hint: "[feature concept, problem, or topic]"
 ---
 

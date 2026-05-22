@@ -1,6 +1,10 @@
 ---
 name: create-ideas
 description: Use when user asks to "generate ideas", "brainstorm options", or "come up with alternatives" — produces diverse idea set using probability sampling
+when_to_use: |
+  Use when the user says "generate ideas", "brainstorm options", "come up with alternatives",
+  "what if we", or "list possibilities". IMMEDIATELY when the user wants a diverse set of
+  options rather than a single recommended approach.
 argument-hint: Topic or problem to generate ideas for [optional: number of ideas]
 ---
 
