@@ -65,12 +65,6 @@ def run_claude_query(query: str, skill_name: str, runs: int = 3) -> tuple[int, f
     Uses stream-json output to detect skill invocation:
     - content_block_start with tool_use (type=Skill) -> skill loading
     - content_block_delta with input_json_delta -> skill name in params
-
-    NOTE: This detection mechanism is designed for Claude (Anthropic) models.
-    On non-Claude models (e.g., GLM), skill invocation may not emit the same
-    stream signatures. The script will still run but trigger detection may
-    return 0 even when the skill would have triggered. Test on a Claude
-    model to validate trigger detection accuracy.
     """
     trigger_count = 0
 

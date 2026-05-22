@@ -44,7 +44,7 @@ Match the agent type to the task complexity:
 
 ## RACE Framework
 
-Structure every spawn prompt with RACE — see `create-plans/references/race-framework.md` for full details.
+Structure every spawn prompt with RACE — see the RACE framework reference for full details.
 
 ```
 ## Role
@@ -68,7 +68,7 @@ Structure every spawn prompt with RACE — see `create-plans/references/race-fra
 
 ## Five Parallel Patterns
 
-See `create-subagents/references/orchestration-patterns.md` for full patterns and use-case examples.
+See the orchestration patterns reference for full patterns and use-case examples.
 
 | Pattern | When to use |
 |---------|-------------|
@@ -102,7 +102,7 @@ Choose by trigger type:
 
 **Never poll when you can watch.** ScheduleWakeup fires on a timer regardless of state. Monitor wakes only when output matches — zero cost while silent.
 
-See `create-subagents/references/automation-layers.md` for detailed comparison.
+See the automation layers reference for detailed comparison.
 
 ## Memory Architecture
 
