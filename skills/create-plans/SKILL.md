@@ -527,29 +527,13 @@ After completion, create `.principled/plans/phases/01-foundation/SUMMARY.md`
 
 ## Anti-Patterns
 
+**Full anti-pattern catalog is in the plan-format.md reference file in this skill's references.**
+
 ### 500-line Mega-Plan
-
-**Avoid:** A single PLAN.md covering 8 phases with 40 tasks — context degrades at 50%, back half gets implemented poorly.
-
-**Good:** Each plan: 2-3 tasks, ~15-60 min of work. Dependencies declared explicitly. Context stays under 40%.
-
-**Gotcha:** Quality degradation is invisible until it's too late. By the time Claude starts cutting corners, the plan is already compromised.
+Each plan: 2-3 tasks, ~15-60 min of work. Quality degradation is invisible until too late.
 
 ### Vague Task Definitions
-
-**Avoid:** "Implement auth" has no verification, no scope, no exit criteria. Claude can't know when it's done.
-
-**Good:** `Files: src/auth/login.ts + src/auth/register.ts` | `Action: Implement JWT login with refresh tokens` | `Verify: POST /api/auth/login returns 200 + sets HttpOnly cookie` | `Done: Login works, register works, refresh flow works`
-
-**Gotcha:** Without concrete task anatomy, every deviation becomes a blocking question.
-
-### Missing Deviation Handling
-
-**Avoid:** A plan that doesn't account for discoveries will stop and ask for every exception.
-
-**Good:** Auto-fix bugs, auto-add missing criticals, auto-fix blockers — all documented in the plan itself. Only ask about architectural changes.
-
-**Gotcha:** Plans without deviation rules degenerate into endless clarification loops.
+"Implement auth" isn't a task. "Create login endpoint with email/password form" is.
 
 ---
 

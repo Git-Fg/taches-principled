@@ -8,7 +8,7 @@ Development practices for maintaining this plugin. These are operational rules, 
 
 **Marketplace version** and **plugin version** are independent:
 
-- **Plugin version** (`0.3.0`): Incremented for any content change to this plugin
+- **Plugin version** (`0.4.0`): Incremented for any content change to this plugin
 - **Marketplace version** (root `marketplace.json`): Incremented when releasing a collective update across all plugins
 
 **Update sequence:**

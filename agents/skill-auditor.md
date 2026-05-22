@@ -107,7 +107,7 @@ Any other field is non-standard and should be flagged.
 
 The skill-auditor is part of a multi-agent evaluation pipeline. To get a complete picture, invoke the pipeline in order:
 
-**Step 1 — Grading agent** (evaluates teaching effectiveness): Get dimension scores for teaching effectiveness
+**Step 1 — grading sub-agent** (evaluates teaching effectiveness): Get dimension scores for teaching effectiveness
 ```
 Agent(description = "Grade [skill-name] for teaching effectiveness",
       prompt = "Read [skill-path]/SKILL.md and produce a grading following grader.md.
@@ -119,18 +119,33 @@ Agent(description = "Grade [skill-name] for teaching effectiveness",
 python3 ${CLAUDE_SKILL_DIR}/scripts/run_trigger_benchmark.py <skill-name> --interactive
 ```
 
-**Step 3 — Comparison agent** (analyzes version deltas): Get quality signals and format audit
+**Step 3 — comparison sub-agent** (analyzes version deltas): Get quality signals and format audit
 ```
 Agent(description = "Audit [skill-name] for quality and format",
       prompt = "Read [skill-path]/SKILL.md and audit following skill-auditor.md.")
 ```
 
-**Step 4 — Synthesis agent** (produces prioritized recommendations): Synthesize into prioritized recommendations
+**Step 4 — synthesis sub-agent** (produces prioritized recommendations): Synthesize into prioritized recommendations
 ```
 Agent(description = "Synthesize [skill-name] evaluation into improvement plan",
       prompt = "Synthesize outputs from grader.json and auditor.json following analyzer.md.
                Produce the 3-priority change list with teaching outcomes.")
 ```
+
+## Workflow
+
+Skill-auditor performs a structured audit in this order:
+
+1. **Receive skill path or content** — Identify the skill being audited
+2. **Read frontmatter** — Extract name, description, when_to_use, argument-hint, allowed-tools, model
+3. **Validate frontmatter fields** — Flag non-standard fields; check name/description format
+4. **Evaluate description routing** — Does it give specific trigger phrases? Does it state WHAT and WHEN?
+5. **Assess structure** — Does it follow progressive disclosure? Are references accurate?
+6. **Check content quality** — Anti-patterns concrete? Thresholds justified? Principles over procedures?
+7. **Review YAML validity** — Confirm all fields are standard
+8. **Invoke pipeline if needed** — Grade for teaching, benchmark for routing, compare for version deltas
+9. **Synthesize findings** — Aggregate into critical issues, recommendations, strengths, quick fixes
+10. **Output structured report** — Severity-ranked with file:line references and impact explanations
 
 ## Output Format
 

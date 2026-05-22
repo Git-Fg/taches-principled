@@ -1,6 +1,7 @@
 ---
 name: implement-task
 description: "Orchestrate multi-step task implementation with automated quality verification using sub-agent dispatch, panel evaluation, and iterative refinement"
+disable-model-invocation: true
 when_to_use: |
   When user says 'implement this', 'start building', 'execute the plan', 'work on this task', 'build it', 'code this up'. IMMEDIATELY after task has been refined and is ready for implementation. Use --continue to resume interrupted work, --refine to re-verify after edits.
 argument-hint: "[task file] [--continue] [--refine] [--human-in-the-loop] [--target-quality X.X] [--skip-judges]"
@@ -11,6 +12,8 @@ argument-hint: "[task file] [--continue] [--refine] [--human-in-the-loop] [--tar
 IF user needs to implement a refined task → execute implementation steps with per-step verification
 IF user needs to continue an interrupted implementation → use `--continue` to resume from last completed step
 IF user manually fixed project files → use `--refine` to detect changes and re-verify affected steps
+
+**--refine vs plan-task --refine:** implement-task --refine detects git changes to PROJECT FILES (source code) and maps them back to affected implementation steps for re-verification. plan-task --refine detects changes to the TASK FILE and re-runs planning stages. They are semantically distinct — implement-task re-verifies, plan-task re-plans.
 IF user wants human review after each step → use `--human-in-the-loop`
 IF user wants fast implementation without verification gates → use `--skip-judges`
 IF user is done implementing → verify completion and move task to done

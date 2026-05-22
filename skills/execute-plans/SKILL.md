@@ -554,20 +554,22 @@ Replace all Thought/Action/Observation examples with imperative natural language
 
 ## Anti-Patterns
 
-### ❌ Skipping verification
-Marking a task complete without running the verify command. Verification is mandatory — it is the only proof the task actually succeeded.
+**Full anti-pattern catalog is in the anti-patterns.md file in this skill's references.**
 
-### ❌ Treating auth gates as errors
-Retrying authentication failures repeatedly instead of pausing and presenting the auth steps clearly to the user.
+### Skipping verification
+Marking a task complete without running the verify command.
 
-### ❌ Continuing past Rule 4
-Attempting to proceed with an architectural change without user input. Rule 4 requires STOP + ASK + WAIT.
+### Treating auth gates as errors
+Retrying authentication failures instead of pausing for user auth steps.
 
-### ❌ Creating vague summaries
-"Task completed" tells nothing. "JWT refresh rotation implemented using jose library with 15-minute access token expiry" tells everything.
+### Continuing past Rule 4
+Proceeding with architectural changes without user input.
 
-### ❌ Ignoring context limits
-Loading all project files instead of only those referenced in the plan. Context pressure degrades execution quality.
+### Creating vague summaries
+"Task completed" vs "JWT refresh rotation implemented using jose library".
+
+### Ignoring context limits
+Loading all project files instead of only those referenced in the plan.
 
 ---
 

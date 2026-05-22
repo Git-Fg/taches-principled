@@ -226,24 +226,7 @@ Never `git add .` — stage only files you modified.
 
 ## Execution Gotchas
 
-### Thought/Action/Observation Anti-Pattern
-
-**The Problem:**
-When Claude sees code blocks with `Thought:`, `Action:`, `Observation:` patterns, it interprets them as output templates to mimic, not as instructions to execute. Instead of calling Write() tool, it generates text that says "Thought: Let me analyze... Action: Write(...)".
-
-**Why This Happens:**
-1. Code blocks look like output format — Claude thinks "this is what my response should look like"
-2. Pattern mimicking — The agent copies the structure as text instead of executing
-3. Pseudo-code confusion — `Action: Write(...)` looks like code to output, not a command to run
-
-**The Fix:**
-Replace all Thought/Action/Observation examples with imperative natural language:
-- Instead of: "Thought: I need to read the prompt file..."
-- Write: "First, use the Read tool to load the prompt file."
-
----
-
-## Anti-Patterns
+**The Thought/Action/Observation Anti-Pattern is documented in the execute-plans skill's anti-patterns reference.**
 
 ### Parallelization Without True Concurrency
 

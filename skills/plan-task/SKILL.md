@@ -590,17 +590,16 @@ After all executed phases, judges, and the promotion step are complete:
 
 ## Design Decisions
 
+**Stage-specific guidance is documented in the stages.md file in this skill's references.**
+
 ### Parallel analysis before synthesis
-Running research, codebase analysis, and business analysis in parallel is faster than sequential execution. The synchronization point ensures all three perspectives inform architecture together. This prevents the common failure mode of designing architecture without understanding business requirements or codebase constraints.
+Running research, codebase analysis, and business analysis in parallel is faster than sequential. This prevents the common failure mode of designing architecture without understanding business requirements or codebase constraints.
 
 ### Independent judges per phase
-Separate judge sub-agents prevent confirmation bias. The agent that implemented a phase would naturally evaluate its own work more favorably. Independent judges provide objective quality signals and catch blind spots.
+Separate judge sub-agents prevent confirmation bias. Independent judges provide objective quality signals and catch blind spots.
 
 ### Threshold defaults
-3.5/5.0 balances quality and speed — requires adequate quality without demanding perfection. The configurable threshold allows users to trade off rigor for speed depending on task criticality.
+3.5/5.0 balances quality and speed. The configurable threshold allows trade-offs depending on task criticality.
 
 ### Scratchpad-first methodology
-All analysis goes to a scratchpad before the task file. This prevents premature commitment to unverified findings. The scratchpad captures the thinking process; the task file captures only validated conclusions. This separation ensures the task file remains focused on actionable specifications.
-
-### Relationship to development pipeline
-Operates between task creation and implementation in the development pipeline. Refined tasks in todo/ are the contract between specification and building. The verification rubrics added in Phase 6 are consumed by the implementation workflow for automated quality evaluation.
+All analysis goes to a scratchpad before the task file. This prevents premature commitment to unverified findings.

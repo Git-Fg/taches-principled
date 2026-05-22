@@ -551,20 +551,13 @@ Present both perspectives with evidence. Ask the user to resolve: "Judges disagr
 
 ## Design Decisions
 
-### Orchestrator-only architecture
-The orchestrator never reads artifact files or performs verification. This prevents context window overflow, the most common failure mode in multi-step workflows. Every file read consumes context space needed for later dispatch decisions.
-
-### Three verification patterns
-Simple steps skip verification overhead entirely. Critical steps get redundancy through panel evaluation. Multi-item steps parallelize naturally per item. Each pattern matches the risk profile and structure of the work.
+**Implementation patterns are documented in the patterns.md file in this skill's references.**
 
 ### Separate standard and critical thresholds
-Not all steps carry equal risk. Using a higher threshold for critical paths (4.5 vs 4.0) focuses quality effort where it matters most without slowing down routine work. The two-value `--target-quality` flag allows precise calibration.
+Using a higher threshold for critical paths (4.5 vs 4.0) focuses quality effort where it matters most.
 
 ### Refine mode preserves user changes
-When users manually edit source files, `--refine` detects those changes and re-verifies consistency rather than overwriting. This supports iterative development where the user reviews and adjusts generated code, then validates the rest of the system still works.
+When users manually edit source files, `--refine` detects changes and re-verifies consistency.
 
 ### Continue mode for resilience
-Implementations may be interrupted or need partial re-execution. `--continue` detects where work stopped and resumes from that point, including re-verifying the boundary step to ensure consistency.
-
-### Relationship to development pipeline
-Consumes refined task specifications from the planning workflow. Moves completed tasks to done/ for audit trail. Supports iteration via `--continue` (resume interrupted work) and `--refine` (re-verify after manual edits).
+`--continue` detects where work stopped and resumes including re-verifying the boundary step.
