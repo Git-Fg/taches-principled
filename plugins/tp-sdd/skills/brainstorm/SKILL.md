@@ -1,8 +1,9 @@
 ---
 name: brainstorm
 description: "Refine rough ideas into fully-formed designs through collaborative questioning, alternative exploration, and incremental validation — before writing implementation plans"
+disable-model-invocation: true
 when_to_use: |
-  When user says 'help me figure out', 'design this', 'think through', 'explore approaches', 'what's the best way to'. FIRST when facing ambiguous problem with no clear implementation path. Use for collaborative dialogue — single-question refinement with incremental validation. DO NOT use when path is obvious, user wants enumeration of options, or user wants a formal multi-phase plan — use plan-task instead.
+  When user says 'help me figure out', 'design this', 'think through', 'explore approaches', 'what's the best way to'. FIRST when facing ambiguous problem with no clear implementation path. Use for collaborative dialogue — single-question refinement with incremental validation. DO NOT use when path is obvious, user wants enumeration of options, or user wants a formal multi-phase plan — use plan-task instead. Do NOT use when the user wants pure enumeration of ideas without refinement or collaborative shaping — use create-ideas instead.
 argument-hint: Optional initial feature concept or topic to brainstorm
 ---
 

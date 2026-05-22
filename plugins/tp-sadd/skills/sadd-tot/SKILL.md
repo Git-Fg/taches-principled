@@ -4,6 +4,7 @@ description: "Explore solution space through systematic ideation, pruning, and e
 when_to_use: |
   When user says 'tree of thoughts', 'explore solution space', 'systematic exploration', 'generate and prune', 'multiple proposals', 'ideate then narrow'. IMMEDIATELY when user wants to explore many approaches before committing to one. FIRST when task requires exploring diverse solution paths with pruning before implementation.
 argument-hint: "Task description [--output <path>]"
+disable-model-invocation: true
 ---
 
 ## Decision Router

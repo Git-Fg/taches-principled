@@ -4,6 +4,7 @@ description: "Dispatch sub-agents with CoT reasoning and self-critique: single-t
 when_to_use: |
   When user says 'dispatch sub-agent', 'launch agent for task', 'delegate this', 'run in background'. IMMEDIATELY when user wants to delegate a focused task with context isolation. FIRST when task requires automatic model selection and verification before completion.
 argument-hint: "Task description [--model opus|sonnet|haiku] [--agent <name>] [--plan <path>]"
+disable-model-invocation: true
 ---
 
 ## Decision Router

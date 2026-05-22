@@ -2,8 +2,9 @@
 name: sadd-execute
 description: "Execute tasks with meta-judge verification: single-task, sequential-steps, parallel-targets, or competitive generation with quality gates"
 when_to_use: |
-  When user says 'execute this', 'implement with verification', 'meta-judge this', 'run the task', 'build this with quality gates', 'implement [something]'. IMMEDIATELY when user asks to implement anything that needs independent verification. FIRST when task requires parallel implementation, sequential steps, or competitive generation.
+  When user says 'execute this', 'implement with verification', 'meta-judge this', 'run the task', 'build this with quality gates', 'implement [something]'. IMMEDIATELY when user asks to implement anything that needs independent verification. FIRST when task requires parallel implementation, sequential steps, or competitive generation. DO NOT use when you want best-of-N competitive quality — use do-competitively instead.
 argument-hint: "Task description [--mode single|steps|parallel|competitive] [--files f1,f2]"
+disable-model-invocation: true
 ---
 
 ## Decision Router
