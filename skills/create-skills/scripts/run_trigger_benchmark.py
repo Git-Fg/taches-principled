@@ -65,6 +65,12 @@ def run_claude_query(query: str, skill_name: str, runs: int = 3) -> tuple[int, f
     Uses stream-json output to detect skill invocation:
     - content_block_start with tool_use (type=Skill) -> skill loading
     - content_block_delta with input_json_delta -> skill name in params
+
+    NOTE: This detection mechanism is designed for Claude (Anthropic) models.
+    On non-Claude models (e.g., GLM), skill invocation may not emit the same
+    stream signatures. The script will still run but trigger detection may
+    return 0 even when the skill would have triggered. Test on a Claude
+    model to validate trigger detection accuracy.
     """
     trigger_count = 0
 
@@ -72,7 +78,7 @@ def run_claude_query(query: str, skill_name: str, runs: int = 3) -> tuple[int, f
         try:
             result = subprocess.run(
                 ["claude", "-p", query, "--output-format", "stream-json",
-                 "--include-partial-messages", "--dangerously-auto-accept"],
+                 "--include-partial-messages", "--dangerously-skip-permissions"],
                 capture_output=True,
                 text=True,
                 timeout=30
@@ -144,21 +150,23 @@ def check_exit_criteria(summary: dict) -> dict:
     """Check results against exit criteria. Returns dict of pass/fail per category."""
     checks = {}
     thresholds = {
-        "core-positive": (summary["core-positive"]["pass_rate"], 1.0, "100%"),
-        "edge-positive": (summary["edge-positive"]["pass_rate"], 0.6, ">60%"),
-        "core-negative": (summary["core-negative"]["pass_rate"], 1.0, "100%"),
-        "edge-negative": (summary["edge-negative"]["pass_rate"], 0.4, ">40%"),
-        "held-out": (summary["held-out"]["pass_rate"], 0.7, ">70%"),
+        "core-positive": (summary.get("core-positive", {}).get("pass_rate", 0), 1.0, "100%"),
+        "edge-positive": (summary.get("edge-positive", {}).get("pass_rate", 0), 0.6, ">60%"),
+        "core-negative": (summary.get("core-negative", {}).get("pass_rate", 0), 1.0, "100%"),
+        "edge-negative": (summary.get("edge-negative", {}).get("pass_rate", 0), 0.4, ">40%"),
+        "held-out": (summary.get("held-out", {}).get("pass_rate", 0), 0.7, ">70%"),
     }
 
     for cat, (rate, threshold, target) in thresholds.items():
         passed = rate >= threshold if cat in ["core-positive", "core-negative"] else rate >= threshold
+        has_queries = summary.get(cat, {}).get("queries", 0) > 0
         checks[cat] = {
             "rate": rate,
             "threshold": threshold,
             "target": target,
             "passed": passed,
-            "required": cat in ["core-positive", "core-negative"]
+            "required": cat in ["core-positive", "core-negative"] and has_queries,
+            "has_queries": has_queries,
         }
 
     return checks
@@ -235,14 +243,18 @@ def print_results(results: BenchmarkResults, checks: dict):
 
     print("\n--- Exit Criteria ---\n")
     all_passed = True
+    all_critical_passed = True
     for cat, check in checks.items():
+        if not check.get("has_queries"):
+            continue
         status = "PASS" if check["passed"] else ("FAIL" if check["required"] else "WARN")
         if check["required"] and not check["passed"]:
             all_passed = False
+            all_critical_passed = False
         print(f"  [{status}] {cat}: {check['rate']:.0%} (target: {check['target']})")
 
     print()
-    if all_passed:
+    if all_critical_passed:
         print("All critical criteria met.")
     else:
         print("Critical criteria failed. Fix before production.")

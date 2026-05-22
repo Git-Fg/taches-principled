@@ -431,7 +431,7 @@ Multi-agent systems fail in predictable ways. These eight gotchas account for th
 | Reference | Purpose |
 |-----------|---------|
 | `{baseDir}/references/writing-subagent-prompts.md` | Core principles, XML structure, examples, anti-patterns |
-| `{baseDir}/references/orchestration-patterns.md` | Sequential, parallel, hierarchical, coordinator patterns |
+| Five parallel patterns for subagent work — see `create-plans/references/orchestration-patterns.md` | Sequential, parallel, hierarchical, coordinator patterns |
 | `{baseDir}/references/subagents.md` | Configuration, model selection, tool security |
 | `{baseDir}/references/context-management.md` | STM, LTM, working memory, context strategies |
 | `{baseDir}/references/gotchas.md` | Eight critical multi-agent gotchas from production |

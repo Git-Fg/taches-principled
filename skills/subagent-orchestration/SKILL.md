@@ -44,7 +44,7 @@ Match the agent type to the task complexity:
 
 ## RACE Framework
 
-Structure every spawn prompt with RACE — see `create-subagents/references/race-framework.md` for full details.
+Structure every spawn prompt with RACE — see `create-plans/references/race-framework.md` for full details.
 
 ```
 ## Role
