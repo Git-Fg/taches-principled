@@ -8,14 +8,9 @@ when_to_use: |
 ## Decision Router
 
 IF writing spawn prompts → FIRST read `{baseDir}/references/writing-subagent-prompts.md`
-IF choosing orchestration pattern → IMMEDIATELY read `{baseDir}/references/orchestration-patterns.md`
-IF managing subagent context → BEFORE spawning read `{baseDir}/references/context-management.md`
-IF configuring subagent tools → BEFORE setting restrictions read `{baseDir}/references/subagents.md`
-IF evaluating subagent quality → BEFORE testing read `{baseDir}/references/evaluation-and-testing.md`
-IF designing multi-agent coordination → IMMEDIATELY read `{baseDir}/references/gotchas.md`
-IF handling failures in multi-agent workflows → IMMEDIATELY read `{baseDir}/references/fault-tolerance.md`
-IF understanding token cost of multi-agent → BEFORE budgeting read `{baseDir}/references/token-economics.md`
-IF reconciling conflicting agent outputs → BEFORE deciding read `{baseDir}/references/consensus.md`
+IF choosing orchestration pattern → IMMEDIATELY read `{baseDir}/references/orchestration-core.md`
+IF handling failures → IMMEDIATELY read `{baseDir}/references/failure-modes.md`
+IF understanding token cost → BEFORE budgeting read `{baseDir}/references/memory-architecture.md`
 
 ---
 
@@ -431,18 +426,14 @@ Multi-agent systems fail in predictable ways. These eight gotchas account for th
 | Reference | Purpose |
 |-----------|---------|
 | `{baseDir}/references/writing-subagent-prompts.md` | Core principles, XML structure, examples, anti-patterns |
-| Five parallel patterns for subagent work — see `create-plans/references/orchestration-patterns.md` | Sequential, parallel, hierarchical, coordinator patterns |
+| `{baseDir}/references/orchestration-core.md` | Four rules, orchestrator checklist, cost-capability spectrum |
+| `{baseDir}/references/failure-modes.md` | Detection, recovery, prevention table |
+| `{baseDir}/references/memory-architecture.md` | Four-layer memory, context window discipline |
+| `{baseDir}/references/gotchas.md` | Eight critical multi-agent gotchas from production |
 | `{baseDir}/references/subagents.md` | Configuration, model selection, tool security |
 | `{baseDir}/references/context-management.md` | STM, LTM, working memory, context strategies |
-| `{baseDir}/references/gotchas.md` | Eight critical multi-agent gotchas from production |
-| `{baseDir}/references/fault-tolerance.md` | Circuit breaker, checkpoint/resume, exponential backoff |
-| `{baseDir}/references/token-economics.md` | Real cost of multi-agent (~15x baseline), when justified |
-| `{baseDir}/references/consensus.md` | Weighted voting, debate protocol, adversarial critique |
-| `{baseDir}/references/orchestration-core.md` | Four rules, orchestrator checklist, cost-capability spectrum |
 | `{baseDir}/references/automation-layers.md` | Hooks, Monitor, ScheduleWakeup patterns |
-| `{baseDir}/references/memory-architecture.md` | Four-layer memory, context window discipline |
 | `{baseDir}/references/tools-reference.md` | TaskGet, TaskOutput, TaskStop, SendMessage |
-| `{baseDir}/references/failure-modes.md` | Detection, recovery, prevention table |
 
 ---
 
