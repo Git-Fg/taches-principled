@@ -17,7 +17,7 @@ Development practices for maintaining this plugin. These are operational rules, 
 git add -A && git commit -m "message"
 
 # 2. Bump plugin version (minor for features, patch for fixes)
-# Edit .claude-plugin/plugin.json — bump "version" field
+# Edit plugins/taches-principled/.claude-plugin/plugin.json — bump "version" field
 
 # 3. Push
 git push
@@ -295,11 +295,18 @@ This repository serves as both a **single plugin** (taches-principled) and a **m
 ### Directory Structure
 
 ```
-plugins/{tp-sadd,tp-sdd,tp-fpf,tp-git,tp-tdd,tp-ddd}/
-├── .claude-plugin/plugin.json     # Plugin manifest (name, version, author)
-├── skills/{name}/SKILL.md         # One directory per skill
-├── agents/                        # Bundled subagent definitions
-└── rules/                         # Always-active guardrails (DDD, tech-stack)
+plugins/
+├── taches-principled/              # Root plugin (skills, agents, commands, rules)
+│   ├── .claude-plugin/plugin.json # Plugin manifest (name, version, author)
+│   ├── skills/{name}/SKILL.md     # One directory per skill
+│   ├── agents/                    # Bundled subagent definitions
+│   ├── commands/                  # Slash commands
+│   └── rules/                    # Always-active guardrails
+└── {tp-sadd,tp-sdd,tp-fpf,tp-git,tp-tdd,tp-ddd}/  # Marketplace plugins
+    ├── .claude-plugin/plugin.json
+    ├── skills/{name}/SKILL.md
+    ├── agents/
+    └── rules/
 ```
 
 ### Naming Convention
