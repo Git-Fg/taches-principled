@@ -6,6 +6,7 @@ when_to_use: |
   IMMEDIATELY when ready to progress from PLAN to SUMMARY.
   Do NOT use for creating plans — use the planning skill instead.
   Do NOT use for planning without execution intent.
+  Do NOT use for executing prompt files — use execute-prompts instead.
 ---
 
 ## Decision Router
@@ -15,7 +16,7 @@ IF plan has checkpoint:human-verify markers → Strategy B: Segmented Execution
 IF plan has checkpoint:decision or checkpoint:human-action → Strategy C: Sequential Execution
 IF spawning parallel workers → FIRST consult the orchestration patterns for parallel subagent work
 
-For detailed strategy mechanics → read `{baseDir}/references/execution-strategies.md` AFTER selecting strategy
+For detailed strategy mechanics → read the execution-strategies reference file AFTER selecting strategy
 
 ---
 
@@ -77,6 +78,8 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 - **Before:** Single subagent does everything sequentially
 - **After:** Executor analyzes plan, spawns PARALLEL workers for independent tasks, spawns REVIEWER at milestones
 
+**Note:** All agent templates (implementer, critic, researcher, verifier) are in the `agents/` folder — read the relevant template before spawning.
+
 **Executor (main orchestrator) responsibilities:**
 ```
 1. Analyze plan structure and task relationships
@@ -105,7 +108,7 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 **Milestone self-review:**
 - Trigger: every 2-3 tasks completed, or at phase boundary
-- Spawn CRITIC subagent (sonnet, with Write) to review what was done
+- Spawn a CRITIC subagent (sonnet, with Write) to review what was done
 - Critic checks: correctness, edge cases, regressions, deviation handling
 - If critic finds issues: executor fixes before continuing to next milestone
 - This is internal review, not user interaction
@@ -144,7 +147,7 @@ When spawning subagents for investigation (exploring project structure, finding 
 
 **Pre-execution self-critique (devil's advocate):**
 
-Before spawning workers, delegate a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Read `{baseDir}/agents/critic.md` for the agent template and spawn the critic with the plan as context.
+Before spawning workers, spawn a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Read the critic agent template from the agents folder and spawn the critic with the plan as context.
 
 If critic finds critical issues: fix the plan before spawning workers.
 If critic finds minor concerns: note them for milestone review.
@@ -169,7 +172,7 @@ If critic finds minor concerns: note them for milestone review.
 
 | Element | Action |
 |---------|--------|
-| Segment (autonomous block) | Spawn subagent to execute block |
+| Segment (autonomous block) | Spawn a worker subagent to execute block |
 | `checkpoint:human-verify` | Execute in orchestrator context, present to user |
 | Verification pass | Continue to next segment |
 | Verification fail | STOP, present failure gate |
@@ -220,7 +223,7 @@ If critic finds minor concerns: note them for milestone review.
 | human-verify | B: Segmented | ~15-20% |
 | decision, human-action | C: Sequential | ~25-30% |
 
-**Decision tree:** See `{baseDir}/references/execution-strategies.md` for full strategy selection flow.
+**Decision tree:** See the execution-strategies reference file for full strategy selection flow.
 
 **Target:** Reserve 70%+ context for workspace and implementation.
 
@@ -575,13 +578,16 @@ Loading all project files instead of only those referenced in the plan.
 
 ## Reference Index
 
-IF selecting execution strategy → BEFORE choosing read `{baseDir}/references/execution-strategies.md`
-IF checkpoint type is human-verify → BEFORE segment read `{baseDir}/references/checkpoint-protocols.md`
-IF checkpoint type is decision → BEFORE presenting read `{baseDir}/references/checkpoint-protocols.md`
-IF handling deviations → read `{baseDir}/references/deviation-rules.md`
-IF spawning autonomous worker → read `{baseDir}/templates/autonomous-execution.md`
-IF spawning segment worker → read `{baseDir}/templates/segment-execution.md`
-IF spawning milestone critic → read `{baseDir}/agents/critic.md` (name: execute-critic)
+IF selecting execution strategy → BEFORE choosing read the execution-strategies reference file
+IF checkpoint type is human-verify → BEFORE segment read the checkpoint-protocols reference file
+IF checkpoint type is decision → BEFORE presenting read the checkpoint-protocols reference file
+IF handling deviations → read the deviation-rules reference file
+IF spawning autonomous worker → read the autonomous-execution template from the templates folder
+IF spawning segment worker → read the segment-execution template from the templates folder
+IF spawning milestone critic → read the critic agent template from the agents folder (name: execute-critic)
+IF spawning parallel worker → read the implementer agent template from the agents folder
+IF spawning researcher → read the researcher agent template from the agents folder
+IF spawning verifier → read the verifier agent template from the agents folder
 **Orchestration:** Five parallel patterns for subagent work
 
 ---

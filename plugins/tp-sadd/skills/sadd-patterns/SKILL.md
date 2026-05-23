@@ -20,13 +20,13 @@ Multi-agent architectures distribute work across multiple agent invocations, eac
 
 ## Core Principle
 
-Sub-agents exist primarily to isolate context, not to anthropomorphize role division. The critical design insight is that context isolation — giving each sub-agent a clean window focused on its specific subtask — is the primary benefit of multi-agent systems. Role-based division is a secondary concern.
+Sub-agents exist primarily to isolate context, not to anthropomorphize role division. The critical design insight is that context isolation — giving each subagent a clean window focused on its specific subtask — is the primary benefit of multi-agent systems. Role-based division is a secondary concern.
 
 ## Architectural Patterns
 
 ### Pattern 1: Supervisor/Orchestrator
 
-A central agent decomposes the user objective into subtasks, dispatches to specialist sub-agents, and synthesizes results.
+A central agent decomposes the user objective into subtasks, dispatches to specialist subagents, and synthesizes results.
 
 ```
 User Request → Supervisor → [Specialist A, Specialist B, Specialist C] → Aggregation → Final Output
@@ -36,7 +36,7 @@ User Request → Supervisor → [Specialist A, Specialist B, Specialist C] → A
 
 **Advantages:** Strict control flow, clear error boundaries, simple human-in-the-loop.
 
-**Disadvantages:** Supervisor context becomes a bottleneck; the "telephone game" where supervisors paraphrase sub-agent responses with lossy compression.
+**Disadvantages:** Supervisor context becomes a bottleneck; the "telephone game" where supervisors paraphrase subagent responses with lossy compression.
 
 **Mitigations:**
 - Sub-agents write directly to files rather than returning through supervisor
@@ -76,7 +76,7 @@ Strategy Layer (Goal Definition) → Planning Layer (Task Decomposition) → Exe
 
 | Mechanism | Best For | Trade-off |
 |-----------|----------|-----------|
-| Instruction passing | Simple, well-defined subtasks | Limits sub-agent flexibility |
+| Instruction passing | Simple, well-defined subtasks | Limits subagent flexibility |
 | Filesystem memory | Complex tasks with shared state | Consistency challenges with concurrent writes |
 | Full context delegation | Complex tasks needing complete understanding | Defeats purpose of isolation |
 

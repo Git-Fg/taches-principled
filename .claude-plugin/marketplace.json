@@ -32,12 +32,6 @@
       "description": "Git workflow automation — issue management, conventional commits, PR creation, inline PR reviews, git notes, and worktree-based parallel development."
     },
     {
-      "name": "tp-sdd",
-      "version": "0.2.0",
-      "source": "./plugins/tp-sdd",
-      "description": "Spec-driven development workflow — brainstorm ideas, add tasks, plan with multi-agent analysis, and implement with verification."
-    },
-    {
       "name": "tp-tdd",
       "version": "0.2.0",
       "source": "./plugins/tp-tdd",

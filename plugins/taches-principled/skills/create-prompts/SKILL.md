@@ -4,7 +4,7 @@ description: "Creates executable prompts for Claude Code. Use when user says 'wr
 when_to_use: |
   Use when the user says "write me a prompt", "generate a prompt", "create a prompt for this task", or "write a prompt for another agent".
   Do NOT use for executing prompts directly, reviewing existing prompts, or one-off questions.
-  Do NOT use when the goal is to create a reusable Claude Code skill (use create-skills), for execution of prompts (use execute-prompts), or for one-off questions.
+  Do NOT use when the goal is to create a reusable Claude Code skill (use create-skills).
 ---
 
 ## Decision Router
@@ -478,9 +478,3 @@ Every prompt should include clear success criteria and verification steps.
 - Sequential numbering applied correctly
 - Output saved to `.principled/prompts/[slug]-[number]-[name].md`
 - Decision tree presented to user
-
----
-
-## Reference Index
-
-**Self-contained:** This skill produces prompts as standalone artifacts. Prompts created by this skill flow to a companion execution skill as a compositional pair (see CLAUDE.md for the compositional pair exemption).

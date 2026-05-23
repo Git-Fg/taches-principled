@@ -68,6 +68,12 @@ Return structured findings:
 - Completes within single context window
 - Files ownership respected (no out-of-scope edits)
 
+## Failure Signal
+
+If unable to complete the task, return structured failure:
+{"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+Do not guess or produce partial output without flagging it.
+
 ---
 
 **Spawned by:** Planner orchestrator

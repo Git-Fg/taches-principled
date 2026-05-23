@@ -105,7 +105,7 @@ Multi-perspective review using independent judges with cross-examination and con
 ### Process
 
 1. **Context Gathering** — Identify scope, capture original requirements, modified files, decisions made, constraints. Summarize for confirmation.
-2. **Independent Judge Reviews** — Spawn 2-3 judge sub-agents simultaneously, each with isolated context focused on their evaluation angle:
+2. **Independent Judge Reviews** — Spawn 2-3 judge subagents simultaneously, each with isolated context focused on their evaluation angle:
 
    | Role | Evaluates | Best For |
    |------|-----------|----------|

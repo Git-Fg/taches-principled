@@ -69,7 +69,7 @@ Format, level of detail
 When asked to run a prompt:
 
 1. **Resolve** — find the file (by number, name, or "most recent")
-2. **Dispatch** — delegate via Task tool with subagent_type="general-purpose"
+2. **Spawn** — delegate by spawning a general-purpose subagent with the prompt content
 3. **Track** — archive to `./prompts/completed/` on success
 4. **Commit** — git add + commit with scope prefix
 

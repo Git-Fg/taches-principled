@@ -223,13 +223,6 @@ Done: Output validated
 Checkpoint: checkpoint:human-verify
 ```
 
-**Alternative syntax (also recognized):**
-```markdown
-type="checkpoint:human-verify"
-```
-
-Both syntaxes are recognized by execute-plans. The `Checkpoint:` field syntax is canonical and preferred for consistency with plan-format.md.
-
 **Fields:**
 - `type`: checkpoint:human-verify | checkpoint:decision | checkpoint:human-action
 - `id`: Unique identifier for tracking (optional)

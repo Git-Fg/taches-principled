@@ -64,9 +64,7 @@ Monitor(
 
 Spawn in background for concurrent work:
 
-```bash
-Agent(description = "...", background = true)
-```
+Spawning a background subagent for concurrent work
 
 **Background behavior:**
 - Runs concurrently while orchestrator continues

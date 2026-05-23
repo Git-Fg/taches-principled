@@ -11,10 +11,10 @@ when_to_use: |
 
 IF creating plugin-distributed subagent → NOTE: plugin subagents IGNORE hooks, mcpServers, permissionMode frontmatter fields
 IF using Task tool → NOTE: tool renamed to "Agent" in v2.1.63, backward-compatible alias exists
-IF writing spawn prompts → FIRST read `{baseDir}/references/writing-subagent-prompts.md`
-IF choosing orchestration pattern → IMMEDIATELY read `{baseDir}/references/orchestration-core.md`
-IF handling failures → IMMEDIATELY read `{baseDir}/references/failure-modes.md`
-IF understanding token cost → BEFORE budgeting read `{baseDir}/references/memory-architecture.md`
+IF writing spawn prompts → FIRST read the writing-subagent-prompts reference file from the references folder
+IF choosing orchestration pattern → IMMEDIATELY read the orchestration-core reference file
+IF handling failures → IMMEDIATELY read the failure-modes reference file
+IF understanding token cost → BEFORE budgeting read the memory-architecture reference file
 
 ---
 
@@ -265,7 +265,7 @@ For each issue found:
 
 **Split signal:** If a task needs >10 files or >7 tools or has >1500 tokens of context — decompose first.
 
-**Worker cap enforcement:** When you need more than 5 workers, add a second-tier supervisor rather than overloading one. See `{baseDir}/references/gotchas.md` for the full supervisor bottleneck explanation.
+**Worker cap enforcement:** When you need more than 5 workers, add a second-tier supervisor rather than overloading one. See the gotchas reference file for the full supervisor bottleneck explanation.
 
 ### The Sonnet-Haiku Pattern
 
@@ -465,7 +465,7 @@ Subagents cannot use AskUserQuestion — move user interaction to main chat.
 
 ## Multi-Agent Gotchas (Critical)
 
-**BEFORE adding agents, read `{baseDir}/references/gotchas.md`.**
+**BEFORE adding agents, read the gotchas reference file.**
 
 Multi-agent systems fail in predictable ways. These eight gotchas account for the majority of production failures:
 
@@ -517,17 +517,7 @@ When spawning subagents for investigation/research/exploration:
 
 ## Reference Index
 
-| Reference | Purpose |
-|-----------|---------|
-| `{baseDir}/references/writing-subagent-prompts.md` | Core principles, XML structure, examples, anti-patterns |
-| `{baseDir}/references/orchestration-core.md` | Four rules, orchestrator checklist, cost-capability spectrum |
-| `{baseDir}/references/failure-modes.md` | Detection, recovery, prevention table |
-| `{baseDir}/references/memory-architecture.md` | Four-layer memory, context window discipline |
-| `{baseDir}/references/gotchas.md` | Eight critical multi-agent gotchas from production |
-| `{baseDir}/references/subagents.md` | Configuration, model selection, tool security |
-| `{baseDir}/references/context-management.md` | STM, LTM, working memory, context strategies |
-| `{baseDir}/references/automation-layers.md` | Hooks, Monitor, ScheduleWakeup patterns |
-| `{baseDir}/references/tools-reference.md` | TaskGet, TaskOutput, TaskStop, SendMessage |
+The skill contains reference files covering: writing-subagent-prompts (core principles, XML structure, examples, anti-patterns), orchestration-core (four rules, orchestrator checklist, cost-capability spectrum), failure-modes (detection, recovery, prevention), memory-architecture (four-layer memory, context window discipline), gotchas (eight critical multi-agent gotchas from production), subagents (configuration, model selection, tool security), context-management (STM, LTM, working memory, context strategies), automation-layers (hooks, Monitor, ScheduleWakeup patterns), and tools-reference (TaskGet, TaskOutput, TaskStop, SendMessage).
 
 ---
 

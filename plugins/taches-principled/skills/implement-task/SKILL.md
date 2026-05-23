@@ -18,7 +18,7 @@ IF user is done implementing → verify completion and move task to done
 
 # Implement Task
 
-Orchestrate multi-step task implementation with automated quality verification. Each implementation step is dispatched to a dedicated sub-agent, then verified by an independent judge sub-agent. Supports three verification patterns (simple skip, critical panel, per-item judges) plus final Definition of Done verification.
+Orchestrate multi-step task implementation with automated quality verification. Each implementation step is dispatched to a dedicated subagent, then verified by an independent judge subagent. Supports three verification patterns (simple skip, critical panel, per-item judges) plus final Definition of Done verification.
 
 The orchestrator dispatches and aggregates but never implements or evaluates directly. Every implementation step gets a dedicated agent. Every verification gets an independent judge. Context protection is paramount — reading artifacts yourself causes context overflow and command loss, which is the most common failure mode in multi-step workflows.
 
@@ -103,7 +103,7 @@ If task is already in `in-progress/`, keep it there.
 1. Parse the task file for `[DONE]` markers on step titles (e.g., `### Step 2: Create Service [DONE]`)
 2. Find the highest step number marked `[DONE]` — this is `LAST_COMPLETED_STEP`
 3. If `LAST_COMPLETED_STEP > 0`:
-   - Launch a judge sub-agent to verify the artifacts from that completed step
+   - Launch a judge subagent to verify the artifacts from that completed step
    - If judge PASS: set `RESUME_FROM = LAST_COMPLETED_STEP + 1`
    - If judge FAIL: set `RESUME_FROM = LAST_COMPLETED_STEP` (re-implement the step)
 4. If `LAST_COMPLETED_STEP == 0`: set `RESUME_FROM = 1`
@@ -133,7 +133,7 @@ If task is already in `in-progress/`, keep it there.
 
 4. **Determine scope**: `REFINE_FROM` = minimum of affected step numbers. All steps from `REFINE_FROM` onwards need re-verification. Steps before `REFINE_FROM` are preserved as-is.
 
-5. **Pass context**: Provide the git diff output for affected files as `USER_CHANGES_CONTEXT` to both judge and implementation sub-agents. Sub-agents must build upon user fixes, not overwrite them.
+5. **Pass context**: Provide the git diff output for affected files as `USER_CHANGES_CONTEXT` to both judge and implementation subagents. Sub-agents must build upon user fixes, not overwrite them.
 
 ### Step 0.5: Display Configuration
 
@@ -152,7 +152,7 @@ If task is already in `in-progress/`, keep it there.
 
 ## Phase 1: Load and Analyze Task
 
-This is the ONLY phase where the orchestrator reads a file. After this, all implementation details come from sub-agent reports.
+This is the ONLY phase where the orchestrator reads a file. After this, all implementation details come from subagent reports.
 
 1. **Read the task file once** — extract the `## Implementation Process` section
 2. **Parse all steps** with their dependencies, parallel annotations (`Parallel with:`), and `#### Verification` sections
@@ -175,7 +175,7 @@ Execute steps in dependency order. Steps marked `Parallel with:` run simultaneou
 
 Used for: directory creation, configuration changes, deletions, and other straightforward operations.
 
-**Dispatch implementation sub-agent:**
+**Dispatch implementation subagent:**
 
 ```
 Implement Step [N]: [Step Title]
@@ -193,6 +193,16 @@ When complete, report:
 3. Any issues encountered
 ```
 
+**Spawn Footer**
+When dispatched as a subagent:
+- Your context starts fresh — no access to prior conversation or other subagents' outputs
+- Return structured output (file paths, findings, and any artifacts) to the orchestrator
+- If you encounter anything unexpected or have any question or doubt, stop and report back
+- Do not proceed silently on assumptions.
+
+**Failure Signal**
+If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+
 **After completion:**
 - Use the agent's report to know what was created — do NOT read the created files
 - Mark step complete: update task file with `[DONE]` on step title, subtasks as `[X]`
@@ -204,7 +214,7 @@ When complete, report:
 
 Used for: artifacts requiring evaluation confidence. Single judge for non-critical, panel of 2 for critical.
 
-**1. Dispatch implementation sub-agent** (same as Pattern A with self-critique added):
+**1. Dispatch implementation subagent** (same as Pattern A with self-critique added):
 
 ```
 Implement Step [N]: [Step Title]
@@ -220,9 +230,19 @@ When complete, report:
 3. Self-critique summary (what could be improved)
 ```
 
+**Spawn Footer**
+When dispatched as a subagent:
+- Your context starts fresh — no access to prior conversation or other subagents' outputs
+- Return structured output (file paths, findings, and any artifacts) to the orchestrator
+- If you encounter anything unexpected or have any question or doubt, stop and report back
+- Do not proceed silently on assumptions.
+
+**Failure Signal**
+If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+
 **2. After completion**, receive the agent's report and note artifact paths. Do NOT read artifacts.
 
-**3. Dispatch judge sub-agent(s):**
+**3. Dispatch judge subagent(s):**
 
 For Single Judge (standard threshold): launch 1 judge.
 For Panel of 2 Judges (critical threshold): launch 2 judges in parallel.
@@ -244,6 +264,16 @@ You can run tests, check imports, validate syntax to verify the artifact.
 Return: scores per criterion with evidence, overall weighted score, PASS/FAIL, specific improvements if FAIL.
 ```
 
+**Spawn Footer**
+When dispatched as a subagent:
+- Your context starts fresh — no access to prior conversation or other subagents' outputs
+- Return structured output (file paths, findings, and any artifacts) to the orchestrator
+- If you encounter anything unexpected or have any question or doubt, stop and report back
+- Do not proceed silently on assumptions.
+
+**Failure Signal**
+If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+
 **4. Aggregate results (panel of 2):**
 - Median per criterion = average of both scores
 - Flag high-variance criteria (difference > 2.0)
@@ -251,7 +281,7 @@ Return: scores per criterion with evidence, overall weighted score, PASS/FAIL, s
 - PASS if overall >= threshold
 
 **5. On FAIL:**
-- Re-launch implementation agent with judge feedback
+- Re-launch a implementation subagent with judge feedback
 - Re-verify with judge(s)
 - Iterate until PASS or MAX_ITERATIONS reached
 - If MAX_ITERATIONS reached and still failing, log warning and proceed to next step
@@ -264,7 +294,7 @@ Return: scores per criterion with evidence, overall weighted score, PASS/FAIL, s
 
 Used for: steps creating multiple similar items (validators, handlers, endpoints, test cases).
 
-**1. Dispatch implementation sub-agents in parallel** — one per item:
+**1. Dispatch implementation subagents in parallel** — one per item:
 
 ```
 Implement Step [N], Item: [Item Name]
@@ -281,9 +311,19 @@ When complete, report:
 3. Self-critique summary
 ```
 
+**Spawn Footer**
+When dispatched as a subagent:
+- Your context starts fresh — no access to prior conversation or other subagents' outputs
+- Return structured output (file paths, findings, and any artifacts) to the orchestrator
+- If you encounter anything unexpected or have any question or doubt, stop and report back
+- Do not proceed silently on assumptions.
+
+**Failure Signal**
+If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+
 **2. After all complete**, collect reports and artifact paths. Do NOT read artifacts.
 
-**3. Dispatch evaluation sub-agents in parallel** — one per item:
+**3. Dispatch evaluation subagents in parallel** — one per item:
 
 Each judge:
 ```
@@ -301,6 +341,16 @@ Score each criterion 1-5 with chain-of-thought justification BEFORE the score.
 
 Return: scores with evidence, overall score, PASS/FAIL, improvements if FAIL.
 ```
+
+**Spawn Footer**
+When dispatched as a subagent:
+- Your context starts fresh — no access to prior conversation or other subagents' outputs
+- Return structured output (file paths, findings, and any artifacts) to the orchestrator
+- If you encounter anything unexpected or have any question or doubt, stop and report back
+- Do not proceed silently on assumptions.
+
+**Failure Signal**
+If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
 
 **4. Aggregate results:** items_passed / items_total
 
@@ -353,7 +403,7 @@ If the step is marked as critical in the task file metadata, always use the crit
 
 After all implementation steps complete and pass their per-step verification:
 
-1. **Dispatch a DoD verification sub-agent**:
+1. **Dispatch a DoD verification subagent**:
 
 ```
 Verify all Definition of Done items in the task file.
@@ -376,9 +426,19 @@ Overall pass rate: X/Y
 Failing items with specific reasons.
 ```
 
+**Spawn Footer**
+When dispatched as a subagent:
+- Your context starts fresh — no access to prior conversation or other subagents' outputs
+- Return structured output (file paths, findings, and any artifacts) to the orchestrator
+- If you encounter anything unexpected or have any question or doubt, stop and report back
+- Do not proceed silently on assumptions.
+
+**Failure Signal**
+If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+
 2. **Review results**: If all items PASS, verify that `[X]` markers were written by checking the end of the task file.
 
-3. **On any FAIL**: Launch fix sub-agents for each failing item with the failure details. After fixes, re-launch the DoD verification (step 1). Iterate until all PASS.
+3. **On any FAIL**: Launch fix subagents for each failing item with the failure details. After fixes, re-launch the DoD verification (step 1). Iterate until all PASS.
 
 ## Phase 4: Move Task to Done
 
@@ -533,10 +593,10 @@ If high variance is detected: present both evaluators' reasoning to the user and
 ## Error Handling
 
 ### Implementation Sub-Agent Failure
-If a developer agent reports failure: present the failure details to the user, ask clarifying questions that could help resolve, then re-launch the agent with clarifications incorporated.
+If a developer agent reports failure: present the failure details to the user, ask clarifying questions that could help resolve, then re-launch the subagent with clarifications incorporated.
 
 ### Judge Returns FAIL
-Automatic retry: re-launch the implementation sub-agent with judge feedback included. The implementation agent must address the specific failing criteria.
+Automatic retry: re-launch the implementation subagent with judge feedback included. The implementation subagent must address the specific failing criteria.
 
 If the step is in HUMAN_IN_THE_LOOP_STEPS: trigger human checkpoint after the re-implementation but before the next judge retry.
 

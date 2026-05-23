@@ -24,10 +24,10 @@ The First Principles Framework (FPF) uses the ADI cycle (Abduction-Deduction-Ind
 ```bash
 mkdir -p .fpf/{evidence,decisions,sessions,knowledge/{L0,L1,L2,invalid}}
 ```
-2. Launch a sub-agent to initialize context: read the problem statement, analyze scope, write context to `.fpf/context.md`
+2. Spawn a subagent to initialize context: read the problem statement, analyze scope, write context to `.fpf/context.md`
 
 ### Step 2: Generate Hypotheses (Parallel)
-Launch sub-agents to generate competing hypotheses (3-5 recommended). Each hypothesis covers a different region of the solution space:
+Launch subagents to generate competing hypotheses (3-5 recommended). Each hypothesis covers a different region of the solution space:
 - High-probability candidates (the obvious explanations)
 - Low-probability alternatives (creative but plausible)
 Each written to `.fpf/knowledge/L0/{id}.md`
@@ -36,25 +36,25 @@ Each written to `.fpf/knowledge/L0/{id}.md`
 Display hypothesis table, ask user if they want to add their own.
 
 ### Step 4: Verify Logic (Parallel per hypothesis)
-For each L0 hypothesis, launch a sub-agent to:
+For each L0 hypothesis, spawn a subagent to:
 1. Verify internal logical consistency
 2. Check for hidden assumptions
 3. Move to L1 (verified) or invalid
 
 ### Step 5: Validate Evidence (Parallel per hypothesis)
-For each L1 hypothesis, launch a sub-agent to:
+For each L1 hypothesis, spawn a subagent to:
 1. Search for supporting or refuting evidence in the codebase
 2. Cross-reference with existing knowledge
 3. Move to L2 (validated) or invalid
 
 ### Step 6: Audit Trust (Parallel per hypothesis)
-For each L2 hypothesis, launch a sub-agent to:
+For each L2 hypothesis, spawn a subagent to:
 1. Calculate R_eff (evidence reliability score)
 2. Identify weakest link (WLNK)
 3. Write audit report to `.fpf/evidence/`
 
 ### Step 7: Decide
-Launch a sub-agent to:
+Spawn a subagent to:
 1. Review all L2 hypotheses and audit reports
 2. Create Design Rationale Record (DRR) in `.fpf/decisions/`
 3. Present recommendation with rationale

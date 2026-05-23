@@ -108,30 +108,16 @@ Note: `model`, `effort`, `context`, `agent`, `hooks`, `paths`, and `shell` are a
 
 The skill-auditor is part of a multi-agent evaluation pipeline. To get a complete picture, invoke the pipeline in order:
 
-**Step 1 — grading sub-agent** (evaluates teaching effectiveness): Get dimension scores for teaching effectiveness
-```
-Agent(description = "Grade [skill-name] for teaching effectiveness",
-      prompt = "Read [skill-path]/SKILL.md and produce a grading following the grader agent's format.
-               Include the structured JSON output block for analyzer consumption.")
-```
+**Step 1 — grading subagent** (evaluates teaching effectiveness): Get dimension scores for teaching effectiveness by spawning a grader subagent with the skill path as context.
 
 **Step 2 — Trigger Benchmark** (if routing issues suspected):
 ```bash
 python3 ${CLAUDE_SKILL_DIR}/scripts/run_trigger_benchmark.py <skill-name> --interactive
 ```
 
-**Step 3 — comparison sub-agent** (analyzes version deltas): Get quality signals and format audit
-```
-Agent(description = "Audit [skill-name] for quality and format",
-      prompt = "Read [skill-path]/SKILL.md and audit following the skill-auditor's guidelines.")
-```
+**Step 3 — comparison subagent** (analyzes version deltas): Get quality signals and format audit by spawning a comparator subagent with the skill path as context.
 
-**Step 4 — synthesis sub-agent** (produces prioritized recommendations): Synthesize into prioritized recommendations
-```
-Agent(description = "Synthesize [skill-name] evaluation into improvement plan",
-      prompt = "Synthesize outputs from grader.json and auditor.json following the analyzer's format.
-               Produce the 3-priority change list with teaching outcomes.")
-```
+**Step 4 — synthesis subagent** (produces prioritized recommendations): Synthesize into prioritized recommendations by spawning an analyzer subagent with the grader and auditor outputs as context.
 
 ## Workflow
 

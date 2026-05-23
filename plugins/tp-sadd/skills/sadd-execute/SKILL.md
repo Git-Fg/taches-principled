@@ -2,7 +2,7 @@
 name: sadd-execute
 description: "Execute tasks with meta-judge verification: single-task, sequential-steps, parallel-targets, or competitive generation with quality gates"
 when_to_use: |
-  When user says 'execute this', 'implement with verification', 'meta-judge this', 'run the task', 'build this with quality gates', 'implement [something]'. IMMEDIATELY when user asks to implement anything that needs independent verification. FIRST when task requires parallel implementation, sequential steps, or competitive generation. DO NOT use when the task is a simple one-liner needing only basic implementation — use a basic sub-agent dispatch instead. DO NOT use when you need to delegate work to a sub-agent without quality verification — use sadd-dispatch instead.
+  When user says 'execute this', 'implement with verification', 'meta-judge this', 'run the task', 'build this with quality gates', 'implement [something]'. IMMEDIATELY when user asks to implement anything that needs independent verification. FIRST when task requires parallel implementation, sequential steps, or competitive generation. DO NOT use when the task is a simple one-liner needing only basic implementation — use a basic subagent dispatch instead. DO NOT use when you need to delegate work to a subagent without quality verification — use sadd-dispatch instead.
 argument-hint: "Task description [--mode single|steps|parallel|competitive] [--files f1,f2]"
 ---
 
@@ -81,7 +81,7 @@ Decompose a complex task into ordered, dependent subtasks with per-step meta-jud
 
 3. **Final Summary** — Report task, total steps, per-step results (model, judge score, retries, status), files modified, key decisions, verification summary. Judge reports in `.specs/reports/`.
 
-**Error handling:** Max retries = STOP and escalate with failure analysis. Context missing = re-examine previous step output or dispatch clarification sub-agent. Step conflicts = stop, analyze decomposition correctness, options include re-ordering, combining, or adding a reconciliation step.
+**Error handling:** Max retries = STOP and escalate with failure analysis. Context missing = re-examine previous step output or dispatch clarification subagent. Step conflicts = stop, analyze decomposition correctness, options include re-ordering, combining, or adding a reconciliation step.
 
 ### Mode 3: Parallel Targets
 
@@ -156,7 +156,7 @@ The meta-judge only needs the task description — not the implementation output
 The evaluation criteria for a task are invariant. If the criteria changed between attempts, scores would be incomparable and the retry agent would aim at a moving target. Reusing the same spec ensures consistent measurement across all attempts.
 
 ### Why context isolation matters for the judge
-The judge must evaluate the work without being influenced by the reasoning that produced it. A fresh sub-agent with only the work and criteria provides unbiased assessment, catching blind spots the implementation agent's self-critique missed.
+The judge must evaluate the work without being influenced by the reasoning that produced it. A fresh subagent with only the work and criteria provides unbiased assessment, catching blind spots the implementation agent's self-critique missed.
 
 ### Why 3 generators for competitive mode (not 2 or 5)
 Three is the minimum for meaningful diversity and tie-breaking. Two solutions can differ without indicating which approach is better. Three provides enough variety to cover different solution-space regions while keeping agent count manageable. Five shows diminishing returns.
@@ -177,4 +177,4 @@ Sharing an implementation agent between targets would require it to hold multipl
 In parallel execution, one failing target should not delay or block other targets. They are independent by design. Isolated failures mean other targets complete and verify normally while only the failed target is retried or escalated.
 
 ### Why context filtering between sequential steps (not full passthrough)
-Implementation agents produce detailed internal reasoning that is irrelevant to downstream steps. Passing only what is needed (interfaces, file paths, decisions) keeps sub-agent contexts clean and focused. Downstream agents can read files directly if they need implementation details.
+Implementation agents produce detailed internal reasoning that is irrelevant to downstream steps. Passing only what is needed (interfaces, file paths, decisions) keeps subagent contexts clean and focused. Downstream agents can read files directly if they need implementation details.

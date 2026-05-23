@@ -2,19 +2,30 @@
 name: ideation
 description: "Refine rough ideas into documented designs through single-question dialogue, or generate 6 distinct creative options using probability sampling. Two modes: concept refinement and divergent generation."
 when_to_use: |
-  Use when the user says "I have an idea", "let's brainstorm", "what are my options", or "help me think through this".
+  Use when the user says "I have an idea", "help me figure out", "design this", "what are my options", "let's brainstorm", "help me think through this", or "let's think about".
   IMMEDIATELY when a concept is vague or unformed — BEFORE sketching architecture or writing code.
+  Brainstorm functionality is now consolidated into this skill — use ideation for all collaborative refinement.
 argument-hint: "[feature concept, problem, or topic]"
 ---
 
 ## Decision Router
 
-IF user has an unformed idea or vague concept → use brainstorm mode: collaborative questioning to refine
+IF user wants to explore or refine an unformed idea → use brainstorm mode: collaborative questioning to refine
 IF user needs creative idea generation on a subject → use create-ideas mode: probability sampling
+IF user has simple task capture needs → use add-task instead
+IF user needs formal planning with milestones → use create-plans instead
 IF user already knows exactly what they want → skip to design capture directly
 IF combining with development workflow → produce `.specs/plans/<topic>.design.md` then create task file
 IF user needs structured evaluation rather than generation → use evaluation workflow instead
 IF idea is fully formed and documented → no need for this skill
+
+---
+
+## DO NOT Boundaries
+
+- **DO NOT use for simple task capture** — use `add-task` instead for straightforward task creation
+- **DO NOT use for formal planning** — use `create-plans` instead for structured planning with milestones and phases
+- **brainstorm functionality is now consolidated into this skill** — use ideation for all collaborative refinement
 
 # Brainstorm Mode
 

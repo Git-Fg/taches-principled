@@ -2,8 +2,12 @@
 name: write-concisely
 description: Make documentation clearer and more professional using Strunk & White's principles. Use when user says 'make this clearer', 'write this more concisely', 'clean up this text', or 'improve the writing'.
 when_to_use: |
-  Use when the user says "make this clearer", "write this more concisely", "clean up this text", or "improve the writing".
-  IMMEDIATELY when producing documentation, READMEs, or any human-readable text.
+  Use when the user says "make this clearer", "write this more concisely", "clean up this text", "improve the writing", "fix the prose", "tighten this", "remove the filler", or "sound more professional".
+  IMMEDIATELY when producing documentation, READMEs, comments, changelogs, or any human-readable text.
+  FIRST after writing any documentation longer than one paragraph.
+  DO NOT use on code itself (use code-simplify for code), on structured data, or on error messages (use kaizen principles for error design).
+  CONTRAST with update-docs: that updates existing docs; this improves the quality of the writing itself.
+  CONTRAST with code-simplify: that simplifies code logic; this improves prose clarity and conciseness.
 ---
 
 ## Decision Router

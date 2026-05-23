@@ -13,11 +13,11 @@ IF writing skill body → UNDERSTAND: Skills use 3-level progressive disclosure:
   - Level 1 (~100 tokens): frontmatter name+description ALWAYS loaded at startup
   - Level 2 (~5k tokens): SKILL.md body loaded when triggered
   - Level 3 (0 tokens): scripts/ files run via bash, only output enters context
-  → Read: {baseDir}/references/context-management.md for progressive disclosure pattern
+  → Read the context-management reference file for progressive disclosure pattern
 
-IF naming or describing a skill → FIRST read `{baseDir}/references/cross-skill-discovery.md`
-IF skill might exceed 500 lines or 7 tools → IMMEDIATELY read `{baseDir}/references/context-management.md`
-IF about to commit a new skill → BEFORE commit read `{baseDir}/references/skill-self-testing.md`
+IF naming or describing a skill → FIRST read the cross-skill-discovery reference file
+IF skill might exceed 500 lines or 7 tools → IMMEDIATELY read the context-management reference file
+IF about to commit a new skill → BEFORE commit read the skill-self-testing reference file
 
 ---
 
@@ -83,8 +83,8 @@ These skills say "WHEN to delegate" — not how to delegate, not what to do,
 just when to pass work to someone else.
 
 **Example that works:**
-> "When scope is unclear → delegate to explorer agent. When scope is clear
-> but implementation is complex → delegate to implementer agent. When at a
+> "When scope is unclear → delegate to an explorer subagent. When scope is clear
+> but implementation is complex → delegate to an implementer subagent. When at a
 > milestone → spawn critic to review."
 
 This is a decision tree, not a script. The agent decides based on conditions.
@@ -354,7 +354,7 @@ The frontmatter provides the routing signal. The H1 title establishes identity. 
 
 When SKILL.md delegates to an agent file, reference it semantically — not with JSON or tool syntax:
 
-> "Delegate to the explorer agent to map the project structure. Read `{baseDir}/agents/explorer.md` for the agent briefing and pass it alongside the task context."
+> "Delegate to the explorer agent to map the project structure. Read the explorer agent template from the agents folder and pass it alongside the task context."
 
 The skill body describes intent and scope. The agent file provides the executable prompt. This separation keeps SKILL.md readable and agent prompts portable.
 
@@ -498,9 +498,9 @@ Load a reference only when working on that specific aspect — do not load all u
 
 | Reference | Purpose | When to Load |
 |-----------|---------|--------------|
-| `{baseDir}/references/context-management.md` | Context window principles, SKILL.md vs references/ load strategy | If you're about to add content to SKILL.md and suspect it might exceed 500 lines or 7 tools |
-| `{baseDir}/references/skill-self-testing.md` | YAML validation, threshold checks, trigger testing | If you've finished a draft and want to verify it passes threshold checks before committing |
-| `{baseDir}/references/cross-skill-discovery.md` | Skill routing, description patterns, name conventions | If your skill's description triggers on things it shouldn't OR fails to trigger on things it should |
+| `context-management.md` | Context window principles, SKILL.md vs references/ load strategy | If you're about to add content to SKILL.md and suspect it might exceed 500 lines or 7 tools |
+| `skill-self-testing.md` | YAML validation, threshold checks, trigger testing | If you've finished a draft and want to verify it passes threshold checks before committing |
+| `cross-skill-discovery.md` | Skill routing, description patterns, name conventions | If your skill's description triggers on things it shouldn't OR fails to trigger on things it should |
 
 ---
 
@@ -510,4 +510,4 @@ Skill creation follows phases: requirements → draft → verify → integrate. 
 
 **Principle over procedure:** A skill about coordinated work should demonstrate coordination. Frame each phase as a tracked task with clear completion criteria. Trust the agent to determine execution order from the principles, not from scripted steps.
 
-For pre-commit verification of threshold checks, load `{baseDir}/references/skill-self-testing.md`.
+For pre-commit verification of threshold checks, load the skill-self-testing reference file.

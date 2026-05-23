@@ -11,15 +11,15 @@ when_to_use: |
 ## Decision Router
 
 IF user asks to "plan" → FIRST create brief before roadmap
-IF user asks to "plan a phase" → BEFORE creating tasks read `{baseDir}/references/plan-format.md` AND `{baseDir}/references/checkpoints.md`
-IF scope is unclear or large → BEFORE decomposing read `{baseDir}/references/scope-estimation.md`
-IF automation CLI available → BEFORE running commands read `{baseDir}/references/cli-automation.md`
+IF user asks to "plan a phase" → BEFORE creating tasks read the plan-format and checkpoints reference files
+IF scope is unclear or large → BEFORE decomposing read the scope-estimation reference file
+IF automation CLI available → BEFORE running commands read the cli-automation reference file
 
 User phrase → Action routing:
 - "plan", "make plan", "create plan" → Create brief first (never roadmap first)
 - "quick plan", "sketch" → Short intake with 2-3 tasks max
 - "full plan", "detailed" → Full intake with scope analysis
-- "phase plan", "increment" → Use phase structure from `{baseDir}/references/plan-format.md`
+- "phase plan", "increment" → Use phase structure from the plan-format reference
 - "execute", "run", "build it" → Load `execute-plans` skill (compositional pair)
 
 ---
@@ -296,7 +296,7 @@ Use AskUserQuestion to present options:
 
 Before creating a plan, understand the project thoroughly. Use subagent fan-out to explore in parallel:
 
-**Read the agents folder** at `{baseDir}/agents/` — each markdown file is a subagent prompt template. Read the relevant agent, fill in placeholders like `{{context}}`, `{{task}}`, `{{scope}}`, and dispatch it as a subagent.
+**Read the agents folder** — each markdown file is a subagent prompt template. Read the relevant agent, fill in placeholders like `{{context}}`, `{{task}}`, `{{scope}}`, and dispatch it as a subagent.
 
 **Fan-out pattern for exploration:**
 
@@ -304,7 +304,7 @@ Before creating a plan, understand the project thoroughly. Use subagent fan-out 
 
 2. **Researcher agents** — For unfamiliar technologies or patterns in the spec, spawn parallel researchers to find current best practices.
 
-3. **Architect agents** — When facing complex decisions (auth strategy, state management, API design), spawn an architect agent to evaluate trade-offs.
+3. **Architect agents** — When facing complex decisions (auth strategy, state management, API design), spawn an architect subagent to evaluate trade-offs.
 
 **Fan-out rules:**
 - All parallel subagent dispatches MUST occur in a single message
@@ -330,14 +330,14 @@ Signal: if a task requires seeing output from another task to proceed, it is a d
 
 **Example explore phase:**
 
-Read agent templates from `{baseDir}/agents/`, then dispatch parallel subagents for exploration:
+Read the agent templates, then dispatch parallel subagents for exploration:
 1. Explorer agents (3-5) — map project structure across different areas (frontend, backend, config, tests)
 2. Researcher agents — find best practices for unfamiliar technologies
 3. Architect agents — evaluate trade-offs for complex decisions
 
 After all complete, aggregate findings into understanding of the project.
 
-**Spawned subagent handoff:** Every subagent must receive explicit handoff with:
+**Subagent handoff:** Every subagent must receive explicit handoff with:
 - Who spawned it and why (role and purpose)
 - What context it needs to work with
 - What scope to cover (specific files/areas)
@@ -371,10 +371,10 @@ When fanning out subagents for exploration, ALL findings MUST be written to a ce
 
 **Using critic agents during planning:**
 
-After the fan-out exploration, before writing the plan, spawn a critic subagent to challenge the emerging approach:
+After the fan-out exploration, before writing the plan, spawn a critic subagent (read the critic agent template from the agents folder) to challenge the emerging approach:
 
 ```
-Spawn critic subagent (general-purpose with Write tool access):
+Spawn a critic subagent (general-purpose with Write tool access):
 Focus: Challenge the proposed approach as devil's advocate
 - What assumptions does the approach make that might be wrong?
 - What could go wrong with this direction?
@@ -540,12 +540,12 @@ Each plan: 2-3 tasks, ~15-60 min of work. Quality degradation is invisible until
 
 ## Reference Index
 
-IF writing brief → FIRST read `{baseDir}/templates/brief.md`
-IF writing phase plan → BEFORE tasks read `{baseDir}/references/plan-format.md` AND `{baseDir}/references/checkpoints.md`
-IF scope is unclear → BEFORE decomposing read `{baseDir}/references/scope-estimation.md`
-IF automation available → BEFORE running commands read `{baseDir}/references/cli-automation.md`
-IF managing milestones → read `{baseDir}/references/milestone-management.md`
-IF spawning subagents → read `{baseDir}/agents/explorer.md`, `{baseDir}/agents/researcher.md`, `{baseDir}/agents/architect.md` for templates
+IF writing brief → FIRST read the brief template file
+IF writing phase plan → BEFORE tasks read the plan-format and checkpoints reference files
+IF scope is unclear → BEFORE decomposing read the scope-estimation reference file
+IF automation available → BEFORE running commands read the cli-automation reference file
+IF managing milestones → read the milestone-management reference file
+IF spawning subagents → read the explorer agent template, researcher agent template, architect agent template, critic agent template, verifier agent template, and implementer agent template from the agents folder for templates
 
 ---
 

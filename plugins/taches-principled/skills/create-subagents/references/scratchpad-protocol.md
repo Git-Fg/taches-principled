@@ -56,18 +56,12 @@ For investigation/exploration subagents:
 ## Anti-Pattern: Native Explore for Investigation
 
 **❌ Forbidden:**
-```
-Agent(description = "Explore codebase", subagentType = "Explore")
-```
+Spawning a read-only Explore subagent for investigation
 
 **Why:** Native Explore agents are Haiku-based and read-only. They cannot persist findings to scratchpad. Findings must be written directly, not passed through summarization.
 
 **✅ Correct:**
-```
-Agent(description = "Explore codebase, write findings to scratchpad",
-      subagentType = "general-purpose",
-      tools = ["Read", "Write", "Grep", "Glob", "Bash"])
-```
+Spawning a general-purpose subagent with read/write/search/shell tools to explore and persist findings directly
 
 ## Scratchpad Location
 

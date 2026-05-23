@@ -1,6 +1,6 @@
 ---
 name: sadd-judge
-description: "Evaluate work using meta-judge then judge sub-agents: single judge for routine checks, 3-judge debate for high-stakes consensus"
+description: "Evaluate work using meta-judge then judge subagents: single judge for routine checks, 3-judge debate for high-stakes consensus"
 when_to_use: |
   When user says 'judge this', 'evaluate', 'assess quality', 'verify this', 'check my work', 'review this solution', 'grade this', 'is this any good'. IMMEDIATELY when user asks for LLM-as-Judge verification or quality assessment. FIRST when evaluation requires independent criteria (not hardcoded). DO NOT use when you want explicit multi-round adversarial debate with a panel of judges — use the debate-oriented evaluation skill instead.
 argument-hint: "[evaluation-focus] [--debate]"
@@ -72,7 +72,7 @@ Debate mode saves judge report files in `.specs/reports/` and presents a final s
 Hardcoded criteria are generic and miss artifact-specific nuances. A meta-judge dynamically generates tailored rubrics matching the specific artifact type, focus, and context. This produces more precise evaluations without maintaining rubric templates.
 
 ### Why context isolation (not evaluating in-session)
-Evaluating work within the same context window that produced it creates confirmation bias. A fresh judge sub-agent with only the work and criteria avoids the "I built this so it must be good" trap.
+Evaluating work within the same context window that produced it creates confirmation bias. A fresh judge subagent with only the work and criteria avoids the "I built this so it must be good" trap.
 
 ### Why single judge for routine checks (not multi-judge)
 For routine quality checks, one focused judge with fresh context provides sufficient signal at lower cost. Multi-judge debate is reserved for high-stakes evaluations where consensus is critical.

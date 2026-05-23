@@ -4,7 +4,7 @@
 
 Used for: directory creation, configuration changes, deletions, and other straightforward operations.
 
-**Dispatch implementation sub-agent:**
+**Spawn an implementation subagent:**
 - Execute ONLY the specific step
 - Follow Expected Output and Success Criteria exactly
 - Report files created/modified, confirmation, any issues
@@ -14,8 +14,8 @@ Used for: directory creation, configuration changes, deletions, and other straig
 Used for: artifacts requiring evaluation confidence. Single judge for non-critical, panel of 2 for critical.
 
 **Flow:**
-1. Dispatch implementation sub-agent with self-critique
-2. Dispatch judge sub-agent(s) after completion
+1. Spawn implementation subagent with self-critique
+2. Spawn judge subagent(s) after completion
 3. On FAIL: re-launch implementation with judge feedback
 4. Iterate until PASS or MAX_ITERATIONS reached
 
@@ -24,8 +24,8 @@ Used for: artifacts requiring evaluation confidence. Single judge for non-critic
 Used for: steps creating multiple similar items (validators, handlers, endpoints, test cases).
 
 **Flow:**
-1. Dispatch implementation sub-agents in parallel (one per item)
-2. Dispatch evaluation sub-agents in parallel (one per item)
+1. Spawn implementation subagents in parallel (one per item)
+2. Spawn evaluation subagents in parallel (one per item)
 3. On any FAIL: re-implement only failing items
 4. Iterate until ALL PASS or MAX_ITERATIONS reached
 

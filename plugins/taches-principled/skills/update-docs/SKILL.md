@@ -71,7 +71,7 @@ find . -name "openapi.*" -o -name "*.graphql" -o -name "swagger.*"
 
 7. **Launch doc-analysis agents** (Haiku, parallel) — one per documentation area. Each produces a prioritized list of documentation tasks (CRITICAL: breaking changes / IMPORTANT: new features / NICE_TO_HAVE: clarifications).
 
-8. **Launch tech-writer agents** (Sonnet or Opus, parallel) — one per documentation area. Provide them with: documentation requirements, target files, project conventions, and existing docs for style reference. Create/update documentation.
+8. **Launch tech-writer subagents** (Sonnet or Opus, parallel) — one per documentation area. Provide them with: documentation requirements, target files, project conventions, and existing docs for style reference. Create/update documentation.
 
 9. **Launch quality review agents** (Sonnet or Opus, parallel) — verify: all user-facing changes covered, code examples accurate, links valid, follows conventions, no bloat.
 

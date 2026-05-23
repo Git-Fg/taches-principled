@@ -4,13 +4,14 @@ description: "Executes prompts from .principled/prompts/ via delegated sub-tasks
 when_to_use: |
   Use when the user says "run prompts", "execute prompts", "launch the prompts", or "run my prompt file".
   Do NOT use for interactive debugging, single-file edits, or one-off questions that don't involve prompt files.
+  Do NOT use for executing plan files — use execute-plans instead.
 ---
 
 ## Decision Router
 
-IF executing a single prompt → Read `{baseDir}/workflows/execute-prompt.md` BEFORE starting
-IF executing parallel prompts → Read `{baseDir}/workflows/execute-prompt.md` for parallel coordination rules
-IF executing sequential prompts → Read `{baseDir}/workflows/execute-prompt.md` for sequential handoff rules
+IF executing a single prompt → Read the execute-prompt workflow file from the workflows folder BEFORE starting
+IF executing parallel prompts → Read the execute-prompt workflow file from the workflows folder for parallel coordination rules
+IF executing sequential prompts → Read the execute-prompt workflow file from the workflows folder for sequential handoff rules
 
 This skill is self-contained — no cross-skill routing needed.
 
@@ -279,5 +280,5 @@ A prompt execution succeeds when:
 
 ## Reference Index
 
-**Workflows:** `{baseDir}/workflows/execute-prompt.md`
+**Workflows:** the execute-prompt workflow file from the workflows folder
 **Self-contained:** This skill does not reference other skills by name or invocation pattern.

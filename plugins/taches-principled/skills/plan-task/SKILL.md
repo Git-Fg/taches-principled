@@ -80,16 +80,16 @@ Specification quality is a prerequisite for implementation speed. Analysis, arch
 
 ## Sub-Agent Dispatch
 
-This skill dispatches sub-agents for each phase. Sub-agents start with fresh context — they have no access to prior conversation history or other sub-agent outputs.
+This skill dispatches subagents for each phase. Sub-agents start with fresh context — they have no access to prior conversation history or other subagent outputs.
 
 ### Dispatch Requirements
 
-Every phase sub-agent must receive:
+Every phase subagent must receive:
 1. **Scope**: the specific phase and task file path
 2. **Context**: relevant artifact paths from prior phases (scratchpad files, analysis files)
 3. **Artifact directive**: whether to write to scratchpad, update task file, or create a new document
 4. **Output format**: what to return (structured report with file paths and findings)
-5. **The value of `${CLAUDE_SKILL_DIR}`** if the sub-agent needs to reference skill-internal paths
+5. **The value of `${CLAUDE_SKILL_DIR}`** if the subagent needs to reference skill-internal paths
 
 ### Phase Agent Prompt Structure
 
@@ -108,6 +108,16 @@ Do NOT output your analysis inline — write everything to files.
 Report: artifact paths created/updated, key findings summary, any issues.
 ```
 
+**Spawn Footer**
+When dispatched as a subagent:
+- Your context starts fresh — no access to prior conversation or other subagents' outputs
+- Return structured output (file paths, findings, and any artifacts) to the orchestrator
+- If you encounter anything unexpected or have any question or doubt, stop and report back
+- Do not proceed silently on assumptions.
+
+**Failure Signal**
+If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+
 ### Judge Agent Prompt Structure
 
 ```
@@ -122,8 +132,18 @@ Score each criterion 1-5. Provide chain-of-thought justification BEFORE each sco
 Compute weighted overall. Return PASS/FAIL with specific improvements if FAIL.
 ```
 
+**Spawn Footer**
+When dispatched as a subagent:
+- Your context starts fresh — no access to prior conversation or other subagents' outputs
+- Return structured output (file paths, findings, and any artifacts) to the orchestrator
+- If you encounter anything unexpected or have any question or doubt, stop and report back
+- Do not proceed silently on assumptions.
+
+**Failure Signal**
+If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+
 ### Integrity Rules for Sub-Agents
-- If expected files were not created, re-launch the agent with the same prompt
+- If expected files were not created, re-launch the subagent with the same prompt
 - If an agent returns a long report instead of writing to files, reject and re-launch
 - If a judge returns score 5.0/5.0, treat as hallucination — reject and re-run
 - If a judge omits the numerical score, reject and re-run
@@ -135,7 +155,7 @@ Compute weighted overall. Return PASS/FAIL with specific improvements if FAIL.
 
 2. **Resolve configuration**: Parse flags from arguments. Apply alias shortcuts (`--fast`, `--one-shot`) first, then override with explicit flags. Compute active stages: `INCLUDED_STAGES - SKIP_STAGES`.
 
-3. **Handle `--continue`**: Read the task file for completion markers such as completed phases with content, judge scores, or section headings that indicate work was done. Identify the last completed phase — the most recently filled section with content. Resume from the next incomplete phase. If a stage name was provided, skip directly to that stage. Pre-populate any captured values from existing artifacts so the resumed sub-agent has context of what was already done.
+3. **Handle `--continue`**: Read the task file for completion markers such as completed phases with content, judge scores, or section headings that indicate work was done. Identify the last completed phase — the most recently filled section with content. Resume from the next incomplete phase. If a stage name was provided, skip directly to that stage. Pre-populate any captured values from existing artifacts so the resumed subagent has context of what was already done.
 
 4. **Handle `--refine`**:
    - Check file status: `git status --porcelain -- <TASK_FILE>`
@@ -146,7 +166,7 @@ Compute weighted overall. Return PASS/FAIL with specific improvements if FAIL.
    - Parse the diff to identify which sections were modified. Look for `//` comment markers in the diff — these indicate user feedback or corrections.
    - Determine the earliest modified section using the section-to-stage mapping. The earliest section dictates which stages to re-run.
    - Set `ACTIVE_STAGES` to include only stages from the determined starting point onward.
-   - Pass detected changes and user comments as additional context to sub-agents. Sub-agents must preserve unchanged content and incorporate feedback.
+   - Pass detected changes and user comments as additional context to subagents. Sub-agents must preserve unchanged content and incorporate feedback.
 
    **Section-to-Stage Mapping**:
 
@@ -166,13 +186,13 @@ Compute weighted overall. Return PASS/FAIL with specific improvements if FAIL.
 
 ## Phase 2: Parallel Analysis
 
-Launch three analysis sub-phases in parallel. Each phase uses a dedicated sub-agent and produces a scratchpad file plus task artifacts. Each phase has an independent judge evaluation.
+Launch three analysis sub-phases in parallel. Each phase uses a dedicated subagent and produces a scratchpad file plus task artifacts. Each phase has an independent judge evaluation.
 
-**Synchronization Point**: Wait for ALL three phases AND their judges to pass before proceeding to Phase 3. If one phase finishes significantly before others (e.g., research completes while business analysis is still running), dispatch its judge immediately rather than waiting — this keeps the overall workflow efficient. Do NOT proceed to Phase 3 until all three phase-judge pairs have completed with PASS or MAX_ITERATIONS reached.
+**Synchronization Point**: Wait for ALL three phases AND their judges to pass before proceeding to Phase 3. If one phase finishes significantly before others (e.g., research completes while business analysis is still running), spawn its judge immediately rather than waiting — this keeps the overall workflow efficient. Do NOT proceed to Phase 3 until all three phase-judge pairs have completed with PASS or MAX_ITERATIONS reached.
 
 ### Phase 2a: Research
 
-Dispatch a research sub-agent. The agent reads the project context and task file, then gathers relevant resources.
+Spawn a research subagent. The agent reads the project context and task file, then gathers relevant resources.
 
 **Agent task:**
 - Search for documentation, existing patterns, and libraries relevant to the task
@@ -194,13 +214,13 @@ Dispatch a research sub-agent. The agent reads the project context and task file
 
 **Edge case**: If research finds no relevant prior art or documentation, the skill document should document this explicitly as a negative finding so architecture later knows no established patterns exist to follow.
 
-**On judge FAIL**: Re-launch research agent with judge feedback incorporated. Do not proceed until judge PASS or MAX_ITERATIONS reached.
+**On judge FAIL**: Re-launch a research subagent with judge feedback incorporated. Do not proceed until judge PASS or MAX_ITERATIONS reached.
 
 ---
 
 ### Phase 2b: Codebase Impact Analysis
 
-Dispatch a codebase exploration sub-agent. The agent analyzes the project structure to identify affected files and integration points.
+Spawn a codebase exploration subagent. The agent analyzes the project structure to identify affected files and integration points.
 
 **Agent task:**
 - Identify all files that will be modified, created, or deleted
@@ -224,13 +244,13 @@ Dispatch a codebase exploration sub-agent. The agent analyzes the project struct
 
 **Edge case**: If the task involves creating new files that do not yet exist, the analysis should identify where they belong based on project conventions and existing directory structure.
 
-**On judge FAIL**: Re-launch codebase analysis agent with judge feedback. Do not proceed until PASS or MAX_ITERATIONS reached.
+**On judge FAIL**: Re-launch a codebase analysis subagent with judge feedback. Do not proceed until PASS or MAX_ITERATIONS reached.
 
 ---
 
 ### Phase 2c: Business Analysis
 
-Dispatch a business analysis sub-agent to refine the task description and create comprehensive acceptance criteria. Uses a scratchpad-first methodology: all analysis happens in a scratchpad file, and only verified findings are copied to the task file.
+Spawn a business analysis subagent to refine the task description and create comprehensive acceptance criteria. Uses a scratchpad-first methodology: all analysis happens in a scratchpad file, and only verified findings are copied to the task file.
 
 **Agent task — mandatory stages (perform each in order):**
 
@@ -316,7 +336,7 @@ Fix all critical and high-priority gaps before completing. Document gaps found a
 
 ## Phase 3: Architecture Synthesis
 
-Dispatch an architecture sub-agent after all Phase 2 phases and judges pass. Synthesize research, codebase analysis, and business requirements into an architectural overview.
+Spawn an architecture subagent after all Phase 2 phases and judges pass. Synthesize research, codebase analysis, and business requirements into an architectural overview.
 
 **Agent task:**
 - Read scratchpad and analysis files from Phase 2a, 2b, 2c
@@ -340,7 +360,7 @@ Dispatch an architecture sub-agent after all Phase 2 phases and judges pass. Syn
 
 ## Phase 4: Decomposition
 
-Dispatch a decomposition sub-agent after Phase 3 passes. Break the architecture into ordered implementation steps.
+Spawn a decomposition subagent after Phase 3 passes. Break the architecture into ordered implementation steps.
 
 **Agent task:**
 - Define ordered implementation steps with clear dependencies
@@ -364,7 +384,7 @@ Dispatch a decomposition sub-agent after Phase 3 passes. Break the architecture 
 
 ## Phase 5: Parallelize
 
-Dispatch a parallelization sub-agent after Phase 4 passes. Reorganize implementation steps for maximum parallel execution.
+Spawn a parallelization subagent after Phase 4 passes. Reorganize implementation steps for maximum parallel execution.
 
 **Agent task:**
 - Reorganize steps with explicit dependency chains
@@ -383,11 +403,11 @@ Dispatch a parallelization sub-agent after Phase 4 passes. Reorganize implementa
 - Dependency accuracy (0.35): step dependencies correctly identified, no false or missing dependencies
 - Parallelization maximization (0.30): parallelizable steps correctly identified, diagram is logical
 - Agent selection correctness (0.20): agent levels appropriate for output complexity
-- Execution directive present (0.15): sub-agent execution directive with MUST requirements clear
+- Execution directive present (0.15): subagent execution directive with MUST requirements clear
 
 ## Phase 6: Verifications
 
-Dispatch a verification sub-agent after Phase 5 passes. Add evaluation rubrics for each implementation step.
+Spawn a verification subagent after Phase 5 passes. Add evaluation rubrics for each implementation step.
 
 **Agent task:**
 - For each implementation step, determine verification level:
@@ -430,7 +450,7 @@ Update any references in research and analysis files if paths changed.
 
 ## Evaluation Pattern
 
-Every phase follows the same evaluation structure. The judge is an independent sub-agent with no connection to the phase implementation agent.
+Every phase follows the same evaluation structure. The judge is an independent subagent with no connection to the phase implementation agent.
 
 ### Judge Prompt Structure
 
@@ -458,7 +478,7 @@ The judge must:
 ### Decision Logic
 
 - **PASS** (score >= THRESHOLD): Phase complete, proceed to next phase
-- **FAIL** (score < THRESHOLD): Re-launch phase with judge feedback incorporated into the sub-agent prompt
+- **FAIL** (score < THRESHOLD): Re-launch phase with judge feedback incorporated into the subagent prompt
 - **MAX_ITERATIONS reached**: Proceed to next phase regardless of score, log warning
 
 ### Retry Flow
@@ -515,10 +535,10 @@ If user provides feedback, incorporate into the next phase or iterate on the cur
 ## Error Handling
 
 ### Phase Sub-Agent Failure
-If a phase agent fails unexpectedly (exception, crash, permission error): report the failure with the agent output, ask clarifying questions from the user that could help resolve the issue, then re-launch the phase agent with the questions and answers incorporated.
+If a phase agent fails unexpectedly (exception, crash, permission error): report the failure with the agent output, ask clarifying questions from the user that could help resolve the issue, then re-launch the phase subagent with the questions and answers incorporated.
 
 ### Judge Returns FAIL
-Automatic retry: re-launch the phase implementation agent with the judge feedback included in the prompt. The implementation agent must address each failing criterion specifically.
+Automatic retry: re-launch the phase implementation subagent with the judge feedback included in the prompt. The implementation subagent must address each failing criterion specifically.
 
 If the phase is in HUMAN_IN_THE_LOOP_PHASES: trigger the human checkpoint after the re-implementation but before the next judge retry — the user may have context that clarifies what feedback to prioritize.
 
@@ -596,7 +616,7 @@ After all executed phases, judges, and the promotion step are complete:
 Running research, codebase analysis, and business analysis in parallel is faster than sequential. This prevents the common failure mode of designing architecture without understanding business requirements or codebase constraints.
 
 ### Independent judges per phase
-Separate judge sub-agents prevent confirmation bias. Independent judges provide objective quality signals and catch blind spots.
+Separate judge subagents prevent confirmation bias. Independent judges provide objective quality signals and catch blind spots.
 
 ### Threshold defaults
 3.5/5.0 balances quality and speed. The configurable threshold allows trade-offs depending on task criticality.

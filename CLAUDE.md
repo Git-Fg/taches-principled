@@ -61,6 +61,76 @@ This is not a violation of the self-contained principle — it's explicit compos
 
 ---
 
+## Hub-Spoke Skill Architecture
+
+Skills can operate as **hubs** (orchestrate other skills) or **spokes** (do one thing). Hub-and-spoke enables consolidation without capability loss.
+
+### The Hub-Spoke Principle
+
+A hub skill uses decision routing to dispatch to spoke modes internally, rather than having separate skills. This differs from compositional pairs:
+
+| Pattern | When to Use | Example |
+|---------|-------------|---------|
+| **Compositional pair** | Create/execute lifecycle — separation is load-bearing | `create-plans` / `execute-plans` |
+| **Hub-and-spoke** | One capability with distinct modes — merge for routing coherence | `reflexion` (reflect/critique/memorize) |
+
+**The test for hub-vs-compositional:** If two skills always invoke each other in sequence, they're compositional. If one skill has independent modes that each cover different situations, it's a hub.
+
+### Exempt Skills (Do Not Merge)
+
+These are foundational compositional pairs or serve distinct workflow stages:
+
+- `create-plans` + `execute-plans` — project planning lifecycle, separation is intentional
+- `create-prompts` + `execute-prompts` — prompt creation lifecycle, separation is intentional
+- `plan-task` + `implement-task` — different scope (task refinement vs task execution)
+- `ideation` + `add-task` — different workflow stages (exploration vs capture)
+- Plugin-specific skills (`git-ship`, `fpf-propose`, `tdd`) — no meaningful overlap with other plugins
+
+### Consolidation Candidates
+
+When skills fragment a single capability across incompatible frameworks, merge into a hub with mode routing:
+
+| Merge Into | Skills Combined | Rationale |
+|------------|-----------------|-----------|
+| `diagnose` | `analyse` + `analyse-problem` + `root-cause-analysis` + `root-cause-tracing` | All do problem investigation; different methods (Five Whys, A3, call-stack) rather than different purposes |
+| `refine` | `code-review` + `code-simplify` + `write-concisely` | All do quality improvement; review vs transform vs prose are modes of "make better" |
+| `judge` | `sadd-judge` + `judge-with-debate` | Single vs consensus evaluation are modes of quality assessment |
+| `execute` | `sadd-execute` + `sadd-dispatch` + `subagent-driven-development` | All dispatch subagents with verification; different modes (single/sequential/parallel) |
+
+### Decision Criteria: Merge or Keep Separate?
+
+**Merge when:**
+- Skills share the same purpose (not just similar words in descriptions)
+- Skills use different frameworks/methods for the same domain
+- Trigger phrases are <5 per skill and overlap in meaning
+- The resulting hub has a clear decision router with distinct modes
+
+**Keep separate when:**
+- Skills serve different workflow stages (ideation vs add-task)
+- Skills have distinct entry/exit contracts that other skills depend on
+- Trigger density is high (5+ specific phrases) and routing is reliable
+- Skills are compositional pairs (create/execute lifecycle)
+
+### Target Skill Count
+
+The routing quality breaking point is **22-28 skills**. Below 22, fat skill complexity dominates. Above 28, routing confusion accumulates.
+
+**Current: 38 skills → Target: ~28 skills**
+
+### Hub-Spoke Pattern in Existing Skills
+
+The `reflexion` skill is the canonical hub-and-spoke template:
+```
+Three modes in one skill:
+- REFLECT: Self-critique with severity scoring
+- CRITIQUE: Multi-judge consensus review
+- MEMORIZE: Learning capture into project memory
+```
+
+Use this pattern for other multi-mode skills. The mode router lives in the skill's Decision Router section.
+
+---
+
 ## Plugin Path Portability
 
 Skills must work whether installed as personal (`~/.claude/skills/`), project (`.claude/skills/`), or plugin (`~/.claude/plugins/cache/*/`).
@@ -206,6 +276,56 @@ Generated plans, prompts, scratch notes, and cross-session memory go here. This 
 
 ---
 
+## Subagent Spawn Pattern
+
+When referencing subagent spawning in skills, use the canonical form: **"spawn a [role] subagent"**.
+
+| Current | Correct |
+|---------|---------|
+| "dispatch a sub-agent" | "spawn a [role] subagent" |
+| "launch an agent" | "spawn a [role] subagent" |
+| "spawn critic" | "spawn a critic subagent" |
+| "spawn workers" | "spawn worker subagents" |
+
+**Why "spawn" over "dispatch/launch":**
+- "Spawn" is the canonical verb for subagent creation in Claude Code
+- "dispatch" and "launch" are acceptable but inconsistent across the ecosystem
+- Always pair with role name: "spawn a researcher subagent", "spawn a critic subagent"
+
+**When citing subagents in natural language:**
+- ✅ "spawn a critic subagent" — explicit spawn verb + role
+- ✅ "The explorer subagent handles..." — role-based reference
+- ❌ "spawn critic" — missing "subagent" designation
+- ❌ "launch an agent" — vague, no role designation
+
+**Role naming convention:** Use kebab-case for multi-word roles: "code-reviewer subagent", "meta-judge subagent", "verification subagent".
+
+**Plugin-level agents** are stored in `plugins/taches-principled/agents/` and are auto-discovered system-wide. They appear in the `/agents` interface and Claude can invoke them automatically based on task context. When spawning these, use their documented role name:
+
+| Agent File | Spawn Example |
+|------------|---------------|
+| `code-reviewer.md` | "spawn a code-reviewer subagent" |
+| `grader.md` | "spawn a grader subagent" |
+| `skill-auditor.md` | "spawn a skill-auditor subagent" |
+| `subagent-auditor.md` | "spawn a subagent-auditor subagent" |
+| `comparator.md` | "spawn a comparator subagent" |
+| `analyzer.md` | "spawn an analyzer subagent" |
+| `prompt-engineer.md` | "spawn a prompt-engineer subagent" |
+
+**Skill-internal agents** are stored in skill-specific `agents/` folders (e.g., `create-plans/agents/`, `execute-plans/agents/`). These are **prompt templates**, not auto-invoked subagents. They are workflow-specific and only available when that skill is loaded. To use one: read the agent file, then use its content as the basis for spawning a general-purpose subagent with your task context.
+
+**Examples:**
+
+*Plugin-level (auto-discovered):*
+> "spawn a code-reviewer subagent" — the agent file is in `plugins/taches-principled/agents/`, available system-wide
+
+*Skill-internal (prompt template):*
+> Read the critic agent at `{baseDir}/agents/critic.md`, then spawn a general-purpose subagent using that structure to review the implementation
+
+> Read the explorer agent at `{baseDir}/agents/explorer.md`, then use that agent's system prompt — adapted with your task context — as the prompt when spawning a general-purpose subagent
+
+---
+
 ## Explorer Subagent Protocol
 
 When spawning subagents for exploration/investigation, the orchestrator should:
@@ -247,20 +367,21 @@ Skill Improved
 
 ### Invoking the Pipeline
 
-**Quick audit** (format + quality only):
+**Note:** The evaluation pipeline is **aspirational** — an intended design documented here for reference. The agent definitions (grader, comparator, skill-auditor, analyzer) exist as reference implementations in `plugins/taches-principled/agents/`, but no skill currently orchestrates the full pipeline. The pipeline serves as a design template if a future skill-audit skill is created.
+
+**Quick audit** (format + quality only): Read the skill-auditor agent definition at `plugins/taches-principled/agents/skill-auditor.md` and use it as a subagent prompt following the pattern:
+
 ```markdown
 Agent(description = "Audit [skill] for quality",
       prompt = "Read [path]/SKILL.md and audit following skill-auditor.md.")
 ```
 
-**Full evaluation** (teaching + routing + format):
-```markdown
-1. Grader: Grade for teaching effectiveness
-2. Comparator: Compare versions if applicable
-3. Skill Auditor: Audit for quality signals
+**Full evaluation** (teaching + routing + format): To build the pipeline manually:
+1. Grader: Grade for teaching effectiveness — use `grader.md` as subagent prompt
+2. Comparator: Compare versions if applicable — use `comparator.md` as subagent prompt
+3. Skill Auditor: Audit for quality signals — use `skill-auditor.md` as subagent prompt
 4. Two-Claude Ad-hoc Test: Run evaluation-driven routing verification
-5. Analyzer: Synthesize into 3 prioritized changes
-```
+5. Analyzer: Synthesize into 3 prioritized changes — use `analyzer.md` as subagent prompt
 
 ### Two-Claude Ad-hoc Testing
 
@@ -344,6 +465,23 @@ Skills must NOT reference other plugins by name. Use shared workflow vocabulary:
 - ✅ "Produces analysis output for downstream improvement processes"
 
 See the synergy map in the integration architecture document for the full shared vocabulary.
+
+## Meta-Rule (applies to this file only)
+
+**Governs itself — all revisions must remain:**
+- **Concise** — Minimum text for correct autonomous dispatch; no explanation, no prose ornamentation.
+- **Non-interactive** — No user-input dependency; describes only what Claude Code executes without prompting.
+- **Self-contained** — A cold-start instance must dispatch correctly from this file alone (skill priority, hook timing, rule merge order, subagent spawn mode).
+
+---
+
+## End-of-Turn Follow-Up Discipline
+
+When a task concludes, identify what remains undone across the full stack — code, docs, skills, rules, and git state — without being asked. Surface it as a short numbered list so the user can pick direction rather than tediously extracting it from conversation.
+
+The goal is a clean handoff: thinking is done when the work is verified, not when a response is sent.
+
+---
 
 ## References
 
