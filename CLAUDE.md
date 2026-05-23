@@ -438,7 +438,7 @@ plugins/
 
 ### Naming Convention
 
-All imported/ported plugins use the `tp-` prefix: `tp-sadd`, `tp-sdd`, `tp-fpf`, `tp-git`, `tp-tdd`, `tp-ddd`.
+All imported/ported plugins use the `tp-` prefix: `tp-sadd`, `tp-fpf`, `tp-git`, `tp-tdd`, `tp-ddd`.
 
 ### Adding a New Plugin
 
@@ -460,7 +460,7 @@ Each plugin must:
 Skills must NOT reference other plugins by name. Use shared workflow vocabulary:
 - ❌ "Use tp-sadd:judge for verification"
 - ✅ "For independent evaluation, dispatch a judge with isolated context"
-- ❌ "Feeds into tp-kaizen:analyse"
+- ❌ "Feeds into another plugin's analyse"
 - ✅ "Produces analysis output for downstream improvement processes"
 
 ## Meta-Rule (applies to this file only)
