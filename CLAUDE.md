@@ -115,7 +115,7 @@ When skills fragment a single capability across incompatible frameworks, merge i
 
 The routing quality breaking point is **22-28 skills**. Below 22, fat skill complexity dominates. Above 28, routing confusion accumulates.
 
-**Current: 28 skills → Target: 22-28 skills**
+**Current: 31 skills → Target: 22-28 skills**
 
 ### Hub-Spoke Pattern in Existing Skills
 

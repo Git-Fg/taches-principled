@@ -411,3 +411,24 @@ Red flags: absolute statements ("always", "never"), superlatives ("fastest", "mo
 ### Summary
 {One-paragraph assessment}
 ```
+
+## Failure Signal
+
+```json
+{"status": "failed" | "success", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+```
+
+| status | reason | completed_portion | retry_possible |
+|--------|--------|-------------------|----------------|
+| `failed` | `review-inconclusive` | Multiple conflicting issues found | `false` (present findings to user) |
+| `failed` | `simplification-loop` | 3+ retries without quality improvement | `true` (accept current state) |
+| `failed` | `verification-failed` | Tests/lint fail after simplification | `true` (rollback and escalate) |
+| `failed` | `critique-conflict` | Judges disagree on verdict after debate | `false` (present disagreements) |
+| `failed` | `scope-overflow` | Task too large for single pass | `true` (decompose into smaller units) |
+| `failed` | `self-critique-loop` | Infinite refinement without convergence | `true` (set max iterations) |
+
+**Fields:**
+- `status`: `"failed"` when quality improvement cannot complete; `"success"` when improvement achieved or accepted
+- `reason`: Specific failure mode from the options above
+- `completed_portion`: What was reviewed/improved before failure
+- `retry_possible`: `true` if recoverable with different approach; `false` if needs user decision

@@ -242,3 +242,24 @@ AUTO mode handles method selection when the problem structure is unclear. When A
 - **STACK-TRACE** — Call-chain debugging for errors
 
 A3 can incorporate Five Whys or Fishbone within its root cause section. Stack Trace is standalone for deep execution errors.
+
+## Failure Signal
+
+```json
+{"status": "failed" | "success", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+```
+
+| status | reason | completed_portion | retry_possible |
+|--------|--------|-------------------|----------------|
+| `failed` | `investigation-dead-end` | Evidence gathered but root cause not found | `true` (reformulate hypothesis) |
+| `failed` | `insufficient-context` | Missing environment or logs for analysis | `false` (need more info from user) |
+| `failed` | `method-selection-failed` | AUTO mode could not determine appropriate method | `true` (manually specify method) |
+| `failed` | `five-whys-loop` | Causal chain exceeds 10 iterations without resolution | `false` (escalate to human) |
+| `failed` | `stack-trace-incomplete` | Call stack truncated or unavailable | `true` (add instrumentation and retry) |
+| `failed` | `a3-template-invalid` | Template structure not followed | `true` (restart A3 with guidance) |
+
+**Fields:**
+- `status`: `"failed"` when investigation cannot complete; `"success"` when root cause found
+- `reason`: Specific failure mode from the options above
+- `completed_portion`: What was completed before failure (e.g., "5 whys completed, cause unclear")
+- `retry_possible`: `true` if recoverable with different approach; `false` if needs human input

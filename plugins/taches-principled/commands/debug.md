@@ -1,6 +1,6 @@
 ---
 name: debug
-skill: root-cause-tracing
+skill: diagnose
 description: Apply systematic debugging methodology to investigate issues deeply
 argument-hint: [issue description]
 ---
