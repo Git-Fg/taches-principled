@@ -111,3 +111,24 @@ Reply includes strategy used, files created, and synthesis decisions table.
 - Judges communicate through filesystem (orchestrator does not mediate)
 - Self-critique loop in generation catches issues before evaluation
 - Adaptive strategy avoids waste: polish winners, redesign failures, synthesize splits
+
+## Failure Signal
+
+```json
+{"status": "failed" | "success", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+```
+
+| status | reason | completed_portion | retry_possible |
+|--------|--------|-------------------|----------------|
+| `failed` | `meta-judge-timeout` | None (no solutions evaluated) | `true` |
+| `failed` | `generator-failure` | Partial solutions generated | `true` (relaunch failing generator) |
+| `failed` | `judge-consensus-impossible` | Debate completed 3 rounds without agreement | `false` (escalate to human) |
+| `failed` | `all-solutions-below-threshold` | Solutions generated and judged | `true` (REDESIGN with lessons) |
+| `failed` | `synthesis-failed` | Solutions selected but synthesis failed | `true` (relaunch synthesizer) |
+| `failed` | `filesystem-write-error` | Depends on where failure occurred | `true` (retry write operation) |
+
+**Fields:**
+- `status`: `"failed"` when workflow cannot complete; `"success"` when final solution produced
+- `reason`: Specific failure mode from the options above
+- `completed_portion`: What was completed before failure (e.g., "3 generators complete, 0/3 judges finished")
+- `retry_possible`: `true` if failure is recoverable with targeted retry; `false` if requires human intervention (stuck consensus, fundamental task issue)

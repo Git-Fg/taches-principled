@@ -178,3 +178,26 @@ In parallel execution, one failing target should not delay or block other target
 
 ### Why context filtering between sequential steps (not full passthrough)
 Implementation agents produce detailed internal reasoning that is irrelevant to downstream steps. Passing only what is needed (interfaces, file paths, decisions) keeps subagent contexts clean and focused. Downstream agents can read files directly if they need implementation details.
+
+## Failure Signal
+
+```json
+{"status": "failed" | "success", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+```
+
+| status | reason | completed_portion | retry_possible |
+|--------|--------|-------------------|----------------|
+| `failed` | `meta-judge-timeout` | None (no evaluation spec produced) | `true` |
+| `failed` | `meta-judge-invalid-spec` | Malformed or unparseable YAML spec | `true` (relaunch meta-judge) |
+| `failed` | `implementation-failed` | Implementor crashed or produced no output | `true` (relaunch with same spec) |
+| `failed` | `verification-failed` | Score < 4.0 after max retries | `false` (escalate to user) |
+| `failed` | `retry-exhausted` | Max retries reached without passing | `false` (escalate with failure analysis) |
+| `failed` | `parallel-target-failed` | One or more targets failed isolated retry | `true` (already retried, escalate failed targets) |
+| `failed` | `step-timeout` | Sequential step exceeded expected duration | `true` (relaunch step with timeout) |
+| `failed` | `context-passing-error` | Required context missing for next step | `true` (re-examine previous step output) |
+
+**Fields:**
+- `status`: `"failed"` when workflow cannot complete; `"success"` when verification passes or final output produced
+- `reason`: Specific failure mode from the options above
+- `completed_portion`: What was completed (e.g., "Step 2/3 complete, Step 1 verified at 4.5/5")
+- `retry_possible`: `true` for single-point failures (meta-judge, single step); `false` for retry exhaustion or fundamentally unfixable issues

@@ -1,1 +1,0 @@
-../../create-plans/references/orchestration-patterns.md

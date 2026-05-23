@@ -2,7 +2,18 @@
 name: subagent-orchestration
 description: "Spawn parallel subagents for multi-perspective research, review, and delegated exploration. Orchestrator owns all cognition; subagents own only execution. Not for single-step inline tasks."
 when_to_use: |
-  Use when the user says "delegate this", "run in parallel", "spawn agents", "use subagents", "investigate with agents", or "orchestrate workers".
+  Use when the user says:
+  - "delegate this"
+  - "run in parallel"
+  - "spawn agents"
+  - "use subagents"
+  - "investigate with agents"
+  - "orchestrate workers"
+  - "spawn multiple agents for X"
+  - "run these tasks concurrently"
+  - "parallelize this work"
+  - "I need three agents to tackle X, Y, and Z"
+  - "let me spin up some workers for this research"
   IMMEDIATELY when a task spans multiple files or requires independent execution streams.
   Do NOT use for simple single-step tasks or when Claude is already acting as orchestrator without explicit request.
 ---

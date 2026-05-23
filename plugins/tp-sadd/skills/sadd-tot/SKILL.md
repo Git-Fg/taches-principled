@@ -92,3 +92,26 @@ Proposals and full implementations require different evaluation criteria. Propos
 
 ### Why max 2 redesign cycles (not infinite)
 Redesign demonstrates that the problem itself may be poorly defined or missing constraints. Two cycles is sufficient to determine whether the issue is solvable with better guidance. After two failures, the problem likely needs human intervention to clarify requirements or constraints.
+
+## Failure Signal
+
+```json
+{"status": "failed" | "success", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+```
+
+| status | reason | completed_portion | retry_possible |
+|--------|--------|-------------------|----------------|
+| `failed` | `exploration-timeout` | Phase 1 proposals incomplete | `true` (relaunch exploration agents) |
+| `failed` | `pruning-failed` | Could not select top 3 proposals | `false` (redesign approach to exploration) |
+| `failed` | `expansion-failed` | Phase 3 solutions incomplete | `true` (relaunch specific expansion agent) |
+| `failed` | `evaluation-failed` | Phase 4 judges did not complete | `true` (relaunch specific judge) |
+| `failed` | `all-expansions-below-threshold` | All solutions scored < 3.0 after 2 redesigns | `false` (escalate to human) |
+| `failed` | `synthesis-timeout` | Phase 5 synthesis failed | `true` (relaunch synthesizer with same inputs) |
+| `failed` | `meta-judge-timeout` | Evaluation spec not produced | `true` (relaunch meta-judge) |
+| `failed` | `redesign-exhausted` | Max 2 redesign cycles completed without passing | `false` (escalate to human) |
+
+**Fields:**
+- `status`: `"failed"` when workflow cannot complete; `"success"` when final solution produced
+- `reason`: Specific failure mode from the options above
+- `completed_portion`: What was completed (e.g., "Phase 3/5 complete, 2/3 solutions expanded")
+- `retry_possible`: `true` for isolated failures (single agent crash); `false` for exhausted redesign cycles or fundamental threshold failures

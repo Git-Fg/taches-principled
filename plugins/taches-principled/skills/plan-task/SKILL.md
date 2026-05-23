@@ -2,7 +2,17 @@
 name: plan-task
 description: "Refine draft tasks into implementation-ready specifications with analysis, architecture, decomposition, and verification rubrics. Multi-phase workflow with independent quality gates."
 when_to_use: |
-  Use when the user says "refine this task", "plan this out", "make this actionable", or "/plan".
+  Use when the user says:
+  - "refine this task"
+  - "plan this out"
+  - "make this actionable"
+  - "/plan"
+  - "turn this into a spec"
+  - "break this down into steps"
+  - "refine my task into an implementation plan"
+  - "I have a draft task, flesh it out"
+  - "make this ready for implementation"
+  - "convert this user story to executable steps"
   IMMEDIATELY after a task is drafted — BEFORE implementation begins.
 argument-hint: ".specs/tasks/draft/<file>.md [--fast] [--target-quality X.X] [--skip-judges] [--human-in-the-loop phase,phase,...]"
 ---

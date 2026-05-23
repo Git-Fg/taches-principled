@@ -186,3 +186,26 @@ After agents return:
 - Review between or after tasks (catch issues early)
 - Fix through subagents (don't fix manually)
 - Stop when blocked (don't guess)
+
+## Failure Signal
+
+```json
+{"status": "failed" | "success", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+```
+
+| status | reason | completed_portion | retry_possible |
+|--------|--------|-------------------|----------------|
+| `failed` | `implementation-failed` | Implementation subagent crashed or produced no output | `true` (relaunch with same task spec) |
+| `failed` | `critical-issue-unfixed` | Critical issue found but fix agent failed | `true` (relaunch fix agent with specific instructions) |
+| `failed` | `code-review-failed` | Code reviewer crashed or produced invalid report | `true` (relaunch code reviewer) |
+| `failed` | `final-review-failed` | Final review found unresolved issues | `true` (address findings or escalate) |
+| `failed` | `plan-load-failed` | Plan file unreadable or malformed | `false` (user must fix plan) |
+| `failed` | `parallel-conflict` | Two agents modified same file | `false` (revert, execute sequentially) |
+| `failed` | `verification-failed` | Tests fail after all retries | `false` (escalate to human) |
+| `failed` | `task-unclear` | Task specification missing or contradictory | `false` (user must clarify) |
+
+**Fields:**
+- `status`: `"failed"` when implementation cannot continue; `"success"` when plan fully executed and verified
+- `reason`: Specific failure mode from the options above
+- `completed_portion`: What was completed (e.g., "Task 3/5 implemented and reviewed, Task 4 pending")
+- `retry_possible`: `true` for operational failures (crashes, timeouts); `false` for structural issues (unclear task, conflicts)

@@ -2,7 +2,17 @@
 name: update-docs
 description: Update project documentation after code changes — READMEs, guides, API docs, and JSDoc. Preserves existing style and follows project conventions.
 when_to_use: |
-  Use when the user says "update the docs", "document this", "write documentation for this", or "the docs need updating".
+  Use when the user says:
+  - "update the docs"
+  - "document this"
+  - "write documentation for this"
+  - "the docs need updating"
+  - "update documentation for these changes"
+  - "doc this code change"
+  - "add docs for the new feature"
+  - "write the README updates"
+  - "document the API changes"
+  - "refresh the documentation"
   IMMEDIATELY after code changes affecting user-facing APIs or workflows, BEFORE committing.
 argument-hint: "Optional: documentation type or area (api, guides, readme, jsdoc)"
 ---

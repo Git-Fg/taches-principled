@@ -138,3 +138,23 @@ Filesystem-based inter-agent communication is transparent (anyone can read the f
 
 ### Why supervisor by default (not swarm)
 The supervisor pattern is the simplest to implement, debug, and reason about. It provides clear error boundaries and explicit control flow. Swarm patterns should only be adopted when the task genuinely requires emergent behaviors that cannot be anticipated upfront. Most real-world agent tasks benefit from central coordination.
+
+## Failure Signal
+
+```json
+{"status": "failed" | "success", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+```
+
+| status | reason | completed_portion | retry_possible |
+|--------|--------|-------------------|----------------|
+| `failed` | `analysis-timeout` | Architecture analysis incomplete | `true` (relaunch with same inputs) |
+| `failed` | `pattern-analysis-failed` | Could not determine appropriate pattern | `false` (user clarification needed) |
+| `failed` | `agent-spawn-failed` | Subagent creation failed | `true` (retry with same spec) |
+| `failed` | `invalid-requirements` | Requirements too vague or contradictory | `false` (user must clarify) |
+| `failed` | `multi-agent-timeout` | Pattern implementation exceeded timeout | `true` (relaunch with expanded scope) |
+
+**Fields:**
+- `status`: `"failed"` when architecture design cannot complete; `"success"` when pattern recommendation produced
+- `reason`: Specific failure mode from the options above
+- `completed_portion`: What was analyzed (e.g., "Pattern analysis complete, implementation planning pending")
+- `retry_possible`: `true` for operational failures; `false` for ambiguous or missing requirements

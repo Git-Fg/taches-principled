@@ -106,3 +106,24 @@ Each subagent starts with a clean context focused on its specific task. Accumula
 
 ### Why code review between tasks (not at the end)
 Catching issues immediately prevents cascading failures where later tasks build on broken foundations. The cost of fixing an issue grows with each downstream task that depends on it.
+
+## Failure Signal
+
+```json
+{"status": "failed" | "success", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+```
+
+| status | reason | completed_portion | retry_possible |
+|--------|--------|-------------------|----------------|
+| `failed` | `subagent-timeout` | Task partially completed | `true` (relaunch with same spec) |
+| `failed` | `subagent-invalid-output` | Output missing required structure or summary | `true` (relaunch with stricter output constraints) |
+| `failed` | `code-review-failed` | Critical issues found but fix agent failed | `true` (relaunch fix agent) |
+| `failed` | `model-selection-failed` | Model unavailable or API error | `true` (retry with fallback model) |
+| `failed` | `context-overflow` | Task scope exceeds model context limits | `false` (decompose task manually) |
+| `failed` | `parallel-conflict` | Two subagents modified same file | `false` (revert and execute sequentially) |
+
+**Fields:**
+- `status`: `"failed"` when task cannot complete; `"success"` when task verified and complete
+- `reason`: Specific failure mode from the options above
+- `completed_portion`: What portion completed (e.g., "N/N tasks complete, M code reviews passed")
+- `retry_possible`: `true` if recoverable with targeted retry; `false` if requires structural change or manual intervention
