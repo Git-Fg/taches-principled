@@ -484,6 +484,7 @@ The goal is a clean handoff: thinking is done when the work is verified, not whe
 
 - [Claude Code Skills Documentation](https://code.claude.com/docs/en/skills)
 - [Claude Code Subagents Documentation](https://code.claude.com/docs/en/sub-agents)
+- [Claude Code Plugin Creation Guide](https://code.claude.com/docs/en/plugins)
 - [Claude Code Plugin Marketplaces Documentation](https://code.claude.com/docs/en/plugin-marketplaces)
 - [Claude Code Hooks Reference](https://code.claude.com/docs/en/hooks)
 - [Claude Code Commands Reference](https://code.claude.com/docs/en/commands)
