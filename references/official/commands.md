@@ -16,6 +16,7 @@ Commands start with `/` and are processed before the message is sent to Claude. 
 |---|---|
 | Built-in commands | Fixed logic, execute directly |
 | Bundled skills | Prompt-based, detailed instructions for Claude to orchestrate |
+| /submit | Submit completed work |
 
 ## Bundled Skills
 
@@ -56,6 +57,24 @@ Use `/model` command to switch between available models.
 
 ## Workflow Commands
 
-- `/help` - Get help with Claude Code
-- `/init` - Analyze codebase for build systems and patterns
+Grouped by when they are used in the workflow:
+
+### Before you ship
 - `/submit` - Submit completed work
+
+### Between sessions
+- `/compact` - Manually trigger context compaction
+- `/clear` - Clear conversation context
+
+### When something is wrong
+- `/permissions` - Manage tool permissions
+- `/debug` - Debug issues
+
+### General
+- `/help` - Get help with Claude Code
+- `/init` - Initialize project with a CLAUDE.md guide
+- `/model` - Switch between available models
+
+## MCP Prompts
+
+MCP servers can define prompts - reusable prompt templates that Claude can invoke. When an MCP server is configured, its prompts appear in the `/prompts` interface and can be used like any other command.

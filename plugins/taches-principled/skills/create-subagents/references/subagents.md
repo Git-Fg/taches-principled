@@ -3,11 +3,13 @@
 ## What Loads at Startup
 
 A subagent's initial context contains:
-1. **System prompt** — agent's own prompt + Claude Code environment details
+1. **System prompt** — agent's own prompt plus environment details that Claude Code appends, not the full Claude Code system prompt
 2. **Task message** — delegation prompt from orchestrator
 3. **CLAUDE.md and memory** — all levels; Explore/Plan skip these
 4. **Git status** — snapshot at session start; Explore/Plan skip regardless
 5. **Preloaded skills** — full content of any skill in `skills` field
+
+**Exception — Fork:** A fork inherits the parent conversation instead of starting fresh.
 
 **Key insight:** Subagent context is FRESH — it does NOT inherit parent conversation history. Pass all context explicitly in spawn prompt.
 

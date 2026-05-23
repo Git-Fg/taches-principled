@@ -22,20 +22,20 @@ Create a skill when you keep pasting the same instructions, checklist, or multi-
 | Field | Required | Description |
 |---|---|---|
 | `name` | No | Display name (max 64 chars, lowercase letters, numbers, hyphens) |
-| `description` | Recommended | What the skill does and when to use it |
-| `when_to_use` | No | Additional trigger phrases (appended to description) |
+| `description` | Recommended | What the skill does and when to use it. Combined with `when_to_use`, truncated at 1,536 characters |
+| `when_to_use` | No | Additional trigger phrases (appended to description). Counts toward the 1,536-character cap |
 | `argument-hint` | No | Hint shown during autocomplete |
-| `arguments` | No | Named positional arguments for `$name` substitution |
+| `arguments` | No | Named positional arguments for `$name` substitution. Accepts a space-separated string or a YAML list |
 | `disable-model-invocation` | No | Set `true` to prevent automatic loading |
 | `user-invocable` | No | Set `false` to hide from `/` menu |
-| `allowed-tools` | No | Tools Claude can use without prompting |
-| `model` | No | Model override when skill is active |
+| `allowed-tools` | No | Tools Claude can use without prompting. Accepts a space-separated string or a YAML list |
+| `model` | No | Model override when skill is active. Accepts same values as `/model`, or `inherit` to keep active model |
 | `effort` | No | Effort level: `low`, `medium`, `high`, `xhigh`, `max` |
 | `context` | No | Set to `fork` to run in a forked subagent context |
 | `agent` | No | Which subagent type to use when `context: fork` is set |
 | `hooks` | No | Hooks scoped to this skill's lifecycle |
-| `paths` | No | Glob patterns limiting when skill activates |
-| `shell` | No | `bash` (default) or `powershell` |
+| `paths` | No | Glob patterns limiting when skill activates. Accepts a comma-separated string or a YAML list |
+| `shell` | No | Shell type: `bash` (default) or `powershell`. Setting `powershell` requires `CLAUDE_CODE_USE_POWERSHELL_TOOL=1` on Windows |
 
 ## String Substitutions
 

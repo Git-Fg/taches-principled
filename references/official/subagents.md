@@ -52,6 +52,7 @@ Subagents are specialized AI assistants that handle specific types of tasks. Eac
 | System prompt | Same as main session | From definition |
 | Model | Same as main session | From `model` field |
 | Permissions | Prompts surface in terminal | Auto-denied when background |
+| Prompt cache | Shared with main session | Separate cache |
 
 ## Work with Subagents
 
@@ -69,11 +70,13 @@ Subagents are specialized AI assistants that handle specific types of tasks. Eac
 ## What Loads at Startup
 
 A non-fork subagent's initial context contains:
-- System prompt (from agent definition)
+- System prompt (agent's own prompt plus environment details that Claude Code appends, not the full Claude Code system prompt)
 - Task message (delegation prompt)
 - CLAUDE.md and memory (all levels)
 - Git status snapshot
 - Preloaded skills (full content)
+
+**The exception is a fork, which inherits the parent conversation instead of starting fresh.** Explore and Plan agents skip CLAUDE.md and git status regardless.
 
 ## Preload Skills
 
