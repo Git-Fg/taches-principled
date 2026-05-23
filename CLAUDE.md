@@ -93,9 +93,9 @@ When skills fragment a single capability across incompatible frameworks, merge i
 | Merge Into | Skills Combined | Rationale |
 |------------|-----------------|-----------|
 | `diagnose` | `analyse` + `analyse-problem` + `root-cause-analysis` + `root-cause-tracing` | All do problem investigation; different methods (Five Whys, A3, call-stack) rather than different purposes |
-| `refine` | `code-review` + `code-simplify` + `write-concisely` | All do quality improvement; review vs transform vs prose are modes of "make better" |
+| `refine` | `code-review` + `code-simplify` + `reflexion` (Reflect mode) | All do quality improvement; review vs transform vs self-critique are modes of "make better" |
 | `judge` | `sadd-judge` (absorbed judge-with-debate) | Single vs consensus evaluation are modes of quality assessment |
-| `execute` | `sadd-execute` + `sadd-dispatch` + `subagent-driven-development` | All dispatch subagents with verification; different modes (single/sequential/parallel) |
+| `execute` | `sadd-execute` + `sadd-dispatch` + `subagent-driven-development` | All dispatch subagents with verification; different modes (dispatch/verify/plan-driven) |
 
 ### Decision Criteria: Merge or Keep Separate?
 
@@ -115,7 +115,7 @@ When skills fragment a single capability across incompatible frameworks, merge i
 
 The routing quality breaking point is **22-28 skills**. Below 22, fat skill complexity dominates. Above 28, routing confusion accumulates.
 
-**Current: 37 skills → Target: ~28 skills**
+**Current: 28 skills → Target: 22-28 skills**
 
 ### Hub-Spoke Pattern in Existing Skills
 
