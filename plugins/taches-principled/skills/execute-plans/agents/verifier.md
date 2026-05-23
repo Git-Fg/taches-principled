@@ -1,6 +1,7 @@
 ---
 name: execute-verifier
 description: "Verifies implementation against success criteria. Use after implementer completes to validate correctness."
+context: fork
 tools: Read, Bash
 model: haiku
 ---

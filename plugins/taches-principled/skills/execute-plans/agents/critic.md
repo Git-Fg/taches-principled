@@ -1,6 +1,7 @@
 ---
 name: execute-critic
 description: "Reviews intermediate plan outputs at milestone boundaries. Use when execute-plans reaches a checkpoint and needs independent verification of correctness, edge cases, and regressions."
+context: fork
 tools: Read, Grep, Glob
 model: sonnet
 ---

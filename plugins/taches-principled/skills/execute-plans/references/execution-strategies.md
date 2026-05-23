@@ -34,7 +34,7 @@ Three strategies for plan execution, differentiated by checkpoint structure and 
 - Aggregate and verify all outputs
 - Create SUMMARY
 
-**⚠️ HARD CAP: 3-5 parallel workers.** Supervisor context grows non-linearly with worker count. Beyond 5 workers, the supervisor spends more tokens processing summaries than workers spend on actual tasks. See the create-subagents skill's `gotchas.md` for the supervisor bottleneck explanation.
+**⚠️ HARD CAP: 3-5 parallel workers.** Supervisor context grows non-linearly with worker count. Beyond 5 workers, the supervisor spends more tokens processing summaries than workers spend on actual tasks. See the supervisor bottleneck explanation in the multi-agent gotchas reference.
 
 **Parallel execution rules:**
 - Parallel if: different files AND no output dependency
@@ -53,7 +53,7 @@ Three strategies for plan execution, differentiated by checkpoint structure and 
 - Milestone reviews: ~2% each
 - Total: <30% overhead target (orchestrator ~10-15% + workers + milestone reviews)
 
-**See also:** the gotchas.md file in the create-subagents skill's references for the eight critical multi-agent gotchas.
+**See also:** the eight critical multi-agent gotchas in the multi-agent gotchas reference.
 
 ---
 

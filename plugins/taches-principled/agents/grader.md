@@ -1,7 +1,6 @@
 ---
 name: grader
 description: Scores skill outputs against teaching-focused rubrics. Use when evaluating whether a skill teaches judgment or just prescribes steps.
-type: general-purpose
 context: fork
 tools: Read, Grep, Glob
 model: sonnet

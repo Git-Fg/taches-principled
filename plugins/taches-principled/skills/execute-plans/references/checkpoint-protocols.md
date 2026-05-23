@@ -229,4 +229,4 @@ Checkpoint: checkpoint:human-verify
 - `label`: Human-readable name (optional)
 - `criteria` / `options` / `action`: Type-specific payload
 
-For full checkpoint syntax details, see plan-format.md in the create-plans skill's references.
+For full checkpoint syntax details, refer to the plan-format reference documentation.

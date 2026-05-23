@@ -1,8 +1,15 @@
+# Agent memory (per-session scratch)
+.claude/agent-memory/
+
 # Claude artifacts
 .principled/
+.principled/plans/
 
 # Attic for archived content
 .attic/
 
 # OS files
 .DS_Store
+
+# Untracked new skill directory
+plugins/tp-sadd/skills/launch-subagent/

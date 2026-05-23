@@ -1,6 +1,7 @@
 ---
 name: implementer
 description: Implements specific tasks based on clear specifications. Use when tasks have explicit files, actions, and verification criteria defined.
+context: fork
 tools: Read, Edit, Bash
 model: sonnet
 ---

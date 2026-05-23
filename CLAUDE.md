@@ -485,5 +485,12 @@ The goal is a clean handoff: thinking is done when the work is verified, not whe
 
 ## References
 
-- [Claude Code Skills Documentation](https://docs.claude.com)
+- [Claude Code Skills Documentation](https://code.claude.com/docs/en/skills)
+- [Claude Code Subagents Documentation](https://code.claude.com/docs/en/sub-agents)
+- [Claude Code Plugin Marketplaces Documentation](https://code.claude.com/docs/en/plugin-marketplaces)
+- [Claude Code Hooks Reference](https://code.claude.com/docs/en/hooks)
+- [Claude Code Commands Reference](https://code.claude.com/docs/en/commands)
+- [Plugin Submission Guide](https://claude.com/docs/plugins/submit)
 - [context-engineering-kit](https://github.com/NeoLabHQ/context-engineering-kit) — inspiration source
+
+**Official documentation** is cached locally in `references/official/` for offline access and consistency across team members.

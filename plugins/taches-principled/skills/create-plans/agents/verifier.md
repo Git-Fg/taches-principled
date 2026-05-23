@@ -1,6 +1,7 @@
 ---
 name: verifier
 description: Verifies implementations against specifications, runs tests, and checks for regressions. Use when confirming that implemented features work correctly and don't break existing functionality.
+context: fork
 tools: Read, Bash
 model: haiku
 ---
