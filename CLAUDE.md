@@ -9,7 +9,7 @@ Development practices for maintaining this plugin. These are operational rules, 
 **Marketplace version** and **plugin version** are independent:
 
 - **Plugin version** (`0.4.0`): Incremented for any content change to this plugin
-- **Marketplace version** (root `marketplace.json`): Incremented when releasing a collective update across all plugins
+- **Marketplace version** (`.claude-plugin/marketplace.json`): Incremented when releasing a collective update across all plugins
 
 **Update sequence:**
 ```bash
@@ -92,10 +92,9 @@ When skills fragment a single capability across incompatible frameworks, merge i
 
 | Merge Into | Skills Combined | Rationale |
 |------------|-----------------|-----------|
-| `diagnose` | `analyse` + `analyse-problem` + `root-cause-analysis` + `root-cause-tracing` | All do problem investigation; different methods (Five Whys, A3, call-stack) rather than different purposes |
+| `diagnose` | `analyse` + `analyse-problem` + `root-cause-tracing` | All do problem investigation; different methods (Five Whys, A3, call-stack) rather than different purposes |
 | `refine` | `code-review` + `code-simplify` + `reflexion` (Reflect mode) | All do quality improvement; review vs transform vs self-critique are modes of "make better" |
 | `judge` | `sadd-judge` (absorbed judge-with-debate) | Single vs consensus evaluation are modes of quality assessment |
-| `execute` | `sadd-execute` + `sadd-dispatch` + `subagent-driven-development` | All dispatch subagents with verification; different modes (dispatch/verify/plan-driven) |
 
 ### Decision Criteria: Merge or Keep Separate?
 
@@ -463,8 +462,6 @@ Skills must NOT reference other plugins by name. Use shared workflow vocabulary:
 - ✅ "For independent evaluation, dispatch a judge with isolated context"
 - ❌ "Feeds into tp-kaizen:analyse"
 - ✅ "Produces analysis output for downstream improvement processes"
-
-See the synergy map in the integration architecture document for the full shared vocabulary.
 
 ## Meta-Rule (applies to this file only)
 

@@ -44,7 +44,7 @@ cp -r skills/* commands/* agents/* ~/.claude/
 
 ## What's Inside
 
-### 22 Skills
+### 18 Skills
 
 Skills load on demand and give Claude domain expertise without bloating every conversation.
 
@@ -57,21 +57,17 @@ Skills load on demand and give Claude domain expertise without bloating every co
 | **execute-prompts** | Executing prompts via delegated sub-tasks | Policy/Mechanism, Anti-Patterns, Thresholds |
 | **execute-plans** | Executing PLAN.md files via parallel subagent orchestration | Policy/Mechanism, Anti-Patterns, Thresholds |
 | **subagent-orchestration** | Orchestrating parallel subagents for delegated work with self-review loops | RACE Framework, 5 Parallel Patterns, Three Automation Layers |
-| **code-simplify** | Simplifying code post-hoc for clarity and maintainability | Pipeline, Policy/Mechanism, Anti-Patterns, Thresholds |
 | **add-task** | Capturing a task idea for structured development | Standardized folder structure, type classification |
-| **analyse** | Analyzing problems with structured investigation methods | Fishbone, A3, Five Whys |
-| **analyse-problem** | Comprehensive A3 problem analysis with root cause and action plan | A3 one-page format |
-| **code-review** | Reviewing code diffs for correctness bugs | Multi-effort review levels |
 | **ideation** | Generating and refining ideas systematically | Creative sampling, collaborative brainstorming |
 | **implement-task** | Implementing refined task specs with LLM-as-Judge verification | Quality-gated implementation |
 | **kaizen** | Continuous improvement with multiple Kaizen methods | Gemba Walk, Value Stream, Muda |
 | **plan-do-check-act** | Iterative experimentation cycles for systematic improvement | PDCA cycle |
 | **plan-task** | Refining draft specs into implementation-ready tasks | Multi-phase refinement, quality gates |
 | **reflexion** | Reflecting on past work to extract lasting insights | Agentic Context Engineering |
-| **root-cause-analysis** | Systematic root cause investigation using structured methods | Multiple RCA methods |
-| **root-cause-tracing** | Debugging by tracing backward through call stacks | Systematic backtracing with instrumentation |
 | **update-docs** | Maintaining project documentation via multi-agent workflow | Tech-writer agents, quality review |
 | **write-concisely** | Clear, professional writing for human-readable docs | Writing rules and standards |
+| **diagnose** | Systematic problem investigation — Five Whys, A3, Fishbone, Stack Trace | Fishbone, Five Whys, A3, backtracing |
+| **refine** | Quality improvement — code review, simplification, and self-critique | Pipeline, Multi-effort review levels |
 
 ### 3 Commands
 
