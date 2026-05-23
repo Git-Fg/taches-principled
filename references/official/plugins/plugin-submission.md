@@ -12,6 +12,8 @@ Three ways to distribute plugins:
 
 ## Plugin Directory: Community vs Anthropic Verified
 
+> [HUMAN TRUST GUIDANCE — Not applicable to autonomous dev]
+
 - Plugins submitted by developers and creators
 - Anthropic performs basic automated review before adding
 - **Anthropic Verified** badge = additional quality/safety review
@@ -48,12 +50,16 @@ Use connectors from the Connectors Directory or well-known developers to increas
 
 ## Submitting Your Plugin
 
+> [HUMAN-ONLY WORKFLOW — Manual validation + in-app form submission]
+
 Requirements:
 - Public GitHub repo (closed-source not accepted)
 - Run `claude plugin validate` to check formatting
 - Submit via in-app form at claude.ai/settings/plugins/submit or platform.claude.com/plugins/submit
 
 ## Directory Terms & Conditions
+
+> [LEGAL COMPLIANCE — For human reviewers]
 
 All plugins must comply with security and content policies.
 

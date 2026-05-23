@@ -21,7 +21,7 @@ Commands start with `/` and are processed before the message is sent to Claude. 
 ## Bundled Skills
 
 Claude Code includes bundled skills (marked **Skill** in the purpose column):
-- `/code-review` - Review code
+- `/code-review` - Review code [INTERACTIVE ONLY — Expects human conversation]
 - `/batch` - Batch operations
 - `/debug` - Debug issues
 - `/loop` - Looping workflows
@@ -35,7 +35,7 @@ Commands can be created as:
 
 Commands and skills with the same name - the skill takes precedence.
 
-## `/agents` Command
+## `/agents` Command [INTERACTIVE ONLY — Opens tabbed UI, not usable in autonomous scripts]
 
 Opens tabbed interface:
 - **Running tab**: Shows live subagents, open or stop them
@@ -43,11 +43,11 @@ Opens tabbed interface:
 
 ## Model Switching
 
-Use `/model` command to switch between available models.
+Use `/model` command to switch between available models. [INTERACTIVE ONLY — Human operator command]
 
 ## Permission Commands
 
-- `/permissions` - Manage tool permissions
+- `/permissions` - Manage tool permissions [INTERACTIVE ONLY — Requires human decision-making]
 - Permissions can be auto-accepted with `acceptEdits` mode
 
 ## Context Management
@@ -60,19 +60,19 @@ Use `/model` command to switch between available models.
 Grouped by when they are used in the workflow:
 
 ### Before you ship
-- `/submit` - Submit completed work
+- `/submit` - Submit completed work [INTERACTIVE ONLY — Human review and approval required]
 
 ### Between sessions
 - `/compact` - Manually trigger context compaction
 - `/clear` - Clear conversation context
 
 ### When something is wrong
-- `/permissions` - Manage tool permissions
-- `/debug` - Debug issues
+- `/permissions` - Manage tool permissions [INTERACTIVE ONLY — Requires human decision-making]
+- `/debug` - Debug issues [INTERACTIVE ONLY — Expects human conversation]
 
 ### General
-- `/help` - Get help with Claude Code
-- `/init` - Initialize project with a CLAUDE.md guide
+- `/help` - Get help with Claude Code [INTERACTIVE ONLY]
+- `/init` - Initialize project with a CLAUDE.md guide [INTERACTIVE ONLY — Expects human input during setup]
 - `/model` - Switch between available models
 
 ## MCP Prompts

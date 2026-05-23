@@ -40,6 +40,12 @@ Hooks are user-defined shell commands, HTTP endpoints, or LLM prompts that execu
 | `ElicitationResult` | After user responds to MCP elicitation |
 | `SessionEnd` | When a session terminates |
 
+> **HUMAN-INTERACTION ONLY**
+> These hooks require human presence and cannot run autonomously:
+> - `PermissionRequest` — fires when permission dialog appears, requires human approval
+> - `Elicitation` — fires when MCP server requests user input, requires human response
+> - `ElicitationResult` — only fires after human responds to elicitation
+
 ## Hook Locations
 
 | Location | Scope | Shareable |

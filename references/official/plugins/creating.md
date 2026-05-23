@@ -4,6 +4,8 @@ Source: https://code.claude.com/docs/en/plugins
 
 ## When to Use Plugins vs Standalone Configuration
 
+> **Note:** This section provides human decision guidance. For autonomous plugin development, assume plugins are the correct choice.
+
 | Approach | Skill names | Best for |
 |---|---|---|
 | Standalone (`.claude/` directory) | `/hello` | Personal workflows, project-specific customizations, quick experiments |
@@ -70,6 +72,8 @@ Source: https://code.claude.com/docs/en/plugins
 - Use `--plugin-url` for `.zip` archives
 
 ## Sharing Plugins
+
+> **Note:** These are human-facing distribution workflows. For autonomous distribution, see marketplace configuration.
 
 1. Add README with installation instructions
 2. Choose versioning strategy

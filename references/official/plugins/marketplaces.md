@@ -63,11 +63,15 @@ A plugin marketplace is a catalog that distributes plugins to others. Marketplac
 
 ## Host & Distribution
 
+> [INTERACTIVE CLI — Human invokes /plugin marketplace add]
+
 - **GitHub** (recommended): Create repo, add marketplace file, share with `/plugin marketplace add owner/repo`
 - **Other git services**: Use full repository URL
 - **Private repos**: Support via `gh auth login`, SSH keys, or tokens
 
 ## Version Channels
+
+> [HUMAN DECISION — Channel selection]
 
 Set up two marketplaces pointing to different refs/SHAs for "stable" and "latest" channels.
 
@@ -76,6 +80,8 @@ Set up two marketplaces pointing to different refs/SHAs for "stable" and "latest
 Run `claude plugin validate .` to check marketplace and plugin formatting.
 
 ## Managed Marketplace Restrictions
+
+> [PLATFORM ADMIN — Not relevant for plugin developers]
 
 `strictKnownMarketplaces` in managed settings restricts which marketplaces users can add.
 
@@ -86,6 +92,8 @@ Run `claude plugin validate .` to check marketplace and plugin formatting.
 | List of sources | Exact match allowlist |
 
 ## Troubleshooting
+
+> [INTERACTIVE SESSION — User-interactive auth commands]
 
 - **Marketplace not loading**: Verify URL accessible, `.claude-plugin/marketplace.json` exists, JSON syntax valid
 - **Plugin installation fails**: Verify source URLs accessible

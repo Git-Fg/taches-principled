@@ -64,10 +64,12 @@ Add `context: fork` to run in isolation. The skill content becomes the prompt fo
 | Config | You can invoke | Claude can invoke |
 |---|---|---|
 | (default) | Yes | Yes |
-| `disable-model-invocation: true` | Yes | No |
+| `disable-model-invocation: true` | **NOT FOR AUTONOMOUS USE** — Prevents Claude from invoking this skill; makes it human-only |
 | `user-invocable: false` | No | Yes |
 
 ## Bundled Skills
+
+> **Note:** These are CLI slash commands for interactive sessions. For autonomous plugin development, use `context: fork` subagents (see "Run Skills in a Subagent" section).
 
 Claude Code includes bundled skills: `/code-review`, `/batch`, `/debug`, `/loop`, `/claude-api`. Bundled skills are prompt-based (give Claude detailed instructions) vs built-in commands (execute fixed logic).
 
