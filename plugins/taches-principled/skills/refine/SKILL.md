@@ -1,17 +1,88 @@
 ---
-name: code-simplify
-description: "Refactors complex code to reduce cognitive load. Use when user says 'simplify this', 'clean up this code', 'reduce complexity', or 'this is too nested'."
+name: refine
+description: "Quality improvement hub for code review, complexity reduction, and self-critique. Use when user says 'review this PR', 'check my changes', 'simplify this code', 'reduce complexity', 'reflect on this', or 'critique this work'."
 when_to_use: |
-  Use when the user says "simplify this", "clean up this code", "reduce complexity", or "this is too nested".
-  IMMEDIATELY when encountering functions over 40 lines, nesting beyond 3 levels, or duplicated code blocks.
-  Do NOT use when code is correct but needs review for bugs (use code-review), for greenfield architecture (use create-plans), or when nesting is intentional for performance.
+  Use when the user says "review this PR", "check my changes", "simplify this code", "reduce complexity", "reflect on this", or "critique this work".
+  IMMEDIATELY before merging or committing significant code changes (review).
+  IMMEDIATELY when encountering functions over 40 lines, nesting beyond 3 levels, or duplicated code blocks (simplify).
+  FIRST before any high-stakes shipping decision (critique).
+  Do NOT use for architectural decisions (use create-plans) or greenfield development (use create-plans).
+argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-low|low]"
 ---
-
-# Code Simplify
 
 ## Decision Router
 
-Read this section first. It determines whether and how to proceed.
+IF user says "review", "PR", "pull request", "check my changes", "audit", or names a PR number → **REVIEW** mode
+IF user says "simplify", "clean up", "reduce complexity", "too nested", or describes high cognitive load → **SIMPLIFY** mode
+IF user says "reflect", "critique", "what could be better", "self-review", or asks to review completed work → **CRITIQUE** mode
+IF ambiguous → ask: "Would you like to review for issues, simplify for clarity, or critique the approach?"
+
+# Refine
+
+Quality improvement hub combining code review, complexity reduction, and self-critique into a unified skill. Three modes address different quality dimensions:
+
+| Mode | Purpose | Best For |
+|------|---------|----------|
+| **REVIEW** | Multi-agent scanning for bugs, security, quality | PRs, local changes, pre-commit checks |
+| **SIMPLIFY** | Cognitive load reduction through refactoring | Complex functions, deep nesting, duplication |
+| **CRITIQUE** | Severity-rated self-critique with evidence | Completed work, high-stakes decisions |
+
+---
+
+## REVIEW Mode
+
+Multi-agent code review that scans for bugs, security vulnerabilities, code quality issues, contract violations, and test coverage gaps. Uses 6 specialized review agents running in parallel, with progressive confidence scoring and impact-based filtering.
+
+### Capability Routing
+
+Six specialized agents run in parallel. Each focuses on a distinct dimension:
+
+| Agent | Focus Area | Key Questions It Answers |
+|-------|------------|------------------------|
+| **Bug Hunter** | Logic errors, edge cases, race conditions, systemic gaps | Where did the invalid data originate? What architectural gap enabled this? How would this fail under load? |
+| **Security Auditor** | OWASP Top 10, auth, injection, secrets exposure, attack vectors | Can this be exploited? What would an attacker do? Does this fail closed or open? |
+| **Code Quality Reviewer** | Readability, complexity, naming, duplication, project conventions | Does this follow established patterns? Is the solution simple enough? Would future developers understand this? |
+| **Contracts Reviewer** | API contracts, data models, type design, breaking changes | Can illegal states be represented? Are invariants protected? Will this break existing consumers? |
+| **Historical Context Reviewer** | Git history, past PRs, recurring patterns, known anti-patterns | What problems occurred before in these files? Have we solved this pattern before? |
+| **Test Coverage Reviewer** | Missing tests, untested edge cases, behavioral coverage | What error paths are untested? What regressions could occur? Would this test catch the bug we found? |
+
+### Shared Review Process
+
+#### Phase 1: Preparation
+1. Identify the change set (git diff or PR diff)
+2. Read instruction files if present in `.claude/` or `CLAUDE.md`
+3. Check review scope against `--min-impact` threshold
+
+#### Phase 2: Multi-Agent Issue Detection
+Spawn applicable review agents in parallel. Each produces issues with:
+- **Impact score**: 0-100 mapped to critical (81-100), high (61-80), medium (41-60), medium-low (21-40), low (0-20)
+- **Confidence**: confidence-scored signal with filterable threshold
+- **Evidence**: specific file:line references
+
+Progressive confidence threshold: low-confidence findings are included but marked as such. No automated filtering — the user sees everything with confidence indicators.
+
+#### Phase 3: Consolidation
+1. Deduplicate by file:line:issue-text
+2. Filter to `--min-impact` threshold (default: high)
+3. Skip if change set >500 lines (focus on architecture + security only)
+
+### PR Review — Environment-Specific
+
+**Eligibility check**: Skip closed/draft PRs, check PR has description (add one if missing), discover instruction files from base branch.
+**Output**: Post inline comments on PR diff with emoji severity indicators. Use MCP GitHub tools when available, fall back to gh API.
+
+### Local Changes Review — Environment-Specific
+
+**Diff source**: Run `git status --short` to identify changed files, differentiate staged vs. unstaged, take action accordingly.
+**Output**: Terminal report with quality gate (PASS/FAIL) determined by issue count vs. threshold. JSON output with `--json` flag.
+
+---
+
+## SIMPLIFY Mode
+
+Refactors complex code to reduce cognitive load. Targets specific failure modes that make codebases hard to maintain over time.
+
+### Decision Router
 
 IF the code compiles and passes tests:
   -> Proceed with simplification. You have a safety net.
@@ -24,7 +95,7 @@ IF the code is in active development by others:
 IF this is a one-person project or abandoned code:
   -> Full speed. Simplify aggressively as long as readability improves.
 
-## What This Adds (Delta Principle)
+### What This Adds (Delta Principle)
 
 Claude already refactors on request. This skill changes *when* and *how* it simplifies, targeting the specific failure modes that make codebases hard to maintain over time.
 
@@ -36,15 +107,15 @@ Claude already refactors on request. This skill changes *when* and *how* it simp
 | No systematic pipeline — simplifies opportunistically | 5-stage pipeline guarantees consistent output |
 | No guardrails for untested code | Exception rules for untested code with safety-first defaults |
 
-## Core Principle
+### Core Principle
 
 **Simplification is refactoring that reduces cognitive load.** If the change does not make the code easier to hold in working memory, it is not simplification — it is rearrangement. Judge every transformation against this single criterion.
 
-## The 5-Stage Simplification Pipeline
+### The 5-Stage Simplification Pipeline
 
 Run these stages in order. Each stage feeds the next. Stop when the code meets the thresholds in the table below.
 
-### 1. Extract and Name
+#### 1. Extract and Name
 
 Identify anonymous blocks, magic values, inline conditionals, and bare literals. Give each a name that captures intent.
 
@@ -59,7 +130,7 @@ if elapsed > SECONDS_IN_DAY: process_later()
 
 **Rule of thumb:** If you have to read the body to understand a value or block, extract and name it.
 
-### 2. Reduce Nesting
+#### 2. Reduce Nesting
 
 Flatten conditionals with early returns, guard clauses, and inversion. Max 3 levels of nesting (see Thresholds table).
 
@@ -78,21 +149,19 @@ if not user.has_permission("edit"):
 do_edit()
 ```
 
-### 3. Remove Duplication
+#### 3. Remove Duplication
 
 Consolidate repeated patterns. Extract to a named function or data-driven loop. Do NOT extract when the duplication is coincidental (same text, different semantics).
 
-### 4. Eliminate Dead Code
+#### 4. Eliminate Dead Code
 
 Remove commented-out code, unreachable branches, unused variables, unused imports, and unreachable functions. Commenting-out is not version control — git handles history.
 
-### 5. Replace State Machines with Data
+#### 5. Replace State Machines with Data
 
 When a chain of if/elif or match/case branches over a single enum or string, replace with a lookup table (dict, map, configuration object). If the branching involves side effects, extract the side effects into functions stored in the table.
 
----
-
-## When to Simplify vs Leave Alone
+### When to Simplify vs Leave Alone
 
 | Situation | Decision | Rationale |
 |---|---|---|
@@ -105,9 +174,7 @@ When a chain of if/elif or match/case branches over a single enum or string, rep
 | Code you don't fully understand | Investigate first | Simplifying misunderstood code creates bugs |
 | Single-use glue / adapter code | Leave alone | Indirection for its own sake increases cognitive load |
 
----
-
-## Simplify Without Tests
+### Simplify Without Tests
 
 When a project has no tests, simplification carries risk. Follow these rules in order:
 
@@ -117,9 +184,7 @@ When a project has no tests, simplification carries risk. Follow these rules in 
 4. **Mark every change with `# SIMPLIFY: <reason>`** so the next reader (or a test-writer) can verify intent.
 5. **Dead-code removal is always safe** if reachability is proven statically. Remove commented-out code unconditionally — tests do not test comments.
 
----
-
-## Numeric Thresholds
+### Numeric Thresholds
 
 Thresholds are guides, not laws. If a function serves as a crucial business-rule with high complexity that is *inherent*, document the decision and leave it. If the complexity is *accidental*, simplify.
 
@@ -134,75 +199,71 @@ Thresholds are guides, not laws. If a function serves as a crucial business-rule
 | Variables reassigned | >3 times in same scope | Split into smaller functions |
 | Chained method calls | >4 | Extract intermediates with named variables |
 
----
-
-## Anti-Patterns
+### Anti-Patterns
 
 Each anti-pattern shows the wrong approach, the right approach, and the consequence of getting it wrong.
 
-### 1. Extracting for extraction's sake
+#### 1. Extracting for extraction's sake
 
 **Wrong:** Splitting a 50-line function into 5 ten-line functions, each called once.
 **Right:** Extract only when the extracted block has a clear identity and can be named.
 **Consequence:** Indirection without abstraction. The reader must jump between files to trace logic. Cognitive load *increases*.
 
-### 2. Renaming during extraction
+#### 2. Renaming during extraction
 
 **Wrong:** Renaming variables, extracting functions, and changing control flow in the same pass.
 **Right:** One transformation per commit. Extract first, rename in a separate change.
 **Consequence:** Bugs become untraceable. If a test fails, you cannot tell which transformation caused it.
 
-### 3. Removing "unnecessary" error handling
+#### 3. Removing "unnecessary" error handling
 
 **Wrong:** Removing a null check because "the caller never passes null."
 **Right:** Keep defensive checks unless you can prove the type system enforces the invariant. If the language lacks non-null types, keep the check.
 **Consequence:** Latent production bugs. The null check existed because someone — maybe the original author — learned the hard way.
 
-### 4. Over-normalizing data transformations
+#### 4. Over-normalizing data transformations
 
 **Wrong:** Replacing a readable single-use loop with `itertools.groupby`, `functools.reduce`, or a chain of list comprehensions.
 **Right:** Use comprehensions for simple maps/filters. Leave loops for complex multi-step transformations. Readability is the metric.
 **Consequence:** The simplification becomes harder to read than the original. You have introduced a puzzle, not a solution.
 
-### 5. Flattening with boolean flags
+#### 5. Flattening with boolean flags
 
 **Wrong:** Replacing nested conditionals with a single flat block gated by `should_process = all(conditions)` — the flags now encode the original nesting implicitly.
 **Right:** Early returns for each condition. Each guard is self-documenting.
 **Consequence:** Debugging requires evaluating the boolean composition mentally. The work of understanding the nesting is replaced by the work of understanding the boolean algebra.
 
-### 6. Inlining too aggressively
+#### 6. Inlining too aggressively
 
 **Wrong:** Inlining a helper that is called in 3 places but has different semantics in each call site. The duplication was coincidental, not structural.
 **Right:** Only inline when the extracted code is called in one place or the call sites are semantically identical.
 **Consequence:** A seemingly safe refactor introduces subtle semantic differences. The code passes tests but fails at runtime under edge cases.
 
-### 7. Optimizing before simplifying
+#### 7. Optimizing before simplifying
 
 **Wrong:** Replacing a naive loop with a cached/generator/deferred version during the simplification pass.
 **Right:** Simplify first. Profile second. Optimize third. Only if the profile says it matters.
 **Consequence:** Premature optimization creates complex code that is harder to simplify later. You have increased cognitive load for hypothetical performance gains.
 
-### 8. Leaving dead code as "documentation"
+#### 8. Leaving dead code as "documentation"
 
 **Wrong:** Keeping commented-out blocks "in case someone needs to see the old version."
 **Right:** Git history is the record. Delete commented-out code unconditionally.
 **Consequence:** Readers waste mental cycles determining whether commented code is relevant. The file grows without benefit. Signal-to-noise ratio degrades over time.
 
----
-
-## Agent Template
+### Agent Template
 
 Use this template when delegating simplification to a subagent. Copy the full block and fill in the bracketed fields.
 
-### Role
+#### Role
 
 You are a code simplification agent. Your sole purpose is to reduce cognitive load in the target code — not add features, not optimize performance, not fix bugs (unless a bug is blocking simplification).
 
-### Approach
+#### Approach
 
 Apply the 5-stage Simplification Pipeline in order: Extract and Name, Reduce Nesting, Remove Duplication, Eliminate Dead Code, Replace State Machines with Data. Do not skip stages. Do not reorder them. Do not combine stages in a single pass.
 
-### Focus Areas
+#### Focus Areas
 
 - Functions exceeding 40 lines
 - Nesting exceeding 3 levels
@@ -211,7 +272,7 @@ Apply the 5-stage Simplification Pipeline in order: Extract and Name, Reduce Nes
 - If/elif chains over an enum or string that can be replaced with a lookup table
 - Boolean flag parameters (any function with 2+ bool params needs splitting)
 
-### Output Format
+#### Output Format
 
 You must produce exactly one file per modified source file: a diff in unified format. Place each diff in `.claude/artifacts/{task_id}-{filename}.diff`. Do not apply changes directly unless the orchestrator explicitly approves.
 
@@ -220,7 +281,7 @@ For each diff, include a summary line:
 - Which pipeline stages were applied
 - Whether tests exist and were run
 
-### Model Selection
+#### Model Selection
 
 - **Default:** Sonnet. Fast, good judgment for routine extraction and flattening.
 - **Risky code (state machines, async chains, crypto, parsing, lock/unlock sequences):** Opus. The cost premium is justified by correctness guarantees.
@@ -228,7 +289,7 @@ For each diff, include a summary line:
 
 Switch models by re-spawning the subagent with the appropriate model pin. Do not downgrade mid-task.
 
-### Constraints
+#### Constraints
 
 - Never combine pipeline stages in a single pass. Each stage is its own commit or diff.
 - Never rename variables in the same pass as extraction. One transformation per pass.
@@ -237,13 +298,7 @@ Switch models by re-spawning the subagent with the appropriate model pin. Do not
 - Never add abstractions (classes, patterns) that do not exist in the original code. Simplify within the existing paradigm.
 - Stop and report after 2 successive failures on the same transformation. Do not retry with different prompts.
 
-### Spawn Footer
-
-Append this to every subagent prompt:
-
-> You are a subagent executing a delegated simplification task. Your context starts fresh — you have no access to prior conversation or other subagents' outputs. When complete, return your full results (file paths, diffs, and findings) to the orchestrator in structured form. If you encounter anything unexpected or have any question or doubt, stop and report back with what you found and what is unclear. Do not proceed silently on assumptions.
-
-### Failure Signal
+#### Failure Signal
 
 If the subagent encounters any of these conditions, it must stop and report immediately — do not attempt recovery:
 
@@ -251,10 +306,6 @@ If the subagent encounters any of these conditions, it must stop and report imme
 2. The code does not compile or has failing tests before any change.
 3. The simplification would require changing a public API signature.
 4. The target file is generated code or a vendored dependency (undo any edits instantly).
-
----
-
-## Policy vs. Mechanism
 
 ### Scope Policy
 
@@ -272,9 +323,7 @@ Do NOT simplify:
 - Test files beyond readability normalization. Tests benefit from explicitness; over-extraction makes failures harder to diagnose.
 - Migration or data-munging scripts intended for single use. They will be deleted, not maintained.
 
----
-
-## Success Criteria
+### Success Criteria
 
 A simplification pass is complete when ALL of the following are true:
 
@@ -286,6 +335,79 @@ A simplification pass is complete when ALL of the following are true:
 
 ---
 
-## Related
+## CRITIQUE Mode
 
-A `/code-simplify` command exists in this project that wraps this skill for quick invocation. Running it loads this skill and prompts for the target code.
+Self-critique for completed work with severity-rated findings. You are a ruthless quality gatekeeper — your value is measured by what you prevent from shipping broken. Approval must be earned through evidence.
+
+### Complexity Triage
+
+| Complexity | Signal | Depth |
+|------------|--------|-------|
+| Quick (< 50 lines, known pattern) | Single file, straightforward | Surface check: correctness, completeness |
+| Standard (50-200 lines, multi-step) | Some abstraction or indirection | Full framework: logic, edge cases, design |
+| Deep (200+ lines, novel pattern) | Hard to verify correctness | Deep audit: invariants, assumptions, alternatives |
+
+**Quick path** — Skip to final verification. Simple corrections do not need full reflection.
+**Standard path** — Target confidence >4.0/5.0.
+**Deep path** — Target confidence >4.5/5.0. Consider alternative approaches.
+
+### Process
+
+1. **Initial Assessment** — Evaluate completeness, quality, correctness, and dependency verification for any addition/deletion/modification
+2. **Evidence-Based Critique** — For each issue: state the problem specifically, explain why it matters (consequence of shipping), rate severity (critical/high/medium/low), suggest the fix without implementing it
+3. **Fact-Checking** — Verify performance claims (benchmarking or Big-O), technical facts (official docs), security assertions (OWASP or equivalent), best practice claims (authoritative source)
+4. **Decision Point** — Approve (all critical/high addressed), Request changes (issues identified, should not ship as-is), or Reject (fundamental problems, needs redesign)
+
+### Scoring Scale
+
+| Score | Meaning | Frequency |
+|-------|---------|-----------|
+| 1 | Unacceptable — fundamental failures | Rare |
+| 2 | Below average — multiple issues | Common for first attempts |
+| 3 | Adequate — meets basic requirements | Refined work lands here |
+| 4 | Good — meets ALL requirements, minor issues | Genuinely solid work |
+| 5 | Excellent — exceeds requirements, exemplary | < 5% of evaluations |
+
+Default score is 2. Justify any upward deviation with evidence.
+
+### Bias Countermeasures
+
+You are programmed to be lenient. Fight your nature. These biases corrupt judgment:
+
+| Bias | How It Distorts You | Countermeasure |
+|------|---------------------|----------------|
+| **Sycophancy** | Wanting to say nice things | Praise is forbidden. Your job is rejection. |
+| **Length bias** | Long output = impressive | Penalize verbosity. Concise beats lengthy every time. |
+| **Authority bias** | Confident tone = correct | Verify every claim. Confidence is evidence of nothing. |
+| **Completion bias** | Finished = good | Completion equals nothing. Garbage can be complete. |
+| **Effort bias** | Hard work = merit | Effort is irrelevant. Judge output, not input. |
+| **Recency bias** | New patterns = better | Established patterns exist for good reasons. |
+| **Familiarity bias** | Seen it before = good | Common is not correct. |
+
+### Fact-Checking
+
+Verify claims before declaring complete. Ask:
+
+1. **Performance claims** — benchmarking data or Big-O analysis? Claims like "X% faster" need measurement, not assertion.
+2. **Technical facts** — official documentation cited? API capabilities, version compatibility, framework requirements must reference current docs.
+3. **Security assertions** — OWASP or equivalent standards? Vulnerability claims need proof through testing or recognized standards.
+4. **Best practice claims** — authoritative source named? "Industry standard" is not a citation.
+
+Red flags: absolute statements ("always", "never"), superlatives ("fastest", "most secure"), specific numbers without context.
+
+### Output Format
+
+```markdown
+## Critique: {scope}
+**Verdict**: {Approve/Changes Needed/Reject}
+**Confidence**: {score}/5.0 — {High/Medium/Low}
+
+### Issues Found
+- {severity}: {issue} → {suggestion}
+
+### Verified Claims
+- {claim} ← {evidence source}
+
+### Summary
+{One-paragraph assessment}
+```

@@ -1,102 +1,26 @@
 ---
 name: reflexion
-description: Self-critique completed work with severity-rated findings, multi-perspective judge review for high-stakes decisions, and learning capture into project memory. Three modes: reflect, critique, memorize.
+description: "Multi-perspective judge review for high-stakes decisions, and learning capture into project memory. Use when user says 'critique this', 'what could be better', or 'capture this learning'."
 when_to_use: |
-  Use when the user says "reflect on this", "review my work", "critique this", or "what could be better".
-  IMMEDIATELY after completing significant work that needs quality verification. FIRST before any high-stakes shipping decision.
-argument-hint: Optional method (reflect/critique/memorize) and focus area or confidence threshold
+  Use when the user says "critique this", "what could be better", or "capture this learning".
+  IMMEDIATELY after completing significant work that needs independent quality verification (critique).
+  When consolidating reflection or critique findings into durable project memory (memorize).
+  Do NOT use for simple self-review (use refine in critique mode instead) or for architectural decisions (use create-plans).
+argument-hint: Optional method (critique/memorize) and focus area or confidence threshold
 ---
 
 ## Decision Router
 
-IF self-reviewing completed work for quality → use Reflect with complexity-appropriate depth
 IF high-stakes work needing independent perspectives → use Critique with specialized judges
 IF consolidating reflection or critique findings into durable project memory → use Memorize
-IF user specifies a focus area or confidence threshold → Reflect with that lens or only below threshold
+IF user specifies a focus area or confidence threshold → Critique with that lens or only below threshold
 IF combining with external decision records → Provide those records as additional evidence in verification
 
 # Reflexion
 
-Quality assurance and learning capture workflows. Three complementary methods form a complete improvement cycle: reflect → critique → memorize.
+Quality assurance and learning capture workflows. Two complementary methods form a complete improvement cycle: critique → memorize.
 
-All methods produce structured, evidence-backed output with severity-rated findings. The cycle ensures work is correct before shipping (reflect), independently verified for high-stakes work (critique), and learnings persist across sessions (memorize).
-
-## Reflect
-
-Self-critique for completed work. You are a ruthless quality gatekeeper — your value is measured by what you prevent from shipping broken. Approval must be earned through evidence.
-
-### Complexity Triage
-
-| Complexity | Signal | Depth |
-|------------|--------|-------|
-| Quick (< 50 lines, known pattern) | Single file, straightforward | Surface check: correctness, completeness |
-| Standard (50-200 lines, multi-step) | Some abstraction or indirection | Full framework: logic, edge cases, design |
-| Deep (200+ lines, novel pattern) | Hard to verify correctness | Deep audit: invariants, assumptions, alternatives |
-
-**Quick path** — Skip to final verification. Simple corrections do not need full reflection.
-**Standard path** — Target confidence >4.0/5.0.
-**Deep path** — Target confidence >4.5/5.0. Consider alternative approaches.
-
-### Process
-
-1. **Initial Assessment** — Evaluate completeness, quality, correctness, and dependency verification for any addition/deletion/modification
-2. **Evidence-Based Critique** — For each issue: state the problem specifically, explain why it matters (consequence of shipping), rate severity (critical/high/medium/low), suggest the fix without implementing it
-3. **Fact-Checking** — Verify performance claims (benchmarking or Big-O), technical facts (official docs), security assertions (OWASP or equivalent), best practice claims (authoritative source)
-4. **Decision Point** — Approve (all critical/high addressed), Request changes (issues identified, should not ship as-is), or Reject (fundamental problems, needs redesign)
-
-### Scoring Scale
-
-| Score | Meaning | Frequency |
-|-------|---------|-----------|
-| 1 | Unacceptable — fundamental failures | Rare |
-| 2 | Below average — multiple issues | Common for first attempts |
-| 3 | Adequate — meets basic requirements | Refined work lands here |
-| 4 | Good — meets ALL requirements, minor issues | Genuinely solid work |
-| 5 | Excellent — exceeds requirements, exemplary | < 5% of evaluations |
-
-Default score is 2. Justify any upward deviation with evidence.
-
-### Bias Countermeasures
-
-You are programmed to be lenient. Fight your nature. These biases corrupt judgment:
-
-| Bias | How It Distorts You | Countermeasure |
-|------|---------------------|----------------|
-| **Sycophancy** | Wanting to say nice things | Praise is forbidden. Your job is rejection. |
-| **Length bias** | Long output = impressive | Penalize verbosity. Concise beats lengthy every time. |
-| **Authority bias** | Confident tone = correct | Verify every claim. Confidence is evidence of nothing. |
-| **Completion bias** | Finished = good | Completion equals nothing. Garbage can be complete. |
-| **Effort bias** | Hard work = merit | Effort is irrelevant. Judge output, not input. |
-| **Recency bias** | New patterns = better | Established patterns exist for good reasons. |
-| **Familiarity bias** | Seen it before = good | Common is not correct. |
-
-### Fact-Checking
-
-Verify claims before declaring complete. Ask:
-
-1. **Performance claims** — benchmarking data or Big-O analysis? Claims like "X% faster" need measurement, not assertion.
-2. **Technical facts** — official documentation cited? API capabilities, version compatibility, framework requirements must reference current docs.
-3. **Security assertions** — OWASP or equivalent standards? Vulnerability claims need proof through testing or recognized standards.
-4. **Best practice claims** — authoritative source named? "Industry standard" is not a citation.
-
-Red flags: absolute statements ("always", "never"), superlatives ("fastest", "most secure"), specific numbers without context.
-
-### Output Format
-
-```markdown
-## Reflection: {scope}
-**Verdict**: {Approve/Changes Needed/Reject}
-**Confidence**: {score}/5.0 — {High/Medium/Low}
-
-### Issues Found
-- {severity}: {issue} → {suggestion}
-
-### Verified Claims
-- {claim} ← {evidence source}
-
-### Summary
-{One-paragraph assessment}
-```
+Both methods produce structured, evidence-backed output with severity-rated findings. The cycle ensures work is independently verified for high-stakes decisions (critique), and learnings persist across sessions (memorize).
 
 ## Critique
 
@@ -181,4 +105,6 @@ Use `--dry-run` to preview without writing. Specify source (last, selection) or 
 
 ### Relationship Between Methods
 
-Reflect is a single-reviewer quality gate. Critique extends this with multi-perspective depth. Memorize closes the loop by capturing learnings. Together they form the complete improvement cycle: reflect → critique → memorize.
+Critique extends self-review with multi-perspective depth. Memorize closes the loop by capturing learnings. Together they form the complete improvement cycle: critique → memorize.
+
+For simple self-critique without independent judges, use `refine` in critique mode instead.
