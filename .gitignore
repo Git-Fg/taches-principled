@@ -1,0 +1,8 @@
+# Claude artifacts
+.principled/
+
+# Attic for archived content
+.attic/
+
+# OS files
+.DS_Store
