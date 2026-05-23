@@ -2,6 +2,20 @@
 
 All notable changes are documented here.
 
+## [0.4.1] — 2026-05-23
+
+### Fixed
+- **tp-ddd plugin**: Converted 14 invalid rules (in `rules/` with `title`/`impact` frontmatter) to 12 valid skills (in `skills/` with `name`/`description`/`when_to_use` frontmatter)
+- **tp-ddd**: Merged overlapping skills (call-site-honesty→explicit-side-effects, clean-architecture-ddd→separation-of-concerns)
+- **tp-ddd**: Improved when_to_use triggers with natural developer phrases
+
+### Changed
+- **tp-ddd**: Collapsed 12 skills → 3 hub skills (code-transparency, code-architecture, code-quality) via multi-agent consolidation pipeline
+- **tp-ddd**: description updated to reflect new skill structure
+
+### Fixed
+- **tp-ddd**: Lost concepts (early returns, file size limits) restored after Skeptic-Advocate reconciliation
+
 ## [0.4.0] — 2026-05-23
 
 ### Changed

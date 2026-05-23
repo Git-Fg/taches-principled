@@ -1,8 +1,8 @@
 {
   "name": "tp-ddd",
   "displayName": "TP Domain-Driven Design",
-  "version": "0.1.0",
-  "description": "Domain-driven design rules — clean architecture, command-query separation, domain naming, explicit control flow, error handling patterns.",
+  "version": "0.2.0",
+  "description": "DDD development practices — code-transparency, code-architecture, and code-quality. Consolidated from 12 to 3 discoverable skills answering: what does this do, how to structure, is it idiomatic.",
   "author": {
     "name": "Felix",
     "email": "felix@example.com"
