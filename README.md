@@ -104,7 +104,7 @@ Six standalone plugins are hosted under `plugins/`, each independently installab
 | Plugin | Focus |
 |--------|-------|
 | **tp-sadd** | Subagent-driven development with parallel dispatch, competitive generation, and LLM-as-Judge verification |
-| **tp-sdd** | Structured design and development workflow from ideation to implementation |
+| **tp-sdd** | Structured design and development workflow (deprecated, consolidated into root) |
 | **tp-fpf** | Hypothesis-driven decision making with evidence lifecycle management |
 | **tp-git** | Git workflow automation for commits, PRs, and issue analysis |
 | **tp-tdd** | Test-driven development automation with fix workflows |

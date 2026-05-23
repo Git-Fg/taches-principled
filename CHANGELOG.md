@@ -14,7 +14,7 @@ All notable changes are documented here.
 
 ### Fixed
 - **sadd-dispatch**: Added missing when_to_use section entirely
-- **tp-sadd/tp-sdd plugins**: All skills now have proper trigger phrase quoting and temporal markers
+- **tp-sadd/tp-sdd plugins**: All skills now have proper trigger phrase quoting and temporal markers (tp-sdd deprecated, consolidated into root)
 
 ### Refactored
 - **All 44 skill descriptions**: Normalized to third-person framing with trigger phrases (note: official docs confirm verb-first is valid)
@@ -24,7 +24,7 @@ All notable changes are documented here.
 
 ### Added
 - **22 root skills**: Integrated review (review-pr, review-local-changes), kaizen (kaizen, analyse, analyse-problem, cause-and-effect, plan-do-check-act, root-cause-tracing, why), and docs (update-docs, write-concisely) into root plugin
-- **6 separate plugins**: Ported from context-engineering-kit — tp-sadd (9 skills), tp-fpf (3 skills), tp-git (4 skills), tp-tdd (1 skill), tp-sdd (5 skills), tp-ddd (14 rules)
+- **6 separate plugins**: Ported from context-engineering-kit — tp-sadd (9 skills), tp-fpf (3 skills), tp-git (4 skills), tp-tdd (1 skill), tp-ddd (14 rules) (tp-sdd deprecated and consolidated into root)
 - **Decision routers**: All 60 skills now have IF/THEN decision routers at top
 - **Semantic vocabulary**: Cross-plugin synergy through shared workflow vocabulary (no plugin name references)
 - **Integration architecture**: `.principled/plans/BRIEF.md`, `ROADMAP.md`, `scratch/integration-architecture.md`, `scratch/fan-out-plan.md`

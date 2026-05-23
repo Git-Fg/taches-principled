@@ -94,7 +94,7 @@ When skills fragment a single capability across incompatible frameworks, merge i
 |------------|-----------------|-----------|
 | `diagnose` | `analyse` + `analyse-problem` + `root-cause-analysis` + `root-cause-tracing` | All do problem investigation; different methods (Five Whys, A3, call-stack) rather than different purposes |
 | `refine` | `code-review` + `code-simplify` + `write-concisely` | All do quality improvement; review vs transform vs prose are modes of "make better" |
-| `judge` | `sadd-judge` + `judge-with-debate` | Single vs consensus evaluation are modes of quality assessment |
+| `judge` | `sadd-judge` (absorbed judge-with-debate) | Single vs consensus evaluation are modes of quality assessment |
 | `execute` | `sadd-execute` + `sadd-dispatch` + `subagent-driven-development` | All dispatch subagents with verification; different modes (single/sequential/parallel) |
 
 ### Decision Criteria: Merge or Keep Separate?
@@ -115,7 +115,7 @@ When skills fragment a single capability across incompatible frameworks, merge i
 
 The routing quality breaking point is **22-28 skills**. Below 22, fat skill complexity dominates. Above 28, routing confusion accumulates.
 
-**Current: 38 skills → Target: ~28 skills**
+**Current: 36 skills → Target: ~28 skills**
 
 ### Hub-Spoke Pattern in Existing Skills
 
@@ -430,7 +430,7 @@ plugins/
 │   ├── agents/                    # Bundled subagent definitions
 │   ├── commands/                  # Slash commands
 │   └── rules/                    # Always-active guardrails
-└── {tp-sadd,tp-sdd,tp-fpf,tp-git,tp-tdd,tp-ddd}/  # Marketplace plugins
+└── {tp-sadd,tp-fpf,tp-git,tp-tdd,tp-ddd}/  # Marketplace plugins
     ├── .claude-plugin/plugin.json
     ├── skills/{name}/SKILL.md
     ├── agents/
