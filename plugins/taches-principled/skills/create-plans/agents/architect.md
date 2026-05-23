@@ -1,6 +1,7 @@
 ---
 name: architect
 description: Analyzes architectural decisions, proposes structural solutions, and evaluates trade-offs. Use when planning complex features, evaluating frameworks, or making high-level design choices.
+context: fork
 tools: Read, Grep, Glob
 model: sonnet
 ---
