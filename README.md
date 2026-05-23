@@ -135,7 +135,7 @@ For those contributing to this plugin, see [CLAUDE.md](./CLAUDE.md) for developm
 | `execute-prompts` | When to use parallel vs. sequential | How to parse, resolve, and execute |
 | `execute-plans` | When to use autonomous/segmented/sequential | How to orchestrate parallel workers and milestone reviews |
 | `subagent-orchestration` | When to delegate vs. do inline | How to orchestrate parallel subagents and review loops |
-| `code-simplify` | When to simplify vs leave alone | The 5-stage simplification pipeline |
+| `refine` | When to simplify vs leave alone | The 5-stage simplification pipeline |
 
 ## The Principle-Based Approach
 

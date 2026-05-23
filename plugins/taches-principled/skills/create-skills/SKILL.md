@@ -108,6 +108,7 @@ These skills organize reference material for on-demand loading. They say
 > "If working with animations → read references/animation-patterns.md
 > If working with audio → read references/audio-sync.md
 > If optimizing render → read references/lambda-optimization.md"
+*(illustrative examples only — these files do not exist)*
 
 **What makes it work:** TOC for files >100 lines, "if X then Y" triggers,
 principles separated from implementation details. Organized for retrieval,
