@@ -1,6 +1,8 @@
 ---
 name: code-reviewer
 description: Reviews code for quality, security, and best practices. Invoke when user asks for code review, PR review, or code quality feedback.
+type: general-purpose
+context: fork
 tools: Read, Grep, Glob
 model: sonnet
 ---

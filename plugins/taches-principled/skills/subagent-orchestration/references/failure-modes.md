@@ -1,1 +1,1 @@
-../../create-subagents/references/failure-modes.md
+../../../create-subagents/references/failure-modes.md

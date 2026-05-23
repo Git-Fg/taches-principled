@@ -1,1 +1,1 @@
-../../create-subagents/references/memory-architecture.md
+../../../create-subagents/references/memory-architecture.md

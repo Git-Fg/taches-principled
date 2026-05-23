@@ -25,13 +25,13 @@ Systematic exploration before commitment produces better outcomes than diving in
 
 ### Phase 1: Exploration (6 proposals per agent, 3 agents in parallel)
 
-Launch 3 exploration agents. Each produces 6 high-level approaches (not implementations) covering both conventional (high probability >0.80) and creative (low probability <0.10) regions of the solution space. Each proposal includes: description, key design decisions, trade-offs, probability estimate, complexity, and risks.
+Spawn 3 exploration agents. Each produces 6 high-level approaches (not implementations) covering both conventional (high probability >0.80) and creative (low probability <0.10) regions of the solution space. Each proposal includes: description, key design decisions, trade-offs, probability estimate, complexity, and risks.
 
 Proposals saved to `.specs/research/{name}-{date}.proposals.[a|b|c].md`.
 
 ### Phase 1.5: Pruning Meta-Judge (in parallel with Phase 1)
 
-Launch a pruning meta-judge in parallel with exploration agents. The meta-judge generates an evaluation specification YAML for evaluating high-level proposals. Criteria focus on feasibility, alignment with requirements, potential for quality, and risk manageability.
+Spawn a pruning meta-judge in parallel with exploration agents. The meta-judge generates an evaluation specification YAML for evaluating high-level proposals. Criteria focus on feasibility, alignment with requirements, potential for quality, and risk manageability.
 
 Follow the meta-judge evaluation pattern documentation (see the meta-judge evaluation pattern documentation).
 
@@ -43,13 +43,13 @@ Aggregate votes using ranked choice (1st=3 points, 2nd=2 points, 3rd=1 point). S
 
 ### Phase 3: Expansion (3 agents, one per selected proposal)
 
-Launch 3 expansion agents, each developing one selected proposal into a full solution. Each receives: the original task, their assigned proposal (verbatim), judge feedback from pruning phase to address, and expected output format.
+Spawn 3 expansion agents, each developing one selected proposal into a full solution. Each receives: the original task, their assigned proposal (verbatim), judge feedback from pruning phase to address, and expected output format.
 
 Expansion agents use CoT reasoning + self-critique. Solutions saved with unique identifiers (`solution.a.md`, `solution.b.md`, `solution.c.md`).
 
 ### Phase 3.5: Evaluation Meta-Judge (in parallel with Phase 3)
 
-Launch a second meta-judge in parallel with expansion agents. Generates an evaluation specification YAML for evaluating full solution implementations. Criteria focused on comparative evaluation across multiple solutions.
+Spawn a second meta-judge in parallel with expansion agents. Generates an evaluation specification YAML for evaluating full solution implementations. Criteria focused on comparative evaluation across multiple solutions.
 
 See the meta-judge evaluation pattern documentation.
 
@@ -69,7 +69,7 @@ Parse only structured headers from judges.
 
 ### Phase 5: Synthesis (FULL_SYNTHESIS only)
 
-Launch one synthesis agent with ALL solutions and ALL evaluation reports. Synthesizes by: copying superior sections when one solution wins, combining approaches when hybrid is better, fixing identified issues. Documents every decision with rationale and source attribution.
+Spawn one synthesis agent with ALL solutions and ALL evaluation reports. Synthesizes by: copying superior sections when one solution wins, combining approaches when hybrid is better, fixing identified issues. Documents every decision with rationale and source attribution.
 
 ## Outputs
 

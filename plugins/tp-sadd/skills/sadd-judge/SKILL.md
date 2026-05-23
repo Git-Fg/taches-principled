@@ -16,7 +16,7 @@ IF there is no work to evaluate → ask what should be evaluated
 
 # Judge
 
-Launch a two-phase or multi-phase evaluation pipeline. A meta-judge generates tailored evaluation criteria, then one or more judges apply those criteria with fresh context for unbiased assessment. This is report-only — findings are presented without modifying the work.
+Spawn a two-phase or multi-phase evaluation pipeline. A meta-judge generates tailored evaluation criteria, then one or more judges apply those criteria with fresh context for unbiased assessment. This is report-only — findings are presented without modifying the work.
 
 ## Core Principle
 
@@ -33,10 +33,10 @@ See the meta-judge evaluation pattern documentation for the shared pattern (YAML
 **Phase 1: Context Extraction**
 Identify work to evaluate from conversation history or user input. Extract: original task, output produced, files involved, constraints mentioned, artifact type. Present scope summary.
 
-**Phase 2: Dispatch Meta-Judge**
+**Phase 2: dispatch meta-judge**
 Follow the shared meta-judge pattern. Include original user prompt, context about the work, artifact type, and evaluation focus.
 
-**Phase 3: Dispatch Judge**
+**Phase 3: dispatch judge**
 Provide original task, work output summary, files involved, and the EXACT meta-judge specification YAML.
 
 **Phase 4: Process and Present Results**
@@ -50,7 +50,7 @@ Validate evaluation (scores in range, evidence-supported, no contradictions), th
 
 **Phase 1: Meta-Judge** — Dispatch one meta-judge with task description, solution context, and artifact type. Generate evaluation specification YAML covering all relevant quality dimensions.
 
-**Phase 2: Independent Analysis (Round 0)** — Launch 3 judges in parallel. Each receives solution path, task description, and EXACT meta-judge spec YAML. Each produces independent assessment saved to `.specs/reports/{solution-name}-{date}.[1|2|3].md` with per-criterion scores, evidence, overall score, and key strengths/weaknesses.
+**Phase 2: Independent Analysis (Round 0)** — Spawn 3 judges in parallel. Each receives solution path, task description, and EXACT meta-judge spec YAML. Each produces independent assessment saved to `.specs/reports/{solution-name}-{date}.[1|2|3].md` with per-criterion scores, evidence, overall score, and key strengths/weaknesses.
 
 **Phase 3: Consensus Check** — After each evaluation round, verify: all overall scores within 0.5 points of each other, no criterion has >1 point gap across any two judges, all judges explicitly accept consensus.
 

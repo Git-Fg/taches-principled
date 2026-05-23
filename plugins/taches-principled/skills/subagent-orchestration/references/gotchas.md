@@ -1,1 +1,1 @@
-../../create-subagents/references/gotchas.md
+../../../create-subagents/references/gotchas.md

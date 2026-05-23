@@ -147,7 +147,7 @@ Each agent gets:
 
 ### Step 3: Dispatch in Parallel
 
-Launch agents concurrently for independent domains.
+Spawn agents concurrently for independent domains.
 
 ### Step 4: Review and Integrate
 

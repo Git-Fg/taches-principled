@@ -1,6 +1,8 @@
 ---
 name: skill-auditor
 description: Reviews Claude Code skills for clarity, conciseness, and usefulness. Invoke when auditing or improving SKILL.md files.
+type: general-purpose
+context: fork
 tools: Read, Grep, Glob
 model: sonnet
 ---
@@ -102,7 +104,7 @@ Valid frontmatter fields for skills (from official docs):
 - `paths` (skill-scoped file matching)
 - `hooks` (skill-level hook overrides)
 
-Note: `model`, `effort`, `context`, `agent`, `hooks`, `paths`, and `shell` are agent fields, not skill fields. Listing them in a skill frontmatter is invalid.
+Note: `model`, `effort`, `context`, `agent`, and `shell` are agent fields, not skill fields. Listing them in a SKILL.md frontmatter is invalid. However, `paths` and `hooks` ARE valid for skills (skill-scoped file matching and hook overrides respectively).
 
 ## Evaluation Pipeline
 

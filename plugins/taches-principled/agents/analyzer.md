@@ -1,6 +1,8 @@
 ---
 name: analyzer
 description: Synthesizes multiple evaluation results into an actionable improvement plan. Use after grading and comparing skills to generate prioritized recommendations.
+type: general-purpose
+context: fork
 tools: Read, Grep, Glob
 model: sonnet
 ---

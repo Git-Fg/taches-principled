@@ -49,8 +49,8 @@ Execute one self-contained task with parallel meta-judge + implementor dispatch,
 **Process:**
 
 1. **Task Analysis** — Assess complexity (high/medium/low), risk, and scope. Default model: Opus.
-2. **Parallel Dispatch** — Launch meta-judge AND implementation agent in a single message. Meta-judge MUST be first in dispatch order so it observes the task specification before the implementation agent modifies any files. Meta-judge returns only the YAML specification. Implementation agent receives CoT prefix, task body with expected output, and self-critique suffix producing a Summary section.
-3. **Judge Verification** — Extract meta-judge spec YAML and implementation Summary. If pre-existing changes exist in the codebase, include a Pre-existing Changes section so the judge attributes work correctly. Dispatch judge with EXACT meta-judge spec.
+2. **Parallel Dispatch** — Spawn meta-judge AND implementation agent in a single message. Meta-judge MUST be first in dispatch order so it observes the task specification before the implementation agent modifies any files. Meta-judge returns only the YAML specification. Implementation agent receives CoT prefix, task body with expected output, and self-critique suffix producing a Summary section.
+3. **Judge Verification** — Extract meta-judge spec YAML and implementation Summary. If pre-existing changes exist in the codebase, include a Pre-existing Changes section so the judge attributes work correctly. dispatch judge with EXACT meta-judge spec.
 4. **Retry Loop** — Score >= 4.0 = PASS. Score >= 3.0 with all low-priority issues = PASS. Score < 4.0 with retries remaining = retry with judge feedback (max 2 retries). Score < 4.0 after max retries = escalate to user with failure analysis.
 5. **Final Report** — Task summary, verification history (scores per attempt), files modified, key changes, optional improvements from judge.
 
@@ -74,8 +74,8 @@ Decompose a complex task into ordered, dependent subtasks with per-step meta-jud
 1. **Task Decomposition** — Identify natural boundaries and dependencies. Output a decomposition table with step number, description, dependencies, complexity, type, and expected output. Include a dependency graph showing sequencing.
 
 2. **Per-Step Execution** — For each step in order:
-   - **Parallel Dispatch**: Launch meta-judge (step-specific evaluation spec) AND implementation agent in a single message. Meta-judge first. Meta-judge includes overall task, this step's requirements, previous steps context, and artifact type. Implementation agent must end with "Context for Next Steps" section.
-   - **Judge Verification**: Dispatch judge with exact meta-judge spec for this step. Include "Pre-existing Changes" section if previous steps modified files.
+   - **Parallel Dispatch**: Spawn meta-judge (step-specific evaluation spec) AND implementation agent in a single message. Meta-judge first. Meta-judge includes overall task, this step's requirements, previous steps context, and artifact type. Implementation agent must end with "Context for Next Steps" section.
+   - **Judge Verification**: dispatch judge with exact meta-judge spec for this step. Include "Pre-existing Changes" section if previous steps modified files.
    - **Verdict**: Score >= 4.0 = PASS. Score >= 3.0 with low-priority issues = PASS. Score < 4.0 with retries remaining = retry with judge feedback (max 3 retries per step). Reuse same meta-judge spec across all retries.
    - **Context Passing**: After a step passes, extract only relevant information for remaining steps: files modified, key changes, new interfaces/APIs, decisions affecting later steps, warnings. Keep under 200 words per step. If cumulative context exceeds ~500 words, summarize older steps more aggressively.
 
@@ -105,9 +105,9 @@ Execute multiple independent tasks simultaneously with requirement grouping to m
 
    **Decision rule:** Default to INDEPENDENT when uncertain. Over-grouping risks incorrect evaluation specs. Implementation agents are always isolated — one per task, never shared.
 
-4. **Meta-Judge Dispatch (ALL in parallel)** — Launch one meta-judge per group/independent task. Launch each implementor immediately after its meta-judge completes (do not wait for all meta-judges).
+4. **Meta-Judge Dispatch (ALL in parallel)** — Spawn one meta-judge per group/independent task. Spawn each implementor immediately after its meta-judge completes (do not wait for all meta-judges).
 
-5. **Parallel Implementation** — Launch ALL implementation agents in a single message. Each with CoT prefix, task body (target-specific), and self-critique suffix. Each ends with Summary section.
+5. **Parallel Implementation** — Spawn ALL implementation agents in a single message. Each with CoT prefix, task body (target-specific), and self-critique suffix. Each ends with Summary section.
 
 6. **Judge Verification** — After ALL implementors complete, dispatch judges per grouping. Include "Pre-existing or Expected Parallel Changes" section. Parse only structured headers.
 
@@ -123,11 +123,11 @@ Generate 3 competing solutions in parallel, evaluate with 3 judges, then adaptiv
 
 **Process:**
 
-1. **Competitive Generation + Meta-Judge** — Launch 4 agents in a single message. Meta-judge first in dispatch order:
+1. **Competitive Generation + Meta-Judge** — Spawn 4 agents in a single message. Meta-judge first in dispatch order:
    - **Meta-Judge**: Generates comparative evaluation specification YAML for evaluating across multiple solutions. Instructions that 3 solutions will be compared.
    - **3 Generator Agents**: Each receives identical task description and context but works completely independently. Each produces a complete solution saved with unique identifier (solution.a, solution.b, solution.c). Each uses CoT reasoning + self-critique verification internally.
 
-2. **Multi-Judge Evaluation** — Launch 3 judges in parallel. Each receives ALL candidate solution paths and the EXACT meta-judge specification YAML. Each produces structured report with: VOTE (preferred solution), SCORES per solution, CRITERIA scores, and evidence-based justification. Parse only structured headers.
+2. **Multi-Judge Evaluation** — Spawn 3 judges in parallel. Each receives ALL candidate solution paths and the EXACT meta-judge specification YAML. Each produces structured report with: VOTE (preferred solution), SCORES per solution, CRITERIA scores, and evidence-based justification. Parse only structured headers.
 
 3. **Adaptive Strategy Selection** — Analyze judge vote headers:
 
@@ -137,7 +137,7 @@ Generate 3 competing solutions in parallel, evaluate with 3 judges, then adaptiv
    | All avg scores < 3.0 | REDESIGN | Analyze failure modes across all solutions, extract lessons learned, regenerate with new constraints and guidance |
    | Split decision (no unanimous, scores >= 3.0) | FULL_SYNTHESIS | Proceed to Phase 4 |
 
-4. **Synthesis (FULL_SYNTHESIS only)** — Launch one synthesis agent receiving ALL candidate solutions and ALL evaluation reports. Copies superior sections when one solution wins, combines approaches when hybrid is better, fixes identified issues. Documents every decision with rationale. Must create something new, not rewrite entirely.
+4. **Synthesis (FULL_SYNTHESIS only)** — Spawn one synthesis agent receiving ALL candidate solutions and ALL evaluation reports. Copies superior sections when one solution wins, combines approaches when hybrid is better, fixes identified issues. Documents every decision with rationale. Must create something new, not rewrite entirely.
 
 **Output artifacts:**
 

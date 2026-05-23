@@ -56,7 +56,7 @@ Evaluation mode: Multi-judge debate with consensus-seeking
 
 ### Phase 1: Independent Analysis
 
-Launch 3 judges in parallel (Opus recommended).
+Spawn 3 judges in parallel (Opus recommended).
 
 Each receives:
 - Path to solution(s) being evaluated

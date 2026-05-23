@@ -36,7 +36,7 @@ This skill implements the Generate-Critique-Synthesize (GCS) pattern for high-st
 
 ### Phase 1: Parallel Generation + Meta-Judge
 
-Launch 4 agents in parallel: 3 generators + 1 meta-judge.
+Spawn 4 agents in parallel: 3 generators + 1 meta-judge.
 
 **Meta-judge** produces evaluation specification YAML (rubrics, scoring criteria). This runs in parallel because it only needs the task description, not generator outputs.
 
@@ -53,7 +53,7 @@ Launch 4 agents in parallel: 3 generators + 1 meta-judge.
 
 Wait for all Phase 1 agents before dispatching judges.
 
-Launch 3 judges in parallel. Each receives:
+Spawn 3 judges in parallel. Each receives:
 - The exact meta-judge evaluation specification YAML (verbatim, no modifications)
 - Paths to all three candidate solutions
 
@@ -76,7 +76,7 @@ The orchestrator (not a subagent) analyzes judge outputs.
 |-----------|----------|--------|
 | Unanimous vote + clear winner | SELECT_AND_POLISH | Take winning solution, apply judge feedback |
 | All solutions below 3.0/5.0 | REDESIGN | Return to Phase 1 with lessons learned |
-| Split decision with merit | FULL_SYNTHESIS | Launch synthesizer to combine best elements |
+| Split decision with merit | FULL_SYNTHESIS | Spawn synthesizer to combine best elements |
 
 Parse VOTE lines from judge replies (do not read report files directly).
 
@@ -84,7 +84,7 @@ Parse VOTE lines from judge replies (do not read report files directly).
 
 Only runs when FULL_SYNTHESIS strategy selected.
 
-Launch one synthesizer agent with all solutions and evaluation reports. Agent:
+Spawn one synthesizer agent with all solutions and evaluation reports. Agent:
 - Copies superior sections when one solution clearly wins
 - Combines approaches when hybrid is better
 - Fixes identified issues
