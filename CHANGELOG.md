@@ -24,14 +24,14 @@ All notable changes are documented here.
 - **CHANGELOG**: Removed 68 skills count claim (was inaccurate)
 
 ### Added
-- **when_to_use frontmatter**: Added to all 44 skills with user-quoted trigger phrases and IMMEDIATELY/FIRST/BEFORE conditionals
+- **when_to_use frontmatter**: Added to all 34 skills with user-quoted trigger phrases and IMMEDIATELY/FIRST/BEFORE conditionals
 
 ### Fixed
 - **sadd-dispatch**: Added missing when_to_use section entirely
 - **tp-sadd/tp-sdd plugins**: All skills now have proper trigger phrase quoting and temporal markers (tp-sdd deprecated, consolidated into root)
 
 ### Refactored
-- **All 44 skill descriptions**: Normalized to third-person framing with trigger phrases (note: official docs confirm verb-first is valid)
+- **All 34 skill descriptions**: Normalized to third-person framing with trigger phrases (note: official docs confirm verb-first is valid)
 - **Agent definitions**: XML Structure Rules converted to markdown Structure Conventions
 
 ## [0.3.0] — 2026-05-22
