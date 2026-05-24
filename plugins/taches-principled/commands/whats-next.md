@@ -7,4 +7,4 @@ argument-hint: [topic or area]
 
 $ARGUMENTS
 
-Capture a handoff document covering: scope, changes made, key decisions, remaining steps with file paths, blockers, and critical context. Prioritize precision — the goal is zero information loss for a cold-start reader. Use bullet format in the output for scanability.
+Capture a handoff document covering: scope, changes made, key decisions, remaining steps with file paths, blockers, and critical context. Prioritize zero information loss for a cold-start reader.

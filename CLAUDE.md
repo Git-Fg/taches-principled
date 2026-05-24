@@ -456,7 +456,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] No inline tool lists in subagent spawn instructions (describe role + outcome, never `tools: Read, Edit, Bash`)
 - [ ] User interaction uses clear, structured options
 - [ ] Command files conform to commands-standard.md in `plugins/taches-principled/` (no method prescription, 1-3 sentence outcome instruction, no markdown in body)
-  - Current commands: debug.md, simplify.md, whats-next.md, next-tasks-orchestration.md, ideate.md, implement.md
+  - Current commands: debug.md, simplify.md, whats-next.md, next-tasks-orchestration.md, ideate.md, implement.md, improve.md, critique.md, learn.md, polish.md, orchestrate.md, design-subagents.md
 - [ ] README synced to all docs/ locations if marketplace docs are present
 - [ ] Skill changes backed by eval evidence (tested against real routing scenarios, not hypothetical)
 - [ ] Skill changes describe actual problems encountered (not theoretical improvements)
