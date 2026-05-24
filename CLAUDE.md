@@ -24,6 +24,34 @@ High trust means: write descriptions that route correctly, then stop. Don't add 
 
 ---
 
+## Orchestration Principle
+
+This marketplace is designed for a **costly, highly-capable main agent** orchestrating **cheap, fast subagents** in parallel with self-review/critique loops.
+
+**The model:**
+- Main agent (Sonnet/Opus) owns cognition — planning, decomposition, routing, aggregation, synthesis. This is the expensive brain that makes judgment calls.
+- Subagents (Haiku or fast Sonnet) own execution — exploration, research, implementation, verification, critique. These are cheap workers that run in parallel.
+- Self-review/critique subagents run after each milestone to catch errors before the main agent invests more context.
+- The main agent never does work a subagent can do faster in parallel.
+
+**When to spawn subagents (everything non-trivial):**
+- Exploration: 3-5 parallel with disjoint scope
+- Research: per-question subagents
+- Implementation: per-task subagents for independent work
+- Verification: per-segment subagents
+- Critique: per-milestone subagents reviewing output
+- Decision analysis: per-checkpoint subagents evaluating options
+
+**When the main agent acts directly:**
+- Lightweight edits (1-2 files, trivial change)
+- Reading and synthesizing subagent output from scratchpad
+- Making judgment calls between competing subagent recommendations
+- Final aggregation, summary writing, and commit
+
+**The rule:** If a task takes more than 5 minutes of inline work or touches more than 2 files, spawn a subagent for it. Never burn expensive main-agent context on work a cheap subagent can do.
+
+---
+
 ## Version Management
 
 **Marketplace version** and **plugin version** are independent:
@@ -358,6 +386,8 @@ Generated plans, prompts, scratch notes, and cross-session memory go here. This 
 ## Subagent Spawn Pattern
 
 When referencing subagent spawning in skills, use the canonical form: **"spawn a [role] subagent"**.
+
+**Cost model:** Subagents should default to Haiku (fast, cheap) for exploration, research, implementation, verification, and critique. Reserve Sonnet/Opus for the main orchestrator's reasoning and judgment calls, and for complex subagent tasks requiring deep reasoning.
 
 | Current | Correct |
 |---------|---------|
