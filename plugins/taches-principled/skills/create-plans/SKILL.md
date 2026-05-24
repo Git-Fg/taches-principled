@@ -253,7 +253,7 @@ Based on scan results, auto-detect and route silently:
 - **If no planning structure** → Auto-create brief (ask one question: "What are we building?")
 - **If NO_GIT_REPO detected** → Auto-initialize git repo silently
 
-**One question only:** For new projects, ask "What are we building?" — capture the response, then proceed autonomously through exploration, decomposition, and plan creation. Do NOT ask follow-up questions about scope, priorities, or approach. Defer all such discovery to the explore phase.
+**One question only:** For new projects, ask "What are we building?" — capture the response using your tool to ask users your questions and prefill answers, then proceed autonomously through exploration, decomposition, and plan creation. Do NOT ask follow-up questions about scope, priorities, or approach. Defer all such discovery to the explore phase.
 
 The model has sufficient judgment to choose the right path. Trust it. If the handoff path is wrong, the execution gate catches it. If the planning structure is wrong, exploration reveals it. The user's time is better spent on outcomes than menu navigation.
 
