@@ -53,7 +53,8 @@ Skills are auto-invoked by default by Claude Code — a cold-start instance disc
 - **Delta principle**: Only document what differs from default behavior
 - **Skill anatomy**: Frontmatter and body structure
 - **Anti-patterns**: What to avoid in skill design
-- **Cross-skill references**: Never cite other skills' files with paths (e.g., `skills/create-plans/references/X.md`) — use natural language: "see the X.md file in the create-plans skill's references"
+- **Cross-skill references**: Never cite other skills' files with paths — use natural language: "see the X.md file in the create-plans skill's references"
+- **Shared references anti-pattern**: Don't create `references/` files expecting cross-skill reuse — paths break on plugin install, content must be inlined or documented here
 - **Decision router**: How to structure SKILL.md for strong reference steering
 - **Description length**: Official cap is 1,536 combined description+when_to_use (raised April 2026); routing density ideal is ~200 chars for optimal trigger clarity
 - **Command format**: See `commands-standard.md` for lightweight command standards (no markdown in body, 1-3 sentence outcome instruction, conditional skill hints)
@@ -201,6 +202,19 @@ Skills must work whether installed as personal (`~/.claude/skills/`), project (`
 
 The goal is disambiguation, not elimination of names. If a skill name alone is unambiguous, use it. If it needs explanation, describe the role.
 
+### References/ Lazy Loading
+
+References/ folders are **lazy-loaded only when explicitly named in skill body**. They are NOT auto-discovered or auto-loaded.
+
+**Implications:**
+- A skill that mentions "see the plan-format.md file" triggers that file to load — but only because it's explicitly named
+- A skill that does not mention a references/ file will never cause it to load
+- Cross-skill file paths break on plugin install: when installed as a plugin, files are copied to `~/.claude/plugins/cache/<plugin>/`, breaking hardcoded paths
+
+**Rule:** Use natural language references instead of file paths. Each skill owns its `references/` folder — do not expect cross-skill reuse. If multiple skills need the same content, inline it or document the pattern here.
+
+**Why inline over reference:** A skill that inlines its references is self-contained. A skill that references another skill's files depends on external state that may not exist at invocation time.
+
 ---
 
 ## Token Economy
@@ -277,6 +291,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] CHANGELOG entry added
 - [ ] No MCP references (plugin is MCP-free)
 - [ ] No broken cross-references between skills (never use file paths to other skills' references/agents/workflows — use natural language like "see the plan-format.md file in the create-plans skill")
+- [ ] No shared references/ folders expecting cross-skill reuse (inlin e content instead — references/ only loads when explicitly named in parent SKILL.md)
 - [ ] User interaction uses clear, structured options
 - [ ] Command files conform to commands-standard.md (no method prescription, 1-3 sentence outcome instruction, no markdown in body)
   - Current commands: debug.md, simplify.md, whats-next.md, next-tasks-orchestration.md, ideate.md, implement.md
