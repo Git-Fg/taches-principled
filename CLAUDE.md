@@ -121,6 +121,8 @@ Commands are trigger accelerators, not method carriers. Their value is in the fi
 - Restate the skill's methodology in fewer words
 - Add information the skill already teaches
 
+**Important — "outcome not method" reconciled:** The "tell the outcome, not the method" rule means don't restate the *skill's internal methodology* (e.g., "apply A3 problem-solving with five whys and fishbone diagram"). It does NOT mean avoid naming native capabilities. "Fan out subagents", "create a task list", "use web search" are direct capability names that tell Claude WHAT to do — they are the outcome. Contrast with skill methodology: "use diagnose's A3 mode with severity scoring" — that's method. Commands name what, skills teach how.
+
 **Example:** `/debug` teaches "when you see a bug, think root cause first." The `diagnose` skill has 261 lines of decision routing for A3/Five-Whys/Fishbone/Stack-Trace/Auto modes. The command doesn't need to repeat that — it just needs to make Claude reach for the right skill with the right mindset.
 
 **Anti-pattern:** Evaluating commands by word-for-word overlap with the skill body. This misses the semantic framing value. A command that says "Find the root cause and verify the fix" teaches a different trigger than a skill description that starts "Apply systematic debugging methodology."

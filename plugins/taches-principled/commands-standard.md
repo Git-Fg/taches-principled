@@ -21,7 +21,7 @@ argument-hint: [<hint>]    # optional
 - No usage examples (redundant with argument-hint)
 - 1-3 sentences, single paragraph
 - Use `$ARGUMENTS` to inject user input
-- Tell the outcome, not the method
+- Tell the outcome, not the method. "Outcome" means what the command achieves (native capabilities like "fan out subagents", "create a task list"). "Method" means the skill's internal methodology (like "apply A3 with fishbone"). Commands name what to do at the capability level — they don't restate skill internals.
 
 ## Conditional Skill Hints
 
