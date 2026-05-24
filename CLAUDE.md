@@ -169,9 +169,63 @@ Use checkpoints when verification is genuinely needed — not as a checkpoint fo
 
 The goal is a smooth handoff between thinking and doing. Questions belong in the thinking phase. Once you're implementing, focus on building.
 
-**When to use Claude's native user-interaction tool:** If you need to pause for user input, say verbatim: "use your tool to ask users your questions and prefill answers". This is the canonical phrase — it names the capability generically (not the tool), so it stays robust if tool names change. Never name the tool directly (e.g., "use AskUserQuestion") — that hardcodes a specific tool name and breaks when the tool is renamed or the context changes.
+**When to use Claude's native user-interaction tool:** When pausing for user input, say verbatim: "use your tool to ask users your questions and prefill answers". This is the canonical phrase — names the capability generically, not the tool — stays robust if tool names change. Never hardcode tool names like "AskUserQuestion" — that breaks when the tool is renamed.
 
-**Exception — descriptive constraints:** When documenting what subagents cannot do (e.g., "subagents cannot use AskUserQuestion"), the tool name is acceptable because it describes a constraint, not prescribing an invocation. The rule applies to prescriptive contexts (telling Claude to act) not descriptive ones (describing tool limitations).
+**Exception — descriptive constraints:** When documenting what subagents cannot do, the tool name is acceptable because it describes a constraint, not prescribing an invocation.
+
+---
+
+## User Interview Pattern
+
+When gathering context before proceeding, use the interview pattern — not a fixed formula. The goal is to understand intent, clarify scope, and set execution expectations.
+
+**The canonical invocation:** Use your tool to ask users your questions and prefill answers.
+
+**What to achieve (not how many questions):**
+1. Understand the goal — what does the user want to accomplish
+2. Clarify scope — boundaries, constraints, priorities
+3. Set execution mode — autonomous or human-in-the-loop
+
+**When to run an interview:**
+- Beginning of a creation workflow (create-plans, create-prompts, ideation)
+- Beginning of an execution workflow when invoked directly (execute-plans, execute-prompts)
+- When task input is empty or vague (add-task)
+- At any decision point where user input is genuinely needed
+
+**When to skip an interview:**
+- Context already exists (handoff file, existing artifacts)
+- Input is already specific and complete
+- User explicitly specified execution mode via flags
+
+**Generalist guidance for skills:**
+```
+Before proceeding, ensure you have sufficient context:
+1. Understand the goal
+2. Clarify scope
+3. Set execution mode
+
+Use your tool to ask users your questions and prefill answers.
+Keep it focused — enough to proceed confidently.
+```
+
+**Examples from this project:**
+
+*create-plans:*
+> "Before planning, ensure you have sufficient context: understand the goal, clarify scope, set execution mode. Use your tool to ask users your questions and prefill answers."
+
+*create-prompts:*
+> "Gather sufficient context to create the prompt: goal, scope, constraints. Set execution mode: fully autonomous or human-in-the-loop. Use your tool to ask users your questions and prefill answers."
+
+*execute-plans:*
+> "For direct invocation, ensure you have sufficient context to execute: understand the goal, clarify scope, set execution mode. Use your tool to ask users your questions and prefill answers."
+
+*ideation:*
+> "Ask one question per turn to refine the idea — prefer multiple choice when possible. Focus on purpose, constraints, success criteria."
+
+*add-task:*
+> "If user provides no description, ask clarifying questions before creating."
+
+---
 
 ---
 
