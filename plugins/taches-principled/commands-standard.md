@@ -1,6 +1,6 @@
 # Command Format Standard
 
-Commands are lightweight triggers — not mini-skills. The body is plain text, no markdown, one coherent instruction. Trust Claude to figure out the rest.
+Commands are lightweight triggers — not mini-skills. The body is plain text, no markdown, one coherent instruction. Commands are auto-invoked by default by Claude Code — like skills, they are discovered through description matching without prior conversation context.
 
 ## Frontmatter
 
@@ -38,3 +38,21 @@ The "if you have access to" framing preserves high trust and high freedom — th
 ## Rationale
 
 Commands are user-invoked explicitly — they don't need when_to_use or progressive disclosure. The skill owns method; the command is just a trigger. High trust means leaving how to the skill. High freedom means no structural decomposition of the task.
+
+## Trigger Acceleration vs Method Carriers
+
+**Never evaluate a command by comparing its body to the skill's body.** A command that seems redundant may be teaching the trigger while the skill teaches the method. Structural overlap analysis misses the value.
+
+**What commands do:**
+- Teach the mental frame ("when you see a bug, think root cause")
+- Provide a memorable trigger phrase shorter than the skill description
+- Add semantic framing the skill can't provide without being bloated
+
+**What commands don't need to do:**
+- Carry unique logic the skill doesn't have
+- Restate the skill's methodology in fewer words
+- Add information the skill already teaches
+
+**Anti-pattern:** Deleting commands because their body overlaps with the skill body. A command that says "Find the root cause" teaches a different trigger than "Apply systematic debugging methodology" — even if both ultimately route to the same skill.
+
+**When a command IS hollow:** It adds nothing to the trigger. `$ARGUMENTS` alone is valid if the description provides the trigger signal. But even a bare `$ARGUMENTS` pass-through is acceptable when the description + frontmatter teaches the frame.

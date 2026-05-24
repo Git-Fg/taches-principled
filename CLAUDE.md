@@ -47,7 +47,7 @@ git push
 
 ## Skill Authoring
 
-Skill authoring is taught by the `create-skills` skill. See that skill for:
+Skills are auto-invoked by default by Claude Code — a cold-start instance discovers and routes to them based on description matching, not prior conversation. Skill authoring is taught by the `create-skills` skill. See that skill for:
 - **Skill categories**: Constraint/Guardrail, Orchestration, Domain Expertise, Quality Assurance, Creative Direction
 - **Policy vs. Mechanism**: The unifying principle for skill design (official term: progressive disclosure)
 - **Delta principle**: Only document what differs from default behavior
@@ -57,6 +57,32 @@ Skill authoring is taught by the `create-skills` skill. See that skill for:
 - **Decision router**: How to structure SKILL.md for strong reference steering
 - **Description length**: Official cap is 1,536 combined description+when_to_use (raised April 2026); routing density ideal is ~200 chars for optimal trigger clarity
 - **Command format**: See `commands-standard.md` for lightweight command standards (no markdown in body, 1-3 sentence outcome instruction, conditional skill hints)
+
+---
+
+## Commands
+
+Commands are trigger accelerators, not method carriers. Their value is in the first three words Claude hears when a user invokes them — not in the body content.
+
+**Both commands and skills are auto-invoked by default.** A cold-start Claude instance discovers and invokes them based on their descriptions — no prior conversation, no session history. Commands and skills with the same name: the skill takes precedence. Commands without a matching skill are still usable as standalone triggers.
+
+**Never evaluate a command by comparing its body to the skill's body.** Structural overlap analysis is insufficient. A command that seems redundant may be teaching the trigger while the skill teaches the method.
+
+**What commands do:**
+- Teach Claude what mental frame to reach for when a user types `/something`
+- Provide a memorable trigger phrase shorter than the skill description
+- Add semantic framing the skill can't provide without being bloated
+
+**What commands don't need to do:**
+- Carry unique logic the skill doesn't have
+- Restate the skill's methodology in fewer words
+- Add information the skill already teaches
+
+**Example:** `/debug` teaches "when you see a bug, think root cause first." The `diagnose` skill has 261 lines of decision routing for A3/Five-Whys/Fishbone/Stack-Trace/Auto modes. The command doesn't need to repeat that — it just needs to make Claude reach for the right skill with the right mindset.
+
+**Anti-pattern:** Evaluating commands by word-for-word overlap with the skill body. This misses the semantic framing value. A command that says "Find the root cause and verify the fix" teaches a different trigger than a skill description that starts "Apply systematic debugging methodology."
+
+**When a command IS hollow:** It adds nothing to the trigger — not the framing, not the mindset, not the prioritization. If the command body could be replaced with `$ARGUMENTS` and nothing would be lost, it's hollow. But `$ARGUMENTS` alone is a valid command if the description provides the trigger.
 
 ---
 
