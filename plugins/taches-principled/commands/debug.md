@@ -7,4 +7,4 @@ argument-hint: [issue description]
 
 $ARGUMENTS
 
-Trace back through the chain until the originating cause is found. Rule out candidates through inspection and experiment — document what was checked, what was found, and what was eliminated. Once the root is identified, produce a fix and confirm the full surface area still behaves correctly. Consult external references when local knowledge is insufficient to validate findings. Persist the investigation record so the reasoning survives for reference.
+Use web search and code inspection to trace backward from the failure to its root cause. Fan out subagents onto independent hypotheses so candidates are tested in parallel, not sequentially. Write all findings — what was checked, what was found, what was eliminated — to a scratch file. Once the root is confirmed, apply a fix and verify the full surface area still works.

@@ -7,4 +7,4 @@ argument-hint: [task description or path]
 
 $ARGUMENTS
 
-Work through this implementation methodically. After each change, evaluate completeness honestly as if someone else produced it. Maintain a visible record of what is complete, what is active, and what is blocked so progress is clear at every stage. Only advance when the current step produces the expected result.
+Create a task list tracking each change needed. Run tests and lint after every step and do not advance past a failing check. Self-review each change critically as if another developer produced it. Delegate stuck items to a subagent so investigation runs in parallel, not blocking the main flow.

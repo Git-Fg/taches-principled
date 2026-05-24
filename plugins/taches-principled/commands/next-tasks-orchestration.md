@@ -7,4 +7,4 @@ argument-hint: [task description]
 
 $ARGUMENTS
 
-Divide remaining work into independent streams that don't overlap. Process each piece through its own complete cycle with critical assessment at each milestone — nothing is done until it passes its own scrutiny. Maintain a record of progress so nothing is lost between iterations and you always know where to resume. When no work remains, step back and sweep the full scope for gaps or inconsistencies. Consult external references when local knowledge is insufficient.
+Fan out subagents onto independent work streams with non-overlapping files. Create a task list tracking completion and run quality gate checks after each milestone — do not advance past a failing gate. When all streams finish, self-review the full scope for gaps. Use web search to fill knowledge gaps as they arise.

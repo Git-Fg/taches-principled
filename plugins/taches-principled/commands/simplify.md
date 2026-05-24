@@ -7,4 +7,4 @@ argument-hint: [file-pattern]
 
 $ARGUMENTS
 
-Analyze the code for patterns where structure obscures intent. Simplify within clear scope boundaries — refactor for clarity without expanding scope. Once changes are applied, confirm the full surface area still behaves correctly, especially edge cases beyond the initial report. Report what changed and what was intentionally left alone.
+Fan out subagents onto each file to identify nesting, duplication, and dead code. Refactor within scope boundaries only — do not expand scope during simplification. After changes, run tests and verify edge cases beyond the initial report. Summarize what changed and what was intentionally preserved.

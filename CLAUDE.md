@@ -85,6 +85,32 @@ Commands are trigger accelerators, not method carriers. Their value is in the fi
 
 **When a command IS hollow:** It adds nothing to the trigger — not the framing, not the mindset, not the prioritization. If the command body could be replaced with `$ARGUMENTS` and nothing would be lost, it's hollow. But `$ARGUMENTS` alone is a valid command if the description provides the trigger.
 
+**Direct language principle:** Command bodies must name native capabilities explicitly, not describe them euphemistically. Use direct keywords the model routes to immediately — "fan out subagents", "create a task list", "use web search", "spawn a critic subagent", "capture output to a file". Direct language = immediate routing = zero context drift.
+
+**Why:** Every euphemism for a native capability adds interpretation overhead. "Divide into independent streams" requires the model to recognize this means subagent fan-out. "Maintain a visible record of progress" requires inference to reach "create a task list". "Consult external references" requires deduction to land on "use web search". That overhead is context drift — tokens spent on semantic disambiguation that could be spent on execution. One sentence of direct language routes to the right behavior in a single pass. One sentence of vague semantics fragments across 3-5 possible interpretations, each consuming model capacity without advancing the goal.
+
+**The balance with skills:**
+- **Commands** name native capabilities directly — WHAT to do
+- **Skills** teach method and judgment — HOW to do it
+- **Command descriptions (frontmatter)** route to skills — WHICH skill to load
+- Command bodies never cite skill names or skill methodology. They only state the outcome using the native vocabulary the model already understands.
+
+**Good vs bad examples:**
+
+| Instead of this (vague) | Use this (direct) | Why |
+|--------------------------|--------------------|-----|
+| "Divide into independent streams of work" | "Fan out subagents to explore in parallel" | "Fan out subagents" maps immediately to subagent spawn. The vague version drifts through 5 syntactic parses. |
+| "Maintain a visible record of progress" | "Create a task list tracking all items" | "Create a task list" hits TaskCreate directly. The euphemism requires inference. |
+| "Consult external references for up-to-date information" | "Use web search to verify current state" | "Use web search" routes to the search tool. The vague version sounds like reading local docs. |
+| "Organize your approach and track what needs doing" | "Create a task list for each step, then fan out subagents" | Both native capacities named explicitly. No inference needed. |
+
+**What direct language prevents:**
+- **Ambiguous tool routing:** "Consult external references" could mean web search, local docs, MCP resources, or skill references. "Use web search" is unambiguous.
+- **Paraphrase decay:** A euphemism gets re-paraphrased at every turn, drifting further from the intended action. Direct keywords can't decay — they route identically every time.
+- **Skill bleed:** When a command body sounds like a skill, the model loads both skill and command context for the same trigger. Direct language keeps the command lightweight and the skill focused.
+
+**The test:** Read the command body. Can the model act on it without interpreting any phrase? If a phrase could mean two different actions, replace it with the specific native capability name.
+
 ---
 
 ## User Interaction

@@ -7,4 +7,4 @@ argument-hint: [topic or problem]
 
 $ARGUMENTS
 
-Enter divergent thinking mode. Generate multiple distinct options and explore broad possibilities before narrowing. The goal is breadth and variety of creative directions, not early convergence or commitment. Record ideas as they emerge so nothing is lost.
+Generate 4-6 distinct creative directions for the topic before evaluating any single one. Use web search for reference patterns and inspiration. Record each option with enough detail that any direction can be pursued in a fresh session. Only converge after breadth is established.
