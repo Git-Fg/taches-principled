@@ -101,6 +101,8 @@ Skills are auto-invoked by default by Claude Code — a cold-start instance disc
 - **Description length**: Official cap is 1,536 combined description+when_to_use (raised April 2026); routing density ideal is ~200 chars for optimal trigger clarity
 - **Command format**: See `commands-standard.md` for lightweight command standards (no markdown in body, 1-3 sentence outcome instruction, conditional skill hints)
 
+**How to access:** The `create-skills` skill is auto-discovered. Use `/create-skills` or invoke via the Skill tool.
+
 ---
 
 ## Commands
@@ -204,8 +206,7 @@ Before proceeding, ensure you have sufficient context:
 2. Clarify scope
 3. Set execution mode
 
-Use your tool to ask users your questions and prefill answers.
-Keep it focused — enough to proceed confidently.
+Use your tool to ask users your questions and prefill answers. See "User Interaction" section for the canonical invocation phrase and exception — descriptive constraints.
 ```
 
 **Examples from this project:**
@@ -224,8 +225,6 @@ Keep it focused — enough to proceed confidently.
 
 *add-task:*
 > "If user provides no description, ask clarifying questions before creating."
-
----
 
 ---
 
@@ -416,8 +415,6 @@ chore: rename to taches-principled across all files
 ## Git Workflow
 
 Create feature branches, commit with conventional messages, push, and create PRs via gh. Example: `feat: add new skill`, `fix: resolve routing trigger ambiguity`.
-)"
-```
 
 ---
 

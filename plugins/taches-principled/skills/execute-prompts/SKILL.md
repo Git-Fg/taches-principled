@@ -114,35 +114,21 @@ Use when: prompts have dependencies (output of one feeds into another).
 
 ## Execution Mode Intake
 
-**Pre-execution gate:** Before parsing arguments, determine execution mode when multiple prompts are involved.
+**Pre-execution check:** Before executing multiple prompts, ensure execution mode is set.
 
-### When to Ask
+If mode is already specified (via flag or prior context), skip this step.
 
-Ask the user about execution mode when:
-- Multiple prompts are specified
-- User asks to "run" or "execute" prompts (not "step through" or "confirm each")
+If mode is not specified:
+1. Understand the goal — what prompts are being executed
+2. Clarify scope — any dependencies or constraints
+3. Set execution mode — autonomous or human-in-the-loop
 
-**Skip this gate when:**
-- User explicitly said "step through" or "confirm before each"
+Use your tool to ask users your questions and prefill answers. Default to autonomous when user says "run" without qualification.
+
+**When to skip:**
+- User said "step through" or "confirm before each" — use step-through mode
 - Single prompt only
-- User specified `--parallel` or `--sequential` flag directly
-
-### The Question
-
-```
-Question: How would you like to execute these prompts?
-
-Options:
-- A: Fully autonomous (recommended) — Execute all prompts without stopping
-- B: Step through one at a time — Confirm before each prompt executes
-- C: Something else
-```
-
-**Default to A (autonomous)** when user says "run" without qualification.
-
-**If user selects C:** Acknowledge and stop — ask what they'd like to do instead.
-
-**If user selects B:** Set step-through mode, execute one prompt at a time with confirmation gates.
+- Flag already specifies mode (`--parallel`, `--sequential`)
 
 ---
 
