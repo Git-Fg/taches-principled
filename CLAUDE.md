@@ -169,6 +169,10 @@ Use checkpoints when verification is genuinely needed — not as a checkpoint fo
 
 The goal is a smooth handoff between thinking and doing. Questions belong in the thinking phase. Once you're implementing, focus on building.
 
+**When to use Claude's native user-interaction tool:** If you need to pause for user input, say verbatim: "use your tool to ask users your questions and prefill answers". This is the canonical phrase — it names the capability generically (not the tool), so it stays robust if tool names change. Never name the tool directly (e.g., "use AskUserQuestion") — that hardcodes a specific tool name and breaks when the tool is renamed or the context changes.
+
+**Exception — descriptive constraints:** When documenting what subagents cannot do (e.g., "subagents cannot use AskUserQuestion"), the tool name is acceptable because it describes a constraint, not prescribing an invocation. The rule applies to prescriptive contexts (telling Claude to act) not descriptive ones (describing tool limitations).
+
 ---
 
 ## Compositional Skill Pairs
