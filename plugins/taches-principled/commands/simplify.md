@@ -7,4 +7,4 @@ argument-hint: [file-pattern]
 
 $ARGUMENTS
 
-Simplify code for clarity and maintainability. Detect transformation opportunities, apply changes within scope boundaries, and verify behavior is preserved. Report what changed and what was left alone.
+Analyze the code for patterns where structure obscures intent. Simplify within clear scope boundaries — refactor for clarity without expanding scope. Once changes are applied, confirm the full surface area still behaves correctly, especially edge cases beyond the initial report. Report what changed and what was intentionally left alone.
