@@ -5,6 +5,7 @@ when_to_use: |
   Use when the user says "run prompts", "execute prompts", "launch the prompts", or "run my prompt file".
   Do NOT use for interactive debugging, single-file edits, or one-off questions that don't involve prompt files.
   Do NOT use for executing plan files — use execute-plans instead.
+argument-hint: [prompt-id or description]
 ---
 
 ## Decision Router
@@ -227,7 +228,7 @@ Never `git add .` — stage only files you modified.
 
 ## Execution Gotchas
 
-**The Thought/Action/Observation Anti-Pattern is documented in the execute-plans skill's anti-patterns reference.**
+**The Thought/Action/Observation Anti-Pattern is documented in the execute-plans skill.**
 
 ### Parallelization Without True Concurrency
 

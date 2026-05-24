@@ -7,6 +7,7 @@ when_to_use: |
   Do NOT use for creating plans — use the planning skill instead.
   Do NOT use for planning without execution intent.
   Do NOT use for executing prompt files — use execute-prompts instead.
+argument-hint: [path to plan] [--phase N]
 ---
 
 ## Decision Router
@@ -132,7 +133,7 @@ When spawning subagents for investigation (exploring project structure, finding 
 4. **NEVER** use "native" Explore subagents (Haiku, read-only) for investigation
 
 **Subagent tool requirements for investigation:**
-- REQUIRED minimum: `[Read, Write, Grep, Glob, Bash]`
+- REQUIRED minimum: read source files, write findings to disk, search project structure, and run shell commands
 - Write access is NON-OPTIONAL — findings must be persisted
 
 **After spawning:**
@@ -168,7 +169,7 @@ When spawning implementer subagents (Strategy A parallel workers, Strategy B seg
 3. Include the task's file paths so workers don't collide on same files
 
 **Worker requirements:**
-- General-purpose subagent with `[Read, Write, Grep, Glob, Bash]` access
+- General-purpose subagent with read, write, search, and shell command access
 - Worker writes implementation results to scratchpad before returning
 - Worker includes: files modified, verification results, any deviations detected
 
@@ -624,7 +625,7 @@ IF checkpoint type is decision → BEFORE presenting read the checkpoint-protoco
 IF handling deviations → read the deviation-rules reference file
 IF spawning autonomous worker → read the autonomous-execution template from the templates folder
 IF spawning segment worker → read the segment-execution template from the templates folder
-IF spawning milestone critic → read the critic agent template from the agents folder (name: execute-critic)
+IF spawning milestone critic → read the critic agent template from the agents folder (name: critic)
 IF spawning parallel worker → read the implementer agent template from the agents folder
 IF spawning researcher → read the researcher agent template from the agents folder
 IF spawning verifier → read the verifier agent template from the agents folder

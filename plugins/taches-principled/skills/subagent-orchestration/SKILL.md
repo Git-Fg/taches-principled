@@ -306,14 +306,3 @@ See the failure modes reference for detailed prevention strategies.
 - Decisions where downstream judgment depends on upstream reasoning
 - File edits that require understanding orchestrator's broader context
 
-## Reference Index
-
-Key reference files for subagent authoring and orchestration include:
-
-- `race-framework.md` — Full RACE prompt structure
-- `orchestration-patterns.md` — All five patterns with examples
-- `automation-layers.md` — Monitor vs ScheduleWakeup vs Hooks
-- `memory-architecture.md` — Four-layer system details
-- `failure-modes.md` — Detection, recovery, and prevention
-- `context-management.md` — Context hardening strategies
-- `gotchas.md` — Common subagent pitfalls

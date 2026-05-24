@@ -6,6 +6,7 @@ when_to_use: |
   IMMEDIATELY when starting new work that needs structured decomposition.
   Do NOT use for code review, debugging existing code, or one-off questions.
   Do NOT use when task is already refined and ready for execution (use execute-plans), when a single question needs answering (use diagnose instead), or when task is vague and needs capture first (use add-task).
+argument-hint: [project or feature to plan]
 ---
 
 ## Decision Router
@@ -228,7 +229,7 @@ Each level gives context to the level below.
 
 ## Context Scan
 
-On every invocation, spawn an explorer subagent (Haiku, with Read/Write/Grep/Glob/Bash) to scan the project context:
+On every invocation, spawn an explorer subagent (can read source, write findings, search project structure, and run commands) to scan the project context:
 
 - Check git status — detect if git is initialized
 - List planning structure (`.principled/plans/`, `.principled/plans/phases/`)
@@ -327,7 +328,7 @@ When fanning out subagents for exploration, ALL findings MUST be written to a ce
 
 **Subagent tool requirements for exploration (NON-OPTIONAL):**
 - **NEVER** use "native" Explore subagents (Haiku, read-only)
-- **REQUIRED** minimum: `[Read, Write, Grep, Glob, Bash]`
+- **REQUIRED** minimum: read source files, write findings to disk, search project structure, and run shell commands
 - Write access is **NON-OPTIONAL** — findings must be persisted
 
 **After subagents return:**

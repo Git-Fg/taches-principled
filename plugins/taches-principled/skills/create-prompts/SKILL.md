@@ -15,6 +15,7 @@ when_to_use: |
   IMMEDIATELY when the user wants to create a reusable prompt artifact that another Claude Code session can execute.
   Do NOT use for executing prompts directly, reviewing existing prompts, or one-off questions.
   Do NOT use when the goal is to create a reusable Claude Code skill (use create-skills).
+argument-hint: [task description]
 ---
 
 ## Decision Router

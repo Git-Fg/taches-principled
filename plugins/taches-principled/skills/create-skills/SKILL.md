@@ -5,6 +5,7 @@ when_to_use: |
   Use when the user says "create a skill", "build a new skill", "make a skill for X", or "improve my skills".
   Do NOT use for writing general code, creating subagents, or configuring hooks/MCP servers.
   Do NOT use for prompt creation without skill context (use create-prompts), for executing prompts (use execute-prompts), or for general project planning (use create-plans).
+argument-hint: [skill name] [description]
 ---
 
 ## Decision Router
