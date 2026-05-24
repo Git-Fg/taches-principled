@@ -50,6 +50,20 @@ This marketplace is designed for a **costly, highly-capable main agent** orchest
 
 **The rule:** If a task takes more than 5 minutes of inline work or touches more than 2 files, spawn a subagent for it. Never burn expensive main-agent context on work a cheap subagent can do.
 
+### No Inline Tool Lists in Subagent Instructions
+
+When a skill body describes spawning a subagent, never include a specific tool list (`tools: Read, Edit, Bash, WebSearch, Write`). Tool availability varies by environment — WebSearch may be an MCP server, Bash may be restricted, file paths differ per platform.
+
+**Instead:** Describe the role and outcome. Let the agent definition in `agents/` or the default toolset handle tool configuration.
+
+| ❌ Incorrect (inline tool list) | ✅ Correct (role + outcome) |
+|--------------------------------|---------------------------|
+| "Spawn a subagent (Haiku, tools: Read, Write, Grep, Glob, Bash) to scan the project" | "Spawn an explorer subagent to map project structure and report findings" |
+| "Spawn a researcher (Sonnet, WebSearch, Read, Write) to search for patterns" | "Spawn a researcher subagent to investigate patterns and persist findings" |
+| "Spawn a critic (Haiku, Read, Grep, Write) to review completeness" | "Spawn a critic subagent to review the work for gaps and inconsistencies" |
+
+**Why:** Agent definitions in `plugins/taches-principled/agents/` already configure tools per role. Inline lists duplicate this, break when tools change or are unavailable, and force subagent dispatchers to know tool names they shouldn't need to care about.
+
 ---
 
 ## Version Management
@@ -355,6 +369,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] No broken cross-references between skills (never use file paths to other skills' references/agents/workflows — use natural language naming the skill)
 - [ ] No shared references/ folders expecting cross-skill reuse (inline content instead — references/ only loads when explicitly named in parent SKILL.md)
 - [ ] Skill-internal references use `{baseDir}` in Read tool calls (no relative paths)
+- [ ] No inline tool lists in subagent spawn instructions (describe role + outcome, never `tools: Read, Edit, Bash`)
 - [ ] User interaction uses clear, structured options
 - [ ] Command files conform to commands-standard.md (no method prescription, 1-3 sentence outcome instruction, no markdown in body)
   - Current commands: debug.md, simplify.md, whats-next.md, next-tasks-orchestration.md, ideate.md, implement.md
