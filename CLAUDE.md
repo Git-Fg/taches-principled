@@ -48,7 +48,7 @@ This marketplace is designed for a **costly, highly-capable main agent** orchest
 - Making judgment calls between competing subagent recommendations
 - Final aggregation, summary writing, and commit
 
-**The rule:** If a task takes more than 5 minutes of inline work or touches more than 2 files, spawn a subagent for it. Never burn expensive main-agent context on work a cheap subagent can do.
+**The rule:** If a task takes more than 5 minutes of inline work or touches more than 2 files, spawn a subagent for it (empirical heuristic — tuned to the point where coordination overhead costs less than context consumption). Never burn expensive main-agent context on work a cheap subagent can do.
 
 ### No Inline Tool Lists in Subagent Instructions
 
@@ -91,15 +91,16 @@ git push
 
 Skills are auto-invoked by default by Claude Code — a cold-start instance discovers and routes to them based on description matching, not prior conversation. Skill authoring is taught by the `create-skills` skill. See that skill for:
 - **Skill categories**: Constraint/Guardrail, Orchestration, Domain Expertise, Quality Assurance, Creative Direction
-- **Policy vs. Mechanism**: The unifying principle for skill design (official term: progressive disclosure)
+- **Policy vs. Mechanism**: The unifying principle for skill design — declare intent before implementation. Policy is *what* the skill decides (trigger scope, routing, boundaries); mechanism is *how* the skill executes (tools, steps, details)
+- **Progressive disclosure**: The loading pattern that shows policy upfront and mechanism on demand (frontmatter → body → references); the official tactic for staying under the 500-line guideline
 - **Delta principle**: Only document what differs from default behavior
 - **Skill anatomy**: Frontmatter and body structure
 - **Anti-patterns**: What to avoid in skill design
 - **Cross-skill references**: Never cite other skills' files with paths — use natural language: "see the X.md file in the create-plans skill's references"
 - **Shared references anti-pattern**: Don't create `references/` files expecting cross-skill reuse — paths break on plugin install, content must be inlined or documented here
 - **Decision router**: How to structure SKILL.md for strong reference steering
-- **Description length**: Official cap is 1,536 combined description+when_to_use (raised April 2026); routing density ideal is ~200 chars for optimal trigger clarity
-- **Command format**: See `commands-standard.md` for lightweight command standards (no markdown in body, 1-3 sentence outcome instruction, conditional skill hints)
+- **Description length**: Official cap is 1,536 combined description+when_to_use (raised April 2026); routing density ideal is ~200 chars for optimal trigger clarity. `description` names the trigger phrase; `when_to_use` adds scope boundaries and usage context
+- **Command format**: See `commands-standard.md` in `plugins/taches-principled/` for lightweight command standards (no markdown in body, 1-3 sentence outcome instruction, conditional skill hints)
 
 **How to access:** The `create-skills` skill is auto-discovered. Use `/create-skills` or invoke via the Skill tool.
 
@@ -131,9 +132,9 @@ Commands are trigger accelerators, not method carriers. Their value is in the fi
 
 **When a command IS hollow:** It adds nothing to the trigger — not the framing, not the mindset, not the prioritization. If the command body could be replaced with `$ARGUMENTS` and nothing would be lost, it's hollow. But `$ARGUMENTS` alone is a valid command if the description provides the trigger.
 
-**Direct language principle:** Command bodies must name native capabilities explicitly, not describe them euphemistically. Use direct keywords the model routes to immediately — "fan out subagents", "create a task list", "use web search", "spawn a critic subagent", "capture output to a file". Direct language = immediate routing = zero context drift.
+**Direct language principle:** Command bodies must name native capabilities explicitly, not describe them indirectly. Use direct keywords the model routes to immediately — "fan out subagents", "create a task list", "use web search", "spawn a critic subagent", "capture output to a file". Direct language = immediate routing = zero context drift.
 
-**Why:** Every euphemism for a native capability adds interpretation overhead. "Divide into independent streams" requires the model to recognize this means subagent fan-out. "Maintain a visible record of progress" requires inference to reach "create a task list". "Consult external references" requires deduction to land on "use web search". That overhead is context drift — tokens spent on semantic disambiguation that could be spent on execution. One sentence of direct language routes to the right behavior in a single pass. One sentence of vague semantics fragments across 3-5 possible interpretations, each consuming model capacity without advancing the goal.
+**Why:** Every instance of indirect language for a native capability adds interpretation overhead. "Divide into independent streams" requires the model to recognize this means subagent fan-out. "Maintain a visible record of progress" requires inference to reach "create a task list". "Consult external references" requires deduction to land on "use web search". That overhead is context drift — tokens spent on semantic disambiguation that could be spent on execution. One sentence of direct language routes to the right behavior in a single pass. One sentence of vague semantics fragments across 3-5 possible interpretations, each consuming model capacity without advancing the goal.
 
 **The balance with skills:**
 - **Commands** name native capabilities directly — WHAT to do
@@ -146,13 +147,13 @@ Commands are trigger accelerators, not method carriers. Their value is in the fi
 | Instead of this (vague) | Use this (direct) | Why |
 |--------------------------|--------------------|-----|
 | "Divide into independent streams of work" | "Fan out subagents to explore in parallel" | "Fan out subagents" maps immediately to subagent spawn. The vague version drifts through 5 syntactic parses. |
-| "Maintain a visible record of progress" | "Create a task list tracking all items" | "Create a task list" hits TaskCreate directly. The euphemism requires inference. |
+| "Maintain a visible record of progress" | "Create a task list tracking all items" | Indirect language requires inference. |
 | "Consult external references for up-to-date information" | "Use web search to verify current state" | "Use web search" routes to the search tool. The vague version sounds like reading local docs. |
 | "Organize your approach and track what needs doing" | "Create a task list for each step, then fan out subagents" | Both native capacities named explicitly. No inference needed. |
 
 **What direct language prevents:**
 - **Ambiguous tool routing:** "Consult external references" could mean web search, local docs, MCP resources, or skill references. "Use web search" is unambiguous.
-- **Paraphrase decay:** A euphemism gets re-paraphrased at every turn, drifting further from the intended action. Direct keywords can't decay — they route identically every time.
+- **Paraphrase decay:** Vague phrasing gets re-paraphrased at every turn, drifting further from the intended action. Direct keywords can't decay — they route identically every time.
 - **Skill bleed:** When a command body sounds like a skill, the model loads both skill and command context for the same trigger. Direct language keeps the command lightweight and the skill focused.
 
 **The test:** Read the command body. Can the model act on it without interpreting any phrase? If a phrase could mean two different actions, replace it with the specific native capability name.
@@ -247,9 +248,9 @@ A hub skill uses decision routing to dispatch to spoke modes internally, rather 
 | Pattern | When to Use | Example |
 |---------|-------------|---------|
 | **Compositional pair** | Create/execute lifecycle — separation is load-bearing | `create-plans` / `execute-plans` |
-| **Hub-and-spoke** | One capability with distinct modes — merge for routing coherence | `reflexion` (reflect/critique/memorize) |
+| **Hub-and-spoke** | One capability with distinct modes — merge for routing coherence | `refine` (simplify/review/critique/memorize/polish) |
 
-**The test for hub-vs-compositional:** If two skills always invoke each other in sequence, they're compositional. If one skill has independent modes that each cover different situations, it's a hub.
+**The test for hub-vs-compositional:** If one skill explicitly invokes another as its execution partner (one direction, not mutual), they're a compositional pair. If one skill has independent modes that each cover different situations, it's a hub.
 
 ### Exempt Skills (Do Not Merge)
 
@@ -257,9 +258,13 @@ These are foundational compositional pairs or serve distinct workflow stages:
 
 - `create-plans` + `execute-plans` — project planning lifecycle, separation is intentional
 - `create-prompts` + `execute-prompts` — prompt creation lifecycle, separation is intentional
-- `refine-task` + `implement-task` — different scope (task refinement vs task execution)
-- `ideation` + `add-task` — different workflow stages (exploration vs capture)
-- Plugin-specific skills (`git-ship`, `fpf-propose`, `tdd`) — no meaningful overlap with other plugins
+- `refine-task` + `implement-task` — task lifecycle (refine produces implementation-ready specs, implement executes with verification gates)
+- `ideation` + `add-task` — capture lifecycle (ideation explores options, add-task persists formal backlog items)
+- `sadd` (tp-sadd hub) — structured agent-driven development; no overlap with core skills
+- `git` (tp-git hub) — git workflow automation; no overlap with core skills
+- `fpf` (tp-fpf hub) — first-principles framework; no overlap with core skills
+- `ddd` (tp-ddd hub) — domain-driven design; no overlap with core skills
+- `tdd` (tp-tdd, single skill) — red/green/refactor loop; no overlap with core skills
 
 ### Completed Consolidations
 
@@ -268,7 +273,25 @@ These skills were merged into hub skills using the hub-and-spoke pattern:
 | Hub Skill | Skills Merged | Rationale |
 |----------|---------------|-----------|
 | `diagnose` | `analyse` + `analyse-problem` + `root-cause-tracing` | All do problem investigation; different methods (Five Whys, A3, call-stack) rather than different purposes |
-| `refine` | `code-review` + `code-simplify` + `reflexion` (Reflect mode) | All do quality improvement; review vs transform vs self-critique are modes of "make better" |
+| `refine` (hub) | `reflexion` (all modes) + `write-concisely` | All improve artifact quality; critique/memorize/polish are modes of "make better" |
+| `subagents` (hub) | `subagent-orchestration` + `create-subagents` | Both teach multi-agent patterns; design vs orchestration are modes of the same capability |
+| `sadd` (tp-sadd) | `do-competitively` + `execute` + `sadd-judge` + `sadd-patterns` + `sadd-tot` | All structured agent-driven development; compete/execute/judge/design/explore are execution modes |
+| `git` (tp-git) | `git-ship` + `git-review` + `git-issues` + `git-advanced` | All git workflow automation; ship/review/issues/advanced are git operation modes |
+| `fpf` (tp-fpf) | `fpf-propose` + `fpf-maintenance` + `fpf-read` | All first-principles reasoning; propose/maintain/query are FPF lifecycle modes |
+| `ddd` (tp-ddd) | `code-architecture` + `code-quality` + `code-transparency` | All domain-driven design; architecture/quality/transparency are code design dimensions |
+
+### Consolidation Summary
+
+The marketplace was consolidated from 34 skills to 20 through hub-and-spoke merging (May 2026). See `.principled/plans/phases/03-hub-consolidation/` for the execution plans.
+
+| Phase | Hub | Skills Merged |
+|-------|-----|---------------|
+| Root | `refine` | reflexion + write-concisely |
+| Root | `subagents` | subagent-orchestration + create-subagents |
+| tp-sadd | `sadd` | do-competitively + execute + sadd-judge + sadd-patterns + sadd-tot |
+| tp-git | `git` | git-ship + git-review + git-issues + git-advanced |
+| tp-fpf | `fpf` | fpf-propose + fpf-maintenance + fpf-read |
+| tp-ddd | `ddd` | code-architecture + code-quality + code-transparency |
 
 ### Decision Criteria: Merge or Keep Separate?
 
@@ -286,21 +309,24 @@ These skills were merged into hub skills using the hub-and-spoke pattern:
 
 ### Target Skill Count
 
-The routing quality breaking point is **22-28 skills**. Below 22, fat skill complexity dominates. Above 28, routing confusion accumulates.
+The routing quality breaking point is **22-28 skills** (empirical range; below 22 fat skill complexity dominates, above 28 routing conflation accumulates). The consolidation brought us from 34 down to 20, falling within this optimal range.
 
-**Current: 34 skills across all plugins → Target: 22-28 skills for the root plugin**
+**Current: 20 skills across all plugins (15 root + 5 marketplace). Down from 34 — a 41% reduction.**
 
 ### Hub-Spoke Pattern in Existing Skills
 
-The `reflexion` skill is the canonical hub-and-spoke template:
+The `refine` skill is the canonical hub-and-spoke template with 5 modes:
+
 ```
-Three modes in one skill:
-- REFLECT: Self-critique with severity scoring
-- CRITIQUE: Multi-judge consensus review
+Five modes in one skill:
+- SIMPLIFY: Code review and cognitive load reduction
+- REVIEW: Multi-agent PR and local changes scanning
+- CRITIQUE: Self-critique with severity scoring
 - MEMORIZE: Learning capture into project memory
+- POLISH: Prose improvement using Strunk & White principles
 ```
 
-Use this pattern for other multi-mode skills. The mode router lives in the skill's Decision Router section.
+`subagents` is the second hub example with 2 modes (DESIGN/ORCHESTRATE). Use these patterns for other multi-mode skills. The mode router lives in each hub skill's Decision Router section.
 
 ---
 
@@ -356,9 +382,8 @@ References/ folders are **lazy-loaded only when explicitly named in skill body**
 
 - **Commands over skills for on-demand loading** — skills consume context always; commands load when invoked
 - **Specialized agents with narrow context** — broad-context agents hallucinate more
-- **Setup-commands for persistent context** — write to CLAUDE.md rather than relying on skill loading
 - **Token estimation** — every skill should know its approximate cost
-- **500-line guideline** — official stance is under 500 lines for optimal performance; split into separate reference files via progressive disclosure if content exceeds this
+- **500-line guideline** — official stance is under 500 lines for optimal performance; split into separate reference files via progressive disclosure if content exceeds this. Hub skills (e.g., `refine`, `diagnose`) aggregate multiple formerly separate skills and may legitimately exceed this limit — the guideline applies to individual modes within a hub, not the total hub file
 
 ---
 
@@ -369,6 +394,8 @@ README.md lives in two places:
 2. Any docs/ directory (for GitHub Pages or marketplace docs)
 
 **When you update README:** Copy to all locations manually.
+
+CLAUDE.md targets human maintainers (development conventions, governance, architecture). README.md targets plugin consumers (capabilities, installation, getting started). Their audiences and depth expectations differ.
 
 ---
 
@@ -422,14 +449,17 @@ Create feature branches, commit with conventional messages, push, and create PRs
 
 - [ ] README updated if structure changed
 - [ ] CHANGELOG entry added
-- [ ] No MCP references (plugin is MCP-free)
+- [ ] No MCP runtime dependencies (documentation references to MCP concepts are acceptable; plugin must not require MCP servers at runtime)
 - [ ] No broken cross-references between skills (never use file paths to other skills' references/agents/workflows — use natural language naming the skill)
 - [ ] No shared references/ folders expecting cross-skill reuse (inline content instead — references/ only loads when explicitly named in parent SKILL.md)
-- [ ] Skill-internal references use `{baseDir}` in Read tool calls (no relative paths)
+- [ ] Skill-internal references use `{baseDir}` in Read tool calls and `${CLAUDE_SKILL_DIR}` for Bash scripts (no relative paths, no hardcoded paths like `skills/create-plans/...`)
 - [ ] No inline tool lists in subagent spawn instructions (describe role + outcome, never `tools: Read, Edit, Bash`)
 - [ ] User interaction uses clear, structured options
-- [ ] Command files conform to commands-standard.md (no method prescription, 1-3 sentence outcome instruction, no markdown in body)
+- [ ] Command files conform to commands-standard.md in `plugins/taches-principled/` (no method prescription, 1-3 sentence outcome instruction, no markdown in body)
   - Current commands: debug.md, simplify.md, whats-next.md, next-tasks-orchestration.md, ideate.md, implement.md
+- [ ] README synced to all docs/ locations if marketplace docs are present
+- [ ] Skill changes backed by eval evidence (tested against real routing scenarios, not hypothetical)
+- [ ] Skill changes describe actual problems encountered (not theoretical improvements)
 
 For skill-authoring self-check, see `create-skills` skill.
 
@@ -470,7 +500,7 @@ When referencing subagent spawning in skills, use the canonical form: **"spawn a
 
 **Why "spawn" over "dispatch/launch":**
 - "Spawn" is the canonical verb for subagent creation in Claude Code
-- "dispatch" and "launch" are acceptable but inconsistent across the ecosystem
+- "dispatch" and "launch" are non-canonical — avoid them in new skill documentation; existing uses are tolerable but should be migrated over time
 - Always pair with role name: "spawn a researcher subagent", "spawn a critic subagent"
 
 **When citing subagents in natural language:**
@@ -503,7 +533,7 @@ When spawning subagents for exploration/investigation, the orchestrator should:
 
 1. **Read** any existing scratch notes BEFORE spawning — avoid redundant work
 2. **Write** current context and questions to the scratch area — preserve institutional memory
-3. **Use a general-purpose subagent with Write tool** — Haiku Explore subagents are read-only and cannot write findings; an agent that can read files, write findings, search content, and run shell commands is needed for investigation work
+3. **Use a general-purpose subagent with Write tool** — the built-in Explore subagent type is read-only and cannot write findings; an agent that can read files, write findings, search content, and run shell commands is needed for investigation work
 4. **Read** scratch notes AFTER subagents return, BEFORE synthesizing
 
 **Guidance, not rigidity:** The goal is preventing the telephone game — information degrading as it passes through multiple agents. Writing findings to a shared artifact (rather than relying on subagent output alone) keeps the chain intact. The scratch area location is `.principled/scratch/` — use descriptive topic filenames.
@@ -512,7 +542,7 @@ When spawning subagents for exploration/investigation, the orchestrator should:
 
 ## Evaluation Pipeline
 
-taches-principled has a multi-agent evaluation system for skill quality assurance. Four specialized agents handle the pipeline: **Grader** scores teaching effectiveness, **Comparator** analyzes version deltas, **Skill Auditor** reviews format and frontmatter, and **Analyzer** synthesizes into 3 prioritized changes. All four are available as auto-discovered plugin-level agents.
+taches-principled has a multi-agent evaluation system for skill quality assurance. Four specialized agents handle the pipeline: **grader** scores teaching effectiveness, **comparator** analyzes version deltas, **skill-auditor** reviews format and frontmatter, and **analyzer** synthesizes into 3 prioritized changes. All four are available as auto-discovered plugin-level agents.
 
 ### Quick Audit
 
@@ -555,6 +585,8 @@ plugins/
 │   ├── agents/                    # Bundled subagent definitions
 │   ├── commands/                  # Slash commands
 │   └── rules/                    # Always-active guardrails
+├── references/
+│   └── official/                  # Cached Claude Code docs for offline access
 └── {tp-sadd,tp-fpf,tp-git,tp-tdd,tp-ddd}/  # Marketplace plugins
     ├── .claude-plugin/plugin.json
     ├── skills/{name}/SKILL.md
@@ -564,7 +596,13 @@ plugins/
 
 ### Naming Convention
 
-All imported/ported plugins use the `tp-` prefix: `tp-sadd`, `tp-fpf`, `tp-git`, `tp-tdd`, `tp-ddd`.
+All imported/ported plugins use the `tp-` prefix:
+
+- `tp-sadd` — Structured Agent-Driven Development (sadd-execute, sadd-judge, subagent-driven-development)
+- `tp-fpf` — First Principles Framework (fpf-propose, fpf-read, fpf-maintenance)
+- `tp-git` — Git workflow automation (git-advanced, git-review, git-ship, git-issues)
+- `tp-tdd` — Test-Driven Development (tdd, verify)
+- `tp-ddd` — Domain-Driven Design principles (code-quality, code-transparency, code-architecture)
 
 ### Adding a New Plugin
 
@@ -614,9 +652,9 @@ This applies to all external plugins and marketplaces, not just within this proj
 ## Meta-Rule (applies to this file only)
 
 **Governs itself — all revisions must remain:**
-- **Concise** — Minimum text for correct autonomous dispatch; no explanation, no prose ornamentation.
-- **Non-interactive** — No user-input dependency; describes only what Claude Code executes without prompting.
-- **Self-contained** — A cold-start instance must dispatch correctly from this file alone (skill priority, hook timing, rule merge order, subagent spawn mode).
+- **Accurate** — Reflects current project state; outdated sections removed, not annotated.
+- **Actionable** — Every section answers "what do I do?" not just "what exists?"
+- **Self-contained** — A new maintainer can understand the project from this file alone.
 
 ---
 
@@ -629,6 +667,6 @@ This applies to all external plugins and marketplaces, not just within this proj
 - [Claude Code Hooks Reference](https://code.claude.com/docs/en/hooks)
 - [Claude Code Commands Reference](https://code.claude.com/docs/en/commands)
 - [Plugin Submission Guide](https://claude.com/docs/plugins/submit)
-- [context-engineering-kit](https://github.com/NeoLabHQ/context-engineering-kit) — inspiration source
+- [context-engineering-kit](https://github.com/NeoLabHQ/context-engineering-kit) — foundational influence on the token economy model and subagent orchestration patterns
 
 **Official documentation** is cached locally in `references/official/` for offline access and consistency across team members.

@@ -78,9 +78,9 @@ Only skills ending in `-orchestrator` should reference other skills.
 
 **Why:** Orchestrators compose. Other skills should be self-contained.
 
-**Example:** A `planning-orchestrator` skill can reference `create-plans`, `create-subagents`, and `create-hooks` because its job IS composition.
+**Example:** An orchestrator skill can reference multiple design/orchestration skills because its job IS composition.
 
-**Non-orchestrator rule:** A skill like `create-subagents` should NOT mention `create-plans` or other skill names in its body text or references — that creates a dependency that breaks when skills are renamed.
+**Non-orchestrator rule:** A skill should NOT mention other skill names in its body text or references — that creates a dependency that breaks when skills are renamed.
 
 ---
 

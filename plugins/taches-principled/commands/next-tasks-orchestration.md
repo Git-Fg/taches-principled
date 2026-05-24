@@ -1,6 +1,6 @@
 ---
 name: next-tasks-orchestration
-skill: subagent-orchestration
+skill: subagents
 description: Orchestrate subagents to implement changes with quality gates at each milestone
 argument-hint: [task description]
 ---

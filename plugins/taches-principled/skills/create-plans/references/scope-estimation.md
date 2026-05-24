@@ -263,5 +263,3 @@ Context Usage  │  Quality Level   │  Mental State
 **The 40-50% inflection point:** This is where quality breaks. Claude perceives context mounting and enters "completion mode" — "I'll complete the remaining tasks more concisely."
 
 **The rule:** Stop BEFORE quality degrades, not at context limit. If in doubt, split.
-
-**See also:** The `token-economics.md` reference in create-subagents for the real cost of multi-agent systems.

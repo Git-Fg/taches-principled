@@ -63,15 +63,20 @@ Port ddd rules and tech-stack rules as `.claude/rules/` files, not skills. These
 Phase 0 (Foundation) — COMPLETED
   ├── Phase 1 (Reflexion) — COMPLETED
   │     └── Phase 2 (Kaizen) — COMPLETED
-  ├── Phase 3 (FPF) — NOT EXECUTED
-  ├── Phase 4 (Review & Docs) — NOT EXECUTED (merged to root)
-  ├── Phase 5 (Git & TDD) — NOT EXECUTED (tp-git, tp-tdd separate)
-  ├── Phase 6 (SADD) — NOT EXECUTED (tp-sadd has 5 skills)
-  └── Phase 7 (SDD) — NOT EXECUTED (tp-sdd has 5 skills, re-created)
-  └── Phase 8 (DDD/Tech-Stack) — NOT EXECUTED (tp-ddd separate)
+  │           └── Phase 3 (Hub Consolidation) — COMPLETED (2026-05-24)
+  │                 ├── refine hub (5 modes) — absorbed reflexion + write-concisely
+  │                 ├── subagents hub (2 modes) — absorbed create-subagents
+  │                 ├── tp-sadd consolidated (5→1), tp-git (4→1)
+  │                 ├── tp-fpf consolidated (3→1), tp-ddd (3→1)
+  │                 └── 34 skills → 20 skills (41% reduction)
+  ├── Phase 4 (FPF) — FOLDED into Phase 3 consolidation
+  ├── Phase 5 (Review & Docs) — FOLDED into Phase 3 consolidation
+  ├── Phase 6 (Git & TDD) — FOLDED into Phase 3 consolidation
+  ├── Phase 7 (SADD) — FOLDED into Phase 3 consolidation
+  └── Phase 8 (SDD/DDD) — FOLDED into Phase 3 consolidation
 ```
 
-Phases 0, 1, 2 completed. Phases 3-8 were planned but not executed as described. Current state: 6 separate plugins (tp-ddd, tp-fpf, tp-git, tp-sadd, tp-sdd, tp-tdd) plus root-level skills from reflexion, kaizen, review, docs.
+Phases 0, 1, 2, 3 completed. Phases 4-8 were planned but not executed as separate phases — their content was consolidated into hubs during Phase 3. Current state: 5 marketplace plugins (tp-ddd, tp-fpf, tp-git, tp-sadd, tp-tdd) each with 1 hub skill, plus 15 root-level skills. Total: 20 skills.
 
 ## Quality Gates (Every Phase)
 
