@@ -2,6 +2,7 @@
 name: whats-next
 skill: refine-task
 description: Create a handoff document for continuing work in a fresh session
+argument-hint: [topic or area]
 ---
 
 $ARGUMENTS

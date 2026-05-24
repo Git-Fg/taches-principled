@@ -32,7 +32,7 @@ Subagents enable delegation of complex tasks to specialized agents that operate 
 **Key constraint:** Subagents are black boxes that cannot interact with users.
 
 Subagents:
-- ✅ Can use tools like Read, Write, Edit, Bash, Grep, Glob
+- ✅ Can use tools matching the role's needs — describe by capability, not name.
 - ✅ Can access MCP servers and other non-interactive tools
 - ❌ **Cannot use AskUserQuestion** or any tool requiring user interaction
 - ❌ **Cannot present options or wait for user input**
@@ -107,7 +107,7 @@ model: sonnet                # sonnet, opus, haiku, or inherit
 - Include trigger keywords that match common user requests
 
 **tools field:**
-- Comma-separated list: `Read, Write, Edit, Bash, Grep`
+- Describe by role — what the subagent must accomplish. If omitted, inherits from main thread.
 - If omitted: inherits all tools from main thread
 
 **model field:**

@@ -1,6 +1,7 @@
 ---
 name: subagent-orchestration
 description: "Spawn parallel subagents for multi-perspective research, review, and delegated exploration. Orchestrator owns all cognition; subagents own only execution. Not for single-step inline tasks."
+argument-hint: [task description]
 when_to_use: |
   Use when the user says:
   - "delegate this"

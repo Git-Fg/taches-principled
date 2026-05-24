@@ -163,9 +163,9 @@ This plugin practices what it preaches: skills focus on principles and anti-patt
 ### Manual
 
 ```bash
-cp -r skills/* ~/.claude/skills/
-cp -r commands/* ~/.claude/commands/
-cp -r agents/* ~/.claude/agents/
+cp -r plugins/taches-principled/skills/* ~/.claude/skills/
+cp -r plugins/taches-principled/commands/* ~/.claude/commands/
+cp -r plugins/taches-principled/agents/* ~/.claude/agents/
 
 # Verify
 ls ~/.claude/skills/

@@ -96,7 +96,7 @@ The intake gate determines whether you need more information before generating. 
 **Before analyzing anything**, check if the input contains a task description.
 
 **If input is empty or vague** (user ran `/create-prompt` without details):
-- Use AskUserQuestion immediately with task type selection
+- Gather the task type from the user's input immediately.
 - Ask user to describe what they want to accomplish
 
 **If input contains a task description**:

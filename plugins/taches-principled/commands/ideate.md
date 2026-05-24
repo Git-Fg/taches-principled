@@ -7,4 +7,4 @@ argument-hint: [topic or problem]
 
 $ARGUMENTS
 
-Generate 4-6 distinct creative directions for the topic before evaluating any single one. Use web search for reference patterns and inspiration. Record each option with enough detail that any direction can be pursued in a fresh session. Only converge after breadth is established.
+Generate 4-6 distinct creative directions for the topic before evaluating any single one. Use web search for reference patterns and inspiration. Record each option in enough detail that any direction can be pursued in a fresh session, then converge after breadth is established.
