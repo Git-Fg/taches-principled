@@ -7,4 +7,4 @@ argument-hint: [task description]
 
 $ARGUMENTS
 
-Orchestrate remaining work to completion with quality checks at each milestone. Nothing is done until it passes its own scrutiny.
+Fan out subagents onto independent work streams with non-overlapping files. Create a task list tracking completion and run quality gate checks after each milestone — do not advance past a failing gate. When all streams finish, self-review the full scope for gaps. Use web search to fill knowledge gaps as they arise.

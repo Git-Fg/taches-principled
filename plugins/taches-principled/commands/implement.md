@@ -7,4 +7,4 @@ argument-hint: [task description or path]
 
 $ARGUMENTS
 
-Implement the task with quality at every step. Each change must be correct before advancing to the next.
+Create a task list tracking each change needed. Run tests and lint after every step and do not advance past a failing check. Self-review each change critically as if another developer produced it. Delegate stuck items to a subagent so investigation runs in parallel, not blocking the main flow.
