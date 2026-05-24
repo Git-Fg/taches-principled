@@ -245,21 +245,24 @@ Read the scratchpad before proceeding to intake.
 
 ## Intake
 
-Based on scan results, auto-detect and route silently:
+Start by using your tool to ask users your questions and prefill answers. The interview has two phases:
 
-- **If handoff found** → Auto-resume from `.principled/plans/phases/XX/.continue-here.md`
-- **If planning structure exists with incomplete phases** → Auto-plan next phase
-- **If planning structure exists and all phases complete** → Present final execution gate
-- **If no planning structure** → Auto-create brief (ask one question: "What are we building?")
-- **If NO_GIT_REPO detected** → Auto-initialize git repo silently
+**Phase 1 — Clarifying questions:**
+1. "What are we building?" — capture the core goal
+2. Ask 2-3 follow-up questions about scope, priorities, and approach based on what you need to know. Use clickable options prefilled with likely answers. Questions might cover: technical stack, team size, constraints (deadline, budget, compliance), or success criteria.
 
-**One question only:** For new projects, ask "What are we building?" — capture the response using your tool to ask users your questions and prefill answers, then proceed autonomously through exploration, decomposition, and plan creation. Do NOT ask follow-up questions about scope, priorities, or approach. Defer all such discovery to the explore phase.
+**Phase 2 — Execution preference:**
+3. "Do you want fully autonomous execution or human-in-the-loop at milestones?" — prefilled options:
+   - **Fully autonomous**: I execute the plan end-to-end, only report at the end
+   - **Human in the loop**: I pause at each milestone for your review before proceeding
 
-The model has sufficient judgment to choose the right path. Trust it. If the handoff path is wrong, the execution gate catches it. If the planning structure is wrong, exploration reveals it. The user's time is better spent on outcomes than menu navigation.
+**After the interview:** Proceed autonomously through exploration, decomposition, and plan creation. The user's answers form the brief — trust the model to plan well from there.
+
+**Auto-resume rule:** If a handoff file exists at `.principled/plans/phases/XX/.continue-here.md`, skip the interview and auto-resume. The handoff already captured the context.
 
 **Gotcha — always check existing artifacts first:** Before running any discovery, always check `.principled/plans/` for any existing BRIEF.md, ROADMAP.md, or phase plans. If brief exists, skip intake and go straight to roadmap/phase planning. Never make the user re-answer questions already answered.
 
----
+**Git init rule:** If NO_GIT_REPO detected, auto-initialize silently — `git init && git add -A && git commit -m "chore: initial commit"`. No question needed — every project needs version control.
 
 ## Explore with Subagent Fan-Out
 
