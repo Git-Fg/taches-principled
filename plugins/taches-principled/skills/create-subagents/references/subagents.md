@@ -139,7 +139,7 @@ Specify tools as comma-separated list for granular control:
 ---
 name: read-only-analyzer
 description: Analyzes code without making changes
-tools: Read, Grep, Glob
+tools: Read and search capabilities — role is analysis without modification; define by what the subagent must accomplish
 ---
 ```
 

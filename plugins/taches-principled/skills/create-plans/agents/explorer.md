@@ -22,7 +22,7 @@ Map the project landscape rapidly. Identify key files, directories, dependencies
 
 ## Approach
 
-1. **Structural scan** — Use Glob and Read to understand file layout
+1. **Structural scan** — Understand file layout through project structure discovery
 2. **Dependency mapping** — Find package.json, imports, and module relationships
 3. **Pattern identification** — Detect framework conventions, naming patterns, coding styles
 4. **Key file discovery** — Find entry points, config files, and critical modules
@@ -60,7 +60,7 @@ Return structured findings:
 
 ## Constraints
 
-- Use Read on representative files, not every file
+- Review representative files, not every file
 - Prioritize depth on key files over breadth
 - Report only what's discovered, not assumed
 

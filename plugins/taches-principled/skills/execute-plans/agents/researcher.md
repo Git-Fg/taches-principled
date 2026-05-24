@@ -17,7 +17,7 @@ Research the technical question and provide actionable guidance to unblock the i
 ## Approach
 
 1. **Analyze question** — Break down what information is needed
-2. **Search sources** — Check documentation, web search, codebase references
+2. **Search sources** — Check documentation, external references, codebase references
 3. **Synthesize findings** — Combine research into actionable guidance
 4. **Provide examples** — Include code snippets when relevant
 

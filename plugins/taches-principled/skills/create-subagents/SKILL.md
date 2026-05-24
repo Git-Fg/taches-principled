@@ -90,7 +90,7 @@ Project-level subagents override user-level when names conflict.
 ---
 name: subagent-name          # Lowercase/hyphens only, must be unique
 description: What it does and when to use it. Include trigger keywords.
-tools: Tool1, Tool2, Tool3    # Comma-separated; omit for all tools
+tools: Tool1, Tool2, Tool3    # Describe by role, not by tool name — what must the subagent accomplish? omit for full access
 model: sonnet                # sonnet, opus, haiku, or inherit
 ---
 ```
@@ -211,7 +211,7 @@ Expected output structure
 ---
 name: security-reviewer
 description: Reviews code for security vulnerabilities. Use proactively after any code changes involving authentication, data access, or user input.
-tools: Read, Grep, Glob, Bash
+tools: Describe by role — this subagent reads source, searches patterns, and runs security analysis tools
 model: sonnet
 ---
 
@@ -503,7 +503,7 @@ When spawning subagents for investigation/research/exploration:
 
 ### Tool Requirements (NON-OPTIONAL)
 - **NEVER** use "native" Explore subagents (Haiku, read-only) for investigation
-- **REQUIRED** minimum tools: `[Read, Write, Grep, Glob, Bash]`
+- **REQUIRED** role: subagent must read source, write findings, search patterns, list directories, and run commands
 - Write access is **NON-OPTIONAL** — findings must be persisted to scratchpad
 
 ### After Subagents Return

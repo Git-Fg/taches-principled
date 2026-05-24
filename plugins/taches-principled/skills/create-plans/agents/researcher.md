@@ -22,7 +22,7 @@ Answer specific technical questions by searching docs, finding examples, and syn
 
 ## Approach
 
-1. **Web search first** — Search for official docs, tutorials, and established patterns
+1. **External sources first** — Search for official docs, tutorials, and established patterns
 2. **Source verification** — Fetch and read official documentation
 3. **Example collection** — Find real-world implementations
 4. **Synthesis** — Distill into actionable recommendations

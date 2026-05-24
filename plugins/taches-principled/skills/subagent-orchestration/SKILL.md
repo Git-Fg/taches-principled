@@ -53,7 +53,7 @@ When spawning subagents for investigation/research/exploration:
 
 ### Tool Requirements (NON-OPTIONAL)
 - **NEVER** use "native" Explore subagents (Haiku, read-only) for investigation
-- **REQUIRED** minimum tools: `[Read, Write, Grep, Glob, Bash]`
+- **REQUIRED** role: subagent must read source, write findings, search patterns, list directories, and run commands
 - Write access is **NON-OPTIONAL** — findings must be persisted to scratchpad
 
 ### After Subagents Return
