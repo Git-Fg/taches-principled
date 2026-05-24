@@ -2,8 +2,8 @@
 name: critic
 description: Reviews intermediate output at milestones for correctness, edge cases, and regressions. Use when a phase or every 2-3 tasks completes and quality validation is needed before proceeding.
 context: fork
-tools: Read, Grep
-model: sonnet
+tools: Read, Grep, Write
+model: haiku
 ---
 
 # Critic Subagent

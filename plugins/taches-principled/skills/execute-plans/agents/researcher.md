@@ -2,7 +2,7 @@
 name: execute-researcher
 description: "Researches technical questions during plan execution. Use when implementer encounters unfamiliar APIs, libraries, or patterns."
 context: fork
-tools: Read, Grep, Glob
+tools: Read, Grep, Glob, WebSearch, Write
 model: sonnet
 ---
 

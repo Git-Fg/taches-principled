@@ -228,23 +228,15 @@ Each level gives context to the level below.
 
 ## Context Scan
 
-Run on every invocation:
+On every invocation, spawn an explorer subagent (Haiku, with Read/Write/Grep/Glob/Bash) to scan the project context:
 
-```bash
-# Check git status
-git rev-parse --git-dir 2>/dev/null || echo "NO_GIT_REPO"
+- Check git status — detect if git is initialized
+- List planning structure (`.principled/plans/`, `.principled/plans/phases/`)
+- Find any `.continue-here.md` files
+- Check for existing artifacts (BRIEF.md, ROADMAP.md)
+- Write all findings to `.principled/scratch/context-scan.md`
 
-# Check for planning structure
-ls -la .principled/plans/ 2>/dev/null
-ls -la .principled/plans/phases/ 2>/dev/null
-
-# Find any continue-here files
-find . -name ".continue-here.md" -type f 2>/dev/null
-
-# Check for existing artifacts
-[ -f .principled/plans/BRIEF.md ] && echo "BRIEF: exists"
-[ -f .principled/plans/ROADMAP.md ] && echo "ROADMAP: exists"
-```
+Read the scratchpad before proceeding to intake.
 
 **If NO_GIT_REPO detected:** Auto-initialize: `git init && git add -A && git commit -m "chore: initial commit"`. No question needed — every project needs version control.
 
@@ -362,11 +354,23 @@ If critic finds critical issues: reconsider the approach before committing to pl
 
 **Why:** Catching a flawed approach during planning is cheaper than reworking during execution. The explore phase gathers information; the critic phase tests whether that information supports the chosen direction.
 
+### Model Routing for Fan-Out
+
+Each subagent role uses a model matched to its cognitive load:
+
+| Role | Model | Rationale |
+|------|-------|----------|
+| Explorer subagent | Haiku | Structural I/O — file discovery, pattern detection |
+| Researcher subagent | Haiku | Documentation reading — lightweight comprehension |
+| Architect subagent | Sonnet | Trade-off evaluation — requires deeper reasoning |
+| Pre-plan critic subagent | Haiku | Assumption challenge — lightweight pattern recognition |
+| Post-plan critic subagent | Sonnet | Dependency verification — requires full plan comprehension |
+
 ---
 
 ## Plan Creation Loop
 
-After exploration, create plans in a structured loop: one phase at a time, with self-review and critic review between phases.
+After exploration, create plans in a structured loop: one phase at a time, with critic review between phases.
 
 ### Loop Structure
 
@@ -374,16 +378,15 @@ For each phase plan:
 
 ```
 1. Synthesize exploration findings into phase scope
-2. Self-review: check completeness, dependencies, verification plan
-3. Write phase PLAN.md (2-3 tasks, verification per task)
-4. Spawn critic subagent to review the plan
+2. Write phase PLAN.md (2-3 tasks, verification per task)
+3. Spawn critic subagent to review the plan
    - Focus: task granularity, missing edge cases, dependency ordering
    - Critic writes findings to scratchpad
-5. Read scratchpad, revise plan based on critic feedback
-6. Check: is planner context approaching 50%?
+4. Read scratchpad, revise plan based on critic feedback
+5. Check: is planner context approaching 50%?
    - If yes: create handoff document, route to execution gate
    - If no: proceed to next phase
-7. Repeat for next phase
+6. Repeat for next phase
 ```
 
 ### Context Management Across Phases
@@ -410,7 +413,7 @@ The critic reads the new PLAN.md from the scratchpad path, writes findings back.
 
 **Why per-phase:** Phase plans are independent — critic feedback on phase 2 does not invalidate phase 1. A single end-to-end critic review creates a bottleneck and encourages the critic to comment on irrelevant phases.
 
-**Exception — one end-to-end review:** After ALL phases are created, run one final self-review pass on the full roadmap for cross-phase consistency: do the phases fit together? Are there missing dependencies between phases? Is the completion order correct?
+**Exception — one end-to-end review:** After ALL phases are created, spawn a Sonnet critic subagent for a cross-phase consistency audit of the full roadmap: do the phases fit together? Are there missing dependencies between phases? Is the completion order correct?
 
 ---
 

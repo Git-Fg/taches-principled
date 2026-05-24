@@ -2,7 +2,7 @@
 name: execute-implementer
 description: "Executes plan tasks by implementing code changes. Use when a plan task requires building or modifying files according to a specification."
 context: fork
-tools: Read, Edit, Bash
+tools: Read, Edit, Bash, Write, Grep, Glob
 model: sonnet
 ---
 

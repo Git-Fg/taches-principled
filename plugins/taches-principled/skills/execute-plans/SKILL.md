@@ -108,7 +108,7 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 **Milestone self-review:**
 - Trigger: every 2-3 tasks completed, or at phase boundary
-- Spawn a CRITIC subagent (sonnet, with Write) to review what was done
+- Spawn a CRITIC subagent (haiku, with Write) to review what was done
 - Critic checks: correctness, edge cases, regressions, deviation handling
 - If critic finds issues: executor fixes before continuing to next milestone
 - This is internal review, not user interaction

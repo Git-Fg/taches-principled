@@ -2,7 +2,7 @@
 name: researcher
 description: Researches technologies, libraries, APIs, and best practices for unfamiliar components. Use when implementation requires unfamiliar technology or when best practices need verification.
 context: fork
-tools: Read, Grep, Glob
+tools: Read, Grep, Glob, WebSearch, Write
 model: sonnet
 ---
 
