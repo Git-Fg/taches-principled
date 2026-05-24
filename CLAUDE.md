@@ -513,6 +513,10 @@ When referencing subagent spawning in skills, use the canonical form: **"spawn a
 
 **Plugin-level agents** are stored in `plugins/taches-principled/agents/` and are auto-discovered system-wide. They appear in the `/agents` interface and Claude can invoke them automatically based on task context. When spawning these, describe the role: "spawn a reviewer subagent for code", "spawn a critic subagent for plans", "spawn a grader subagent for skills". The agent files are discoverable by description — no need to reference filenames.
 
+**Skills pre-loading:** Plugin-level agents carrying a `skills:` field preload the named skill's full SKILL.md body into context at startup. This eliminates duplicated methodology in spawn prompts. Use when the agent's role maps to a skill's methodology — the agent should carry the framework it evaluates against.
+
+Current mappings: `critic`/`self-critic`/`self-review`/`comparator` → `refine` (CRITIQUE/REVIEW modes); `grader`/`analyzer`/`skill-auditor` → `create-skills` (authoring standards); `subagent-auditor` → `subagents` (orchestration patterns); `prompt-engineer` → `create-prompts`. General-purpose agents (`code-reviewer`, `implementer`, `researcher`) use no `skills:` — their prompts are self-contained.
+
 **Skill-internal agents** are stored in skill-specific `agents/` folders (e.g., `create-plans/agents/`, `execute-plans/agents/`). These are **prompt templates**, not auto-invoked subagents. They are workflow-specific and only available when that skill is loaded. To use one: read the agent file, then use its content as the basis for spawning a general-purpose subagent with your task context.
 
 **Examples:**
