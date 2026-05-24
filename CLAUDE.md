@@ -206,14 +206,22 @@ The goal is disambiguation, not elimination of names. If a skill name alone is u
 
 References/ folders are **lazy-loaded only when explicitly named in skill body**. They are NOT auto-discovered or auto-loaded.
 
-**Implications:**
-- A skill that mentions "see the plan-format.md file" triggers that file to load — but only because it's explicitly named
-- A skill that does not mention a references/ file will never cause it to load
-- Cross-skill file paths break on plugin install: when installed as a plugin, files are copied to `~/.claude/plugins/cache/<plugin>/`, breaking hardcoded paths
+**References trigger loading via:**
+- Natural language: "see the format-guide.md in the create-plans skill"
+- Read tool calls: `Read({baseDir}/references/my-ref.md)`
 
-**Rule:** Use natural language references instead of file paths. Each skill owns its `references/` folder — do not expect cross-skill reuse. If multiple skills need the same content, inline it or document the pattern here.
+**Cross-skill vs skill-internal:**
 
-**Why inline over reference:** A skill that inlines its references is self-contained. A skill that references another skill's files depends on external state that may not exist at invocation time.
+| Type | Rule | Example |
+|------|------|---------|
+| **Cross-skill** | Natural language naming the skill | "see the format-guide.md in the create-plans skill" |
+| **Skill-internal** | `{baseDir}` in Read tool calls | `Read({baseDir}/references/my-ref.md)` |
+
+**Why this matters:** Plugin install copies files to `~/.claude/plugins/cache/<plugin>/`, breaking hardcoded paths. This is why skill-internal references must use `{baseDir}`, not relative paths.
+
+**Rule:** Each skill owns its `references/` folder — do not expect cross-skill reuse. If multiple skills need the same content, inline it or document the pattern here. Never create shared references/ folders expecting other skills to reference them by path.
+
+**Migration:** To migrate existing cross-skill references: (1) search for `references/` in SKILL.md bodies, (2) inline the content or replace path with natural language reference to the skill name.
 
 ---
 
@@ -290,8 +298,9 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] README updated if structure changed
 - [ ] CHANGELOG entry added
 - [ ] No MCP references (plugin is MCP-free)
-- [ ] No broken cross-references between skills (never use file paths to other skills' references/agents/workflows — use natural language like "see the plan-format.md file in the create-plans skill")
-- [ ] No shared references/ folders expecting cross-skill reuse (inlin e content instead — references/ only loads when explicitly named in parent SKILL.md)
+- [ ] No broken cross-references between skills (never use file paths to other skills' references/agents/workflows — use natural language naming the skill)
+- [ ] No shared references/ folders expecting cross-skill reuse (inline content instead — references/ only loads when explicitly named in parent SKILL.md)
+- [ ] Skill-internal references use `{baseDir}` in Read tool calls (no relative paths)
 - [ ] User interaction uses clear, structured options
 - [ ] Command files conform to commands-standard.md (no method prescription, 1-3 sentence outcome instruction, no markdown in body)
   - Current commands: debug.md, simplify.md, whats-next.md, next-tasks-orchestration.md, ideate.md, implement.md
