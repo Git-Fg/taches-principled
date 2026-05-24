@@ -136,22 +136,22 @@ Plans are guides, not straitjackets. Real development involves discoveries. Hand
 1. **Auto-fix bugs** — Broken behavior → fix immediately, document in Summary
 2. **Auto-add missing critical** — Security/correctness gaps → add immediately, document
 3. **Auto-fix blockers** — Can't proceed → fix immediately, document
-4. **Ask about architectural** — Major structural changes → stop and ask
+4. **Heuristic architectural decisions** — Structural changes → evaluate, choose simplest correct path, log decision
 5. **Log enhancements** — Nice-to-haves → log to ISSUES.md, continue
 
-**Only Rule 4 requires your input.** Rules 1-3, 5 execute automatically.
+**All rules execute automatically.** No user input needed for any deviation type. Architectural decisions use heuristic rules (simplest path, reversible choices, plan direction) and log with rationale.
 
 ---
 
 ### Checkpoint Types
 
-Checkpoints are for verification and decisions, not manual work. Claude automates everything that has a CLI or API.
+Checkpoints are markers that tell the executor how to handle a task segment. The execution skill resolves them autonomously.
 
-| Type | Trigger | When to Use |
-|------|---------|-------------|
-| `checkpoint:human-verify` | Claude automated, human confirms | Visual checks, UI verification, reviewing generated content |
-| `checkpoint:decision` | Human makes implementation choice | Architecture, library selection, API design |
-| `checkpoint:human-action` | Human performs action (no CLI/API) | Email verification, 2FA, account approval requiring web login |
+| Type | Strategy Resolution |
+|------|-------------------|
+| `checkpoint:human-verify` | Executor self-verifies via CLI or file state. Logs result. (Maps exec strategy B) |
+| `checkpoint:decision` | Executor applies heuristic rules, chooses path, logs rationale. (Maps exec strategy C) |
+| `checkpoint:human-action` | Executor checks for CLI alternative; if none, placeholds and logs. (Maps exec strategy C) |
 
 **Checkpoint declaration example:**
 ```markdown
@@ -160,10 +160,10 @@ Files: .env.production
 Action: Run deployment via CLI, verify health endpoint
 Verify: `curl https://api.production.com/health` returns 200
 Done: Production deployed and healthy
-Checkpoint: checkpoint:human-verify  # Human confirms deployment looks correct
+Checkpoint: checkpoint:human-verify  # Executor self-verifies via health endpoint
 ```
 
-**Protocol:** Claude automates work → reaches checkpoint → presents results → waits for confirmation → resumes
+**Protocol:** Autonomous execution resolves all checkpoints without user interaction. Status updates at milestones.
 
 ### Ship Fast, Iterate Fast
 
@@ -193,14 +193,15 @@ Monitor token usage via system warnings.
 - **At 15% remaining**: Offer handoff
 - **At 10% remaining**: Auto-create handoff, stop
 
-### User Gates
+### Decision Documentation
 
-Never charge ahead at critical decision points. Use gates:
-- **AskUserQuestion**: Structured choices (2-4 options)
-- **Inline questions**: Simple confirmations
-- **Decision gate loop**: "Ready, or ask more questions?"
+Plans in the autonomous workflow don't ask questions at checkpoints. Instead, they document decision points with sufficient context for the executor to resolve heuristically:
 
-Mandatory gates:
+- **Decision point**: "Auth strategy — options: sessions (simple), JWT (mobile-ready), hybrid"
+- **Context**: Enough signal for heuristic choice (recommended option, trade-offs, reversibility)
+- **No questions**: The executor decides based on heuristic rules and logs the choice
+
+Mandatory decision documentation:
 - Before writing PLAN.md (confirm breakdown)
 - After low-confidence research
 - On verification failures
@@ -245,50 +246,25 @@ find . -name ".continue-here.md" -type f 2>/dev/null
 [ -f .principled/plans/ROADMAP.md ] && echo "ROADMAP: exists"
 ```
 
-**If NO_GIT_REPO detected:** Use AskUserQuestion to present options:
-
-**Question:** No git repository found. Initialize one?
-**Options:**
-- A: Initialize git repository (recommended)
-- B: Continue without git
-
-Present scan findings before intake.
+**If NO_GIT_REPO detected:** Auto-initialize: `git init && git add -A && git commit -m "chore: initial commit"`. No question needed — every project needs version control.
 
 ---
 
 ## Intake
 
-Based on scan results, present context-aware options:
+Based on scan results, auto-detect and route silently:
 
-**If handoff found:**
-Use AskUserQuestion to present options:
+- **If handoff found** → Auto-resume from `.principled/plans/phases/XX/.continue-here.md`
+- **If planning structure exists with incomplete phases** → Auto-plan next phase
+- **If planning structure exists and all phases complete** → Present final execution gate
+- **If no planning structure** → Auto-create brief (ask one question: "What are we building?")
+- **If NO_GIT_REPO detected** → Auto-initialize git repo silently
 
-**Question:** Found handoff at .principled/plans/phases/XX/.continue-here.md. What would you like to do?
-**Options:**
-- A: Resume from handoff (recommended)
-- B: Discard handoff, start fresh
-- C: Do something else
+**One question only:** For new projects, ask "What are we building?" — capture the response, then proceed autonomously through exploration, decomposition, and plan creation. Do NOT ask follow-up questions about scope, priorities, or approach. Defer all such discovery to the explore phase.
 
-**If planning structure exists:**
-Use AskUserQuestion to present options:
+The model has sufficient judgment to choose the right path. Trust it. If the handoff path is wrong, the execution gate catches it. If the planning structure is wrong, exploration reveals it. The user's time is better spent on outcomes than menu navigation.
 
-**Question:** What would you like to do?
-**Options:**
-- A: Plan next phase (recommended)
-- B: Execute current phase
-- C: Create handoff
-- D: View/update roadmap
-- E: Something else
-
-**If no planning structure:**
-Use AskUserQuestion to present options:
-
-**Question:** No planning structure found. What would you like to do?
-**Options:**
-- A: Start new project (create brief) (recommended)
-- B: Create roadmap from existing brief
-- C: Jump straight to phase planning
-- D: Get guidance on approach
+**Gotcha — always check existing artifacts first:** Before running any discovery, always check `.principled/plans/` for any existing BRIEF.md, ROADMAP.md, or phase plans. If brief exists, skip intake and go straight to roadmap/phase planning. Never make the user re-answer questions already answered.
 
 ---
 
@@ -388,6 +364,56 @@ If critic finds critical issues: reconsider the approach before committing to pl
 
 ---
 
+## Plan Creation Loop
+
+After exploration, create plans in a structured loop: one phase at a time, with self-review and critic review between phases.
+
+### Loop Structure
+
+For each phase plan:
+
+```
+1. Synthesize exploration findings into phase scope
+2. Self-review: check completeness, dependencies, verification plan
+3. Write phase PLAN.md (2-3 tasks, verification per task)
+4. Spawn critic subagent to review the plan
+   - Focus: task granularity, missing edge cases, dependency ordering
+   - Critic writes findings to scratchpad
+5. Read scratchpad, revise plan based on critic feedback
+6. Check: is planner context approaching 50%?
+   - If yes: create handoff document, route to execution gate
+   - If no: proceed to next phase
+7. Repeat for next phase
+```
+
+### Context Management Across Phases
+
+Each phase loop iteration consumes context. Monitor token usage:
+
+- **At 50% planner context used:** Stop creating, present execution gate. Do not start a new phase creation loop. The remaining context is for the execution phase.
+- **Phase creation should be fast:** Write brief, write 2-3 tasks, spawn critic, revise. If a single phase plan is taking more than a few turns, the scope is too large.
+
+### Critic Integration
+
+Spawn one critic subagent per phase plan (general-purpose, Write access):
+
+```
+Focus: Review the phase plan as a cold-start executor
+- "If I followed this PLAN.md literally, would the outcome be correct?"
+- Are the tasks atomic enough? (2-3 per plan, not 12)
+- Does each task have a verifiable completion criterion?
+- Are file paths and commands correct (not assumptions)?
+- Would I be blocked on any task by prerequisites?
+```
+
+The critic reads the new PLAN.md from the scratchpad path, writes findings back. Orchestrator reads findings, applies revisions, then proceeds.
+
+**Why per-phase:** Phase plans are independent — critic feedback on phase 2 does not invalidate phase 1. A single end-to-end critic review creates a bottleneck and encourages the critic to comment on irrelevant phases.
+
+**Exception — one end-to-end review:** After ALL phases are created, run one final self-review pass on the full roadmap for cross-phase consistency: do the phases fit together? Are there missing dependencies between phases? Is the completion order correct?
+
+---
+
 ## Routing
 
 | Response | Action |
@@ -409,29 +435,15 @@ If critic finds critical issues: reconsider the approach before committing to pl
 
 **When user says "execute", "run", "build it", "do it":**
 
-First, explain what execution means:
-
-> When you say "execute", it doesn't mean "good luck" — it means "use the execution skill to proceed with the plan I've prepared. The execution skill analyzes your plan's checkpoint structure and automatically selects the appropriate strategy: fully autonomous (no checkpoints), segmented (verify-only checkpoints), or sequential (decision/action checkpoints)."
-
-**Pre-execution gate:**
+Single question:
 
 **Question:** Ready to execute [plan name]?
+
 **Options:**
-- A: Execute autonomously (recommended) — the execution skill handles strategy selection automatically
-- B: Let me review the plan first
-- C: Something else
+- Execute autonomously — loads execution skill, status updates only
+- Let me review first — show the plan, then re-present
 
-**If user selects B:** Present the plan for review, then re-ask the pre-execution gate question.
-
-**If user selects C:** Acknowledge and stop — ask what they'd like to do instead.
-
-**If user selects A:** Load the execution skill to execute this plan. The execution skill will analyze checkpoint types and select Strategy A (fully autonomous), B (segmented), or C (sequential) automatically.
-
-The execution skill uses intelligent orchestration:
-- Analyzes task dependencies and checkpoint structure
-- Spawns parallel subagents for independent tasks
-- Spawns critic subagents at milestones for self-review
-- Creates SUMMARY.md and commits when done
+**If user selects execute:** Route to `execute-plans`. The execution skill autonomously analyzes checkpoint structure, selects strategy, spawns parallel workers, self-reviews, and commits. Status updates only — no questions.
 
 Do NOT re-invoke create-plans. Do NOT ask for guidance. Execute autonomously via the execution skill.
 
@@ -522,7 +534,7 @@ After completion, create `.principled/plans/phases/01-foundation/SUMMARY.md`
 
 **Huge phases.** If PLAN.md is 500 lines, the phase is too big. Split into 01-01, 01-02, etc.
 
-**Forgetting the human.** Some decisions need you. Mark them clearly: "Decision needed: [what] — options presented."
+**Not documenting decisions.** Every plan should include enough context for the executor to resolve checkpoints heuristically. If there's a choice (auth strategy, library selection, API design), document the options with trade-offs: "Decision point: [options] — recommended: [X] because [reason]." The executor chooses from documented options autonomously.
 
 ---
 
@@ -558,7 +570,7 @@ The original skill included a `domain_expertise` system that scanned `~/.claude/
 - Keyword inference is brittle and misses more than it hits
 - Requires maintaining a parallel expertise directory structure
 - The skill functions fine without it (graceful degradation exists)
-- Simpler alternative: just ask the user "What type of project?"
+- Simpler alternative: the explore phase discovers project type organically
 
 If domain expertise is needed, invoke the relevant expertise skill directly rather than trying to auto-detect.
 
@@ -575,20 +587,18 @@ If domain expertise is needed, invoke the relevant expertise skill directly rath
 - Deviations handled automatically per embedded rules
 - All work fully documented
 
-## What Now?
+## Single Execution Gate
 
-After creating a plan, use AskUserQuestion to present next steps:
+**The only user interaction point.** After plan creation is complete, present one question:
 
-**Question:** What would you like to do with this plan?
+**Question:** Execute this plan?
 
 **Options:**
-- A: Execute this plan (recommended) — load execution skill and autonomously orchestrate subagents
-- B: Refine plan — suggest improvements based on review
-- C: Create follow-up tasks — plan next chunk or phase
-- D: Done for now
+- Execute autonomously (recommended) — loads execution skill, status updates only
+- Let me review first — show the plan, then re-present the gate
 
-After user selection:
-- If A: Invoke execution skill with the plan path for autonomous execution
-- If B: Present specific refinement suggestions as options
-- If C: Route to chunk/phase planning
-- If D: Acknowledge and stop
+**If user selects execute:** Route to `execute-plans`. Do NOT explain the execution skill's strategy selection — it handles that autonomously. Status updates only.
+
+**If user selects review:** Show the plan, then re-ask "Execute this plan?" with the same two options.
+
+**No other questions.** No "What else?" No "Done for now?" No refinement prompts. The user said "plan" — deliver a plan and one decision gate.

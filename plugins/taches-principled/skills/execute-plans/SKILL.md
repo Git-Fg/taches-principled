@@ -156,62 +156,147 @@ If critic finds minor concerns: note them for milestone review.
 
 ---
 
-### Strategy B: Segmented Execution
+## Implementer Scratchpad Protocol
 
-**Use when:** Plan has `checkpoint:human-verify` markers at segment boundaries. Each checkpoint separates a coherent autonomous block.
+When spawning implementer subagents (Strategy A parallel workers, Strategy B segment workers), use a shared scratchpad for all execution output:
 
-**Policy:** Subagents execute segments between checkpoints. Main context handles verification gates.
+**Location:** `.principled/scratch/{plan-id}-execution.md`
+
+**Before spawning each worker:**
+1. Read existing scratchpad for prior implementation context (similar task patterns, resolved blockers)
+2. Write the task scope and expected output to scratchpad
+3. Include the task's file paths so workers don't collide on same files
+
+**Worker requirements:**
+- General-purpose subagent with `[Read, Write, Grep, Glob, Bash]` access
+- Worker writes implementation results to scratchpad before returning
+- Worker includes: files modified, verification results, any deviations detected
+
+**Orchestrator after workers return:**
+1. Read scratchpad — do NOT rely on subagent output text alone
+2. Verify no file conflicts between parallel workers (did two workers touch the same file?)
+3. If file conflict detected: spawn critic to resolve merge, fix conflicts, test
+4. Aggregate results from scratchpad into milestone review
+
+**Why:** Same telephone-game prevention as the explorer protocol. Implementation details are too easy to paraphrase incorrectly. Reading the scratchpad directly gives the orchestrator ground truth.
+
+---
+
+## Critic-Revise Execution Loop
+
+The executor-critic relationship is a structured loop, not a one-shot check:
+
+### Per-Milestone Loop
+
+```
+1. N tasks complete → milestone threshold reached
+2. Spawn critic subagent:
+   - Reads scratchpad for all worker output
+   - Reads PLAN.md for expected outcomes
+   - Evaluates: correctness, edge cases, regressions, deviation handling
+   - Writes findings to scratchpad (not verbal summary)
+3. Orchestrator reads critic findings from scratchpad
+4. IF findings have issues:
+   - Create fix tasks (1-2 small, targeted)
+   - Spawn implementer subagent for each fix
+   - Re-verify
+   - Re-spawn critic if fix was non-trivial
+   - Repeat until critic passes or 2 fix cycles exhausted
+5. IF 2 fix cycles exhausted AND still failing:
+   - Document remaining issues in SUMMARY.md
+   - Log as known limitations
+   - Proceed to next milestone (blocking on edge cases wastes throughput)
+6. IF critic passes: proceed to next milestone
+```
+
+### Per-Task Micro-Loop (for complex tasks)
+
+For tasks that are architecturally significant or touch 5+ files, integrate critic per-task:
+
+```
+1. Worker completes task
+2. Orchestrator self-review: does output match task spec?
+3. If non-trivial deviation: spawn critic for this task only
+4. Fix issues → re-verify → continue
+```
+
+**Why a loop, not a gate:** A single critic review creates false confidence — the critic might miss issues in the first pass, or the fix might introduce new problems. The loop structure issues diminishing returns naturally: most issues are caught in round 1, edge cases in round 2, and round 3+ catches are noise. Cap at 2 fix cycles for throughput.
+
+---
+
+### Strategy B: Autonomous Segmented Execution
+
+**Use when:** Plan has `checkpoint:human-verify` markers. Each checkpoint separates a coherent autonomous block.
+
+**Policy:** Subagents execute segments between checkpoints. The orchestrator self-verifies checkpoint conditions using CLI commands and automated checks. No user interaction.
 
 **Mechanism:**
 ```
 1. Parse plan into segments (blocks between checkpoints)
 2. For each segment:
-```
-
-**Autonomous vs checkpoint handling:**
-
-| Element | Action |
-|---------|--------|
-| Segment (autonomous block) | Spawn a worker subagent to execute block |
-| `checkpoint:human-verify` | Execute in orchestrator context, present to user |
-| Verification pass | Continue to next segment |
-| Verification fail | STOP, present failure gate |
-
-```
+   - Spawn worker subagent to execute block
+   - Worker writes output to scratchpad
+   - Orchestrator self-verifies checkpoint conditions:
+     * Run verify commands from plan
+     * Check file state, test output, build status
+     * PASS → log verification, proceed to next segment
+     * FAIL → spawn critic subagent, diagnose, fix, re-verify
+   - Status update: "Segment [N] complete — [verification result]"
 3. Aggregate all segment results
 4. Create SUMMARY.md with full audit trail
 5. Update ROADMAP.md
 6. Commit
 ```
 
-**Why:** Checkpoints require human judgment. Subagents handle pure execution between gates. Overhead: ~15-20% main context.
+**Self-verification rules:**
+- Run all verify commands from the plan's task definitions
+- If verify commands don't exist, use automated checks: file existence, test pass rate, lint status, build success
+- If self-verification fails, spawn a critic subagent to diagnose, then fix and re-verify
+- If self-verification fails after 2 fix attempts: log remaining issues in SUMMARY.md, proceed to next segment or milestone. Status update: "Segment [N]: 2/2 fix cycles exhausted — [issue] logged in SUMMARY.md"
+
+**Why:** Every verification check that can be automated should be. "Human verify" in practice means "someone should glance at it" — but for CI-able checks, the orchestrator does the glancing. Overhead: ~15-20% main context.
 
 ---
 
-### Strategy C: Sequential Execution
+### Strategy C: Autonomous Sequential Execution
 
-**Use when:** Plan has `checkpoint:decision` or `checkpoint:human-action` markers. Outcomes affect subsequent task paths.
+**Use when:** Plan has `checkpoint:decision` or `checkpoint:human-action` markers. These are the most constrained paths — outcomes affect subsequent task sequencing.
 
-**Policy:** All execution in main context. User interaction required at each checkpoint.
+**Policy:** All execution in main context. Each checkpoint type has a self-resolution protocol:
+
+| Checkpoint Type | Autonomy Protocol |
+|----------------|------------------|
+| `checkpoint:decision` | Use heuristics + plan context to choose. Log the decision and rationale. If genuinely ambiguous (equal trade-offs, no clear signal), choose the simplest path and log. |
+| `checkpoint:human-action` | Check for a CLI/API alternative first. If none exists, note the manual step in SUMMARY.md as an "unavoidable manual gate" and continue with a simulated/placeholder value that the user can correct. |
+
+**Heuristic decision rules:**
+- **Default to simplest path** — if options are A (complex, flexible) and B (simple, sufficient), choose B
+- **Follow plan's recommended option** — if the plan tips its hand ("recommended", "preferred"), follow it
+- **Break ties with reversibility** — if two options are equally valid, choose the one that is easier to undo
+- **Log every decision** — write to scratchpad with format: `Decision: chose X over Y because [reason]`
+- **If genuinely uncertain** — make the best call based on available evidence, document the uncertainty in SUMMARY.md
 
 **Mechanism:**
 ```
 1. Load execution_context and context from plan
 2. For each task:
    IF type="auto":
-     - Execute in main context
+     - Execute in main context or spawn parallel worker
      - Track deviations
-   IF checkpoint:decision OR checkpoint:human-action:
-     - Execute up to checkpoint
-     - Present decision context to user
-     - Wait for user choice
-     - Continue on chosen path
-3. Create SUMMARY.md
+   IF checkpoint:decision:
+     - Evaluate heuristic rules, choose path
+     - Log decision with rationale
+     - Status update: "Decision: [choice]"
+   IF checkpoint:human-action:
+     - Check for CLI alternative
+     - If CLI exists: execute via automation
+     - If no CLI: placehold, log in SUMMARY.md as unavoidable manual gate
+3. Create SUMMARY.md with all decisions documented
 4. Update ROADMAP.md
 5. Commit
 ```
 
-**Why:** Decision-dependent execution cannot be safely delegated. User choices alter the execution path. Overhead: ~25-30% main context.
+**Why:** The overwhelming majority of "decisions" in plans are false dilemmas — either one option is clearly better, or both are equally valid and the choice doesn't matter. Plans are written by the same skill that produced the plan — the context contains enough signal to decide. Overhead: ~25-30% main context.
 
 ---
 
@@ -283,11 +368,11 @@ If critic finds minor concerns: note them for milestone review.
 
 ---
 
-### Deviation Rule 4: Ask about architectural changes
+### Deviation Rule 4: Heuristic architectural decisions
 
 **Trigger:** Fix/addition requires significant structural modification
 
-**Action:** STOP. Present as `checkpoint:decision`. Use AskUserQuestion. Wait for decision.
+**Action:** Evaluate using heuristic rules, choose the path with best signal. Log decision with rationale. Do NOT ask the user.
 
 **Numeric thresholds for "significant":**
 - Schema migration affecting 3+ tables or entities
@@ -296,12 +381,17 @@ If critic finds minor concerns: note them for milestone review.
 - Dependency addition that changes execution model
 - Authentication/authorization model change
 
-**Examples — IS architectural:**
-- Adding new database table (not just column)
-- Major schema changes (changing primary key, splitting tables)
-- Introducing new service layer or architectural pattern
-- Switching libraries/frameworks
-- Breaking API change
+**Heuristic decision rules (same as Strategy C):**
+- Default to simplest path: minimal surface area change
+- Prefer reversible choices: if two options are equally valid, choose the one easier to undo
+- Follow the plan's implicit direction: if the plan recommends a library or pattern, follow it
+- Log every decision with format: `Deviation R4: chose X over Y because [reason]`
+
+**Examples — IS architectural (still decide heuristically, don't ask):**
+- Adding new database table: check if the plan implied it, if yes proceed, if no log as enhancement and defer
+- Major schema changes: default to additive changes (add columns, don't restructure existing)
+- Dependency addition: check if the dependency provides capabilities already in the stack, if so use existing, if not add
+- Breaking API change: default to deprecation+new-approach over breaking changes
 
 **Examples — IS NOT architectural (decide yourself):**
 - Which naming to use for a variable
@@ -310,24 +400,16 @@ If critic finds minor concerns: note them for milestone review.
 - Minor formatting or style choices
 
 **Process:**
-1. STOP current task
-2. Present as `checkpoint:decision`:
-   ```
-   type: checkpoint:decision
-   label: Architectural Decision Required
-   what: [describe what was found]
-   proposed: [what you propose to do]
-   options:
-     A. Proceed with proposed change
-     B. Different approach (describe what)
-     C. Defer this decision
-   ```
-3. Use AskUserQuestion with structured options:
-   - option A: "Proceed with proposed change"
-   - option B: "Use a different approach"
-   - option C: "Defer this decision"
-4. WAIT for user choice
-5. On choice, proceed accordingly
+1. Evaluate: is the change genuinely necessary, or is it an enhancement?
+2. If necessary (bug fix, blocker removal): proceed with simplest correct approach
+3. If enhancement: log as enhancement, continue current task
+4. Log decision: `Deviation R4: [choice] because [reason]`
+5. Continue execution
+
+**Example log entries:**
+- `Deviation R4: added users table because plan implied user data storage`
+- `Deviation R4: deferred Supabase edge functions migration because authentication path uses Next.js API routes — simpler to keep unified`
+- `Deviation R4: chose deprecation over breaking change for /api/v1/users -> /api/v2/users`
 
 ---
 
@@ -350,7 +432,7 @@ If critic finds minor concerns: note them for milestone review.
 
 | Priority | Rule | Action |
 |----------|------|--------|
-| 1 | Architectural changes | STOP, ask |
+| 1 | Architectural changes | Evaluate heuristically, choose simplest correct path, log |
 | 2 | Bugs, missing criticals, blockers | Fix automatically, track |
 | 3 | Non-critical enhancements | Log to ISSUES.md, continue |
 
@@ -358,94 +440,52 @@ If critic finds minor concerns: note them for milestone review.
 
 ## Checkpoint Protocols
 
-### Verify-Only Checkpoint
+These are self-service protocols — the executor resolves checkpoints autonomously using the strategy rules above.
 
-```markdown
-## Checkpoint: Verify Migration
+### Verify-Only Checkpoint Resolution
 
-Before continuing, verify:
-- [ ] Migration ran without errors
-- [ ] Users table exists in dashboard
-- [ ] Row count > 0
+When a plan says "User confirms" or "Verify manually":
 
-User confirms: [type "done" when verified]
-```
+1. Check for CLI-based verification first (curl, test command, file check)
+2. If CLI check exists: run it, log result, continue
+3. If no CLI check exists: verify via automated means (file content check, state inspection, process health)
+4. Document verification result in SUMMARY.md
+5. Status update: "Verified [check]: PASS/FAIL"
 
-**Protocol:**
-1. Present verification checklist
-2. Wait for user confirmation
-3. Continue to next segment
-4. Document verification in Summary
+**No user interaction.** Every verification check either has a CLI equivalent or can be verified by inspecting file/system state. The "user confirms" pattern in plans is a legacy convention from when plans were written for humans.
 
----
+### Decision Checkpoint Resolution
 
-### Decision Checkpoint
+When a plan says "Decision needed" or "Choose:":
 
-```markdown
-## Checkpoint: Auth Strategy Decision
+1. Read the options from the plan context
+2. Apply heuristic rules (Strategy C section above)
+3. Choose the path with best signal-to-noise ratio
+4. Log decision with rationale
+5. Status update: "Decision: chose X over Y — [one-line reason]"
 
-Current approach: Session-based auth
+### Human-Action Checkpoint Resolution
 
-Options:
-1. Continue with session-based auth
-2. Switch to JWT (stateless, better for mobile)
-3. Hybrid (sessions + JWT refresh)
+When a plan says "You need to" or "Manual step":
 
-Choose: [1/2/3] or describe different approach
-```
+1. Check for CLI/API alternative first
+2. If CLI exists: execute and proceed
+3. If no CLI: generate a placeholder (file, config, or note), log in SUMMARY.md as an unavoidable manual gate with exact instructions
 
-**Protocol:**
-1. Present decision context clearly
-2. Wait for user choice
-3. Execute chosen path
-4. Document decision in Summary
+**The gate is documented, not blocked on.** The user can apply the manual step later. The build should not depend on it.
 
----
+### Auth Gate Protocol (Exception)
 
-### Human-Action Checkpoint
+Authentication gates are the ONE exception where execution depends on user credentials:
 
-```markdown
-## Checkpoint: Manual Verification Needed
+1. Recognize: auth error, not a bug
+2. Status: "Waiting for [service] authentication — steps at [URL/doc]"
+3. User completes auth flow (out of band)
+4. Retry the command that failed
+5. If retry succeeds: resume, document in SUMMARY.md as normal flow
+6. If retry fails: status update "Still waiting on [service] auth"
 
-I cannot verify this automatically. You need to:
-
-1. Open https://dashboard.example.com
-2. Navigate to Users → API Keys
-3. Copy the public key shown
-
-Paste the key here when done.
-```
-
-**Protocol:**
-1. Present clear instructions for manual action
-2. Wait for user to complete action
-3. Receive confirmation + any required output
-4. Continue using provided information
-5. Document the manual gate in Summary
-
----
-
-## Authentication Gates
-
-**Authentication errors are not failures — they are expected workflow gates.**
-
-**Recognition:**
-- CLI returns: "Not authenticated", "Not logged in", "Unauthorized"
-- API returns: "Authentication required", "Invalid API key"
-- Command fails with: "Please run {tool} login"
-
-**Protocol:**
-```
-1. RECOGNIZE: This is an auth gate, not a bug
-2. STOP: Current task execution pauses
-3. PRESENT: Exact steps for user to authenticate
-4. WAIT: Let user complete auth flow
-5. VERIFY: Test credentials are valid
-6. RETRY: Resume automation where it left off
-7. CONTINUE: Normal execution resumes
-```
-
-**In Summary:** Document authentication gates as normal flow, not deviations.
+**Auth gates are status updates, not questions.** Do not ask "please authenticate" — just state the status. The user sees a waiting state and acts on it.
 
 ---
 
@@ -468,7 +508,7 @@ Paste the key here when done.
 
 ## Deviations
 - [Rule 1/2/3: what was auto-fixed]
-- [Rule 4: architectural decision + user choice]
+- [Rule 4: architectural decision + heuristic choice]
 - [Rule 5: logged to ISSUES.md]
 
 ## Authentication Gates
@@ -565,8 +605,8 @@ Marking a task complete without running the verify command.
 ### Treating auth gates as errors
 Retrying authentication failures instead of pausing for user auth steps.
 
-### Continuing past Rule 4
-Proceeding with architectural changes without user input.
+### Making uninformed architectural choices
+Making structural changes without evaluating trade-offs. Always apply heuristic rules: prefer simplest path, reversible choices, and documented rationale.
 
 ### Creating vague summaries
 "Task completed" vs "JWT refresh rotation implemented using jose library".
