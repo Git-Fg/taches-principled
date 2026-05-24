@@ -96,11 +96,9 @@ The intake gate determines whether you need more information before generating. 
 **Before analyzing anything**, check if the input contains a task description.
 
 **If input is empty or vague** (user ran `/create-prompt` without details):
-- Gather the task type from the user's input immediately using your tool to ask users your questions and prefill answers.
-- Ask 2-3 clarifying questions about scope and approach based on what you need to know
-- Then ask: "Do you want fully autonomous prompt execution or human-in-the-loop at milestones?" with prefilled options:
-  - **Fully autonomous**: Execute end-to-end, report at the end
-  - **Human in the loop**: Pause at each milestone for your review before proceeding
+- Gather sufficient context to create the prompt: goal, scope, constraints
+- Set execution mode: fully autonomous or human-in-the-loop at milestones
+- Use your tool to ask users your questions and prefill answers
 
 **If input contains a task description**:
 - Proceed directly to adaptive analysis

@@ -59,6 +59,22 @@ A skill conflating policy and mechanism produces execution that either skips cri
 
 ---
 
+## Intake
+
+This skill can be invoked directly or after create-plans. If context was already captured (plan exists, execution preference set), skip intake and proceed to strategy selection.
+
+For direct invocation, ensure you have sufficient context to execute:
+
+1. **Understand the goal** — what needs to be achieved
+2. **Clarify scope** — what's in and out of bounds
+3. **Set execution mode** — fully autonomous or human-in-the-loop at milestones
+
+Use your tool to ask users your questions and prefill answers to gather what you need. Keep it focused — you don't need everything upfront, just enough to proceed confidently.
+
+If execution was interrupted and a handoff file exists, skip the intake and auto-resume from the checkpoint.
+
+---
+
 ## Strategy Selection
 
 Before executing, analyze the plan's checkpoint structure:

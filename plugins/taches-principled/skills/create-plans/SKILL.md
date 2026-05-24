@@ -245,24 +245,19 @@ Read the scratchpad before proceeding to intake.
 
 ## Intake
 
-Start by using your tool to ask users your questions and prefill answers. The interview has two phases:
+Before planning, ensure you have sufficient context:
 
-**Phase 1 — Clarifying questions:**
-1. "What are we building?" — capture the core goal
-2. Ask 2-3 follow-up questions about scope, priorities, and approach based on what you need to know. Use clickable options prefilled with likely answers. Questions might cover: technical stack, team size, constraints (deadline, budget, compliance), or success criteria.
+1. **Understand the goal** — what needs to be built
+2. **Clarify scope** — priorities, constraints, what success looks like
+3. **Set execution mode** — fully autonomous or human-in-the-loop at milestones
 
-**Phase 2 — Execution preference:**
-3. "Do you want fully autonomous execution or human-in-the-loop at milestones?" — prefilled options:
-   - **Fully autonomous**: I execute the plan end-to-end, only report at the end
-   - **Human in the loop**: I pause at each milestone for your review before proceeding
+Use your tool to ask users your questions and prefill answers to gather what you need. Keep it focused — you don't need everything upfront, just enough to plan confidently.
 
-**After the interview:** Proceed autonomously through exploration, decomposition, and plan creation. The user's answers form the brief — trust the model to plan well from there.
+If a handoff file exists at `.principled/plans/phases/XX/.continue-here.md`, skip the intake and auto-resume. If a BRIEF.md or ROADMAP.md already exists, skip the intake and proceed to the next phase.
 
-**Auto-resume rule:** If a handoff file exists at `.principled/plans/phases/XX/.continue-here.md`, skip the interview and auto-resume. The handoff already captured the context.
+Always check for existing artifacts in `.principled/plans/` before starting — never make the user re-answer questions already answered. If no git repo exists, auto-initialize silently.
 
-**Gotcha — always check existing artifacts first:** Before running any discovery, always check `.principled/plans/` for any existing BRIEF.md, ROADMAP.md, or phase plans. If brief exists, skip intake and go straight to roadmap/phase planning. Never make the user re-answer questions already answered.
-
-**Git init rule:** If NO_GIT_REPO detected, auto-initialize silently — `git init && git add -A && git commit -m "chore: initial commit"`. No question needed — every project needs version control.
+---
 
 ## Explore with Subagent Fan-Out
 
