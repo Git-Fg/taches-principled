@@ -1,7 +1,7 @@
 {
   "name": "tp-ddd",
   "displayName": "TP Domain-Driven Design",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "DDD development practices — code-transparency (visible behavior), code-architecture (layered structure), and code-quality (domain naming, typed errors). 3 discoverable skills answering: what does it do, how to structure, is it idiomatic.",
   "author": {
     "name": "Felix",

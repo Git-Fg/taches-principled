@@ -2,6 +2,32 @@
 
 All notable changes are documented here.
 
+## [0.5.0] — 2026-05-24
+
+### Added
+- **6 new commands**: `/improve`, `/critique`, `/learn`, `/polish`, `/orchestrate`, `/design-subagents` — direct capability triggers routing to hub decision routers
+- **Hub-and-spoke consolidation**: reduced marketplace from 34 skills to 20 (41% reduction, 5,952 lines removed)
+  - Root: `refine` now a 5-mode hub (SIMPLIFY/REVIEW/CRITIQUE/MEMORIZE/POLISH) absorbing `reflexion` + `write-concisely`
+  - Root: `subagents` now a 2-mode hub (DESIGN/ORCHESTRATE) absorbing `create-subagents` + `subagent-orchestration`
+  - tp-sadd: 5 skills merged into `sadd` hub
+  - tp-git: 4 skills merged into `git` hub
+  - tp-fpf: 3 skills merged into `fpf` hub
+  - tp-ddd: 3 skills merged into `ddd` hub
+
+### Changed
+- **CLAUDE.md**: comprehensive audit — Meta-Rule rewritten for human maintainers, dispatch/launch terminology standardized to spawn, reflexion/refine narrative corrected, direct-language principle enforced, Self-Check strengthened, logical weaknesses fixed, missing definitions added
+- **Commands**: 6 existing commands updated with hub skill routing, all 12 commands verified against commands-standard.md
+
+### Removed
+- **14 absorbed skills**: `reflexion`, `write-concisely`, `create-subagents`, `subagent-orchestration` (root), and 10 individual tp-* skill files superseded by hub equivalents
+- **`coordination.py`** script and design reference files consolidated into hub skill bodies
+
+### Fixed
+- **Token Economy**: removed contradictory line advising writing to non-loaded CLAUDE.md
+- **Subagent spawn instructions**: all inline tool lists replaced with role + outcome descriptions
+- **Cross-references**: all stale references to deleted skills cleaned before deletion
+- **marketplace.json**: root skill count corrected 18→15
+
 ## [0.4.1] — 2026-05-23
 
 ### Fixed
