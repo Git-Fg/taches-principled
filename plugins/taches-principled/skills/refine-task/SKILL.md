@@ -1,5 +1,5 @@
 ---
-name: plan-task
+name: refine-task
 description: "Refine draft tasks into implementation-ready specifications with analysis, architecture, decomposition, and verification rubrics. Multi-phase workflow with independent quality gates."
 when_to_use: |
   Use when the user says:

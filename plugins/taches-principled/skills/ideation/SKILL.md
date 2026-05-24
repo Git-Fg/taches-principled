@@ -4,14 +4,13 @@ description: "Refine rough ideas into documented designs through single-question
 when_to_use: |
   Use when the user says "I have an idea", "help me figure out", "design this", "what are my options", "let's brainstorm", "help me think through this", or "let's think about".
   IMMEDIATELY when a concept is vague or unformed — BEFORE sketching architecture or writing code.
-  Brainstorm functionality is now consolidated into this skill — use ideation for all collaborative refinement.
 argument-hint: "[feature concept, problem, or topic]"
 ---
 
 ## Decision Router
 
 IF user wants to explore or refine an unformed idea → use brainstorm mode: collaborative questioning to refine
-IF user needs creative idea generation on a subject → use create-ideas mode: probability sampling
+IF user wants creative idea generation (not refinement) → use create-ideas mode
 IF user has simple task capture needs → use add-task instead
 IF user needs formal planning with milestones → use create-plans instead
 IF user already knows exactly what they want → skip to design capture directly
@@ -25,7 +24,6 @@ IF idea is fully formed and documented → no need for this skill
 
 - **DO NOT use for simple task capture** — use `add-task` instead for straightforward task creation
 - **DO NOT use for formal planning** — use `create-plans` instead for structured planning with milestones and phases
-- **brainstorm functionality is now consolidated into this skill** — use ideation for all collaborative refinement
 
 # Brainstorm Mode
 

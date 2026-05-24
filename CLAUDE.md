@@ -129,7 +129,7 @@ These are foundational compositional pairs or serve distinct workflow stages:
 
 - `create-plans` + `execute-plans` — project planning lifecycle, separation is intentional
 - `create-prompts` + `execute-prompts` — prompt creation lifecycle, separation is intentional
-- `plan-task` + `implement-task` — different scope (task refinement vs task execution)
+- `refine-task` + `implement-task` — different scope (task refinement vs task execution)
 - `ideation` + `add-task` — different workflow stages (exploration vs capture)
 - Plugin-specific skills (`git-ship`, `fpf-propose`, `tdd`) — no meaningful overlap with other plugins
 
@@ -279,6 +279,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] No broken cross-references between skills (never use file paths to other skills' references/agents/workflows — use natural language like "see the plan-format.md file in the create-plans skill")
 - [ ] User interaction uses clear, structured options
 - [ ] Command files conform to commands-standard.md (no method prescription, 1-3 sentence outcome instruction, no markdown in body)
+  - Current commands: debug.md, simplify.md, whats-next.md, next-tasks-orchestration.md, ideate.md, implement.md
 
 For skill-authoring self-check, see `create-skills` skill.
 

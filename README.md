@@ -62,7 +62,7 @@ Skills load on demand and give Claude domain expertise without bloating every co
 | **implement-task** | Implementing refined task specs with LLM-as-Judge verification | Quality-gated implementation |
 | **kaizen** | Continuous improvement with multiple Kaizen methods | Gemba Walk, Value Stream, Muda |
 | **plan-do-check-act** | Iterative experimentation cycles for systematic improvement | PDCA cycle |
-| **plan-task** | Refining draft specs into implementation-ready tasks | Multi-phase refinement, quality gates |
+| **refine-task** | Refining draft specs into implementation-ready tasks | Multi-phase refinement, quality gates |
 | **reflexion** | Reflecting on past work to extract lasting insights | Agentic Context Engineering |
 | **update-docs** | Maintaining project documentation via multi-agent workflow | Tech-writer agents, quality review |
 | **write-concisely** | Clear, professional writing for human-readable docs | Writing rules and standards |
