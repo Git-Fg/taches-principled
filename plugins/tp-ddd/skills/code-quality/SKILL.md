@@ -7,8 +7,6 @@ when_to_use:
   - "should I use a library"
   - "why did this error happen"
   - "silent failure"
-paths:
-  - "**/*"
 ---
 
 # Code Quality — Idiom Check

@@ -6,6 +6,8 @@ when_to_use: "Use when the user says 'TDD', 'test-driven', 'RED-GREEN', 'write t
 
 ## Decision Router
 
+**Priority Order:** Test-Driven Development is the first step (use when no tests exist for a feature). Write Tests is for post-hoc coverage (use when TDD wasn't followed). Fix Tests is for restoration after refactoring.
+
 IF implementing a new feature from scratch → use Test-Driven Development (RED first)
 IF fixing a bug → use Test-Driven Development (write reproducing test first)
 IF adding test coverage for existing uncommitted changes → use Write Tests

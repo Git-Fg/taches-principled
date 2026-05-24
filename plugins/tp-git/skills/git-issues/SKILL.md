@@ -7,6 +7,7 @@ when_to_use: "Use when the user says 'load issues', 'fetch issues', 'get GitHub 
 ## Decision Router
 
 IF loading all open issues → fetch from GitHub CLI, save to specs/issues/
+IF specs/ directory doesn't exist → create it automatically with mkdir -p
 IF analyzing a specific issue → locate or fetch it, then produce a spec document
 IF repository has no open issues → report empty state
 IF issue file is missing locally → fetch from GitHub first

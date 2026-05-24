@@ -14,6 +14,7 @@ IF working on multiple branches simultaneously → use worktrees instead of stas
 IF reviewing a PR while actively developing → create a temporary review worktree
 IF running long-running tests → use a detached worktree to keep the main tree clean
 IF comparing implementations across branches → create worktrees and diff directly
+IF user requests both notes and worktrees in same message → handle both in sequence
 
 # Git Advanced
 

@@ -2,7 +2,7 @@
 name: execute
 description: "Execute tasks with fresh subagent dispatch: simple dispatch, meta-judge verification with retry loop, or plan-driven execution with code review gates"
 when_to_use: |
-  When user says 'execute this', 'dispatch subagent', 'launch agent for task', 'implement with verification', 'delegate this', 'implement this plan', 'run in background'. IMMEDIATELY when user wants to delegate focused tasks with context isolation. FIRST when task requires automatic model selection, independent verification, or parallel execution. DO NOT use when the task is a simple one-liner needing only basic dispatch — use a basic subagent launch instead. DO NOT use when the task needs iterative meta-judge verification loops — use verify mode instead.
+  When user says 'execute this', 'dispatch subagent', 'launch agent for task', 'implement with verification', 'delegate this', 'implement this plan', 'run in background'. IMMEDIATELY when user wants to delegate focused tasks with context isolation. FIRST when task requires automatic model selection, independent verification, or parallel execution. DO NOT use when the task needs iterative meta-judge verification loops — use verify mode instead.
 argument-hint: "Task description [--mode dispatch|verify|plan-driven] [--model opus|sonnet|haiku] [--plan <path>]"
 ---
 

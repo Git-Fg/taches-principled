@@ -1,7 +1,7 @@
 ---
 name: fpf-maintenance
 description: "FPF lifecycle — reset reasoning cycles (soft/hard), reconcile knowledge base with code changes, manage evidence freshness (classify, refresh, deprecate, waive)."
-when_to_use: "Use when the user says 'reset FPF', 'soft reset', 'hard reset', 'archive FPF', 'clear FPF state', 'fresh start with FPF'. IMMEDIATELY when the user asks to 'actualize', 'reconcile FPF', 'sync FPF with code', 'detect drift', or 'check for stale evidence'. BEFORE starting a new hypothesis cycle after significant codebase changes. BEFORE major releases to review outstanding evidence."
+when_to_use: "Use when the user says 'reset FPF', 'soft reset', 'hard reset', 'archive FPF', 'clear FPF state', 'fresh start with FPF'. IMMEDIATELY when the user asks to 'refresh', 'reconcile FPF', 'sync FPF with code', 'detect drift', or 'check for stale evidence'. BEFORE starting a new hypothesis cycle after significant codebase changes. BEFORE major releases to review outstanding evidence."
 ---
 
 ## Decision Router
@@ -49,14 +49,14 @@ Clear the FPF state for a fresh start. Archive what you have learned -- do not c
 
 ---
 
-## 2. Actualize Knowledge Base
+## 2. Refresh Knowledge Base
 
 Reconcile the project's FPF state with recent repository changes -- detect context drift, stale evidence, and outdated decisions.
 
 ### Process
 
 **Step 1: Check Git Changes**
-Run git commands to identify changes since last actualization:
+Run git commands to identify changes since last refresh:
 ```bash
 git diff --name-only <baseline_commit> HEAD
 git diff --stat <baseline_commit> HEAD
@@ -74,13 +74,13 @@ Trace DRR files back to source evidence. If foundational files changed, flag as 
 **Step 5: Update Baseline**
 ```yaml
 # .fpf/.baseline
-last_actualized: {timestamp}
+last_refreshed: {timestamp}
 commit: {current_sha}
 ```
 
 **Step 6: Present Report**
 ```
-## Actualization Report
+## Refresh Report
 **Files Changed**: {n}
 **Context Drift**: {yes/no}
 **Stale Evidence**: {n}
@@ -89,7 +89,7 @@ commit: {current_sha}
 
 ### Output
 
-Structured actualization report with action items for each drift category.
+Structured refresh report with action items for each drift category.
 
 ---
 

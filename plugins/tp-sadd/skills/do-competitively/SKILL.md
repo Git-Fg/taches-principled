@@ -2,7 +2,7 @@
 name: do-competitively
 description: "Competitive multi-agent generation with meta-judge evaluation and adaptive synthesis — for high-stakes tasks where quality matters more than speed"
 when_to_use: |
-  When user says 'do this competitively', 'best-of-N', 'generate multiple approaches and compare', 'competing solutions', 'quality over speed'. IMMEDIATELY when user wants to generate 3+ alternative solutions and select the best through structured evaluation. DO NOT use when you want implementation with verification gates — use sadd-execute instead.
+  When user says 'do this competitively', 'best-of-N', 'generate multiple approaches and compare', 'competing solutions', 'quality over speed'. IMMEDIATELY when user wants to generate 3+ alternative solutions and select the best through structured evaluation. DO NOT use when you want implementation with verification gates — use sequential execution with per-step verification instead.
 argument-hint: Task description and optional output path
 ---
 

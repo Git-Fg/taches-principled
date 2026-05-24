@@ -1,6 +1,26 @@
 # Taches Principled — Development Guide
 
-Development practices for maintaining this plugin. These are operational rules, not suggestions.
+**For maintainers only.** This file contains development practices and internal conventions for working on this repository. It is NOT loaded by Claude Code when this plugin is installed — it exists only in the source repository. A Claude instance that installs this plugin from the marketplace will never see this file.
+
+Treat every section below as knowledge transfer from a human who worked on this codebase to future human maintainers. Claude Code instances that install the plugin learn from the plugin's skill descriptions, agent definitions, and command files — not from this guide.
+
+When generic agents and specialized inline versions cover the same capability, prefer the generic agent. Specialized inline agents add value only when they teach Claude something the generic version cannot — different workflow, domain-specific judgment, or context that would require extensive re-prompting. If a specialized agent's body is the same as the generic equivalent with different names, delete it and use the generic one. The generic agent becomes the canonical version; domain-specific knowledge lives in the skill that invokes it, not in the agent itself.
+
+An agent is not orphaned simply because it is not explicitly named — generic agents like self-review, self-critic, and code-reviewer are discovered through semantic routing, not citation. A skill that says "verify quality before delivery" semantically routes to self-review without naming it. The agent is the canonical resolution for that capability pattern. An agent is only orphaned when it has no semantic hook — no skill describes a capability it would resolve.
+
+---
+
+## Core Design Principle
+
+Every artifact in this marketplace is consumed by a Claude Code instance that starts with zero context about this project — no prior conversation, no session history, no external knowledge of what the plugin does or why it exists. That instance is smart, autonomous, and non-deterministic. It will reason about what the plugin does from the descriptions it can read.
+
+Design every skill, agent, and command as if the first thing that will happen is: Claude loads into a completely fresh session, reads only this plugin's files, and must decide what to do with it.
+
+Ask: What will that instance understand from the skill descriptions alone? Which skill will it invoke for a given task? Does the routing make sense without external context? Does the description give enough trigger signal for the right skill to fire? Does the body teach judgment or just prescribe steps? Does the agent know its role without being told what other agents exist?
+
+If the answer to any of these is "Claude would have to guess" — the artifact needs more signal. If it would make a reasonable choice — trust the model and stop adding instructions.
+
+High trust means: write descriptions that route correctly, then stop. Don't add fallbacks, disclaimers, or routing logic for edge cases the model can handle. Let the model figure out the non-deterministic parts it excels at.
 
 ---
 
@@ -36,6 +56,7 @@ Skill authoring is taught by the `create-skills` skill. See that skill for:
 - **Cross-skill references**: Never cite other skills' files with paths (e.g., `skills/create-plans/references/X.md`) — use natural language: "see the X.md file in the create-plans skill's references"
 - **Decision router**: How to structure SKILL.md for strong reference steering
 - **Description length**: Official cap is 1,536 combined description+when_to_use (raised April 2026); routing density ideal is ~200 chars for optimal trigger clarity
+- **Command format**: See `commands-standard.md` for lightweight command standards (no markdown in body, 1-3 sentence outcome instruction, conditional skill hints)
 
 ---
 
@@ -86,15 +107,14 @@ These are foundational compositional pairs or serve distinct workflow stages:
 - `ideation` + `add-task` — different workflow stages (exploration vs capture)
 - Plugin-specific skills (`git-ship`, `fpf-propose`, `tdd`) — no meaningful overlap with other plugins
 
-### Consolidation Candidates
+### Completed Consolidations
 
-When skills fragment a single capability across incompatible frameworks, merge into a hub with mode routing:
+These skills were merged into hub skills using the hub-and-spoke pattern:
 
-| Merge Into | Skills Combined | Rationale |
-|------------|-----------------|-----------|
+| Hub Skill | Skills Merged | Rationale |
+|----------|---------------|-----------|
 | `diagnose` | `analyse` + `analyse-problem` + `root-cause-tracing` | All do problem investigation; different methods (Five Whys, A3, call-stack) rather than different purposes |
 | `refine` | `code-review` + `code-simplify` + `reflexion` (Reflect mode) | All do quality improvement; review vs transform vs self-critique are modes of "make better" |
-| `judge` | `sadd-judge` (absorbed judge-with-debate) | Single vs consensus evaluation are modes of quality assessment |
 
 ### Decision Criteria: Merge or Keep Separate?
 
@@ -114,7 +134,7 @@ When skills fragment a single capability across incompatible frameworks, merge i
 
 The routing quality breaking point is **22-28 skills**. Below 22, fat skill complexity dominates. Above 28, routing confusion accumulates.
 
-**Current: 31 skills → Target: 22-28 skills**
+**Current: 34 skills across all plugins → Target: 22-28 skills for the root plugin**
 
 ### Hub-Spoke Pattern in Existing Skills
 
@@ -219,25 +239,7 @@ chore: rename to taches-principled across all files
 
 ## Git Workflow
 
-```bash
-# Create feature branch
-git checkout -b feature/my-improvement
-
-# Make changes, commit
-git add -A && git commit -m "type: description"
-
-# Push and create PR
-git push -u origin feature/my-improvement
-gh pr create --title "feat: description" --body "$(cat <<'EOF'
-## Summary
-- What changed
-- Why it changed
-
-## Test plan
-- [ ] Tested locally
-- [ ] Skill triggers correctly
-- [ ] No regressions in existing skills
-EOF
+Create feature branches, commit with conventional messages, push, and create PRs via gh. Example: `feat: add new skill`, `fix: resolve routing trigger ambiguity`.
 )"
 ```
 
@@ -250,6 +252,7 @@ EOF
 - [ ] No MCP references (plugin is MCP-free)
 - [ ] No broken cross-references between skills (never use file paths to other skills' references/agents/workflows — use natural language like "see the plan-format.md file in the create-plans skill")
 - [ ] User interaction uses clear, structured options
+- [ ] Command files conform to commands-standard.md (no method prescription, 1-3 sentence outcome instruction, no markdown in body)
 
 For skill-authoring self-check, see `create-skills` skill.
 
@@ -299,17 +302,7 @@ When referencing subagent spawning in skills, use the canonical form: **"spawn a
 
 **Role naming convention:** Use kebab-case for multi-word roles: "code-reviewer subagent", "meta-judge subagent", "verification subagent".
 
-**Plugin-level agents** are stored in `plugins/taches-principled/agents/` and are auto-discovered system-wide. They appear in the `/agents` interface and Claude can invoke them automatically based on task context. When spawning these, use their documented role name:
-
-| Agent File | Spawn Example |
-|------------|---------------|
-| `code-reviewer.md` | "spawn a code-reviewer subagent" |
-| `grader.md` | "spawn a grader subagent" |
-| `skill-auditor.md` | "spawn a skill-auditor subagent" |
-| `subagent-auditor.md` | "spawn a subagent-auditor subagent" |
-| `comparator.md` | "spawn a comparator subagent" |
-| `analyzer.md` | "spawn an analyzer subagent" |
-| `prompt-engineer.md` | "spawn a prompt-engineer subagent" |
+**Plugin-level agents** are stored in `plugins/taches-principled/agents/` and are auto-discovered system-wide. They appear in the `/agents` interface and Claude can invoke them automatically based on task context. When spawning these, describe the role: "spawn a reviewer subagent for code", "spawn a critic subagent for plans", "spawn a grader subagent for skills". The agent files are discoverable by description — no need to reference filenames.
 
 **Skill-internal agents** are stored in skill-specific `agents/` folders (e.g., `create-plans/agents/`, `execute-plans/agents/`). These are **prompt templates**, not auto-invoked subagents. They are workflow-specific and only available when that skill is loaded. To use one: read the agent file, then use its content as the basis for spawning a general-purpose subagent with your task context.
 
@@ -340,65 +333,19 @@ When spawning subagents for exploration/investigation, the orchestrator should:
 
 ## Evaluation Pipeline
 
-taches-principled has a multi-agent evaluation system for skill quality assurance:
+taches-principled has a multi-agent evaluation system for skill quality assurance. Four specialized agents handle the pipeline: **Grader** scores teaching effectiveness, **Comparator** analyzes version deltas, **Skill Auditor** reviews format and frontmatter, and **Analyzer** synthesizes into 3 prioritized changes. All four are available as auto-discovered plugin-level agents.
 
-### The Four Evaluation Agents
+### Quick Audit
 
-The evaluation pipeline uses four specialized agents. The **Grader** measures teaching effectiveness — not format compliance — scoring routing signal density, delta clarity, teaching posture, and anti-pattern quality. The **Comparator** analyzes what changed between skill versions and assesses teaching impact. The **Skill Auditor** reviews quality signals, format, and frontmatter, producing severity-ranked findings. The **Analyzer** synthesizes all input into a maximum of three prioritized changes with explicit teaching outcomes.
-
-### The Evaluation Pipeline
-
-```
-Skill Author creates/changes a skill
-    ↓
-[Grader] → Dimension scores (what to improve)
-    ↓
-[Comparator] → Delta analysis (what changed between versions)
-    ↓
-[Skill Auditor] → Quality signals (format, structure, frontmatter)
-    ↓
-[Two-Claude Ad-hoc Test] → Evaluation-driven routing verification
-    ↓
-[Analyzer] → 3 prioritized changes with teaching outcomes
-    ↓
-Skill Improved
-```
-
-### Invoking the Pipeline
-
-**Note:** The evaluation pipeline is **aspirational** — an intended design documented here for reference. The agent definitions (grader, comparator, skill-auditor, analyzer) exist as reference implementations in `plugins/taches-principled/agents/`, but no skill currently orchestrates the full pipeline. The pipeline serves as a design template if a future skill-audit skill is created.
-
-**Quick audit** (format + quality only): Read the skill-auditor agent definition at `plugins/taches-principled/agents/skill-auditor.md` and use it as a subagent prompt following the pattern:
-
-```markdown
-Agent(description = "Audit [skill] for quality",
-      prompt = "Read [path]/SKILL.md and audit following skill-auditor.md.")
-```
-
-**Full evaluation** (teaching + routing + format): To build the pipeline manually:
-1. Grader: Grade for teaching effectiveness — use `grader.md` as subagent prompt
-2. Comparator: Compare versions if applicable — use `comparator.md` as subagent prompt
-3. Skill Auditor: Audit for quality signals — use `skill-auditor.md` as subagent prompt
-4. Two-Claude Ad-hoc Test: Run evaluation-driven routing verification
-5. Analyzer: Synthesize into 3 prioritized changes — use `analyzer.md` as subagent prompt
+To audit a skill for quality, spawn a skill-auditor subagent: read the agent definition and use it as a subagent prompt with the skill path as context. This gives format and frontmatter validation without full pipeline overhead.
 
 ### Two-Claude Ad-hoc Testing
 
-Official approach for trigger verification: create evaluations before writing documentation, then test with two independent Claude instances. The goal is evaluation-driven development — verify routing works with real queries before committing to description language.
-
-**Process:**
-1. Draft candidate descriptions for the skill
-2. Create a small eval set of representative queries
-3. Test routing with two Claude instances (ad-hoc, not scripted benchmark)
-4. Refine description based on routing results
-
-**The eval is a teaching instrument, not a gate.** Failed test cases teach where the description is unclear. If ad-hoc performance is poor, rebuild with genuinely different query language.
+Official approach for trigger verification: draft candidate descriptions, create a small eval set of representative queries, test routing with two independent Claude instances, and refine based on results. The eval is a teaching instrument, not a gate — failed test cases teach where description language is unclear.
 
 ### Grading Dimensions
 
-Skills are graded on four dimensions. **Routing Signal** (40% weight) measures whether the description gives clear trigger phrases for when to invoke the skill. **Delta Clarity** (30%) measures whether the skill states what it changes from default behavior. **Teaching Posture** (20%) measures whether the skill teaches principles over procedures. **Anti-Pattern Quality** (10%) measures whether the skill provides concrete wrong/right pairs with consequence explanation.
-
-A perfectly formatted skill that teaches nothing scores 0/10 on teaching. Format without teaching is decoration.
+Skills are graded on four weighted dimensions. **Routing Signal** (40%) measures whether the description gives clear trigger phrases. **Delta Clarity** (30%) measures whether the skill states what it changes from default. **Teaching Posture** (20%) measures whether it teaches principles over procedures. **Anti-Pattern Quality** (10%) measures whether wrong/right pairs include consequence explanation. Format without teaching is decoration.
 
 ---
 
@@ -457,11 +404,33 @@ Each plugin must:
 
 ### Non-Brittle Cross-Plugin Communication
 
-Skills must NOT reference other plugins by name. Use shared workflow vocabulary:
-- ❌ "Use tp-sadd:judge for verification"
-- ✅ "For independent evaluation, dispatch a judge with isolated context"
-- ❌ "Feeds into another plugin's analyse"
-- ✅ "Produces analysis output for downstream improvement processes"
+**Cross-skill references by name are acceptable. Cross-skill file paths are not.**
+
+It is correct to cite another skill by name in DO NOT boundaries, CONTRAST sections, or conditional hints — "use diagnose instead" is fine, "read skills/diagnose/SKILL.md" is not. Naming another skill teaches routing and maintains coherence across the plugin. The key constraint is conditional framing: the reference must not be load-bearing for the skill to function. A skill that says "use X for step 2" is brittle if X doesn't exist. A skill that says "CONTRAST with X: X does A, this skill does B" works standalone — the user just doesn't get the cross-reference.
+
+**Synergy tiers:**
+- **Same skill**: Always reference freely — internal consistency
+- **Same plugin**: Reference by name with conditional framing ("use X if you have access to it") — works standalone, synergizes when both installed
+- **Same marketplace (different plugin)**: Reference by role or semantic domain, not plugin name — "for independent evaluation, dispatch a judge subagent" works whether the judge comes from tp-sadd or a third-party plugin
+- **External marketplace**: Reference by capability ("for quality verification, spawn an auditor subagent") — no plugin name, no file paths
+
+The pattern: cite the skill or role by name, not the file inside it. Let the routing system discover the right implementation.
+
+---
+
+## Design Principles
+
+### High Freedom, High Trust
+
+Every artifact in this ecosystem — skills, agents, commands — must default to maximum autonomy for the AI invoking them. **High freedom** means telling the AI what outcome to produce, not how to produce it. **High trust** means omitting constraints, steps, and boundaries that the AI can infer from context. When in doubt about whether an instruction is needed, omit it — the AI will ask or figure it out.
+
+**Skills** are triggers, not recipes — describe what to accomplish and when, not step-by-step procedure. **Agents** are system prompts, not scripts — one coherent paragraph, no numbered steps, no output format templates, no JSON schemas. **Commands** are lightweight pointers — no markdown body, no structural decomposition, 1-3 sentences of outcome, conditional hints for skills/subagents/web search when useful.
+
+### Marketplace Synergy
+
+This marketplace must synergize with any other marketplace or plugin the user may have installed. Every plugin and skill must work standalone with zero dependencies on other plugins in this marketplace. Skills describe their domain using shared workflow vocabulary — never referencing plugins by name. When another plugin provides a capability that overlaps, let routing sort it out: the AI chooses the best match from all installed plugins. Do not add disclaimers, compatibility notes, or installation requirements referencing other plugins. The user's plugin ecosystem is the AI's to navigate — not ours to constrain.
+
+This applies to all external plugins and marketplaces, not just within this project. A user running taches-principled alongside any third-party plugin should experience zero conflicts, zero duplicate routing, and zero assumptions about what else is installed.
 
 ## Meta-Rule (applies to this file only)
 
@@ -469,14 +438,6 @@ Skills must NOT reference other plugins by name. Use shared workflow vocabulary:
 - **Concise** — Minimum text for correct autonomous dispatch; no explanation, no prose ornamentation.
 - **Non-interactive** — No user-input dependency; describes only what Claude Code executes without prompting.
 - **Self-contained** — A cold-start instance must dispatch correctly from this file alone (skill priority, hook timing, rule merge order, subagent spawn mode).
-
----
-
-## End-of-Turn Follow-Up Discipline
-
-When a task concludes, identify what remains undone across the full stack — code, docs, skills, rules, and git state — without being asked. Surface it as a short numbered list so the user can pick direction rather than tediously extracting it from conversation.
-
-The goal is a clean handoff: thinking is done when the work is verified, not when a response is sent.
 
 ---
 

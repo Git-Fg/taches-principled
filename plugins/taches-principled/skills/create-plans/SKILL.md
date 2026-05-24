@@ -5,7 +5,7 @@ when_to_use: |
   Use when the user says "make a plan", "plan this out", "sketch a roadmap", or "break down this project".
   IMMEDIATELY when starting new work that needs structured decomposition.
   Do NOT use for code review, debugging existing code, or one-off questions.
-  Do NOT use when task is already refined and ready for execution (use execute-plans), when a single question needs answering (use analyse instead), or when task is vague and needs capture first (use add-task).
+  Do NOT use when task is already refined and ready for execution (use execute-plans), when a single question needs answering (use diagnose instead), or when task is vague and needs capture first (use add-task).
 ---
 
 ## Decision Router

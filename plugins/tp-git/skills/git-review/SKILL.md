@@ -10,6 +10,7 @@ IF a single comment on one line is needed → use the single comment endpoint wi
 IF multiple comments across files are needed → batch them as one review via the reviews endpoint
 IF a pending review already exists for this user → submit it first, or use individual comments
 IF MCP inline comment tools are available → prefer them over the gh API
+NOTE: MCP tools are optional enhanced behavior. Claude Code always provides `gh` CLI as baseline for all operations.
 
 # Git Review
 

@@ -5,7 +5,7 @@ when_to_use: |
   Use when the user says "let's try an experiment", "test this hypothesis", "run a PDCA cycle", "try this and measure it", "design a test", "plan an experiment", "A/B test this", or "measure improvement".
   IMMEDIATELY when solving problems where outcomes need measurement — BEFORE concluding, standardizing, or shipping.
   FIRST after a failed fix — validate the root cause was correct before closing the issue.
-  DO NOT use for debugging (use root-cause-tracing instead), for code style decisions (use write-concisely or code-simplify), or for architectural design (use kaizen or ideation).
+  DO NOT use for debugging (use diagnose instead), for code style decisions (use write-concisely or refine), or for architectural design (use kaizen or ideation).
   CONTRAST with kaizen: kaizen prevents bad patterns; PDCA tests changes that might improve things.
 argument-hint: "[improvement goal or problem to address] [--cycle N]"
 ---

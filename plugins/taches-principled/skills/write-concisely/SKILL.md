@@ -5,9 +5,9 @@ when_to_use: |
   Use when the user says "make this clearer", "write this more concisely", "clean up this text", "improve the writing", "fix the prose", "tighten this", "remove the filler", or "sound more professional".
   IMMEDIATELY when producing documentation, READMEs, comments, changelogs, or any human-readable text.
   FIRST after writing any documentation longer than one paragraph.
-  DO NOT use on code itself (use code-simplify for code), on structured data, or on error messages (use kaizen principles for error design).
+  DO NOT use on code itself (use refine for code), on structured data, or on error messages (use kaizen principles for error design).
   CONTRAST with update-docs: that updates existing docs; this improves the quality of the writing itself.
-  CONTRAST with code-simplify: that simplifies code logic; this improves prose clarity and conciseness.
+  CONTRAST with refine: that simplifies code logic; this improves prose clarity and conciseness.
 ---
 
 ## Decision Router

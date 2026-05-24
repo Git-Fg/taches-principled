@@ -1,7 +1,7 @@
 ---
 name: fpf-read
 description: "Search FPF knowledge base, display hypothesis details with assurance information, and report knowledge base state (hypothesis counts, evidence freshness, decision records)."
-when_to_use: "Use when the user says 'FPF status', 'search FPF', 'query FPF', 'knowledge base', 'what hypotheses do we have', 'show FPF state', 'check evidence freshness', or 'status'. IMMEDIATELY when the user asks to 'look up a hypothesis', 'find decisions', 'show evidence', or 'inspect the FPF knowledge base'. BEFORE making a decision that depends on prior FPF reasoning — verify the hypothesis is still valid."
+when_to_use: "Use when the user says 'FPF status', 'search FPF', 'query FPF', 'knowledge base', 'what hypotheses do we have', 'show FPF state', or 'check evidence freshness'. IMMEDIATELY when the user asks to 'look up a hypothesis', 'find decisions', 'show evidence', or 'inspect the FPF knowledge base'. BEFORE making a decision that depends on prior FPF reasoning — verify the hypothesis is still valid."
 ---
 
 ## Decision Router
