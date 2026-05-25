@@ -4,6 +4,7 @@ description: "Executes PLAN.md files using intelligent strategies based on check
 when_to_use: |
   Use when the user says "execute", "run plan", "do it", or "build it".
   IMMEDIATELY when ready to progress from PLAN to SUMMARY.
+  CONTRAST with implement-task: That skill executes task files from .specs/tasks/; this skill executes PLAN.md files from .principled/plans/.
   Do NOT use for creating plans — use the planning skill instead.
   Do NOT use for planning without execution intent.
   Do NOT use for executing prompt files — use execute-prompts instead.
@@ -574,6 +575,15 @@ git commit -m "feat({phase}-{plan}): [one-liner from SUMMARY.md]"
 **Scope pattern:**
 - `feat(01-01):` for phase 1 plan 1
 - `feat(02-03):` for phase 2 plan 3
+
+---
+
+### Archive After Completion
+
+If the user indicates the plan is finished ("done", "ship it", "wrap up", "archive this"):
+- Suggest running `/archive` to preserve artifacts and extract learnings
+- Do NOT auto-invoke — wait for explicit user confirmation
+- If user declines, note in SUMMARY.md: "Archive deferred"
 
 ---
 

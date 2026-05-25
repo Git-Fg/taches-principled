@@ -239,7 +239,7 @@ See the frameworks.md file in this skill's references folder for implementation 
 ## References
 
 Internal reference:
-- [Frameworks Reference](./references/frameworks.md) - Read when: implementing a specific multi-agent pattern in LangGraph, AutoGen, or CrewAI and needing framework-specific code examples
+- [Frameworks Reference]({baseDir}/references/frameworks.md) - Read when: implementing a specific multi-agent pattern in LangGraph, AutoGen, or CrewAI and needing framework-specific code examples
 
 Related skills:
 - subagent-orchestration - Read when: spawning agents, writing spawn prompts, and orchestrating parallel execution (execution focus vs this skill's architecture focus)

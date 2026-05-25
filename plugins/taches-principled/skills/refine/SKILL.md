@@ -16,6 +16,7 @@ argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-lo
 ## Decision Router
 
 IF user says "simplify", "clean up", "reduce complexity", "too nested", or describes high cognitive load → **SIMPLIFY** mode
+IF user says "post", "comment", "add inline", or asks to "post review" → delegate to git REVIEW
 IF user says "review", "PR", "pull request", "check my changes", "audit", or names a PR number → **REVIEW** mode (simplify with PR-specific workflow)
 IF user says "critique", "what could be better", "reflect", or asks to review completed work → **CRITIQUE** mode
 IF user says "capture this learning", "remember this", or wants learnings persisted → **MEMORIZE** mode

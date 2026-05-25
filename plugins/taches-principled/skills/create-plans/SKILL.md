@@ -11,6 +11,9 @@ argument-hint: [project or feature to plan]
 
 ## Decision Router
 
+IF user says "plan this out" WITHOUT task file context → run create-plans
+IF user says "break down a project" or "sketch a roadmap" → run create-plans
+IF user says "make a plan" for new work → run create-plans
 IF user asks to "plan" → FIRST create brief before roadmap
 IF user asks to "plan a phase" → BEFORE creating tasks read {baseDir}/references/plan-format.md and {baseDir}/references/checkpoints.md
 IF scope is unclear or large → BEFORE decomposing read {baseDir}/references/scope-estimation.md

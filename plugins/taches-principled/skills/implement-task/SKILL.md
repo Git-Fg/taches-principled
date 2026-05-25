@@ -14,6 +14,7 @@ when_to_use: |
   - "carry out the implementation steps"
   - "put this plan into action"
   IMMEDIATELY after a task has been refined and is ready for implementation — verification gates are mandatory.
+  CONTRAST with execute-plans: That skill executes PLAN.md files from .principled/plans/; this skill executes refined task files from .specs/tasks/ (todo/, in-progress/, done/).
 argument-hint: "[task file] [--continue] [--refine] [--human-in-the-loop] [--target-quality X.X] [--skip-judges]"
 ---
 

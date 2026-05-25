@@ -1,7 +1,7 @@
 {
   "name": "taches-principled",
   "displayName": "Taches Principled",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, and test strategy.",
   "author": {
     "name": "Felix",
@@ -25,6 +25,8 @@
     "tool-design",
     "security",
     "testing",
-    "headless"
+    "headless",
+    "archive",
+    "learnings"
   ]
 }

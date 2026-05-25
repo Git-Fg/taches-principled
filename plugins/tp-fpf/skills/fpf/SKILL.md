@@ -2,11 +2,12 @@
 name: fpf
 description: "First Principles Framework — generate competing hypotheses with ADI cycle (Abduction-Deduction-Induction), audit trust with R_eff and weakest-link analysis, maintain knowledge base with evidence freshness management, and query FPF state. Modes: PROPOSE, MAINTAIN, QUERY."
 when_to_use: |
-  PROPOSE: 'first principles', 'hypothesize', 'propose options', 'FPF', 'evaluate from first principles', 'reason from scratch', 'generate hypotheses', 'analyze this problem', 'evaluate alternatives', 'compare solutions', 'make a decision'
+  PROPOSE: 'first principles', 'hypothesize', 'propose options', 'FPF', 'evaluate from first principles', 'reason from scratch', 'generate hypotheses', 'evaluate alternatives', 'compare solutions', 'make a decision'
   MAINTAIN: 'reset FPF', 'soft reset', 'hard reset', 'archive FPF', 'clear FPF state', 'refresh FPF', 'reconcile FPF', 'sync FPF with code', 'detect drift', 'check evidence freshness', 'waive', 'deprecate'
   QUERY: 'FPF status', 'search FPF', 'query FPF', 'knowledge base', 'what hypotheses do we have', 'show FPF state', 'check evidence freshness', 'look up hypothesis', 'find decisions', 'inspect FPF'
   IMMEDIATELY when user asks to analyze a problem from first principles or make decisions with rationale.
   BEFORE committing to major technical decisions, architectural choices, or complex problem solutions.
+  CONTRAST with diagnose: fpf evaluates hypotheses to make decisions; diagnose investigates why something broke. Prefer fpf when multiple alternatives are specified or when "decide", "choose", "compare" appears.
 ---
 
 ## Decision Router

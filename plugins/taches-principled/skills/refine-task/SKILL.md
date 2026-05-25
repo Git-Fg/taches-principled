@@ -19,6 +19,10 @@ argument-hint: ".specs/tasks/draft/<file>.md [--fast] [--target-quality X.X] [--
 
 ## Decision Router
 
+IF user mentions a draft task file path (e.g., ".specs/tasks/draft/") → run refine-task
+IF user uses /plan alias → run refine-task
+IF user says "refine this task" or "make this actionable" → run refine-task
+IF user says "plan this out" AND a draft task file exists or is referenced → run refine-task
 IF user needs to refine a draft task into a detailed specification → run full multi-phase refinement workflow
 IF user needs quick refinement with minimal quality gates → use `--fast` mode
 IF user wants to resume an interrupted refinement → use `--continue [stage]`
