@@ -1,8 +1,9 @@
 ---
 name: create-skills
-description: "Creates Claude Code skills (SKILL.md files) — teaches skill anatomy, decision routers, and progressive disclosure. Use when user says 'create a skill', 'build a skill', 'new skill', or 'improve existing skills'."
+description: "Creates Claude Code skills (SKILL.md files) — teaches skill anatomy, decision routers, and progressive disclosure. Use when user says 'create a skill', 'build a skill', 'new skill', or 'write a skill from scratch'."
 when_to_use: |
-  Use when the user says "create a skill", "build a new skill", "make a skill for X", or "improve my skills".
+  Use when the user says "create a skill", "build a new skill", "make a skill for X", or "write a skill".
+  Do NOT use for improving existing skill descriptions or benchmarking triggers (use skill-creator).
   Do NOT use for writing general code, creating subagents, or configuring hooks/MCP servers.
   Do NOT use for prompt creation without skill context (use create-prompts), for executing prompts (use execute-prompts), or for general project planning (use create-plans).
 argument-hint: [skill name] [description]

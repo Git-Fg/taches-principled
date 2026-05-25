@@ -1,6 +1,6 @@
 # TACHES Principled
 
-**Version:** 0.5.0
+**Version:** 0.6.0
 
 A principle-based Claude Code plugin for building skills, subagents, and project plans.
 
@@ -44,7 +44,7 @@ cp -r skills/* commands/* agents/* ~/.claude/
 
 ## What's Inside
 
-### 20 Skills (15 root + 5 marketplace)
+### 21 Skills (20 root + 5 marketplace)
 
 Skills load on demand and give Claude domain expertise without bloating every conversation.
 
@@ -65,6 +65,12 @@ Skills load on demand and give Claude domain expertise without bloating every co
 | **update-docs** | Maintaining project documentation via multi-agent workflow |
 | **diagnose** | Systematic problem investigation (hub: A3/Five Whys/Fishbone/Stack Trace/Auto modes) |
 | **refine** | Quality improvement hub (hub: simplify/review/critique/memorize/polish modes) |
+| **skill-creator** | Editing, improving, or optimizing existing skills |
+| **claude-headless** | Batch and headless Claude Code workflows via `claude -p` |
+| **tool-design** | Designing agent tools and MCP integrations |
+| **multi-agent-patterns** | Designing multi-agent system architectures |
+| **security** | Security-first code review and threat modeling |
+| **test** | Test strategy, coverage analysis, and test automation patterns |
 
 ### 12 Commands
 
@@ -115,7 +121,7 @@ Five standalone plugins are hosted under `plugins/`, each independently installa
 | **tp-fpf** | Hypothesis-driven decision making with evidence lifecycle management (hub: propose/maintain/query modes) |
 | **tp-git** | Git workflow automation for commits, PRs, and issue analysis (hub: ship/review/issues/advanced modes) |
 | **tp-tdd** | Test-driven development automation with fix workflows |
-| **tp-ddd** | Domain-driven design guardrails and conventions (hub: architecture/quality/transparency modes) |
+| **tp-ddd** | Domain-driven design guardrails and conventions (hub: architecture/quality/transparency/api modes) |
 
 ## Skills vs Commands
 
@@ -172,7 +178,7 @@ Several skills consolidate related capabilities into single hub skills with dist
 - **sadd** (5 modes): compete, execute, judge, design, explore
 - **fpf** (3 modes): propose, maintain, query
 - **git** (4 modes): ship, review, issues, advanced
-- **ddd** (3 modes): architecture, quality, transparency
+- **ddd** (4 modes): architecture, quality, transparency, api
 
 ## Installation
 
