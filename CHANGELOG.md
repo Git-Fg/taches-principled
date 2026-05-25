@@ -2,6 +2,25 @@
 
 All notable changes are documented here.
 
+## [0.6.0] — 2026-05-25
+
+### Added
+- **5 new skills**: Integrated from local ~/.claude/skills/
+  - `claude-headless` — Claude Code headless execution patterns, evaluation pipeline anchor
+  - `multi-agent-patterns` — Architecture design patterns (supervisor/swarm/hierarchical)
+  - `tool-design` — Agent tool and MCP integration design with production evidence
+  - `security` — SAST, dependency audit, secrets detection, compliance (OWASP Top 10)
+  - `test` — Test strategy decisions (coverage, mock strategy, fixtures, property-based)
+
+### Changed
+- **subagent-orchestration**: Merged with `subagent-creator` — now a 2-mode hub (DESIGN/ORCHESTRATE)
+- **plugin.json**: Version bumped to 0.6.0, description updated with new capabilities, new keywords
+- **Skill count**: 20 → 25 skills (within optimal 22-28 range)
+
+### Removed
+- **subagents**: Deleted as duplicate — `subagent-orchestration` is now the canonical hub
+- **14 absorbed skills** (from 0.5.0): `reflexion`, `write-concisely`, `create-subagents`, `subagent-orchestration` (root), and 10 individual tp-* skill files superseded by hub equivalents
+
 ## [0.5.0] — 2026-05-24
 
 ### Added

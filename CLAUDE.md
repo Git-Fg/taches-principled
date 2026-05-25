@@ -70,7 +70,7 @@ When a skill body describes spawning a subagent, never include a specific tool l
 
 **Marketplace version** and **plugin version** are independent:
 
-- **Plugin version** (`0.5.0`): Incremented for any content change to this plugin
+- **Plugin version** (`0.6.0`): Incremented for any content change to this plugin
 - **Marketplace version** (`.claude-plugin/marketplace.json`): Incremented when releasing a collective update across all plugins
 
 **Update sequence:**
