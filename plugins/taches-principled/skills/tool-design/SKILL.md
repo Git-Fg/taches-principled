@@ -81,9 +81,71 @@ Set defaults to reflect common use cases. Defaults reduce agent burden by elimin
 
 Offer response format options (concise vs. detailed) because tool response size significantly impacts context usage. Concise format returns essential fields only, suitable for confirmations. Detailed format returns complete objects, suitable when full context drives decisions. Document when to use each format in the tool description so agents learn to select appropriately.
 
+**Token Efficiency Targets:**
+Design outputs to minimize context consumption without sacrificing utility. Text format typically requires ~40% fewer tokens than equivalent JSON. Set concrete targets:
+- **Default output**: Minimal fields covering 80% of use cases
+- **Verbose mode**: Complete objects for debugging or complex decisions
+- **Fixed labels over JSON**: Use `Path: value` syntax as parsing anchors instead of JSON objects when semantic content is identical
+
+**Zero-Transformation Returns:**
+Agents consume output directly in context. Every transformation step adds cognitive load and error potential. Design outputs that arrive ready-to-use:
+
+| Category | Wrong | Right |
+|----------|-------|-------|
+| Paths | Relative to internal dirs | Relative to `process.cwd()` |
+| IDs | Requiring separate lookup | Full objects or actionable references |
+| Data | Encoded needing parse | Natural language or immediately usable |
+| Progress | Every 1% (100+ updates) | Every 10% (~10 updates max) |
+
+Example zero-transformation output:
+```
+file.md
+Summary: How to get started
+ReadWhen: You are new to the project
+```
+Compare to JSON that adds parsing overhead:
+```json
+{"path": "file.md", "score": 0.15, "summary": "How to get started"}
+```
+
+**Semantic Density:**
+Natural language text outperforms JSON for agent consumption because LLMs are trained on text. JSON adds structural overhead without semantic value. Prefer text format unless the agent specifically requests structured data.
+
+Fixed-label format with parsing anchors:
+```
+Path:     getting-started.md
+Score:    0.15
+Summary:  How to get started
+ReadWhen: You are new to the project
+```
+
+The labels serve as explicit anchors for extraction while text provides semantic understanding.
+
 ### Error Message Design
 
 Design error messages for two audiences: developers debugging issues and agents recovering from failures. For agents, every error message must be actionable -- it must state what went wrong and how to correct it. Include retry guidance for retryable errors, corrected format examples for input errors, and specific missing fields for incomplete requests. An error that says only "failed" provides zero recovery signal.
+
+**Actionable Failure Patterns:**
+Error messages teach the next step, not just "error occurred." Each failure mode includes specific recovery guidance.
+
+| Situation | Teach This |
+|-----------|------------|
+| No results | Split terms, broaden search, try discovery flag |
+| Permission denied | Check permissions, try with elevation |
+| Missing dependency | Install command, where to get it |
+| Ambiguous input | Show top matches, ask to clarify |
+| Invalid format | Show expected format, provide example |
+
+Examples:
+```text
+# BAD - dead end
+Error: No results found
+
+# GOOD - forward momentum
+No results for: "multi word query"
+Try splitting: "multi" OR "word" OR "query"
+Or use: --threshold 0.5 for looser matching
+```
 
 ### Tool Definition Schema
 
@@ -92,6 +154,51 @@ Establish a consistent schema across all tools. Use verb-noun pattern for tool n
 ### Tool Collection Design
 
 Limit tool collections to 10-20 tools for most applications, because research shows description overlap causes model confusion and more tools do not always lead to better outcomes. When more tools are genuinely needed, use namespacing to create logical groupings. Implement selection mechanisms: tool grouping by domain, example-based selection hints, and umbrella tools that route to specialized sub-tools.
+
+### CLI Tool Design
+
+**The Command Sweet Spot:**
+Research shows accuracy degrades at scale: ~85% at 5 commands vs ~60% at 10 commands. Both humans and AI agents suffer from decision paralysis when evaluating large command sets. Design for 5-10 top-level commands, then use subcommands for additional depth.
+
+| Structure | Cognitive Load | Discovery |
+|-----------|---------------|-----------|
+| `cmd_create`, `cmd_get`, `cmd_delete` (flat) | High: n tools to evaluate | Massive manifest |
+| `cmd [create\|get\|delete]` (layered) | Low: 1 tool + subcommands | Progressive via --help |
+
+**Self-Teaching Hierarchical --help:**
+Every CLI level must have complete `--help` output that serves as a self-contained manual. Agents discover capabilities through --help before making calls.
+
+Required sections at EACH level:
+- **USAGE**: Command pattern with placeholders
+- **OPTIONS**: All flags with WHEN to use them
+- **BEHAVIOR**: What default shows and how flags change it
+- **EXAMPLES**: 2-4 concrete usage patterns
+
+Level structure:
+```
+Level 1 (tool --help): High-level families/primitives
+Level 2 (tool subcommand --help): Domain-specific tasks
+Level 3 (tool subcommand action --help): Detailed execution patterns
+```
+
+**Documentation for Agents:**
+Include proactive teaching for agents, not just humans. Readmes must teach before the agent forms its approach -- footer reminders come too late.
+
+The AGENTS.md pattern for tool documentation:
+```markdown
+## For AI Agents
+
+TOOL CLI - optimized for AI agent consumption.
+
+**First step:** Run `<tool> --help` to learn capabilities.
+
+**Usage:** Execute the simple, full CLI (no & or pipe syntax)
+- Example: `<tool> "query"` → shows <default output>
+
+**TIPS:**
+- Use <verbose-flag> for <extra-info>
+- Read files using native Read tool for full contents (not cat)
+```
 
 ### MCP Tool Naming Requirements
 
@@ -220,25 +327,79 @@ def search(query):
 3. Implement response format options for token efficiency
 4. Design error messages for agent recovery
 5. Establish and follow consistent naming conventions
-6. Limit tool count and use namespacing for organization
-7. Test tool designs with actual agent interactions
-8. Iterate based on observed failure modes
-9. Question whether each tool enables or constrains the model
-10. Prefer primitive, general-purpose tools over specialized wrappers
-11. Invest in documentation quality over tooling sophistication
-12. Build minimal architectures that benefit from model improvements
+6. Limit tool collections to 5-10 commands to maintain ~85% accuracy (avoid 10+ where accuracy drops to ~60%)
+7. Use subcommands for depth instead of additional top-level tools
+8. Design CLI help as self-contained manual at each level (usage, options, behavior, examples)
+9. Default to text format (~40% fewer tokens than JSON)
+10. Include AGENTS.md sections for proactive tool teaching
+11. Test tool designs with actual agent interactions
+12. Iterate based on observed failure modes
+13. Question whether each tool enables or constrains the model
+14. Prefer primitive, general-purpose tools over specialized wrappers
+15. Invest in documentation quality over tooling sophistication
+16. Build minimal architectures that benefit from model improvements
+17. Design zero-transformation outputs: paths relative to cwd, actionable references, immediately usable data
+18. Provide complete error recovery guidance in every failure message
 
-## Gotchas
+## Common Mistakes
 
-1. **Vague descriptions**: Descriptions like "Search the database for customer information" leave too many questions unanswered. State the exact database, query format, and return shape.
-2. **Cryptic parameter names**: Parameters named `x`, `val`, or `param1` force agents to guess meaning. Use descriptive names that convey purpose without reading further documentation.
-3. **Missing error recovery guidance**: Tools that fail with generic messages like "Error occurred" provide no recovery signal. Every error response must tell the agent what went wrong and what to try next.
-4. **Inconsistent naming across tools**: Using `id` in one tool, `identifier` in another, and `customer_id` in a third creates confusion. Standardize parameter names across the entire tool collection.
-5. **MCP namespace collisions**: When multiple MCP tool providers register tools with similar names (e.g., two servers both exposing `search`), agents cannot disambiguate. Always use fully qualified `ServerName:tool_name` format and audit for collisions when adding new providers.
-6. **Tool description rot**: Descriptions become inaccurate as underlying APIs evolve -- parameters get added, return formats change, error codes shift. Treat descriptions as code: version them, review them during API changes, and test them against current behavior.
-7. **Over-consolidation**: Making a single tool handle too many workflows produces parameter lists so large that agents struggle to select the right combination. If a tool requires more than 8-10 parameters or serves fundamentally different use cases, split it.
-8. **Parameter explosion**: Too many optional parameters overwhelm agent decision-making. Each parameter the agent must evaluate adds cognitive load. Provide sensible defaults, group related options into format presets, and move rarely-used parameters into an `options` object.
-9. **Missing error context**: Error messages that say only "failed" or "invalid input" without specifying which input, why it failed, or what a valid input looks like leave agents unable to self-correct. Include the invalid value, the expected format, and a concrete example in every error response.
+These five patterns show failure modes with wrong/right examples. Each demonstrates exactly what breaks and why, then shows the correct alternative.
+
+### 1. Incomplete --help
+```
+BAD:  USAGE: tool [options]
+      OPTIONS: --help, --version
+
+GOOD: USAGE: tool <query> [options]
+      OPTIONS: --list, --verbose, --help
+      BEHAVIOR: Explains what default shows and when to use flags
+      EXAMPLES: tool "query", tool --list
+```
+Agents cannot discover capabilities without complete help output.
+
+### 2. Verbose Default Output
+```
+BAD:  📄 file.md (score: 0.15)
+       Local:  /abs/path/file.md
+       Online: https://example.com/file
+       Title:  File Title
+       Summary: File summary
+       ReadWhen: Context
+
+GOOD: file.md
+        Summary: File summary
+        ReadWhen: Context
+```
+Default output should cover 80% of use cases. Verbose flags for detailed debugging.
+
+### 3. Generic Errors
+```
+BAD:  Error: No results found
+
+GOOD: No results for: "multi word query"
+      Try splitting: "multi" OR "word" OR "query"
+      Or use: --threshold 0.5 for looser matching
+```
+Every error message must provide forward momentum, not dead ends.
+
+### 4. Missing Recovery Footer
+```
+BAD:  Found 15 results
+
+GOOD: Found 15 results
+
+      REMINDER: Use native read tools for contents; tool for discovery.
+      Run "tool --help" to refresh your knowledge.
+```
+Footer guidance reinforces best practices after the main result.
+
+### 5. Non-Agent-Usable Paths
+```
+BAD:  gateway/auth.md
+
+GOOD: docs/gateway/auth.md
+```
+Paths must be relative to `process.cwd()` -- agents cannot prepend directories mentally.
 
 ## References
 

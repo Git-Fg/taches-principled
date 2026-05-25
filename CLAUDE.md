@@ -50,6 +50,16 @@ This marketplace is designed for a **costly, highly-capable main agent** orchest
 
 **The rule:** If a task takes more than 5 minutes of inline work or touches more than 2 files, spawn a subagent for it (empirical heuristic — tuned to the point where coordination overhead costs less than context consumption). Never burn expensive main-agent context on work a cheap subagent can do.
 
+### Transformer Mandate
+
+A system cannot transform itself — this is a protocol principle, not a capability limitation:
+
+- AI generates options with evidence scores
+- Human makes the final decision
+- **Autonomous architectural choices are a protocol violation** — the AI suggests and scores, never commits unilaterally on structural decisions
+
+This principle applies to decision-making workflows; execution autonomy is separate and appropriate for implementation tasks.
+
 ### No Inline Tool Lists in Subagent Instructions
 
 When a skill body describes spawning a subagent, never include a specific tool list (`tools: Read, Edit, Bash, WebSearch, Write`). Tool availability varies by environment — WebSearch may be an MCP server, Bash may be restricted, file paths differ per platform.
@@ -63,6 +73,19 @@ When a skill body describes spawning a subagent, never include a specific tool l
 | "Spawn a critic (Haiku, Read, Grep, Write) to review completeness" | "Spawn a critic subagent to review the work for gaps and inconsistencies" |
 
 **Why:** Agent definitions in `plugins/taches-principled/agents/` already configure tools per role. Inline lists duplicate this, break when tools change or are unavailable, and force subagent dispatchers to know tool names they shouldn't need to care about.
+
+### Artifact Taxonomy
+
+Four distinct artifacts with different loading behaviors and token costs:
+
+| Artifact | Loading | Token Cost | Use Case |
+|----------|---------|------------|----------|
+| **Command** | User-invoked with `/name` | Zero until used | Trigger accelerators |
+| **Skill** | Auto-loaded into context | Always present | Method teaching, routing |
+| **Agent** | Fresh Claude instance per spawn | Per-spawn | Parallel execution, independent context |
+| **Workflow Command** | Orchestrates agents via filesystem prompts | Per-spawn + coordination | Complex multi-phase workflows |
+
+**Key insight:** Commands preferred over skills for token efficiency — skills populate context every session, commands only load when invoked.
 
 ---
 
@@ -100,6 +123,7 @@ Skills are auto-invoked by default by Claude Code — a cold-start instance disc
 - **Shared references anti-pattern**: Don't create `references/` files expecting cross-skill reuse — paths break on plugin install, content must be inlined or documented here
 - **Decision router**: How to structure SKILL.md for strong reference steering
 - **Description length**: Official cap is 1,536 combined description+when_to_use (raised April 2026); routing density ideal is ~200 chars for optimal trigger clarity. `description` names the trigger phrase; `when_to_use` adds scope boundaries and usage context
+- **Congruence Level (CL)**: Evidence validation for claims about techniques — CL3 (benchmark on identical hardware/OS/software), CL2 (similar but not identical), CL1 (general principle from blog post). Apply congruence penalty when evidence comes from mismatched contexts.
 - **Command format**: See `commands-standard.md` in `plugins/taches-principled/` for lightweight command standards (no markdown in body, 1-3 sentence outcome instruction, conditional skill hints)
 
 **How to access:** The `create-skills` skill is auto-discovered. Use `/create-skills` or invoke via the Skill tool.
@@ -386,6 +410,7 @@ Do NOT wrap the path in a Read() call — just state the path. `{baseDir}` resol
 ## Token Economy
 
 - **Commands over skills for on-demand loading** — skills consume context always; commands load when invoked
+- **Tool outputs dominate context** — measured up to **83.9%** of total context usage (Context Engineering Kit); apply progressive disclosure to avoid lost-in-middle effect
 - **Specialized agents with narrow context** — broad-context agents hallucinate more
 - **Token estimation** — every skill should know its approximate cost
 - **500-line guideline** — official stance is under 500 lines for optimal performance; split into separate reference files via progressive disclosure if content exceeds this. Hub skills (e.g., `refine`, `diagnose`) aggregate multiple formerly separate skills and may legitimately exceed this limit — the guideline applies to individual modes within a hub, not the total hub file

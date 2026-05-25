@@ -300,6 +300,18 @@ Structure every spawn prompt with RACE:
 - **Explicit scope** — define files owned and files forbidden
 - **Coverage rule** — specify whether to err on side of over-reporting or curated results
 
+**Failure signal:** If you cannot complete the task, return:
+```
+{"status": "failed" | "success", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
+```
+Do not guess or produce partial output without flagging it.
+
+**Schema fields:**
+- `status`: "failed" or "success" — unambiguous signal
+- `reason`: Root cause description — enables retry decision
+- `completed_portion`: What was finished before failure — enables partial recovery
+- `retry_possible`: Boolean — prevents infinite loops on unfixable failures
+
 #### Step 3 — Spawn with Constraints
 
 ```
@@ -333,6 +345,12 @@ Returns full subagent details: status, errors, progress. Use when subagent is ta
 TaskOutput(taskId = "agent-id", block = false, timeout_ms = 0)
 ```
 Returns subagent's accumulated output file directly.
+
+**SendMessage — resume a subagent:**
+```
+SendMessage(to = "agent-id", message = "Continue the previous work")
+```
+Resume a background subagent via its ID from TaskList output.
 
 **Workflow with inspection:**
 ```
@@ -432,6 +450,19 @@ Agent(description = "...", background = true)
 
 **Never loop silently** — if a subagent fails twice with the same root cause, re-decompose the task before respawning.
 
+### Three Automation Layers
+
+| Tool | Trigger | Best for |
+|------|---------|----------|
+| Hooks | Tool events | Validate subagent outputs, enforce guardrails |
+| ScheduleWakeup / CronCreate | Time | Recurring orchestration, long-poll retries |
+| Monitor | External events | Real-time CI/log watching, instant reaction |
+
+**Rule:** Never poll when you can watch.
+
+- **ScheduleWakeup** — external system has no event output (simple polling)
+- **Monitor** — process emits structured output (logs, CI lines, test results)
+
 ### Monitor — Event-Driven Watching
 
 Monitor streams shell command stdout as real-time events. Each matching line wakes Claude to react. Zero cost while silent.
@@ -450,6 +481,28 @@ Monitor(
 - Monitor: fires only when output matches (free while silent, instant reaction)
 
 **Always use `grep --line-buffered`** in pipes — without it, pipe buffering delays events by minutes.
+
+**Filter aggressively** — every stdout line becomes a conversation message. Too many events triggers auto-stop.
+
+**Pattern — CI failure watching:**
+```
+Monitor(
+  description = "CI failure detector",
+  command = "tail -f /tmp/ci.log | grep --line-buffered 'FAILED|ERROR'",
+  persistent = true
+)
+```
+[Claude reacts to failures instantly while CI runs]
+
+**Pattern — Dev server error catching:**
+```
+Monitor(
+  description = "dev server errors",
+  command = "tail -f server.log | grep --line-buffered 'ERROR\\|panic'",
+  timeout_ms = 7200000
+)
+```
+[Claude notified the instant a server error appears]
 
 ### Failure Modes Reference
 
@@ -477,6 +530,16 @@ Monitor(
 - Must survive compaction → CLAUDE.md or disk artifact
 - Must survive session end → disk artifact (orchestrator) or agent-memory (subagent)
 - Must be shared between subagents → orchestrator-owned disk artifact
+
+### Context Window Discipline
+
+**Effective ceiling:** ~147K-152K tokens (not the nominal 200K). Auto-compaction triggers at ~64-75% capacity and removes "less important" content — which may include critical context.
+
+**MCP server costs:** Each MCP server consumes 2K-10K tokens before any subagent logic runs. Disable unused servers.
+
+**Targeted reads:** Use `Read lines 40-90 of file.ts` rather than full files in debugging loops. Every context dollar spent on irrelevant content is one less spent on signal.
+
+**Survival rule:** Critical information must live in CLAUDE.md or disk artifacts — not inline conversation where compaction can remove it.
 
 ### Anti-Patterns
 
@@ -510,3 +573,20 @@ Monitor(
 - [ ] Rollback verified if integration fails
 - [ ] Monitor or ScheduleWakeup wired for long-running external processes
 - [ ] TaskGet/TaskOutput available for mid-flight inspection
+
+### Reference: 10 Orchestration Use Cases
+
+| # | Scenario | Pattern | Why this beats alternatives |
+|---|----------|---------|----------------------------|
+| 1 | PR with multi-file changes across security, performance, style | Horizontal Split | Independent analysis streams run in parallel |
+| 2 | Production bug, root cause unknown | Contest | Competing hypotheses tested simultaneously |
+| 3 | Migrate 3 services from REST to GraphQL | Vertical Slice | Each team owns their service end-to-end |
+| 4 | Add feature requiring unfamiliar library | Parallel Research + Implement | Research feeds implementation without blocking |
+| 5 | Long CI run, continue other work | Background Monitor | Zero-cost watching, instant reaction on failure |
+| 6 | Implemented fix, want independent verification | Self-Review Loop | Maker-checker catches what the author missed |
+| 7 | Parse HTML from multiple sites | Iterative Pipeline | Structured extraction per source, aggregated results |
+| 8 | Generate edge-case tests for a function | Contest | Multiple perspectives catch different gaps |
+| 9 | Major refactor touching multiple layers | Horizontal Split + Specialist | Each layer has dedicated expert attention |
+| 10 | Ongoing maintenance, proactive fixes | Background Monitor | Proactive improvement without blocking main work |
+
+**Rule of thumb:** When uncertain which pattern fits, default to Horizontal Split. When findings will influence each other, switch to Pipeline. When hypothesis is unclear, use Contest.

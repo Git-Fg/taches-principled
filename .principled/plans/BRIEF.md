@@ -1,124 +1,86 @@
-# Brief: Integrate CEK Plugins into taches-principled Ecosystem
+# Brief: Enhance Taches Principled with Knowledge & Local Skills
 
 ## Vision
 
-Transform taches-principled from a planning-and-execution skill collection into a **complete Claude Code development ecosystem** by integrating the 11 plugins from context-engineering-kit (sadd, sdd, reflexion, kaizen, fpf, review, docs, git, tdd, ddd, tech-stack) as native, refactored skills. Each skill works alone. All skills get better together through semantic synergy — not hard references.
+Complete the taches-principled marketplace by:
+1. Extracting net-new value from references folder into existing skills
+2. Integrating the high-value skill-creator skill from ~/.claude/skills/
+3. Enhancing existing skills to fill remaining gaps (ddd + API mode)
+4. Syncing CLAUDE.md with new state and refining rules
 
 ## Why
 
-The context-engineering-kit plugins solve real problems but suffer from:
-- **Redundancy**: The meta-judge pattern is copy-pasted across 10 sadd skills (10,000+ lines of duplication)
-- **Brittle cross-references**: Hard paths to other plugins' files, XML tags, agent file dependencies
-- **Unprofessional tone**: "You will be killed" language that creates toxic context
-- **No delta principle**: Skills restate what Claude already knows instead of documenting what's different
-- **Token waste**: 15-25% of content is redundant scaffolding
+The marketplace now has 20 solid skills after Phase 3 consolidation. However:
+- **5,147 lines of reference content** in references/ folder contains knowledge not yet in skills
+- **skill-creator** scores 9.0/10 — teaches meta-level skill authoring patterns the plugin version lacks
+- **ddd lacks API mode** — REST contract design is a gap
+- **CLAUDE.md and rules need syncing** with the 0.6.0 state
 
-taches-principled already has the right architecture: decision routers, policy/mechanism separation, non-brittle references, delta principle, clean markdown-native formatting. The CEK skills need this architecture applied to them.
+## What Already Exists
 
-## What Actually Exists
+**20 skills in marketplace** (within optimal 22-28 range)
 
-**6 separate plugins** (tp-ddd, tp-fpf, tp-git, tp-sadd, tp-sdd, tp-tdd) plus **5 plugin content areas merged into root** (reflexion, kaizen, review, docs, fpf).
+**References folder** (~5,147 lines) — most already covered by skills:
+- multi-agent-patterns → subagent-orchestration ✅
+- subagent-orchestration → subagent-orchestration ✅  
+- skill-creator → skill-creator (local) → integrate
+- claude-headless → claude-headless ✅
+- ai-cli → net-new value for tool-design enhancement
+- rules-creator → keep locally (overlaps with plugin)
 
-Total: ~35 ecosystem skills across root + plugins.
+**Net-new value to extract:**
+1. ai-cli patterns → enhance tool-design
+2. MCP testing two-phase pattern → enhance claude-headless
+3. Effective context ceiling (147K-152K) → enhance subagent-orchestration
+4. Reliability metrics table → enhance relevant skills
 
-**Separate plugins:**
-- tp-ddd — Domain-driven design rules
-- tp-fpf — First Principles Framework (6 skills)
-- tp-git — Git operations (7 skills)
-- tp-sadd — Structured Agent-Driven Development (5 skills)
-- tp-sdd — Spec-Driven Development (5 skills)
-- tp-tdd — Test-Driven Development (3 skills)
+**Remaining local skills:**
+- skill-creator (9.0/10) → INTEGRATE
+- rules-creator (8.5/10) → Keep locally
+- All others → Keep locally (below threshold)
 
-**Root-level skills (22):** reflexion, kaizen, review, docs, create-skills, create-subagents, create-plans, create-prompts, execute-prompts, execute-plans, subagent-orchestration, and more.
+**Critical gaps filled:**
+- Security ✅ (0.6.0)
+- Test ✅ (0.6.0)
+- API Design → Enhance ddd with REST mode
+- Review → Keep in refine (no change)
 
 ## Core Goal
 
-> Each plugin works standalone. All plugins synergize through semantic meaning — not skill name references or file paths.
+> Enhance the marketplace with net-new knowledge WITHOUT adding skills. Strengthen existing skills. Stay within 22-28 range.
 
-Synergy means: when a user invokes `/sadd:judge`, the system already understands how `/sdd:implement-task` produces artifacts and `/reflexion:reflect` evaluates outcomes — because the skills share a common vocabulary about what "judging", "implementing", and "reflecting" mean in the development workflow.
+**Principle:** Extract value from references into existing skills rather than creating new skills. This avoids routing conflation and token cost while capturing the knowledge.
 
-## Design Principles
+## Design Decisions
 
-### Semantic Synergy (Not Hard References)
+### No New Skills
 
-Skills communicate through shared context about workflow stages, not by naming each other. A "judge" skill knows what "implementation" means because both skills describe their slot in the development pipeline — not because `judge.md` mentions `implement-task.md` by name.
+The plan does NOT create new skills. It enhances existing ones:
+- tool-design gets ai-cli patterns (enhancement, not new skill)
+- claude-headless gets MCP patterns (enhancement)
+- subagent-orchestration gets effective context ceiling (enhancement)
+- ddd gets API mode (mode addition, not new skill)
 
-**Concrete example:**
-- ❌ `sadd/judge/SKILL.md`: "Call sdd:implement-task for execution"
-- ✅ `sadd/judge/SKILL.md`: "Evaluates implementation artifacts against quality criteria"
-- ✅ `sdd/implement-task/SKILL.md`: "Produces implementation artifacts ready for evaluation"
+### Skill Creator Integration
 
-Both describe their relationship to "implementation artifacts" without naming each other. When both are present, Claude infers the workflow. When only one is present, it works alone.
+skill-creator from ~/.claude/skills/ integrates as a standalone skill:
+- Unique teaching: trigger optimization, context:fork patterns, hooks lifecycle
+- Does NOT replace plugin's create-skills (different angle)
+- Complements: plugin version is surface-level, local version teaches methodology
 
-### Delta Principle
+### CLAUDE.md Sync
 
-Each skill documents ONLY what it adds vs. default Claude behavior. If Claude already knows how to use `git diff`, the skill doesn't explain `git diff`. It explains the workflow pattern.
-
-### Decision Router Pattern
-
-Every skill starts with a decision router — concrete "IF X → do Y" conditions that trigger specific behavior.
-
-### Policy/Mechanism Separation
-
-Skills define WHAT (policy) and reference external docs for HOW (mechanism). No inline implementation procedures.
-
-## Synergy Map
-
-```
-┌─────────────────────────────────────────────────┐
-│                  PLANNING LAYER                  │
-│  create-plans → BRIEF → ROADMAP → PLAN.md        │
-│  tp-sdd:brainstorm → tp-sdd:add-task →           │
-│    tp-sdd:plan-task                              │
-│  tp-sdd:create-ideas (divergent thinking)        │
-└──────────────────────┬──────────────────────────┘
-                       │ feeds
-┌──────────────────────▼──────────────────────────┐
-│                 EXECUTION LAYER                  │
-│  execute-plans → spawns subagents                │
-│  tp-sdd:implement-task → spec-driven dev        │
-│  subagent-orchestration → parallel dispatch      │
-│  tp-tdd:test-driven-development → test-first    │
-│  tp-git:* → version control                     │
-└──────────────────────┬──────────────────────────┘
-                       │ produces
-┌──────────────────────▼──────────────────────────┐
-│               VERIFICATION LAYER                 │
-│  tp-sadd:judge → meta-judge + judge pipeline    │
-│  tp-sadd:do-in-steps → sequential + verify       │
-│  tp-sadd:do-in-parallel → parallel + verify     │
-│  tp-sadd:judge-with-debate → consensus eval    │
-│  tp-sadd:tree-of-thoughts → exploration + verify│
-│  review:review-local-changes → code review       │
-│  review:review-pr → PR review                    │
-└──────────────────────┬──────────────────────────┘
-                       │ informs
-┌──────────────────────▼──────────────────────────┐
-│             REFLECTION & IMPROVEMENT LAYER       │
-│  reflexion:reflect → self-critique              │
-│  reflexion:critique → multi-perspective review   │
-│  reflexion:memorize → CLAUDE.md curation         │
-│  kaizen:* → continuous improvement methods      │
-│  tp-fpf:* → first principles reasoning           │
-└──────────────────────┬──────────────────────────┘
-                       │ persists
-┌──────────────────────▼──────────────────────────┐
-│              INFRASTRUCTURE LAYER                │
-│  docs:update-docs → documentation               │
-│  docs:write-concisely → clear writing           │
-│  tp-ddd → domain-driven design rules           │
-└─────────────────────────────────────────────────┘
-```
-
-Plugin prefixes: `tp-ddd`, `tp-fpf`, `tp-git`, `tp-sadd`, `tp-sdd`, `tp-tdd`. Reflexion, kaizen, review, docs are root-level (no prefix).
-
-Each layer imports from below, feeds into above. Skills within a layer reference shared semantic concepts ("implementation artifacts", "judgment criteria", "reflection output") without naming specific skills.
+After all enhancements:
+- Update version references (0.5.0 → 0.6.0) ✓ DONE
+- Add skill-creator integration notes
+- Add ddd enhancement notes
+- Ensure no outdated references
 
 ## What Success Looks Like
 
-1. Every CEK skill is ported to taches-principled format (decision router, delta principle, no XML, no threats)
-2. No skill names another skill by name — all references are semantic
-3. Total line count is REDUCED vs. CEK originals (eliminating duplication)
-4. Each skill can be used standalone (load only one)
-5. When 2+ skills from complementary layers are present, Claude automatically composes workflows
-6. Existing taches-principled skills are untouched (backward compatible)
+1. Existing skills enhanced with net-new patterns from references
+2. skill-creator integrated as 21st skill
+3. ddd has REST API mode
+4. CLAUDE.md synced with 0.6.0 state
+5. README.md consistent
+6. No new skills created (stays within range)
