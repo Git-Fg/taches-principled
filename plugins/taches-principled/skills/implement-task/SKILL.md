@@ -621,7 +621,7 @@ Present both perspectives with evidence. Ask the user to resolve: "Judges disagr
 
 ## Design Decisions
 
-**Implementation patterns are documented in the patterns.md file in this skill's references.**
+**Implementation patterns are documented in {baseDir}/references/patterns.md.**
 
 ### Separate standard and critical thresholds
 Using a higher threshold for critical paths (4.5 vs 4.0) focuses quality effort where it matters most.

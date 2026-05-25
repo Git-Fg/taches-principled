@@ -1,6 +1,6 @@
-# TÂCHES Principled
+# TACHES Principled
 
-**Version:** 0.4.0
+**Version:** 0.5.0
 
 A principle-based Claude Code plugin for building skills, subagents, and project plans.
 
@@ -44,32 +44,29 @@ cp -r skills/* commands/* agents/* ~/.claude/
 
 ## What's Inside
 
-### 18 Skills
+### 20 Skills (15 root + 5 marketplace)
 
 Skills load on demand and give Claude domain expertise without bloating every conversation.
 
-| Skill | When to Use | Enhancements |
-|-------|-------------|---------------|
-| **create-skills** | Building new skills or improving existing ones | Policy/Mechanism, Anti-Patterns, Thresholds |
-| **create-subagents** | Creating specialized agents or configuring the Task tool | Policy/Mechanism, Anti-Patterns, Thresholds |
-| **create-plans** | Planning projects, phases, or features for Claude to build | Policy/Mechanism, Anti-Patterns, Thresholds |
-| **create-prompts** | Creating executable prompts for Claude Code sessions | Policy/Mechanism, Anti-Patterns, Thresholds |
-| **execute-prompts** | Executing prompts via delegated sub-tasks | Policy/Mechanism, Anti-Patterns, Thresholds |
-| **execute-plans** | Executing PLAN.md files via parallel subagent orchestration | Policy/Mechanism, Anti-Patterns, Thresholds |
-| **subagent-orchestration** | Orchestrating parallel subagents for delegated work with self-review loops | RACE Framework, 5 Parallel Patterns, Three Automation Layers |
-| **add-task** | Capturing a task idea for structured development | Standardized folder structure, type classification |
-| **ideation** | Generating and refining ideas systematically | Creative sampling, collaborative brainstorming |
-| **implement-task** | Implementing refined task specs with LLM-as-Judge verification | Quality-gated implementation |
-| **kaizen** | Continuous improvement with multiple Kaizen methods | Gemba Walk, Value Stream, Muda |
-| **plan-do-check-act** | Iterative experimentation cycles for systematic improvement | PDCA cycle |
-| **refine-task** | Refining draft specs into implementation-ready tasks | Multi-phase refinement, quality gates |
-| **reflexion** | Reflecting on past work to extract lasting insights | Agentic Context Engineering |
-| **update-docs** | Maintaining project documentation via multi-agent workflow | Tech-writer agents, quality review |
-| **write-concisely** | Clear, professional writing for human-readable docs | Writing rules and standards |
-| **diagnose** | Systematic problem investigation — Five Whys, A3, Fishbone, Stack Trace | Fishbone, Five Whys, A3, backtracing |
-| **refine** | Quality improvement — code review, simplification, and self-critique | Pipeline, Multi-effort review levels |
+| Skill | When to Use |
+|-------|-------------|
+| **create-skills** | Building new skills or improving existing ones |
+| **create-plans** | Planning projects, phases, or features for Claude to build |
+| **create-prompts** | Creating executable prompts for Claude Code sessions |
+| **execute-prompts** | Executing prompts via delegated sub-tasks |
+| **execute-plans** | Executing PLAN.md files via parallel subagent orchestration |
+| **subagents** | Designing and orchestrating multi-agent systems (hub: design/orchestrate modes) |
+| **add-task** | Capturing a task idea for structured development |
+| **ideation** | Generating and refining ideas systematically |
+| **implement-task** | Implementing refined task specs with LLM-as-Judge verification |
+| **kaizen** | Continuous improvement with multiple Kaizen methods |
+| **plan-do-check-act** | Iterative experimentation cycles for systematic improvement |
+| **refine-task** | Refining draft specs into implementation-ready tasks |
+| **update-docs** | Maintaining project documentation via multi-agent workflow |
+| **diagnose** | Systematic problem investigation (hub: A3/Five Whys/Fishbone/Stack Trace/Auto modes) |
+| **refine** | Quality improvement hub (hub: simplify/review/critique/memorize/polish modes) |
 
-### 3 Commands
+### 12 Commands
 
 Slash commands for quick, focused workflows.
 
@@ -78,33 +75,47 @@ Slash commands for quick, focused workflows.
 | `/debug` | Apply systematic debugging methodology |
 | `/whats-next` | Create a handoff for a fresh session |
 | `/simplify` | Simplify and refine recently modified code |
+| `/implement` | Execute task implementation with verification at each step |
+| `/improve` | Improve the quality of any artifact |
+| `/critique` | Get independent multi-perspective critique on high-stakes work |
+| `/learn` | Capture insights and learnings into durable project memory |
+| `/polish` | Improve prose clarity and conciseness |
+| `/orchestrate` | Orchestrate parallel subagent execution for complex multi-file tasks |
+| `/design-subagents` | Design multi-agent architectures |
+| `/ideate` | Enter divergent creative thinking mode for exploration |
+| `/next-tasks-orchestration` | Orchestrate subagents to implement changes with quality gates |
 
-### 7 Agents
+### 13 Agents
 
 Specialized agents for quality, review, and evaluation work.
 
 | Agent | Purpose |
 |-------|---------|
+| **analyzer** | Synthesizes evaluation results into improvement plans |
 | **code-reviewer** | Reviews code for issues that matter |
+| **comparator** | Compares skill versions for delta analysis |
+| **critic** | Independent critique with severity scoring |
+| **debug-tracer** | Systematic debugging and root cause tracing |
+| **grader** | Evaluates skill teaching effectiveness on 4 dimensions |
+| **implementer** | Quality-gated task implementation |
 | **prompt-engineer** | Reviews prompts for clarity and effectiveness |
+| **researcher** | Multi-source investigation and synthesis |
+| **self-critic** | Self-review with severity scoring |
+| **self-review** | Independent quality verification |
 | **skill-auditor** | Reviews skills for clarity and routing |
 | **subagent-auditor** | Reviews subagents for effectiveness |
-| **grader** | Evaluates skill teaching effectiveness on 4 dimensions |
-| **comparator** | Compares skill versions for delta analysis |
-| **analyzer** | Synthesizes evaluation results into improvement plans |
 
-### 6 Separate Plugins
+### 5 Marketplace Plugins
 
-Six standalone plugins are hosted under `plugins/`, each independently installable from the marketplace:
+Five standalone plugins are hosted under `plugins/`, each independently installable from the marketplace:
 
 | Plugin | Focus |
 |--------|-------|
-| **tp-sadd** | Subagent-driven development with parallel dispatch, competitive generation, and LLM-as-Judge verification |
-| **tp-sdd** | Structured design and development workflow (deprecated, consolidated into root) |
-| **tp-fpf** | Hypothesis-driven decision making with evidence lifecycle management |
-| **tp-git** | Git workflow automation for commits, PRs, and issue analysis |
+| **tp-sadd** | Subagent-driven development with parallel dispatch, competitive generation, and LLM-as-Judge verification (hub: compete/execute/judge/design/explore modes) |
+| **tp-fpf** | Hypothesis-driven decision making with evidence lifecycle management (hub: propose/maintain/query modes) |
+| **tp-git** | Git workflow automation for commits, PRs, and issue analysis (hub: ship/review/issues/advanced modes) |
 | **tp-tdd** | Test-driven development automation with fix workflows |
-| **tp-ddd** | Domain-driven design guardrails and conventions |
+| **tp-ddd** | Domain-driven design guardrails and conventions (hub: architecture/quality/transparency modes) |
 
 ## Skills vs Commands
 
@@ -129,12 +140,12 @@ For those contributing to this plugin, see [CLAUDE.md](./CLAUDE.md) for developm
 | Skill | Policy | Mechanism |
 |-------|--------|-----------|
 | `create-plans` | What a good plan looks like | How to decompose tasks |
-| `create-subagents` | When to spawn vs. delegate | How to construct spawn prompts |
 | `create-skills` | When to trigger | What the skill teaches |
 | `create-prompts` | What a good prompt contains | How to gather requirements and generate |
 | `execute-prompts` | When to use parallel vs. sequential | How to parse, resolve, and execute |
 | `execute-plans` | When to use autonomous/segmented/sequential | How to orchestrate parallel workers and milestone reviews |
-| `subagent-orchestration` | When to delegate vs. do inline | How to orchestrate parallel subagents and review loops |
+| `subagents` | When to delegate vs. do inline | How to orchestrate parallel subagents and review loops |
+| `diagnose` | When to use which investigation method | How to apply A3, Five Whys, Fishbone, Stack Trace |
 | `refine` | When to simplify vs leave alone | The 5-stage simplification pipeline |
 
 ## The Principle-Based Approach
@@ -150,6 +161,18 @@ The new way:
 5. **Gotchas, not rules** — "Common mistake: vague descriptions won't route correctly" beats "you must include an objective tag"
 
 This plugin practices what it preaches: skills focus on principles and anti-patterns, not procedures. Each skill teaches the concept in under 200 lines of body text.
+
+## Hub-and-Spoke Pattern
+
+Several skills consolidate related capabilities into single hub skills with distinct modes:
+
+- **refine** (5 modes): simplify, review, critique, memorize, polish
+- **subagents** (2 modes): design, orchestrate
+- **diagnose** (5 modes): A3, five-whys, fishbone, stack-trace, auto
+- **sadd** (5 modes): compete, execute, judge, design, explore
+- **fpf** (3 modes): propose, maintain, query
+- **git** (4 modes): ship, review, issues, advanced
+- **ddd** (3 modes): architecture, quality, transparency
 
 ## Installation
 

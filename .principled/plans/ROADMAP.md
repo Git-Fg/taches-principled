@@ -69,6 +69,7 @@ Phase 0 (Foundation) — COMPLETED
   │                 ├── tp-sadd consolidated (5→1), tp-git (4→1)
   │                 ├── tp-fpf consolidated (3→1), tp-ddd (3→1)
   │                 └── 34 skills → 20 skills (41% reduction)
+  └── Phase 4 (Audit Fixes): Documentation staleness + agent quality
   ├── Phase 4 (FPF) — FOLDED into Phase 3 consolidation
   ├── Phase 5 (Review & Docs) — FOLDED into Phase 3 consolidation
   ├── Phase 6 (Git & TDD) — FOLDED into Phase 3 consolidation

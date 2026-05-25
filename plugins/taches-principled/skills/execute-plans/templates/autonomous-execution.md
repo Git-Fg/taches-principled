@@ -151,11 +151,9 @@ Every 2-3 tasks (whichever comes first):
 
 ### Critic Prompt Structure
 
-**Spawn the critic** using the critic agent template from the agents folder as the spawn prompt. Fill the placeholders with the current execution state, files modified since the last milestone, the milestone number, and the review task.
+Spawn the critic using `{baseDir}/agents/critic.md` as the spawn prompt. Fill the placeholders with the current execution state, files modified since the last milestone, the milestone number, and the review task.
 
 **Why:** The critic agent template provides structured output with blocking/non-blocking classification. Using it instead of inline prose ensures consistent review format and easier maintenance.
-
-Note: When referencing the critic agent template from within the templates directory, use the agents folder path.
 
 ---
 

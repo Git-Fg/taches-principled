@@ -12,9 +12,9 @@ argument-hint: [project or feature to plan]
 ## Decision Router
 
 IF user asks to "plan" → FIRST create brief before roadmap
-IF user asks to "plan a phase" → BEFORE creating tasks read the plan-format and checkpoints reference files
-IF scope is unclear or large → BEFORE decomposing read the scope-estimation reference file
-IF automation CLI available → BEFORE running commands read the cli-automation reference file
+IF user asks to "plan a phase" → BEFORE creating tasks read {baseDir}/references/plan-format.md and {baseDir}/references/checkpoints.md
+IF scope is unclear or large → BEFORE decomposing read {baseDir}/references/scope-estimation.md
+IF automation CLI available → BEFORE running commands read {baseDir}/references/cli-automation.md
 
 User phrase → Action routing:
 - "plan", "make plan", "create plan" → Create brief first (never roadmap first)
@@ -263,7 +263,15 @@ Always check for existing artifacts in `.principled/plans/` before starting — 
 
 Before creating a plan, understand the project thoroughly. Use subagent fan-out to explore in parallel:
 
-**Read the agents folder** — each markdown file is a subagent prompt template. Read the relevant agent, fill in placeholders like `{{context}}`, `{{task}}`, `{{scope}}`, and dispatch it as a subagent.
+**Read the agents folder** — each markdown file is a subagent prompt template:
+- `{baseDir}/agents/explorer.md` — project structure mapping
+- `{baseDir}/agents/researcher.md` — technology research
+- `{baseDir}/agents/architect.md` — trade-off evaluation
+- `{baseDir}/agents/critic.md` — plan review and challenge
+- `{baseDir}/agents/verifier.md` — verification criteria
+- `{baseDir}/agents/implementer.md` — task execution
+
+Read the relevant agent, fill in placeholders like `{{context}}`, `{{task}}`, `{{scope}}`, and dispatch it as a subagent.
 
 **Fan-out pattern for exploration:**
 
@@ -338,7 +346,7 @@ When fanning out subagents for exploration, ALL findings MUST be written to a ce
 
 **Using critic agents during planning:**
 
-After the fan-out exploration, before writing the plan, spawn a critic subagent (read the critic agent template from the agents folder) to challenge the emerging approach:
+After the fan-out exploration, before writing the plan, spawn a critic subagent (read `{baseDir}/agents/critic.md`) to challenge the emerging approach:
 
 ```
 Spawn a critic subagent (general-purpose with Write tool access):
@@ -542,7 +550,7 @@ After completion, create `.principled/plans/phases/01-foundation/SUMMARY.md`
 
 ## Anti-Patterns
 
-**Full anti-pattern catalog is in the plan-format.md reference file in this skill's references.**
+**Full anti-pattern catalog is in {baseDir}/references/plan-format.md.**
 
 ### 500-line Mega-Plan
 Each plan: 2-3 tasks, ~15-60 min of work. Quality degradation is invisible until too late.
@@ -555,11 +563,17 @@ Each plan: 2-3 tasks, ~15-60 min of work. Quality degradation is invisible until
 ## Reference Index
 
 IF writing brief → FIRST read the brief template file
-IF writing phase plan → BEFORE tasks read the plan-format and checkpoints reference files
-IF scope is unclear → BEFORE decomposing read the scope-estimation reference file
-IF automation available → BEFORE running commands read the cli-automation reference file
-IF managing milestones → read the milestone-management reference file
-IF spawning subagents → read the explorer agent template, researcher agent template, architect agent template, critic agent template, verifier agent template, and implementer agent template from the agents folder for templates
+IF writing phase plan → BEFORE tasks read `{baseDir}/references/plan-format.md` and `{baseDir}/references/checkpoints.md`
+IF scope is unclear → BEFORE decomposing read `{baseDir}/references/scope-estimation.md`
+IF automation available → BEFORE running commands read `{baseDir}/references/cli-automation.md`
+IF managing milestones → read `{baseDir}/references/milestone-management.md`
+IF spawning subagents → read the agent templates for spawning:
+- `{baseDir}/agents/explorer.md` — for project exploration
+- `{baseDir}/agents/researcher.md` — for technology research
+- `{baseDir}/agents/architect.md` — for trade-off evaluation
+- `{baseDir}/agents/critic.md` — for plan review and challenge
+- `{baseDir}/agents/verifier.md` — for verification criteria
+- `{baseDir}/agents/implementer.md` — for task execution
 
 ---
 

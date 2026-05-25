@@ -1,6 +1,6 @@
 ---
 name: create-skills
-description: "Creates Claude Code skills. Use when user says 'create a skill', 'build a skill', 'new skill', or 'improve existing skills'."
+description: "Creates Claude Code skills (SKILL.md files) — teaches skill anatomy, decision routers, and progressive disclosure. Use when user says 'create a skill', 'build a skill', 'new skill', or 'improve existing skills'."
 when_to_use: |
   Use when the user says "create a skill", "build a new skill", "make a skill for X", or "improve my skills".
   Do NOT use for writing general code, creating subagents, or configuring hooks/MCP servers.
@@ -14,11 +14,11 @@ IF writing skill body → UNDERSTAND: Skills use 3-level progressive disclosure:
   - Level 1 (~100 tokens): frontmatter name+description ALWAYS loaded at startup
   - Level 2 (~5k tokens): SKILL.md body loaded when triggered
   - Level 3 (0 tokens): scripts/ files run via bash, only output enters context
-  → Read the context-management reference file for progressive disclosure pattern
+  → Read `{baseDir}/references/context-management.md` for progressive disclosure pattern
 
-IF naming or describing a skill → FIRST read the cross-skill-discovery reference file
-IF skill might exceed 500 lines or 7 tools → IMMEDIATELY read the context-management reference file
-IF about to commit a new skill → BEFORE commit read the skill-self-testing reference file
+IF naming or describing a skill → FIRST read `{baseDir}/references/cross-skill-discovery.md`
+IF skill might exceed 500 lines or 7 tools → IMMEDIATELY read `{baseDir}/references/context-management.md`
+IF about to commit a new skill → BEFORE commit read `{baseDir}/references/skill-self-testing.md`
 
 ---
 
@@ -356,7 +356,7 @@ The frontmatter provides the routing signal. The H1 title establishes identity. 
 
 When SKILL.md delegates to an agent file, reference it semantically — not with JSON or tool syntax:
 
-> "Delegate to the explorer agent to map the project structure. Read the explorer agent template from the agents folder and pass it alongside the task context."
+> "Delegate to the explorer agent to map the project structure. Read `{baseDir}/agents/explorer.md` and pass it alongside the task context."
 
 The skill body describes intent and scope. The agent file provides the executable prompt. This separation keeps SKILL.md readable and agent prompts portable.
 
@@ -512,4 +512,4 @@ Skill creation follows phases: requirements → draft → verify → integrate. 
 
 **Principle over procedure:** A skill about coordinated work should demonstrate coordination. Frame each phase as a tracked task with clear completion criteria. Trust the agent to determine execution order from the principles, not from scripted steps.
 
-For pre-commit verification of threshold checks, load the skill-self-testing reference file. After drafting a skill body, spawn a self-review subagent if you have access to one — it verifies routing signal density, delta clarity, and anti-pattern quality before the skill enters the loading pool.
+For pre-commit verification of threshold checks, load `{baseDir}/references/skill-self-testing.md`. After drafting a skill body, spawn a self-review subagent if you have access to one — it verifies routing signal density, delta clarity, and anti-pattern quality before the skill enters the loading pool.

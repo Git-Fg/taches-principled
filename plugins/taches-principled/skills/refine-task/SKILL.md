@@ -620,7 +620,7 @@ After all executed phases, judges, and the promotion step are complete:
 
 ## Design Decisions
 
-**Stage-specific guidance is documented in the stages.md file in this skill's references.**
+**Stage-specific guidance is documented in {baseDir}/references/stages.md.**
 
 ### Parallel analysis before synthesis
 Running research, codebase analysis, and business analysis in parallel is faster than sequential. This prevents the common failure mode of designing architecture without understanding business requirements or codebase constraints.

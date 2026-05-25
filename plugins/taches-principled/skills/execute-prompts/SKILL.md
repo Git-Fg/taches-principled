@@ -267,5 +267,5 @@ A prompt execution succeeds when:
 
 ## Reference Index
 
-**Workflows:** the execute-prompt workflow file from the workflows folder
+**Workflows:** {baseDir}/workflows/execute-prompt.md
 **Self-contained:** This skill does not reference other skills by name or invocation pattern.

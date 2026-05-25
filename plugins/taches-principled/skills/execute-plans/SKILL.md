@@ -17,7 +17,7 @@ IF plan has checkpoint:human-verify markers → Strategy B: Segmented Execution
 IF plan has checkpoint:decision or checkpoint:human-action → Strategy C: Sequential Execution
 IF spawning parallel workers → FIRST consult the orchestration patterns for parallel subagent work
 
-For detailed strategy mechanics → read the execution-strategies reference file AFTER selecting strategy
+For detailed strategy mechanics → read {baseDir}/references/execution-strategies.md AFTER selecting strategy
 
 ---
 
@@ -164,7 +164,7 @@ When spawning subagents for investigation (exploring project structure, finding 
 
 **Pre-execution self-critique (devil's advocate):**
 
-Before spawning workers, spawn a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Read the critic agent template from the agents folder and spawn the critic with the plan as context.
+Before spawning workers, spawn a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Read `{baseDir}/agents/critic.md` and spawn the critic with the plan as context.
 
 If critic finds critical issues: fix the plan before spawning workers.
 If critic finds minor concerns: note them for milestone review.
@@ -325,7 +325,7 @@ For tasks that are architecturally significant or touch 5+ files, integrate crit
 | human-verify | B: Segmented | ~15-20% |
 | decision, human-action | C: Sequential | ~25-30% |
 
-**Decision tree:** See the execution-strategies reference file for full strategy selection flow.
+**Decision tree:** See {baseDir}/references/execution-strategies.md for full strategy selection flow.
 
 **Target:** Reserve 70%+ context for workspace and implementation.
 
@@ -614,7 +614,7 @@ Replace all Thought/Action/Observation examples with imperative natural language
 
 ## Anti-Patterns
 
-**Full anti-pattern catalog is in the anti-patterns.md file in this skill's references.**
+**Full anti-pattern catalog is in {baseDir}/references/anti-patterns.md.**
 
 ### Skipping verification
 Marking a task complete without running the verify command.
@@ -635,16 +635,16 @@ Loading all project files instead of only those referenced in the plan.
 
 ## Reference Index
 
-IF selecting execution strategy → BEFORE choosing read the execution-strategies reference file
-IF checkpoint type is human-verify → BEFORE segment read the checkpoint-protocols reference file
-IF checkpoint type is decision → BEFORE presenting read the checkpoint-protocols reference file
-IF handling deviations → read the deviation-rules reference file
-IF spawning autonomous worker → read the autonomous-execution template from the templates folder
-IF spawning segment worker → read the segment-execution template from the templates folder
-IF spawning milestone critic → read the critic agent template from the agents folder (name: critic)
-IF spawning parallel worker → read the implementer agent template from the agents folder
-IF spawning researcher → read the researcher agent template from the agents folder
-IF spawning verifier → read the verifier agent template from the agents folder
+IF selecting execution strategy → BEFORE choosing read `{baseDir}/references/execution-strategies.md`
+IF checkpoint type is human-verify → BEFORE segment read `{baseDir}/references/checkpoint-protocols.md`
+IF checkpoint type is decision → BEFORE presenting read `{baseDir}/references/checkpoint-protocols.md`
+IF handling deviations → read `{baseDir}/references/deviation-rules.md`
+IF spawning autonomous worker → read `{baseDir}/templates/autonomous-execution.md`
+IF spawning segment worker → read `{baseDir}/templates/segment-execution.md`
+IF spawning milestone critic → read `{baseDir}/agents/critic.md`
+IF spawning parallel worker → read `{baseDir}/agents/implementer.md`
+IF spawning researcher → read `{baseDir}/agents/researcher.md`
+IF spawning verifier → read `{baseDir}/agents/verifier.md`
 **Orchestration:** Five parallel patterns for subagent work
 
 ---

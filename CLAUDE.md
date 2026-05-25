@@ -70,7 +70,7 @@ When a skill body describes spawning a subagent, never include a specific tool l
 
 **Marketplace version** and **plugin version** are independent:
 
-- **Plugin version** (`0.4.0`): Incremented for any content change to this plugin
+- **Plugin version** (`0.5.0`): Incremented for any content change to this plugin
 - **Marketplace version** (`.claude-plugin/marketplace.json`): Incremented when releasing a collective update across all plugins
 
 **Update sequence:**
@@ -126,7 +126,7 @@ Commands are trigger accelerators, not method carriers. Their value is in the fi
 
 **Important — "outcome not method" reconciled:** The "tell the outcome, not the method" rule means don't restate the *skill's internal methodology* (e.g., "apply A3 problem-solving with five whys and fishbone diagram"). It does NOT mean avoid naming native capabilities. "Fan out subagents", "create a task list", "use web search" are direct capability names that tell Claude WHAT to do — they are the outcome. Contrast with skill methodology: "use diagnose's A3 mode with severity scoring" — that's method. Commands name what, skills teach how.
 
-**Example:** `/debug` teaches "when you see a bug, think root cause first." The `diagnose` skill has 261 lines of decision routing for A3/Five-Whys/Fishbone/Stack-Trace/Auto modes. The command doesn't need to repeat that — it just needs to make Claude reach for the right skill with the right mindset.
+**Example:** `/debug` teaches "when you see a bug, think root cause first." The `diagnose` skill's decision router covers five investigation modes (A3, Five Whys, Fishbone, Stack Trace, Auto). The command doesn't need to repeat that — it just needs to make Claude reach for the right skill with the right mindset.
 
 **Anti-pattern:** Evaluating commands by word-for-word overlap with the skill body. This misses the semantic framing value. A command that says "Find the root cause and verify the fix" teaches a different trigger than a skill description that starts "Apply systematic debugging methodology."
 
@@ -334,24 +334,33 @@ Five modes in one skill:
 
 Skills must work whether installed as personal (`~/.claude/skills/`), project (`.claude/skills/`), or plugin (`~/.claude/plugins/cache/*/`).
 
-**Rule:** In SKILL.md body and templates, use `{baseDir}` for all skill-internal paths:
+**Rule:** Every file reference within a skill's own directory must use a `{baseDir}` path. Never describe a file's location in vague natural language — state its path exactly.
 
-| Type | Use | Example |
-|------|-----|---------|
-| Read/Grep tool references | `{baseDir}` | `Read({baseDir}/agents/critic.md)` |
-| Bash tool / script execution | `${CLAUDE_SKILL_DIR}` | `python3 ${CLAUDE_SKILL_DIR}/scripts/validate.py` |
-| Reference files (references/*.md) | Relative or natural language | "see plan-format.md in the create-plans skill" |
+| Reference type | Syntax | Example |
+|---------------|--------|---------|
+| Skill-internal file (agents/, references/, templates/, scripts/) | `{baseDir}/folder/file.md` | `{baseDir}/agents/critic.md` |
+| Bash-executed script | `${CLAUDE_SKILL_DIR}` | `python3 ${CLAUDE_SKILL_DIR}/scripts/validate.py` |
+| Cross-skill reference (another skill's file) | Natural language naming the skill | "see plan-format.md in the create-plans skill" |
 
-**Why:** `{baseDir}` is a prompt-injection variable resolved when the skill loads. `${CLAUDE_SKILL_DIR}` is an environment variable available to Bash tool at runtime. Plugin-installed skills have a known bug where relative paths resolve from CWD on first attempt — using both variables ensures portability.
+**Why `{baseDir}` in natural language, not just in Read calls:** The instruction "read the critic agent template from the agents folder" forces the AI to guess which file is meant. `{baseDir}/agents/critic.md` is unambiguous — one file, one path, zero ambiguity. The variable resolves when the skill loads regardless of install location.
+
+**Wrong vs right for skill-internal files:**
+
+```
+❌ "read the execution-strategies reference file"
+❌ "read the critic agent template from the agents folder"
+✅ "{baseDir}/references/execution-strategies.md"
+✅ "{baseDir}/agents/critic.md"
+```
 
 **Never use:**
 - Hard-coded paths like `skills/create-plans/agents/explorer.md`
-- Paths pointing to other skills' internals (use natural language instead)
+- Vague descriptions like "the agents folder" or "the reference file" when a specific file is meant
+- Paths pointing to other skills' internals (use natural language naming the skill)
 
 **Do NOT boundary concision:** In Do NOT boundaries, skill names are acceptable for brevity — but only when the boundary is self-contained and unambiguous:
-- ✅ `DO NOT use when X — use sadd-execute instead` (concise, unambiguous)
-- ❌ `DO NOT use when X — use sadd-execute or sadd-dispatch instead` (ambiguous — which one?)
-- ❌ `sadd-execute` as the only reference in a boundary that doesn't explain what it does
+- ✅ `DO NOT use when X — use sadd instead` (concise, unambiguous)
+- ❌ `DO NOT use when X — use sadd or execute instead` (ambiguous — which mode?)
 
 The goal is disambiguation, not elimination of names. If a skill name alone is unambiguous, use it. If it needs explanation, describe the role.
 
@@ -359,18 +368,14 @@ The goal is disambiguation, not elimination of names. If a skill name alone is u
 
 References/ folders are **lazy-loaded only when explicitly named in skill body**. They are NOT auto-discovered or auto-loaded.
 
-**References trigger loading via:**
-- Natural language: "see the format-guide.md in the create-plans skill"
-- Read tool calls: `Read({baseDir}/references/my-ref.md)`
+**Cross-skill vs skill-internal references:**
 
-**Cross-skill vs skill-internal:**
+| Type | Syntax | Example |
+|------|--------|---------|
+| **Cross-skill** | Natural language naming the skill | "see format-guide.md in the create-plans skill" |
+| **Skill-internal** | `{baseDir}/path/to/file.md` | `{baseDir}/references/my-ref.md` |
 
-| Type | Rule | Example |
-|------|------|---------|
-| **Cross-skill** | Natural language naming the skill | "see the format-guide.md in the create-plans skill" |
-| **Skill-internal** | `{baseDir}` in Read tool calls | `Read({baseDir}/references/my-ref.md)` |
-
-**Why this matters:** Plugin install copies files to `~/.claude/plugins/cache/<plugin>/`, breaking hardcoded paths. This is why skill-internal references must use `{baseDir}`, not relative paths.
+Do NOT wrap the path in a Read() call — just state the path. `{baseDir}` resolves when the skill loads regardless of install location, so `{baseDir}/references/my-ref.md` is a portable, unambiguous file reference.
 
 **Rule:** Each skill owns its `references/` folder — do not expect cross-skill reuse. If multiple skills need the same content, inline it or document the pattern here. Never create shared references/ folders expecting other skills to reference them by path.
 
@@ -452,7 +457,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] No MCP runtime dependencies (documentation references to MCP concepts are acceptable; plugin must not require MCP servers at runtime)
 - [ ] No broken cross-references between skills (never use file paths to other skills' references/agents/workflows — use natural language naming the skill)
 - [ ] No shared references/ folders expecting cross-skill reuse (inline content instead — references/ only loads when explicitly named in parent SKILL.md)
-- [ ] Skill-internal references use `{baseDir}` in Read tool calls and `${CLAUDE_SKILL_DIR}` for Bash scripts (no relative paths, no hardcoded paths like `skills/create-plans/...`)
+- [ ] Skill-internal file references use `{baseDir}/path/to/file.md` syntax (no vague "from the agents folder", no Read() wrappers, no hardcoded paths like `skills/create-plans/...`)
 - [ ] No inline tool lists in subagent spawn instructions (describe role + outcome, never `tools: Read, Edit, Bash`)
 - [ ] User interaction uses clear, structured options
 - [ ] Command files conform to commands-standard.md in `plugins/taches-principled/` (no method prescription, 1-3 sentence outcome instruction, no markdown in body)
@@ -586,7 +591,7 @@ plugins/
 │   ├── skills/{name}/SKILL.md     # One directory per skill
 │   ├── agents/                    # Bundled subagent definitions
 │   ├── commands/                  # Slash commands
-│   └── rules/                    # Always-active guardrails
+│   └── rules/                    # Guardrails (placeholder — currently empty)
 ├── references/
 │   └── official/                  # Cached Claude Code docs for offline access
 └── {tp-sadd,tp-fpf,tp-git,tp-tdd,tp-ddd}/  # Marketplace plugins
@@ -600,11 +605,11 @@ plugins/
 
 All imported/ported plugins use the `tp-` prefix:
 
-- `tp-sadd` — Structured Agent-Driven Development (sadd-execute, sadd-judge, subagent-driven-development)
-- `tp-fpf` — First Principles Framework (fpf-propose, fpf-read, fpf-maintenance)
-- `tp-git` — Git workflow automation (git-advanced, git-review, git-ship, git-issues)
-- `tp-tdd` — Test-Driven Development (tdd, verify)
-- `tp-ddd` — Domain-Driven Design principles (code-quality, code-transparency, code-architecture)
+- `tp-sadd` — Structured Agent-Driven Development (sadd hub: compete, execute, judge, design, explore)
+- `tp-fpf` — First Principles Framework (fpf hub: propose, maintain, query)
+- `tp-git` — Git workflow automation (git hub: ship, review, issues, advanced)
+- `tp-tdd` — Test-Driven Development (tdd)
+- `tp-ddd` — Domain-Driven Design principles (ddd hub: architecture, quality, transparency)
 
 ### Adding a New Plugin
 
