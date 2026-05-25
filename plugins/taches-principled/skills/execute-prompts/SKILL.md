@@ -210,6 +210,8 @@ Never `git add .` — stage only files you modified.
 | Tests | `test:` |
 | Maintenance | `chore:` |
 
+After execution completes, consider capturing insights from the results into project memory via `refine memorize`.
+
 ---
 
 ## Execution Gotchas

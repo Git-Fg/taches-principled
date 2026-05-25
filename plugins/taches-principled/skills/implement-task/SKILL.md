@@ -492,6 +492,8 @@ Generate the implementation summary:
 **Task Status:** DONE — `.specs/tasks/done/<filename>`
 ```
 
+Task complete. Consider reviewing changes with `refine simplify` or capturing learnings from this implementation session via `refine memorize`.
+
 ## Usage Walkthrough
 
 ### Example: Implementing a Feature with Verification

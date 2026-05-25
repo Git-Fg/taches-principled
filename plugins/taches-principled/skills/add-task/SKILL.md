@@ -88,4 +88,4 @@ Draft is for unrefined tasks; todo is for tasks ready to implement. The separati
 The file extension encodes the task type directly, making it visible in file listings and grep searches without opening the file. This enables tooling to filter or group tasks by type.
 
 ### Relationship to development pipeline
-Creates the input artifact for the refinement workflow. Draft tasks are enriched by the refinement workflow which adds analysis, architecture, decomposition, and verification sections before moving them to todo/.
+Creates the input artifact for the refinement workflow. Draft tasks are enriched by the refinement workflow which adds analysis, architecture, decomposition, and verification sections before moving them to todo/. Draft tasks are ready for refinement — use `refine-task` to add analysis, architecture, and verification rubrics.

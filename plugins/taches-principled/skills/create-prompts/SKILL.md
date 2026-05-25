@@ -197,6 +197,8 @@ After receiving answers, present decision gate:
 
 Keep the decision gate loop active until user selects "Proceed." Do not skip this step even if you feel you have enough context.
 
+Prompts are executable artifacts — use `execute-prompts` to dispatch the work to subagents.
+
 ---
 
 ## Prompt Generation

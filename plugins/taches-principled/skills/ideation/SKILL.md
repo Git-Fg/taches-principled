@@ -69,7 +69,7 @@ High-probability options establish the expected path; low-probability options pr
 Presenting the full design at once invites rubber-stamping. Incremental validation catches misunderstandings early.
 
 ### Relationship to development pipeline
-Produces validated design specifications that feed into task creation and implementation planning. Operates at the earliest stage of the development lifecycle.
+Produces validated design specifications that feed into task creation and implementation planning. Operates at the earliest stage of the development lifecycle. When a design is validated, capture it as a draft task to track it through refinement and implementation.
 
 # Create Ideas Mode
 

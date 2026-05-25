@@ -619,7 +619,7 @@ After all executed phases, judges, and the promotion step are complete:
 
 1. Review the refined task at `.specs/tasks/todo/<filename>`
 2. Edit directly for corrections — add `//` comments for clarification, then run `--refine` to propagate changes
-3. Begin implementation when ready
+3. Begin implementation when ready — use `/implement` to dispatch with verification gates and independent judge subagents
 ```
 
 ## Design Decisions
