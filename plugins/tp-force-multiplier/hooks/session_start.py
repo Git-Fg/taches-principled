@@ -17,7 +17,7 @@ print(json.dumps({
 print(json.dumps({
     "decision": {
         "notification": {
-            "message": "Essential: Proactively load and abuse skills for method frameworks, debugging, review, critique, simplification, ideation, planning, and implementation. Skills are not optional, use them from session start. If a workflow matches a known skill pattern, load it immediately."
+            "message": "Essential: Proactively load and abuse skills for method frameworks, debugging, review, critique, simplification, ideation, planning, implementation, and other domains. Skills are not optional, use them from session start. Example: for complex workflows, load debugging, review, or critique skills immediately."
         }
     }
 }))
