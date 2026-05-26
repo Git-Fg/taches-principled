@@ -5,15 +5,16 @@ import sys
 
 payload = json.load(sys.stdin)
 
-# Comprehensive coaching - split into distinct mandatory tips
+# Subagents tip - role-based with "for example" framing
 print(json.dumps({
     "decision": {
         "notification": {
-            "message": "Essential: For any task involving exploration, implementation, self-review, self-critic, or similar work, spawn subagents immediately and run them in parallel. Do not wait until you are stuck. If a task has independent parts, fan out subagents without hesitation."
+            "message": "Essential: Orchestrate, do not execute. Subagents own parallel work. For example: exploration, implementation, verification, critique, or any task with independent parts, spawn immediately. Do not wait until you are stuck. If a task has independent parts, fan out without hesitation."
         }
     }
 }))
 
+# Skills tip - stronger mandate
 print(json.dumps({
     "decision": {
         "notification": {
