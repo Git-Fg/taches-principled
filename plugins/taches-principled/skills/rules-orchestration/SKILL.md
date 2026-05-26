@@ -40,15 +40,27 @@ After conversation or skill execution with discoverable conventions, anti-patter
 
 ### Process
 
-1. **Capture context** — Read from `.principled/scratch/` or conversation summary
-2. **Extract insights** — Spawn a rules-analyzer subagent to identify conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge
-3. **Synthesize proposals** — Convert raw insights into structured proposals: category (TECHNICAL, PROCESS, PATTERN, DECISION), priority (critical, important, nice-to-have), proposed location (CLAUDE.md vs `.claude/rules/`), and rationale
-4. **Present proposals** — Show user proposed changes with file targets
-5. **On approval** — Integrate into target files, run git add and commit
+1. **Capture context** — Read from `.principled/scratch/` or conversation summary. Determine the source: recent skill execution output, session transcript, or explicit user request.
+
+2. **Extract insights** — Spawn a rules-analyzer subagent (read `{baseDir}/agents/rules-analyzer.md` first) to identify conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge. Pass the context path and instruct it to write findings to `.principled/scratch/rules-analysis-{timestamp}.md`.
+
+3. **Synthesize proposals** — Read the analysis output. Convert raw insights into structured proposals with:
+   - **Category**: TECHNICAL | PROCESS | PATTERN | ANTI-PATTERN | DECISION
+   - **Priority**: critical | important | nice-to-have
+   - **Target**: CLAUDE.md (global) or `.claude/rules/<name>.md` (path-scoped)
+   - **Rationale**: Why this rule belongs in the project
+   - **Rule text**: Draft rule content following `{baseDir}/references/rule-writing-guide.md`
+
+4. **Write proposal file** — Save to `.principled/scratch/rules-proposals-{timestamp}.md` with all proposals in the structured format from the template.
+
+5. **Present proposals** — Show user a numbered list of proposals with file targets and a one-line rationale. Ask: "Integrate these rules?"
+
+6. **On approval** — Spawn a rules-integrator subagent (read `{baseDir}/agents/rules-integrator.md`) with the proposal file path and target files. The integrator applies changes and commits.
 
 ### Output
-- Proposal scratchpad: `.principled/scratch/rules-proposals-{timestamp}.md`
-- Updated rules files
+- Analysis: `.principled/scratch/rules-analysis-{timestamp}.md`
+- Proposals: `.principled/scratch/rules-proposals-{timestamp}.md`
+- Updated rules files (committed)
 
 ---
 
@@ -61,11 +73,20 @@ CLAUDE.md exceeds 200 lines, `.claude/rules/` has more than 10 files, or rules f
 
 ### Process
 
-1. **Audit current state** — Read all existing rules files, map structure
-2. **Identify issues** — Spawn a rules-auditor subagent to find duplication, missing path scoping, oversized files, contradictions, and vagueness
-3. **Design new structure** — Propose reorganization: split large files, add `paths:` frontmatter, merge duplicates, archive deprecated
-4. **Present plan** — Show before/after structure
-5. **On approval** — Execute restructure, verify no syntax errors, commit
+1. **Audit current state** — Read all files in `.claude/rules/` and `CLAUDE.md`. Map: total line count, file count, any obvious duplication visible without analysis.
+
+2. **Identify issues** — Spawn a rules-auditor subagent (read `{baseDir}/agents/rules-auditor.md` first) with full paths to all rules files. Instruct it to write findings to `.principled/scratch/rules-audit.md`.
+
+3. **Design new structure** — Review the audit report. Design a reorganization:
+   - Which files to split (target: under 200 lines each)
+   - Which rules need `paths:` frontmatter added
+   - Which duplicates to merge
+   - Which deprecated rules to archive (move to `.principled/attic/rules/`)
+   - Target directory structure
+
+4. **Present plan** — Show before/after structure. For each blocker and warning from the audit, include the proposed fix. Ask: "Apply this restructure?"
+
+5. **On approval** — Execute: create new files, move content, add frontmatter, delete originals, verify no broken references, commit.
 
 ---
 
@@ -78,11 +99,22 @@ User explicitly wants to codify a specific convention.
 
 ### Process
 
-1. **Capture intent** — Understand the convention to add
-2. **Determine placement** — CLAUDE.md (global) vs `.claude/rules/` (path-scoped) vs new file
-3. **Draft rule** — Follow `{baseDir}/references/rule-writing-guide.md` conventions; include Bad/Good examples
-4. **Conflict check** — Grep existing rules for overlap or contradiction
-5. **Integrate and commit** — Apply with Edit tool, git add, conventional commit
+1. **Capture intent** — Confirm what the user wants to codify. If vague, ask one clarifying question. If clear, proceed.
+
+2. **Determine placement** — Apply the decision tree from `{baseDir}/references/rule-taxonomy.md`:
+   - Universal across all files → CLAUDE.md
+   - Specific to file types → `.claude/rules/<name>.md` with `paths:` frontmatter
+   - Specific to a subsystem → `.claude/rules/<domain>/<name>.md`
+   - Otherwise → `.claude/rules/<name>.md` (always-on)
+
+3. **Draft rule** — Write the rule following `{baseDir}/references/rule-writing-guide.md`. Include:
+   - Frontmatter: `name`, `description` (one sentence), `paths:` if scoped
+   - Body: clear directive, Bad/Good examples
+   - Rationale: why this rule
+
+4. **Conflict check** — Grep existing rules for overlap or contradiction. If found, show the conflict and ask: "Merge with existing rule, replace it, or keep both with different scope?"
+
+5. **Integrate and commit** — Apply with Edit tool (append to existing file) or Write tool (new file). Run `git add <file>` and `git commit -m "feat(rules): add [rule name] to [target file]"`. Report the commit URL or hash.
 
 ---
 
