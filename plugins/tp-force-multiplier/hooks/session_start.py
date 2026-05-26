@@ -9,7 +9,7 @@ payload = json.load(sys.stdin)
 print(json.dumps({
     "decision": {
         "notification": {
-            "message": "REQUIRED: Spawn subagents for parallel investigation. Load skills for method frameworks on complex workflows."
+            "message": "Essential: Spawn subagents for parallel investigation. Load skills for method frameworks on complex workflows."
         }
     }
 }))

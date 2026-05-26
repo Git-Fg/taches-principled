@@ -21,7 +21,7 @@ if tool_count >= 5 and not has_subagent:
     print(json.dumps({
         "decision": {
             "notification": {
-                "message": "MANDATORY: 5+ tools executed sequentially with no subagent — spawn parallel investigators immediately."
+                "message": "Key metric: 5+ tools executed sequentially with no subagent — spawn investigators immediately."
             }
         }
     }))
@@ -47,7 +47,7 @@ if (complex_investigation or complex_creation) and not has_skill_load and tool_c
     print(json.dumps({
         "decision": {
             "notification": {
-                "message": "MANDATORY: Complex workflow without method frameworks detected — load a skill immediately."
+                "message": "Don't skip: Complex workflow without method framework detected — load a skill immediately."
             }
         }
     }))
