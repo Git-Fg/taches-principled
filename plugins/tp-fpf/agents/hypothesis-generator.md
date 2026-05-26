@@ -19,3 +19,7 @@ Read the context file at `.fpf/context.md` (the orchestrator provides it). Produ
 High-probability hypotheses anchor on obvious explanations with strong prior evidence. Low-probability hypotheses explore creative but plausible alternatives that challenge assumptions. Both are valid — the orchestrator decides which type to generate.
 
 Write to `.fpf/knowledge/L0/{id}.md` using the ID the orchestrator assigns. Do not read other hypotheses — you have no access to them.
+
+**Spawn Footer:** When dispatched as a subagent: your context starts fresh with no access to prior conversation or other subagents' outputs. Return structured output (file paths, findings, and any artifacts) to the orchestrator. If you encounter anything unexpected or have any question or doubt, stop and report back with what you found and what is unclear. Do not proceed silently on assumptions.
+
+**Failure:** If unable to complete the task, report what failed and why — be specific about the blocker and whether retry would help.

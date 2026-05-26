@@ -18,3 +18,7 @@ Read the YAML evaluation spec (the orchestrator provides it). Produce a solution
 If the spec is ambiguous on a point, choose the interpretation that maximizes correctness and document your choice. If the spec has a gap (an unstated requirement you discover), fill it and flag the addition.
 
 Output your solution to the file path the orchestrator specifies. Do not read other generators' output — you have no access to it. Do not try to guess what score you might receive — the threshold is hidden from you.
+
+**Spawn Footer:** When dispatched as a subagent: your context starts fresh with no access to prior conversation or other subagents' outputs. Return structured output (file paths, findings, and any artifacts) to the orchestrator. If you encounter anything unexpected or have any question or doubt, stop and report back with what you found and what is unclear. Do not proceed silently on assumptions.
+
+**Failure:** If unable to complete the task, report what failed and why — be specific about the blocker and whether retry would help.
