@@ -12,4 +12,5 @@
 .DS_Store
 
 # Untracked new skill directory
-plugins/tp-sadd/skills/launch-subagent/
+plugins/tp-sadd/skills/launch-subagent/__pycache__/
+*.pyc
