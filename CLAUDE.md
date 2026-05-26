@@ -74,6 +74,19 @@ When a skill body describes spawning a subagent, never include a specific tool l
 
 **Why:** Agent definitions in `plugins/taches-principled/agents/` already configure tools per role. Inline lists duplicate this, break when tools change or are unavailable, and force subagent dispatchers to know tool names they shouldn't need to care about.
 
+### Orchestration Topology: Where Skills End and Agents Begin
+
+**Skills** teach WHAT to decide: routing triggers, delegation boundaries, when to stop and ask.
+
+**Agents** teach HOW to execute: verification protocols, reporting formats, artifact delivery standards.
+
+This asymmetry is load-bearing:
+- **Skills** may reference agents (by role). Never include execution logic in both.
+- **Agents** never reference skills. Never spawn subagents from an agent prompt.
+- **If you see "spawn" or "orchestrate" in an agent body, move it to the calling skill.**
+
+**The test:** "Is this describing WHAT to do or HOW to do it?" — Orchestration = skill. Execution details = agent prompt.
+
 ### Artifact Taxonomy
 
 Four distinct artifacts with different loading behaviors and token costs:
@@ -266,6 +279,8 @@ These are foundational compositional pairs or serve distinct workflow stages:
 
 ### Completed Consolidations
 
+These tables are evidence of principle application, not protocol for future decisions. Apply the principles in "Decision Criteria" directly — do not use these tables as checklists.
+
 These skills were merged into hub skills using the hub-and-spoke pattern:
 
 | Hub Skill | Skills Merged | Rationale |
@@ -278,22 +293,13 @@ These skills were merged into hub skills using the hub-and-spoke pattern:
 | `fpf` (tp-fpf) | `fpf-propose` + `fpf-maintenance` + `fpf-read` | All first-principles reasoning; propose/maintain/query are FPF lifecycle modes |
 | `ddd` (tp-ddd) | `code-architecture` + `code-quality` + `code-transparency` + `code-api` | All domain-driven design; architecture/quality/transparency/API are code design dimensions |
 
-Marketplace plugins merged in their own phase. See git history for prior skill names.
+Marketplace plugins merged in their own phase.
 
 ### Consolidation History
 
-Hub-and-spoke consolidation reduced skill count by merging related skills into routing-coherent hubs. Run `find plugins -name SKILL.md | wc -l` for accurate inventory.
+Hub-and-spoke consolidation reduced skill count by merging related skills into routing-coherent hubs. Run `find plugins -name SKILL.md | wc -l` for accurate inventory. The empirical routing target is 22-28 skills.
 
-**Current skill counts:** 24 root + 6 marketplace = 30 total. Run `find plugins -name SKILL.md | wc -l` for accurate inventory. The empirical routing target is 22-28 skills.
-
-| Phase | Hub | Skills Merged |
-|-------|-----|---------------|
-| Root | `refine` | reflexion + write-concisely |
-| Root | `subagent-orchestration` | subagent-orchestration + create-subagents |
-| tp-sadd | `sadd` | do-competitively + execute + sadd-judge + sadd-patterns + sadd-tot |
-| tp-git | `git` | git-ship + git-review + git-issues + git-advanced |
-| tp-fpf | `fpf` | fpf-propose + fpf-maintenance + fpf-read |
-| tp-ddd | `ddd` | code-architecture + code-quality + code-transparency + code-api |
+Past consolidations followed the Decision Criteria. See git history for prior skill names.
 
 ### Decision Criteria: Merge or Keep Separate?
 
@@ -312,7 +318,7 @@ Hub-and-spoke consolidation reduced skill count by merging related skills into r
 
 The routing quality breaking point is an empirical range; below it fat skill complexity dominates, above it routing conflation accumulates. Hub-and-spoke consolidation reduced skill count by merging related skills into routing-coherent hubs.
 
-**Current: 30 skills across all plugins (24 root + 6 marketplace). The routing target is 22-28 skills.**
+**Target skill count:** Run `find plugins -name SKILL.md | wc -l` for current inventory. The empirical routing target is 22-28 skills.
 
 ### Hub-Spoke Pattern in Existing Skills
 
@@ -458,6 +464,12 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] README synced to all docs/ locations if marketplace docs are present
 - [ ] Skill changes backed by eval evidence (tested against real routing scenarios, not hypothetical)
 - [ ] Skill changes describe actual problems encountered (not theoretical improvements)
+
+### Skill Quality Gate
+
+- [ ] **Orchestration separation:** Skill body describes outcomes/roles; agent prompt describes execution only. If you see "spawn" or "orchestrate" in an agent body, move it to the calling skill.
+- [ ] **No hardcoded drift targets:** Avoid specific counts or versions in prose. Replace with references: "run `find plugins -name SKILL.md | wc -l` for accurate count."
+- [ ] **Discovery over enumeration:** Don't enumerate what could be queried from filesystem. The filesystem is ground truth — don't reimplement it in prose.
 
 For skill-authoring self-check, see `create-skills` skill.
 
