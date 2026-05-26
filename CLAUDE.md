@@ -81,9 +81,13 @@ When a skill body describes spawning a subagent, never include a specific tool l
 **Agents** teach HOW to execute: verification protocols, reporting formats, artifact delivery standards.
 
 This asymmetry is load-bearing:
-- **Skills** may reference agents (by role). Never include execution logic in both.
-- **Agents** never reference skills. Never spawn subagents from an agent prompt.
-- **If you see "spawn" or "orchestrate" in an agent body, move it to the calling skill.**
+- **Skills** reference agents by role (e.g., "spawn a critic subagent"). The main agent reads the agent file and uses its content as the system prompt for the spawned subagent.
+- **Agents** are self-contained execution templates. Never spawn subagents from an agent prompt.
+
+**The pattern:** When a skill says "spawn a [role] subagent", the main agent:
+1. Reads `{baseDir}/agents/[role].md`
+2. Uses the markdown body (after frontmatter) as the subagent's system prompt
+3. Fills in placeholders (`{{context}}`, `{{task}}`, `{{scope}}`) with task-specific details
 
 **The test:** "Is this describing WHAT to do or HOW to do it?" — Orchestration = skill. Execution details = agent prompt.
 
@@ -498,6 +502,11 @@ Generated plans, prompts, scratch notes, and cross-session memory go here. This 
 ## Subagent Spawn Pattern
 
 When referencing subagent spawning in skills, use the canonical form: **"spawn a [role] subagent"**.
+
+**Agent file pattern:** When a skill says "spawn a [role] subagent", the main agent:
+1. Reads the agent file from `{baseDir}/agents/[role].md` (or plugin-level `agents/[role].md`)
+2. Uses the markdown body as the subagent's system prompt
+3. Fills in task-specific placeholders (`{{context}}`, `{{task}}`, `{{scope}}`)
 
 **Cost model:** Subagents should default to Haiku (fast, cheap) for exploration, research, implementation, verification, and critique. Reserve Sonnet/Opus for the main orchestrator's reasoning and judgment calls, and for complex subagent tasks requiring deep reasoning.
 
