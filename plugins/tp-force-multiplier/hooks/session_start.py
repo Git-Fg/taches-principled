@@ -5,11 +5,11 @@ import sys
 
 payload = json.load(sys.stdin)
 
-# Strong coaching - mandatory language
+# Comprehensive coaching - proactive subagent/skill usage
 print(json.dumps({
     "decision": {
         "notification": {
-            "message": "Essential: Spawn subagents for parallel investigation. Load skills for method frameworks on complex workflows."
+            "message": "Essential: Proactively spawn subagents for exploration, implementation, self-review, and self-critic tasks. Use them in parallel — do not wait until you are stuck. Load skills for method frameworks. The pattern is: if a task has independent parts, fan out subagents immediately."
         }
     }
 }))
