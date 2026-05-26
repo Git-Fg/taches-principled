@@ -1,6 +1,6 @@
 {
   "name": "taches-principled",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, and development skills. Each plugin works standalone; all synergize through shared workflow vocabulary.",
   "owner": {
     "name": "Felix",
@@ -9,9 +9,9 @@
   "plugins": [
     {
       "name": "taches-principled",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "source": "./plugins/taches-principled",
-      "description": "Core: principle-based skills for the full development lifecycle — plan, execute, author, review, analyze, improve, ideate, implement, document, and refine. 15 skills with decision routers."
+      "description": "Core: principle-based skills for the full development lifecycle — plan, execute, author, review, analyze, improve, ideate, implement, document, and refine. 16 skills with decision routers."
     },
     {
       "name": "tp-sadd",

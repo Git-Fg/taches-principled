@@ -127,28 +127,51 @@ Pending proposals exist from ANALYZE or SYNC that need approval before being com
 
 ### Process
 
-1. **Load proposals** — Read from `.principled/scratch/rules-proposals-*.md`
-2. **Spawn review panel** — 2-3 critic subagents evaluate clarity, conflict, efficiency, and shareability
-3. **Aggregate verdict** — Present consensus with approve/revise/reject per proposal
-4. **Apply approved** — Integrate approved rules, archive rejected ones
+1. **Load proposals** — Find proposal files: `ls .principled/scratch/rules-proposals-*.md`. If multiple exist, use the most recent. If none exist, report and exit.
+
+2. **Spawn review panel** — Dispatch 2-3 critic subagents in parallel (read `{baseDir}/agents/rules-auditor.md` for evaluation criteria). Give each critic the proposal file and this rubric:
+   - **Clarity**: Is the rule text actionable? Is the rationale clear?
+   - **Conflict**: Does this contradict or duplicate an existing rule?
+   - **Efficiency**: Would adding this reduce or increase context cost?
+   - **Shareability**: Is this team-relevant or personal preference?
+   Instruct each to write their verdict to `.principled/scratch/rules-review-{critic-id}.md`.
+
+3. **Aggregate verdict** — Read all review outputs. For each proposal: count approve/revise/reject votes. Present consensus:
+   ```markdown
+   | Rule | Verdict | Votes |
+   |------|---------|-------|
+   | rule-name | APPROVE | 3/3 |
+   | rule-name | REVISE | 2/3 |
+   | rule-name | REJECT | 1/3 |
+   ```
+   For REVISE: include specific concerns. For REJECT: include reason.
+
+4. **Apply approved** — For APPROVE: spawn a rules-integrator subagent with approved proposals. For REVISE: present revision options to user. For REJECT: archive proposal with reason.
 
 ---
 
 ## SYNC Mode
 
-Bridges the gap between ephemeral memory captures and durable rules integration.
+Bridges the gap between ephemeral memory captures and durable rules integration. The learn command stores to memory; SYNC promotes durable insights to rules.
 
 ### When
-After `learn` command captures insights, or after skill execution that established conventions.
+After `learn` command captures insights, or after skill execution that established conventions not yet codified.
 
 ### Process
 
-1. **Read sources** — `.principled/memory/learnings.md` and recent scratchpad files
-2. **Extract candidates** — Conventions, decisions, anti-patterns that warrant rules
-3. **Check existing** — Avoid duplication with current rules
-4. **Propose additions** — Targeted snippets with placement recommendation
-5. **Auto-integrate low-risk** — Critical/correctness rules added directly
-6. **Queue high-risk** — Architectural or structural rules flagged for REVIEW
+1. **Read sources** — Check for `.principled/memory/learnings.md`. Also scan `.principled/scratch/` for recent SUMMARY.md or execution output. If neither exists, report and exit.
+
+2. **Extract candidates** — Read the memory/scratch files. Identify entries tagged with TECHNICAL, DECISION, or ANTI-PATTERN — these have the highest rule-worthiness.
+
+3. **Check existing** — For each candidate, grep `.claude/rules/` and `CLAUDE.md` for overlap. Skip duplicates. Flag near-matches for human review.
+
+4. **Propose additions** — Write candidate rules to `.principled/scratch/rules-sync-proposals-{timestamp}.md`. Tag each:
+   - `auto`: critical/correctness — safe to integrate without approval
+   - `review`: important/nice-to-have — needs human review
+
+5. **Auto-integrate low-risk** — For `auto` tagged candidates: spawn rules-integrator directly. Notify user of changes.
+
+6. **Queue for REVIEW** — For `review` tagged candidates: present to user and suggest REVIEW mode.
 
 ---
 
