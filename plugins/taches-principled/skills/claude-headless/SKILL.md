@@ -541,3 +541,15 @@ claude <subcommand> --help  # subcommand-specific flags
 ```
 
 The patterns in this skill use stable combinations. The individual flags are always discoverable from `--help`.
+
+## Failure Signal
+
+```json
+{"status": "failed", "reason": "session-timeout|permission-denied|tool-unavailable", "completed_portion": "...", "retry_possible": true|false}
+```
+
+| status | reason | retry_possible |
+|--------|--------|---------------|
+| `failed` | `session-timeout` | `true` |
+| `failed` | `permission-denied` | `true` |
+| `failed` | `tool-unavailable` | `false` |

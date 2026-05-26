@@ -1,7 +1,7 @@
 ---
 name: tdd
 description: "Complete test lifecycle — Red-Green-Refactor TDD, post-hoc coverage addition, and failing test repair."
-when_to_use: "Use when the user says 'TDD', 'test-driven', 'RED-GREEN', 'write the test first', 'test first', or 'red green refactor'. IMMEDIATELY when the user says 'write tests', 'add coverage', 'test this code', 'coverage for', or 'tests needed'. IMMEDIATELY when the user says 'fix tests', 'fix failing tests', 'tests are broken', 'restore test suite', or 'update assertions'. BEFORE implementing any new feature or bug fix when tests do not yet exist."
+when_to_use: "Use when the user says 'TDD', 'test-driven', 'RED-GREEN', 'write the test first', 'test first', or 'red green refactor'. IMMEDIATELY when the user says 'write tests', 'add coverage', 'test this code', 'coverage for', or 'tests needed'. IMMEDIATELY when the user says 'fix tests', 'fix failing tests', 'tests are broken', 'restore test suite', or 'update assertions'. BEFORE implementing any new feature or bug fix when tests do not yet exist. CONTRAST with test: tdd handles execution (write tests, red-green-refactor, fix broken tests); test handles strategy (what to test, mocking decisions, fixture design). Use tdd when you know what to test; use test when deciding what to test."
 ---
 
 ## Decision Router

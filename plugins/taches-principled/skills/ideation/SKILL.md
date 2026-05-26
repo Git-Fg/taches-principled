@@ -74,8 +74,20 @@ High-probability options establish the expected path; low-probability options pr
 Presenting the full design at once invites rubber-stamping. Incremental validation catches misunderstandings early.
 
 ### Relationship to development pipeline
-Produces validated design specifications that feed into task creation and implementation planning. Operates at the earliest stage of the development lifecycle. When a design is validated, capture it as a draft task to track it through refinement and implementation.
+Produces validated design specifications that feed into task creation and implementation planning. Operates at the earliest stage of the development lifecycle. CONTRAST sections in this skill disambiguate from add-task and create-plans.
 
 # Create Ideas Mode
 
 Generate 6 distinct responses for a given topic: 3 high-probability anchors (>0.80) representing central solutions, and 3 diverse tail explorations (<0.10) exploring different solution regions. Each response includes explanatory text and a numeric probability. Responses must be genuinely distinct from one another — no overlapping or minor-variation responses.
+
+## Failure Signal
+
+```json
+{"status": "failed", "reason": "no-viable-options|user-abandoned|scope-too-broad", "completed_portion": "...", "retry_possible": true|false}
+```
+
+| status | reason | retry_possible |
+|--------|--------|---------------|
+| `failed` | `no-viable-options` | `false` |
+| `failed` | `user-abandoned` | `false` |
+| `failed` | `scope-too-broad` | `true` |

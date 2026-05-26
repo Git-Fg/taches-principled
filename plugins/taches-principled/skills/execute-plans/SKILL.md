@@ -1,8 +1,8 @@
 ---
 name: execute-plans
-description: "Executes PLAN.md files using intelligent strategies based on checkpoint types. Use when user says 'execute', 'run plan', or 'build it'."
+description: "Executes PLAN.md files using intelligent strategies based on checkpoint types. Use when user says 'run plan', 'build it', or 'do it'."
 when_to_use: |
-  Use when the user says "execute", "run plan", "do it", or "build it".
+  Use when the user says "run plan", "do it", or "build it".
   IMMEDIATELY when ready to progress from PLAN to SUMMARY.
   CONTRAST with implement-task: That skill executes task files from .specs/tasks/; this skill executes PLAN.md files from .principled/plans/.
   Do NOT use for creating plans — use the planning skill instead.

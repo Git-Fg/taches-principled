@@ -4,11 +4,8 @@ description: "Refine draft tasks into implementation-ready specifications with a
 when_to_use: |
   Use when the user says:
   - "refine this task"
-  - "plan this out"
-  - "make this actionable"
-  - "/plan"
   - "turn this into a spec"
-  - "break this down into steps"
+  - "detail the steps"
   - "refine my task into an implementation plan"
   - "I have a draft task, flesh it out"
   - "make this ready for implementation"
@@ -23,8 +20,8 @@ argument-hint: ".specs/tasks/draft/<file>.md [--fast] [--target-quality X.X] [--
 
 IF user mentions a draft task file path (e.g., ".specs/tasks/draft/") → run refine-task
 IF user uses /plan alias → run refine-task
-IF user says "refine this task" or "make this actionable" → run refine-task
-IF user says "plan this out" AND a draft task file exists or is referenced → run refine-task
+IF user says "refine this task" → run refine-task
+IF user says "detail the steps" or "turn this into steps" AND a draft task exists → run refine-task
 IF user needs to refine a draft task into a detailed specification → run full multi-phase refinement workflow
 IF user needs quick refinement with minimal quality gates → use `--fast` mode
 IF user wants to resume an interrupted refinement → use `--continue [stage]`
