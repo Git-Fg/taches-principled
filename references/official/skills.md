@@ -81,6 +81,70 @@ Three bundled skills work together: `/run` (launch app), `/verify` (build and co
 - **Plugins**: Create `skills/` directory in your plugin
 - **Managed**: Deploy organization-wide through managed settings
 
+---
+
+## Marketplace Conventions (Taches Principled)
+
+These conventions go beyond official Claude Code docs to ensure consistency across the taches-principled marketplace.
+
+### Effort Field
+
+Add `effort` to skill frontmatter to signal expected cognitive load:
+- `effort: low` — Simple edits, one-off questions
+- `effort: medium` — Multi-file changes, research tasks
+- `effort: high` — Complex refactoring, architectural decisions
+- `effort: xhigh` — Large rewrites, multi-system changes
+- `effort: max` — Full project creation, major migrations
+
+### Shell Field
+
+Add `shell: bash` to skill frontmatter for explicit shell specification (even if bash is the default):
+```yaml
+shell: bash
+```
+
+### Hub Skills
+
+A hub skill aggregates multiple related modes under one skill with a decision router. Use when:
+- Multiple modes serve the same purpose but use different methods
+- Trigger phrases overlap significantly and a router disambiguates them
+- The skill name describes a domain, not a single action
+
+A hub skill is appropriate at 2-7 modes. Beyond 7, routing degrades — split into separate skills.
+
+### Cross-Skill References
+
+Do NOT reference other skills' internal files with hardcoded paths. Use natural language:
+- Good: "see the X.md file in the create-plans skill"
+- Bad: `../../create-plans/references/X.md`
+
+This is because plugins install to different paths depending on the installation method.
+
+### Skill-Internal References
+
+Use `{baseDir}` for all skill-internal file references:
+- Good: `{baseDir}/agents/critic.md`
+- Bad: `agents/critic.md`
+- Bad: `skills/my-skill/agents/critic.md`
+
+### CONTRAST Sections
+
+For skills with overlapping trigger phrases, add CONTRAST sections to disambiguate:
+```yaml
+CONTRAST with skill-name: This skill does X; skill-name does Y. Use this when [condition].
+```
+
+CONTRAST sections belong in `when_to_use`, not in the skill body.
+
+### Argument Hints
+
+Always add `argument-hint` for skills accepting arguments:
+```yaml
+argument-hint: "[mode] [target] [--flag value]"
+```
+
+Use bracketed format. Be specific — the hint shows during autocomplete.
+
 ## Troubleshooting
 
 - **Skill not triggering**: Check description includes keywords users would naturally say

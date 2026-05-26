@@ -110,3 +110,64 @@ Order: `CLAUDE_CODE_SUBAGENT_MODEL` env → per-invocation `model` → subagent 
 1. **Isolate high-volume operations** (tests, logs, docs)
 2. **Parallel research** (multiple subagents simultaneously)
 3. **Chain subagents** (sequence with context passing)
+
+---
+
+## Marketplace Conventions (Taches Principled)
+
+These conventions go beyond official Claude Code docs for the taches-principled plugin ecosystem.
+
+### Recommended Agent Fields
+
+For all plugin-level agents, include these fields:
+
+```yaml
+maxTurns: 15    # Safety limit — stops runaway agents
+memory: local    # Persistent local memory during session
+```
+
+### Skills Preloading
+
+Use `skills` field to preload the parent skill for agent evaluation:
+```yaml
+skills: [skill-name]
+```
+This eliminates duplicated methodology in agent prompts — the agent evaluates against the skill's framework directly.
+
+### Spawn Vocabulary
+
+Use canonical "spawn a [role] subagent" pattern:
+- ✅ "spawn a critic subagent"
+- ✅ "spawn a researcher subagent"
+- ❌ "dispatch an agent"
+- ❌ "launch a worker"
+- ❌ "fire off a subagent"
+
+### Spawn Footer
+
+All agents should include a footer acknowledging their subagent role:
+
+```
+You are a subagent executing a delegated task. Your context starts fresh — no access to
+prior conversation or other subagents' outputs. When complete, return your full results
+(file paths, findings, and any artifacts) to the orchestrator in structured form.
+If you encounter anything unexpected or have any question or doubt, stop and report back
+with what you found and what is unclear. Do not proceed silently on assumptions.
+```
+
+### Subagent Directory Structure
+
+Plugin-level agents (discovered system-wide): `plugins/<plugin>/agents/<name>.md`
+Skill-internal agents (workflow-specific): `plugins/<plugin>/skills/<skill>/agents/<name>.md`
+
+Skill-internal agents are prompt templates for that workflow only. Plugin-level agents are available system-wide when the plugin is enabled.
+
+### When to Use Fork vs Named Subagent
+
+| Use fork when | Use named subagent when |
+|-------------|----------------------|
+| Inheriting parent conversation is correct | Need fresh context |
+| Speed matters, context reuse is beneficial | Isolation is required |
+| Task is an extension of current work | Task is independent |
+
+Fork is default for skill-based agents (the skill IS the context). Named subagent for standalone capability dispatch.

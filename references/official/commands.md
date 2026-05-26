@@ -78,3 +78,40 @@ Grouped by when they are used in the workflow:
 ## MCP Prompts
 
 MCP servers can define prompts - reusable prompt templates that Claude can invoke. When an MCP server is configured, its prompts appear in the `/prompts` interface and can be used like any other command.
+
+---
+
+## Marketplace Conventions (Taches Principled)
+
+Commands in the taches-principled plugin ecosystem follow these conventions:
+
+### Command File Format
+
+Commands are `.md` files in `commands/` directory. They use frontmatter:
+```yaml
+---
+name: command-name
+skill: target-skill-name
+description: One-line trigger description
+argument-hint: "[arg1] [--flag value]"
+---
+
+$ARGUMENTS
+
+Plain text outcome instruction (1-3 sentences, no markdown).
+```
+
+### Command vs Skill Precedence
+
+When a command and skill have the same name, the **skill takes precedence**. Commands are trigger accelerators; skills carry methodology.
+
+### Body Rules
+
+- Plain text only — NO markdown (no headers, bullets, bold, code blocks)
+- 1-3 sentences maximum
+- Use direct language: "fan out subagents", "create a task list", "use web search"
+- Avoid vague phrasing: "organize your approach" → "create a task list and fan out subagents"
+
+### Skill Reference
+
+In the body, reference the target skill with: "Use the [skill-name] skill if you have access to it." — the conditional "if you have access to it" prevents failures when the skill isn't installed.

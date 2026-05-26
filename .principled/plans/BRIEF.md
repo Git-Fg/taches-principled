@@ -1,55 +1,47 @@
-# BRIEF: Archive-Plan Skill + Quick Fixes (v0.6.0 → v0.7.0)
+# BRIEF: rules-orchestration Skill (v0.8.0)
 
 ## Vision
 
-Close the plan lifecycle loop. After create-plans → execute-plans, provide a closure mechanism that archives artifacts and condenses learnings into a cross-session knowledge base. Fix version inconsistencies.
+A self-contained skill that manages the CLAUDE.md + `.claude/rules/` lifecycle — analyzes conversations for rule-worthy insights, synthesizes proposals, integrates into the rules system, and maintains quality. Complements `learn` (captures to memory) by integrating durable learnings into committed rules.
 
 ## Problem
 
-- No plan→execute→archive chain — plans pile up without closure
-- Scratchpad learnings are lost between sessions
-- No knowledge accumulates across planning cycles
-- marketplace.json at 0.5.0 while plugin.json at 0.6.0 (pre-existing mismatch)
-- tp-tdd plugin.json at 0.2.0 while siblings at 0.3.0
+- Insights from skill execution (conventions, anti-patterns, decisions) are lost or manually transcribed
+- CLAUDE.md grows bloated without systematic trimming
+- No bridge between `learn`/memory captures and the rules system
+- Rules aren't updated when new patterns emerge from work
 
 ## Scope
 
 ### In scope
-- New `archive-plan` skill (SKILL.md + 1 reference + 1 template)
-- New `/archive` command
-- Integration with execute-plans (archive suggestion after SUMMARY.md)
-- Integration with whats-next command (archive reference)
-- Version bump: taches-principled 0.6.0 → 0.7.0
-- marketplace.json aligned to 0.7.0
-- Quick fix: tp-tdd version 0.2.0 → 0.3.0
+- New `rules-orchestration` skill (SKILL.md)
+- 3 agents: rules-analyzer, rules-auditor, rules-integrator
+- 2 references: rule-writing-guide, rule-taxonomy
+- ANALYZE, ADD, RESTRUCTURE, REVIEW, SYNC modes
+- Integration with existing `learn` command (memory → rules bridge)
+- Template: rule-proposal.md
 
 ### Out of scope
-- Separate archive plugin (archive is a lifecycle stage, not a domain)
-- Agent/workflow files (skill body teaches everything; reuse existing plugin agents)
-- Pattern mining (v0.7.1+)
-- MKT-002 (missing agents in simple plugins — not needed, skills suffice)
-- MKT-007 (plugin dependencies — not a real plugin manifest field)
-- MKT-008 (brittle skill references — already fixed with CONTRAST sections)
-- tp-ddd version (auditor was wrong — it already has version 0.3.0)
-- Auto-trigger mechanism (impossible per Claude Code architecture — skills cannot invoke other skills)
+- New agents subdirectory — reuse existing plugin-level agents
+- Scripts directory — validation done via agent review
+- Multiple template files — single rule-proposal.md template
+- Auto-trigger after skill execution — skills cannot invoke skills
+- Modifying managed/enterprise rules at system paths
 
 ## Constraints
 
-- Follow project conventions: {baseDir} paths, no cross-skill file references, no inline tool lists
-- Skill body under 300 lines
-- Command body: plain text, 1-3 sentences, no markdown
-- No auto-trigger — suggest via execute-plans only, user explicitly invokes /archive
-- Archive uses `.principled/attic/` (existing convention) not new `.principled/archive/`
-- Learnings append to `.principled/memory/learnings.md` (consistent with memory purpose)
-- CONTRAST with refine MEMORIZE: MEMORIZE captures general insights from sessions; archive-plan captures plan-specific learnings and bundles plan artifacts
+- Skill body under 300 lines (hub skill with decision router)
+- Agents use existing plugin-level agent definitions, not inline subagents
+- `{baseDir}` syntax for skill-internal references
+- CONTRAST with learn: MEMORIZE captures to memory; this integrates into rules
+- Rules are files — use filesystem as source of truth, not message passing
 
 ## Success Criteria
 
-1. `/archive` command triggers archive-plan skill
-2. Archive bundles created at `.principled/attic/{milestone}/{plan}/`
-3. Learnings appended to `.principled/memory/learnings.md`
-4. whats-next command includes archive reference when available
-5. execute-plans suggests archive after SUMMARY.md creation
-6. Version bumped to 0.7.0 in both plugin.json and marketplace.json
-7. tp-tdd version aligned to 0.3.0
-8. No regressions in existing skills/commands
+1. `/rules-orchestration` command triggers the skill
+2. ANALYZE mode extracts actionable insights from conversation/skill output
+3. RESTRUCTURE mode audits and reorganizes existing rules without data loss
+4. ADD mode creates valid path-scoped rules with proper frontmatter
+5. All changes git-committed with conventional messages
+6. No managed/enterprise rules modified
+7. Version bumped to 0.8.0

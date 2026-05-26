@@ -55,6 +55,26 @@ Hooks are user-defined shell commands, HTTP endpoints, or LLM prompts that execu
 | `.claude/settings.local.json` | Single project | No (gitignored) |
 | Managed policy settings | Organization-wide | Yes |
 | Plugin `hooks/hooks.json` | When plugin enabled | Yes |
+
+Plugins can define hooks in `hooks/hooks.json` within the plugin directory. These hooks fire when the plugin is enabled.
+
+Example structure:
+```json
+{
+  "hooks": [
+    {
+      "event": "SubagentStop",
+      "matcher": "*",
+      "command": {
+        "command": "python3 hooks/notify.py",
+        "reason": "Log subagent completions"
+      }
+    }
+  ]
+}
+```
+
+Supported events for plugin hooks: SessionStart, SubagentStart, SubagentStop, Stop, PostCompact.
 | Skill or agent frontmatter | While component active | Yes |
 
 ## Matcher Patterns
@@ -88,11 +108,11 @@ All hooks receive these fields in the JSON input:
 
 Granular filtering options for hook execution:
 
-| Field | Purpose |
-|---|---|
-| `once` | Boolean — if true, hook fires only once then disables |
-| `timeout` | Maximum execution time in seconds |
-| `if` | Condition expression — hook runs only if true |
+| Field | Type | Description |
+|-------|------|-------------|
+| `once` | boolean | If true, hook fires only once then disables itself |
+| `timeout` | number | Maximum execution time in seconds before terminating |
+| `if` | string | Condition expression — hook runs only if the expression evaluates to true |
 
 ## Hook Handler Types
 

@@ -105,3 +105,27 @@ Run `claude plugin validate .` to check marketplace and plugin formatting.
 
 - [Plugins Documentation](https://code.claude.com/docs/en/plugins)
 - [Discover Plugins](https://code.claude.com/docs/en/discover-plugins)
+
+---
+
+## Taches Principled Marketplace
+
+The taches-principled marketplace (`taches-principled`) uses these conventions:
+
+### Plugin Structure
+
+Each plugin has its own `.claude-plugin/plugin.json` and lives under `plugins/<name>/`.
+
+### Version Alignment
+
+- Plugin `plugin.json` version: incremented on any content change
+- Marketplace `marketplace.json` version: incremented on collective releases
+- All plugins in the marketplace should use semantic versioning
+
+### Skill Count Tracking
+
+The `description` field in `marketplace.json` includes the skill count (e.g., "16 skills with decision routers"). Update this when skills are added or removed.
+
+### Strict Mode
+
+The marketplace uses `strictMode: true` (default). The plugin's `plugin.json` is the authoritative source; marketplace entries can supplement but not override.
