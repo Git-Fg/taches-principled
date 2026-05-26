@@ -2,6 +2,31 @@
 
 All notable changes are documented here.
 
+## [0.8.0] — 2026-05-26
+
+### Added
+- **references/official/**: Updated hooks.md, skills.md, subagents.md, commands.md, and marketplaces.md with marketplace conventions (effort/effort field, shell: bash, hub skills, {baseDir} syntax, CONTRAST sections, maxTurns:15, memory:local, canonical spawn vocab, command format)
+
+### Changed
+- **Lifecycle hints removed**: Removed soft-orchestration lifecycle hints from add-task, create-prompts, implement-task per debate WEAK verdict — CONTRAST sections and decision routers are sufficient for routing
+- **tp-tdd/tdd**: Added CONTRAST section clarifying distinction from test strategy skill
+
+### Fixed
+- **Routing BLOCKERs** (3): Removed overlapping trigger phrases causing routing conflicts
+  - refine-task: removed "plan this out", "/plan", "make this actionable", "break this down into steps"
+  - execute-plans: removed "execute" from description and when_to_use
+- **Failure signal BLOCKERs** (2): Added missing Failure Signal sections
+  - ideation: added no-viable-options/user-abandoned/scope-too-broad failure modes
+  - claude-headless: added session-timeout/permission-denied/tool-unavailable failure modes
+
+## [0.7.0] — 2026-05-25
+
+### Added
+- **rules-orchestration skill**: Full lifecycle orchestration hub (6 modes: DESIGN/BUILD/ANALYZE/SYNC/REVIEW/EXECUTE) — orchestrates multiple rule sources into unified rule sets with fan-out/subagent coordination, 3-phase plan, 8 tasks committed
+
+### Changed
+- **Lifecycle continuation handoffs**: Implemented 6 lifecycle chains across ideation→add-task→refine-task→implement-task→create-prompts→execute-prompts with soft-orchestration pattern via description hints
+
 ## [0.6.0] — 2026-05-25
 
 ### Added
