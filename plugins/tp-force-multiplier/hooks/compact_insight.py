@@ -6,7 +6,7 @@ import sys
 print(json.dumps({
     "decision": {
         "notification": {
-            "message": "Consider spawning subagents to offload work before context pressure increases."
+            "message": "MANDATORY: Spawn subagents now to offload work before context pressure increases."
         }
     }
 }))

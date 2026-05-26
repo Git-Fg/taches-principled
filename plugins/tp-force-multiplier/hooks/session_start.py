@@ -5,11 +5,11 @@ import sys
 
 payload = json.load(sys.stdin)
 
-# Simple coaching - no tracking, just context
+# Strong coaching - mandatory language
 print(json.dumps({
     "decision": {
         "notification": {
-            "message": "Tip: Spawn subagents for parallel investigation. Use skills for method frameworks when workflows are complex."
+            "message": "REQUIRED: Spawn subagents for parallel investigation. Load skills for method frameworks on complex workflows."
         }
     }
 }))

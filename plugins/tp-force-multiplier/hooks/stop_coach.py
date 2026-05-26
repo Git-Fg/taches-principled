@@ -17,11 +17,11 @@ has_subagent = '"SubagentStart"' in content
 tool_count = content.count('"tool":')
 
 if tool_count >= 5 and not has_subagent:
-    # Coach: sequential work detected
+    # Coach: sequential work detected - mandatory language
     print(json.dumps({
         "decision": {
             "notification": {
-                "message": "5+ tools, no subagent — spawning parallel investigators would run concurrently."
+                "message": "MANDATORY: 5+ tools executed sequentially with no subagent — spawn parallel investigators immediately."
             }
         }
     }))
@@ -43,11 +43,11 @@ complex_investigation = read_count >= 3 and grep_count >= 1
 complex_creation = read_count >= 2 and (edit_count >= 1 or content.count('"tool": "Write"') >= 1)
 
 if (complex_investigation or complex_creation) and not has_skill_load and tool_count >= 8:
-    # Coach: workflow complexity suggests method framework
+    # Coach: workflow complexity suggests method framework - mandatory language
     print(json.dumps({
         "decision": {
             "notification": {
-                "message": "Complex workflow detected — method frameworks often help with multi-stage investigation or creation patterns."
+                "message": "MANDATORY: Complex workflow without method frameworks detected — load a skill immediately."
             }
         }
     }))
