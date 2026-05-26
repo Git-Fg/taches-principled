@@ -179,7 +179,7 @@ After `learn` command captures insights, or after skill execution that establish
 
 **Files as source of truth.** Rules are files on disk, not conversation state. All coordination via filesystem, not message passing.
 
-**Propose-then-approve.** Never auto-apply without presenting proposals. Matches the refine self-critic pattern.
+**Propose-then-approve.** Never auto-apply without presenting proposals. Loop a critic subagent until no HIGH findings before applying.
 
 **No managed rules.** Explicit check: do not modify files under `/etc/claude-code/` or other system-managed paths.
 

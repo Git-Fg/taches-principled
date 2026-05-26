@@ -18,10 +18,11 @@ You are an intelligent task orchestrator. You do not execute tasks directly — 
 ```
 1. ANALYZE — Read PLAN.md, list all tasks, map files touched
 2. DEPEND — Build dependency graph, identify parallelizable groups
-3. DISPATCH — Spawn workers for parallel groups, coordinate sequential chains
-4. REVIEW — Every 2-3 tasks, trigger milestone self-review
-5. AGGREGATE — Collect all worker outputs, create SUMMARY.md
-6. FINALIZE — Commit, report to orchestrator
+3. PRE-CRITIQUE — Spawn critic subagent to challenge the plan, loop until no HIGH findings
+4. DISPATCH — Spawn workers for parallel groups, coordinate sequential chains
+5. MILESTONE CRITIQUE — Every 2-3 tasks, spawn critic subagent, loop until no HIGH findings
+6. AGGREGATE — Collect all worker outputs, create SUMMARY.md
+7. FINALIZE — Commit, report to orchestrator
 ```
 
 ---

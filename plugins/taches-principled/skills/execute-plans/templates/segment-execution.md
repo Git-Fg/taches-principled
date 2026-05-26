@@ -190,15 +190,15 @@ Segment subagent workspace (20,000 tokens):
 
 ---
 
-## Milestone Self-Review (within segment)
+## Milestone Critique Loop (within segment)
 
-At segment midpoint (every 2-3 tasks), trigger a self-review:
+At segment midpoint (every 2-3 tasks), spawn a critic subagent and loop until no HIGH findings remain:
 
-**Spawn the reviewer** using `{baseDir}/agents/critic.md` as the spawn prompt. Fill the placeholders with the current segment state, files modified so far, milestone number, and review task.
+Spawn the critic using `{baseDir}/agents/critic.md` as the spawn prompt. Fill the placeholders with the current segment state, files modified so far, milestone number, and review task.
 
-The reviewer returns structured output with blocking/non-blocking classification. If blocking issues are found, fix before proceeding to next task.
+The critic returns structured output with blocking/non-blocking classification. Loop until no HIGH findings. If blocking issues are found, fix before proceeding to next task.
 
-**Do not skip the review** even if tasks appear to be running cleanly. Integration issues often surface at milestone boundaries.
+**Do not skip the critique loop** even if tasks appear to be running cleanly. Integration issues often surface at milestone boundaries.
 
 ---
 

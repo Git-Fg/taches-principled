@@ -225,7 +225,7 @@ If unable to complete the task, return: {"status": "failed", "reason": "...", "c
 
 Used for: artifacts requiring evaluation confidence. Single judge for non-critical, panel of 2 for critical.
 
-**1. Spawn implementation subagent** (same as Pattern A with self-critique added):
+**1. Spawn implementation subagent** (same as Pattern A with judge loop added):
 
 ```
 Implement Step [N]: [Step Title]

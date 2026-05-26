@@ -381,7 +381,7 @@ Each subagent role uses a model matched to its cognitive load:
 
 ## Plan Creation Loop
 
-After exploration, create plans in a structured loop: one phase at a time, with critic review between phases.
+After exploration, create plans in a structured loop: one phase at a time, looping a critic subagent until no HIGH findings between phases.
 
 ### Loop Structure
 
@@ -394,10 +394,11 @@ For each phase plan:
    - Focus: task granularity, missing edge cases, dependency ordering
    - Critic writes findings to scratchpad
 4. Read scratchpad, revise plan based on critic feedback
-5. Check: is planner context approaching 50%?
+5. Loop until critic finds no HIGH findings
+6. Check: is planner context approaching 50%?
    - If yes: create handoff document, route to execution gate
    - If no: proceed to next phase
-6. Repeat for next phase
+7. Repeat for next phase
 ```
 
 ### Context Management Across Phases
@@ -409,7 +410,7 @@ Each phase loop iteration consumes context. Monitor token usage:
 
 ### Critic Integration
 
-Spawn one critic subagent per phase plan (general-purpose, Write access):
+Spawn one critic subagent per phase plan (general-purpose, Write access), loop until no HIGH findings:
 
 ```
 Focus: Review the phase plan as a cold-start executor
@@ -420,7 +421,7 @@ Focus: Review the phase plan as a cold-start executor
 - Would I be blocked on any task by prerequisites?
 ```
 
-The critic reads the new PLAN.md from the scratchpad path, writes findings back. Orchestrator reads findings, applies revisions, then proceeds.
+The critic reads the new PLAN.md from the scratchpad path, writes findings back. Orchestrator reads findings, applies revisions, then loops critic until no HIGH findings remain.
 
 **Why per-phase:** Phase plans are independent — critic feedback on phase 2 does not invalidate phase 1. A single end-to-end critic review creates a bottleneck and encourages the critic to comment on irrelevant phases.
 
@@ -457,7 +458,7 @@ Single question:
 - Execute autonomously — loads execution skill, status updates only
 - Let me review first — show the plan, then re-present
 
-**If user selects execute:** Route to `execute-plans`. The execution skill autonomously analyzes checkpoint structure, selects strategy, spawns parallel workers, self-reviews, and commits. Status updates only — no questions.
+**If user selects execute:** Route to `execute-plans`. The execution skill autonomously analyzes checkpoint structure, selects strategy, spawns parallel workers, loops critic subagent until no HIGH findings, and commits. Status updates only — no questions.
 
 Do NOT re-invoke create-plans. Do NOT ask for guidance. Execute autonomously via the execution skill.
 

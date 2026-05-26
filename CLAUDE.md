@@ -6,7 +6,7 @@ Treat every section below as knowledge transfer from a human who worked on this 
 
 When generic agents and specialized inline versions cover the same capability, prefer the generic agent. Specialized inline agents add value only when they teach Claude something the generic version cannot — different workflow, domain-specific judgment, or context that would require extensive re-prompting. If a specialized agent's body is the same as the generic equivalent with different names, delete it and use the generic one. The generic agent becomes the canonical version; domain-specific knowledge lives in the skill that invokes it, not in the agent itself.
 
-An agent is not orphaned simply because it is not explicitly named — generic agents like self-review, self-critic, and code-reviewer are discovered through semantic routing, not citation. A skill that says "verify quality before delivery" semantically routes to self-review without naming it. The agent is the canonical resolution for that capability pattern. An agent is only orphaned when it has no semantic hook — no skill describes a capability it would resolve.
+An agent is not orphaned simply because it is not explicitly named — generic agents like reviewer, critic, and code-reviewer are discovered through semantic routing, not citation. A skill that says "verify quality before delivery" semantically routes to reviewer without naming it. The agent is the canonical resolution for that capability pattern. An agent is only orphaned when it has no semantic hook — no skill describes a capability it would resolve.
 
 ---
 
@@ -26,12 +26,12 @@ High trust means: write descriptions that route correctly, then stop. Don't add 
 
 ## Orchestration Principle
 
-This marketplace is designed for a **costly, highly-capable main agent** orchestrating **cheap, fast subagents** in parallel with self-review/critique loops.
+This marketplace is designed for a **costly, highly-capable main agent** orchestrating **cheap, fast subagents** in parallel with critique loops.
 
 **The model:**
 - Main agent (Sonnet/Opus) owns cognition — planning, decomposition, routing, aggregation, synthesis. This is the expensive brain that makes judgment calls.
 - Subagents (Haiku or fast Sonnet) own execution — exploration, research, implementation, verification, critique. These are cheap workers that run in parallel.
-- Self-review/critique subagents run after each milestone to catch errors before the main agent invests more context.
+- Critique loop: spawn a critic subagent after each milestone, loop until no HIGH findings remain
 - The main agent never does work a subagent can do faster in parallel.
 
 **When to spawn subagents (everything non-trivial):**

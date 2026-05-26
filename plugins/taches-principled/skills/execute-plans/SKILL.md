@@ -88,9 +88,9 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 **Use when:** Plan has zero checkpoints or only `checkpoint:human-verify` markers between autonomous segments.
 
-**Policy:** Executor is an intelligent orchestrator that decomposes the plan, executes independent tasks in parallel, and self-reviews at milestones. No user interaction.
+**Policy:** Executor is an intelligent orchestrator that decomposes the plan, executes independent tasks in parallel, and loops a critic subagent at milestones until no HIGH findings remain. No user interaction.
 
-**Core Concept:** The executor reads the plan, analyzes task dependencies and resource conflicts, decomposes into parallelizable vs sequential groups, spawns multiple worker subagents in parallel for independent tasks, spawns single workers for sequential dependency chains, self-criticizes at milestones, aggregates results, and commits.
+**Core Concept:** The executor reads the plan, analyzes task dependencies and resource conflicts, decomposes into parallelizable vs sequential groups, spawns multiple worker subagents in parallel for independent tasks, spawns single workers for sequential dependency chains, loops a critic subagent until no HIGH findings, aggregates results, and commits.
 
 **How it differs from old implementation:**
 - **Before:** Single subagent does everything sequentially
@@ -124,12 +124,12 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 - Sequential chains execute in order (A → B → C where B needs A output)
 - File conflict detection: if two tasks touch the same file, they cannot run in parallel
 
-**Milestone self-review:**
+**Milestone critique loop:**
 - Trigger: every 2-3 tasks completed, or at phase boundary
-- Spawn a CRITIC subagent (haiku, with Write) to review what was done
-- Critic checks: correctness, edge cases, regressions, deviation handling
-- If critic finds issues: executor fixes before continuing to next milestone
-- This is internal review, not user interaction
+- Spawn a critic subagent (haiku, with Write) to challenge the work
+- Loop until critic finds no HIGH findings
+- If critic finds HIGHS: executor fixes before continuing to next milestone
+- This is internal critique, not user interaction
 
 **Task tracking:**
 - Track each parallel worker group as a unit of work — status updates as workers complete
@@ -137,7 +137,7 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 - Result aggregation updates the parent task status, not the individual workers
 - Delegate simple tasks without tracking overhead; only track when multiple workers coordinate or depend on intermediate outputs
 
-**Why:** No user interaction needed. Executor operates as intelligent orchestrator with parallel execution for speed and self-review for quality. Overhead: ~10-15% main context (higher than old single-subagent approach due to coordination, but better quality through parallelism and review).
+**Why:** No user interaction needed. Executor operates as intelligent orchestrator with parallel execution for speed and critique loops for quality. Overhead: ~10-15% main context (higher than old single-subagent approach due to coordination, but better quality through parallelism and critique).
 
 ### Explorer Subagent Protocol
 
@@ -163,14 +163,14 @@ When spawning subagents for investigation (exploring project structure, finding 
 
 ---
 
-**Pre-execution self-critique (devil's advocate):**
+**Pre-execution critique loop:**
 
 Before spawning workers, spawn a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Read `{baseDir}/agents/critic.md` and spawn the critic with the plan as context.
 
-If critic finds critical issues: fix the plan before spawning workers.
+Loop until no HIGH findings. If critic finds critical issues: fix the plan before spawning workers.
 If critic finds minor concerns: note them for milestone review.
 
-**Why:** Milestone self-review catches bad execution. Pre-execution critique catches bad plans. Catching a flawed plan before wasting parallel workers is cheaper than fixing after they complete.
+**Why:** Milestone critique catches bad execution. Pre-execution critique catches bad plans. Catching a flawed plan before wasting parallel workers is cheaper than fixing after they complete.
 
 ---
 
@@ -233,8 +233,8 @@ For tasks that are architecturally significant or touch 5+ files, integrate crit
 
 ```
 1. Worker completes task
-2. Orchestrator self-review: does output match task spec?
-3. If non-trivial deviation: spawn critic for this task only
+2. Orchestrator critique: does output match task spec? Spawn critic if needed.
+3. Loop until no HIGH findings
 4. Fix issues → re-verify → continue
 ```
 

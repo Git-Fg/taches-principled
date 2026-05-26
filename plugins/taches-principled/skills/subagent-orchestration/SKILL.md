@@ -244,7 +244,7 @@ By default, subagents start with a **minimal context** — only the delegation p
 
 ## ORCHESTRATE Mode
 
-Orchestrate multiple subagents in parallel, self-review work, iterate with feedback loops, and manage background workers.
+Orchestrate multiple subagents in parallel, loop critic subagent until no HIGH findings, iterate with feedback loops, and manage background workers.
 
 ### Core Mental Model
 
