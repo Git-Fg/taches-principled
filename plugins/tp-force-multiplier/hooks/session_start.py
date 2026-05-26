@@ -9,7 +9,7 @@ payload = json.load(sys.stdin)
 print(json.dumps({
     "decision": {
         "notification": {
-            "message": "Essential: For any task involving exploration, implementation, self-review, or self-critic work — spawn subagents immediately and run them in parallel. Do not wait until you are stuck. Load skills for method frameworks. If a task has independent parts, fan out subagents without hesitation."
+            "message": "Essential: For any task involving exploration, implementation, self-review, self-critic, or similar work — spawn subagents immediately and run them in parallel. Do not wait until you are stuck. Load skills for method frameworks. If a task has independent parts, fan out subagents without hesitation."
         }
     }
 }))
