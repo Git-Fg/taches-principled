@@ -1,0 +1,7 @@
+{
+  "name": "tp-force-multiplier",
+  "version": "0.1.0",
+  "description": "Hook-driven coaching plugin that steers Claude to use subagents and skills more — observes behavior patterns and surfaces immediate coaching hints.",
+  "author": "Git-Fg",
+  "homepage": "https://github.com/Git-Fg/taches-principled"
+}

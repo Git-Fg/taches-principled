@@ -1,7 +1,7 @@
 {
   "name": "taches-principled",
   "version": "0.8.0",
-  "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, and development skills. Each plugin works standalone; all synergize through shared workflow vocabulary.",
+  "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, and development skills.",
   "owner": {
     "name": "Felix",
     "email": "felix@example.com"
@@ -42,6 +42,12 @@
       "version": "0.3.0",
       "source": "./plugins/tp-ddd",
       "description": "DDD development practices — code-transparency (visible behavior), code-architecture (layered structure, FCIS, early returns, file limits), and code-quality (domain naming, library-first, typed errors). 3 discoverable skills answering: what does it do, how to structure, is it idiomatic."
+    },
+    {
+      "name": "tp-force-multiplier",
+      "version": "0.1.0",
+      "source": "./plugins/tp-force-multiplier",
+      "description": "Hook-driven coaching plugin — steers Claude to use subagents and skills via real-time semantic coaching. No tool injection, zero blocking."
     }
   ]
 }

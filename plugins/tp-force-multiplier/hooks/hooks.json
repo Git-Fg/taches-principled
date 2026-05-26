@@ -1,0 +1,28 @@
+{
+  "hooks": [
+    {
+      "event": "SessionStart",
+      "matcher": "*",
+      "command": {
+        "command": "python3 hooks/session_start.py",
+        "reason": "Surface lightweight coaching at session start"
+      }
+    },
+    {
+      "event": "Stop",
+      "matcher": "*",
+      "command": {
+        "command": "python3 hooks/stop_coach.py",
+        "reason": "End-of-turn coaching based on observed patterns"
+      }
+    },
+    {
+      "event": "PostCompact",
+      "matcher": "*",
+      "command": {
+        "command": "python3 hooks/compact_insight.py",
+        "reason": "Post-compaction coaching before context pressure"
+      }
+    }
+  ]
+}
