@@ -4,6 +4,8 @@ description: "Creates draft task files in .specs/tasks/draft/ from user intent. 
 when_to_use: |
   Use when the user says "capture this task", "create a task", "add to my backlog", or "log this as something to do".
   IMMEDIATELY when the user expresses intent that should be tracked, refined, and implemented later.
+  CONTRAST with refine-task: add-task captures raw intent as a draft; refine-task adds analysis, architecture, and verification rubrics. Use add-task to capture; use refine-task to specify.
+  CONTRAST with create-plans: add-task creates lightweight task files for the task lifecycle; create-plans creates project-level plans with milestones. Use add-task for feature/bug/refactor tasks; use create-plans for project decomposition.
 argument-hint: "[task title or description] [dependencies:task-file.md]"
 ---
 

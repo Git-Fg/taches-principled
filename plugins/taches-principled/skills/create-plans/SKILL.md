@@ -6,6 +6,7 @@ when_to_use: |
   IMMEDIATELY when starting new work that needs structured decomposition.
   Do NOT use for code review, debugging existing code, or one-off questions.
   Do NOT use when task is already refined and ready for execution (use execute-plans), when a single question needs answering (use diagnose instead), or when task is vague and needs capture first (use add-task).
+  CONTRAST with refine-task: create-plans creates project-level plans with milestones and phases; refine-task refines task-level specs with verification rubrics and implementation steps. Use create-plans for project scope; use refine-task for task spec refinement.
 argument-hint: [project or feature to plan]
 ---
 

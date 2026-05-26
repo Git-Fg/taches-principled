@@ -10,6 +10,7 @@ when_to_use: |
   When consolidating reflection or critique findings into durable project memory (MEMORIZE).
   Do NOT use for architectural decisions (use create-plans) or greenfield development (use create-plans).
   CONTRAST with update-docs: that updates existing docs; this improves prose quality (POLISH).
+  CONTRAST with diagnose: refine improves quality of existing artifacts (present, corrective); diagnose investigates why something is broken (past, causal). Prefer refine when the issue is known and needs fixing; prefer diagnose when the root cause is unknown.
 argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-low|low]"
 ---
 

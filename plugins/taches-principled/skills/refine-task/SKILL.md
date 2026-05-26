@@ -14,6 +14,8 @@ when_to_use: |
   - "make this ready for implementation"
   - "convert this user story to executable steps"
   IMMEDIATELY after a task is drafted — BEFORE implementation begins.
+  CONTRAST with create-plans: refine-task refines task-level specs with implementation steps and verification rubrics; create-plans creates project-level plans with milestones and phases. Use refine-task to make a task ready for execution; use create-plans for project decomposition.
+  CONTRAST with execute-plans: refine-task prepares the spec; execute-plans executes the plan. Use refine-task before build; use execute-plans after PLAN.md exists.
 argument-hint: ".specs/tasks/draft/<file>.md [--fast] [--target-quality X.X] [--skip-judges] [--human-in-the-loop phase,phase,...]"
 ---
 

@@ -25,6 +25,11 @@ IF idea is fully formed and documented → no need for this skill
 - **DO NOT use for simple task capture** — use `add-task` instead for straightforward task creation
 - **DO NOT use for formal planning** — use `create-plans` instead for structured planning with milestones and phases
 
+## CONTRAST
+
+- CONTRAST with add-task: ideation explores and refines ideas through dialogue; add-task captures task intent for later refinement. Use ideation when the idea is vague; use add-task when intent is clear.
+- CONTRAST with create-plans: ideation explores what to build and why; create-plans decomposes what to build into executable tasks. Use ideation at concept stage; use create-plans at decision stage.
+
 # Brainstorm Mode
 
 Collaborative dialogue that turns rough ideas into documented designs. Operates before implementation planning. Uses structured questioning to surface purpose, constraints, and success criteria, then incrementally validates a design section by section. One question per message builds clarity without overwhelming.

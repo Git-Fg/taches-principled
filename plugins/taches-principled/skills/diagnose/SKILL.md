@@ -27,6 +27,7 @@ when_to_use: |
   - "why is this happening"
   IMMEDIATELY when investigating incidents, recurring issues, systemic failures, or bugs with long call chains. Use AUTO mode for method auto-selection when the problem type is unclear.
   CONTRAST with fpf: diagnose investigates why something is broken (past-focused); fpf evaluates competing options to decide a path forward (future-focused). Prefer diagnose when "problem" or "issue" appears without alternatives specified.
+  CONTRAST with refine: diagnose investigates why something is broken (past, causal); refine improves quality of existing artifacts (present, corrective). Prefer diagnose when the issue is unknown; prefer refine when the issue is known and needs fixing.
 argument-hint: "[problem description] [--mode A3|FIVE-WHYS|FISHBONE|STACK-TRACE|AUTO]"
 ---
 

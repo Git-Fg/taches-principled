@@ -56,6 +56,8 @@ Present summary:
 - Learnings extracted: {n} new, {n} reinforced
 - Knowledge base updated: yes/no
 
+After archival completes, consider starting a new planning cycle with `create-plans` to scope the next phase or feature. Archive preserves context; planning resumes momentum.
+
 ## File References
 
 - Archive bundle template: `{baseDir}/templates/archive-bundle.md`

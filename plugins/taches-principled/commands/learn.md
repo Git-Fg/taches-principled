@@ -7,4 +7,4 @@ argument-hint: [learning to capture]
 
 $ARGUMENTS
 
-Identify the key insight or learning. Write it to project memory following the memory system conventions. Structure with name, description, and metadata fields.
+Capture the key insight or learning. Write it to project memory with name, description, and metadata fields.

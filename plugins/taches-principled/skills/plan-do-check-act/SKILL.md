@@ -6,7 +6,7 @@ when_to_use: |
   IMMEDIATELY when solving problems where outcomes need measurement — BEFORE concluding, standardizing, or shipping.
   FIRST after a failed fix — validate the root cause was correct before closing the issue.
   DO NOT use for debugging (use diagnose instead), for code style decisions (use refine in POLISH mode), or for architectural design (use kaizen or ideation).
-  CONTRAST with kaizen: kaizen prevents bad patterns; PDCA tests changes that might improve things.
+  CONTRAST with kaizen: kaizen prevents bad patterns from entering the codebase (proactive constraint); PDCA tests whether a change actually improves things (evidence-based validation). Use kaizen when writing new code; use PDCA when deciding whether to standardize or generalize an existing change.
 argument-hint: "[improvement goal or problem to address] [--cycle N]"
 ---
 
