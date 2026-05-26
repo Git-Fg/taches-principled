@@ -8,6 +8,7 @@ when_to_use: |
   Use when determining isolation strategy (full delegation, instruction passing, or filesystem coordination).
   Do NOT use for subagent spawn execution (use subagent-orchestration instead) or tool design (use tool-design instead).
   Do NOT use for single-agent tasks, simple scripts, or when context window limits are not the primary constraint.
+argument-hint: "[architecture pattern or focus area]"
 ---
 
 # Multi-Agent Architecture Patterns

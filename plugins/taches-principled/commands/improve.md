@@ -7,4 +7,4 @@ argument-hint: [artifact or file to improve]
 
 $ARGUMENTS
 
-Analyze the artifact and determine the best improvement mode. If code: simplify and review. If prose: apply clarity and conciseness principles. If completed work: fan out critique subagents. Spawn the appropriate worker subagent and verify the result.
+Apply the appropriate improvement mode: simplify and review for code, apply clarity principles for prose, or fan out critique subagents for completed work.

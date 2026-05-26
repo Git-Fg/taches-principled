@@ -1,6 +1,6 @@
 ---
 name: implement-task
-description: "Execute refined task implementations with automated quality verification. Each step dispatches a developer agent, then an independent judge verifies. Iterates until quality threshold is met."
+description: "Execute refined task implementations with automated quality verification. Each step spawns a developer agent, then an independent judge verifies. Iterates until quality threshold is met."
 when_to_use: |
   Use when the user says:
   - "implement this task"
@@ -29,9 +29,9 @@ IF user is done implementing → verify completion and move task to done
 
 # Implement Task
 
-Orchestrate multi-step task implementation with automated quality verification. Each implementation step is dispatched to a dedicated subagent, then verified by an independent judge subagent. Supports three verification patterns (simple skip, critical panel, per-item judges) plus final Definition of Done verification.
+Orchestrate multi-step task implementation with automated quality verification. Each implementation step spawns a dedicated subagent, then verified by an independent judge subagent. Supports three verification patterns (simple skip, critical panel, per-item judges) plus final Definition of Done verification.
 
-The orchestrator dispatches and aggregates but never implements or evaluates directly. Every implementation step gets a dedicated agent. Every verification gets an independent judge. Context protection is paramount — reading artifacts yourself causes context overflow and command loss, which is the most common failure mode in multi-step workflows.
+The orchestrator spawns and aggregates but never implements or evaluates directly. Every implementation step gets a dedicated agent. Every verification gets an independent judge. Context protection is paramount — reading artifacts yourself causes context overflow and command loss, which is the most common failure mode in multi-step workflows.
 
 ## Core Principle
 
@@ -186,7 +186,7 @@ Execute steps in dependency order. Steps marked `Parallel with:` run simultaneou
 
 Used for: directory creation, configuration changes, deletions, and other straightforward operations.
 
-**Dispatch implementation subagent:**
+**Spawn implementation subagent:**
 
 ```
 Implement Step [N]: [Step Title]
@@ -205,7 +205,7 @@ When complete, report:
 ```
 
 **Spawn Footer**
-When dispatched as a subagent:
+When spawned as a subagent:
 - Your context starts fresh — no access to prior conversation or other subagents' outputs
 - Return structured output (file paths, findings, and any artifacts) to the orchestrator
 - If you encounter anything unexpected or have any question or doubt, stop and report back
@@ -225,7 +225,7 @@ If unable to complete the task, return: {"status": "failed", "reason": "...", "c
 
 Used for: artifacts requiring evaluation confidence. Single judge for non-critical, panel of 2 for critical.
 
-**1. Dispatch implementation subagent** (same as Pattern A with self-critique added):
+**1. Spawn implementation subagent** (same as Pattern A with self-critique added):
 
 ```
 Implement Step [N]: [Step Title]
@@ -242,7 +242,7 @@ When complete, report:
 ```
 
 **Spawn Footer**
-When dispatched as a subagent:
+When spawned as a subagent:
 - Your context starts fresh — no access to prior conversation or other subagents' outputs
 - Return structured output (file paths, findings, and any artifacts) to the orchestrator
 - If you encounter anything unexpected or have any question or doubt, stop and report back
@@ -253,7 +253,7 @@ If unable to complete the task, return: {"status": "failed", "reason": "...", "c
 
 **2. After completion**, receive the agent's report and note artifact paths. Do NOT read artifacts.
 
-**3. Dispatch judge subagent(s):**
+**3. Spawn judge subagent(s):**
 
 For Single Judge (standard threshold): launch 1 judge.
 For Panel of 2 Judges (critical threshold): launch 2 judges in parallel.
@@ -276,7 +276,7 @@ Return: scores per criterion with evidence, overall weighted score, PASS/FAIL, s
 ```
 
 **Spawn Footer**
-When dispatched as a subagent:
+When spawned as a subagent:
 - Your context starts fresh — no access to prior conversation or other subagents' outputs
 - Return structured output (file paths, findings, and any artifacts) to the orchestrator
 - If you encounter anything unexpected or have any question or doubt, stop and report back
@@ -305,7 +305,7 @@ If unable to complete the task, return: {"status": "failed", "reason": "...", "c
 
 Used for: steps creating multiple similar items (validators, handlers, endpoints, test cases).
 
-**1. Dispatch implementation subagents in parallel** — one per item:
+**1. Spawn implementation subagents in parallel** — one per item:
 
 ```
 Implement Step [N], Item: [Item Name]
@@ -323,7 +323,7 @@ When complete, report:
 ```
 
 **Spawn Footer**
-When dispatched as a subagent:
+When spawned as a subagent:
 - Your context starts fresh — no access to prior conversation or other subagents' outputs
 - Return structured output (file paths, findings, and any artifacts) to the orchestrator
 - If you encounter anything unexpected or have any question or doubt, stop and report back
@@ -334,7 +334,7 @@ If unable to complete the task, return: {"status": "failed", "reason": "...", "c
 
 **2. After all complete**, collect reports and artifact paths. Do NOT read artifacts.
 
-**3. Dispatch evaluation subagents in parallel** — one per item:
+**3. Spawn evaluation subagents in parallel** — one per item:
 
 Each judge:
 ```
@@ -354,7 +354,7 @@ Return: scores with evidence, overall score, PASS/FAIL, improvements if FAIL.
 ```
 
 **Spawn Footer**
-When dispatched as a subagent:
+When spawned as a subagent:
 - Your context starts fresh — no access to prior conversation or other subagents' outputs
 - Return structured output (file paths, findings, and any artifacts) to the orchestrator
 - If you encounter anything unexpected or have any question or doubt, stop and report back
@@ -414,7 +414,7 @@ If the step is marked as critical in the task file metadata, always use the crit
 
 After all implementation steps complete and pass their per-step verification:
 
-1. **Dispatch a DoD verification subagent**:
+1. **Spawn a DoD verification subagent**:
 
 ```
 Verify all Definition of Done items in the task file.
@@ -438,7 +438,7 @@ Failing items with specific reasons.
 ```
 
 **Spawn Footer**
-When dispatched as a subagent:
+When spawned as a subagent:
 - Your context starts fresh — no access to prior conversation or other subagents' outputs
 - Return structured output (file paths, findings, and any artifacts) to the orchestrator
 - If you encounter anything unexpected or have any question or doubt, stop and report back

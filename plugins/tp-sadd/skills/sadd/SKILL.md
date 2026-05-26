@@ -1,9 +1,9 @@
 ---
 name: sadd
-description: "Subagent-Driven Development — design multi-agent systems and execute tasks with quality verification: generate competing solutions with meta-judge evaluation, dispatch tasks via context-isolated subagents, run structured judge evaluations, or explore solution space with tree-of-thoughts pruning. Modes: COMPETE, EXECUTE, JUDGE, DESIGN, EXPLORE."
+description: "subagent-Driven Development — design multi-agent systems and execute tasks with quality verification: generate competing solutions with meta-judge evaluation, spawn tasks via context-isolated subagents, run structured judge evaluations, or explore solution space with tree-of-thoughts pruning. Modes: COMPETE, EXECUTE, JUDGE, DESIGN, EXPLORE."
 when_to_use: |
   COMPETE: 'best-of-N', 'competitive generation', 'generate multiple solutions', 'quality over speed'
-  EXECUTE: 'dispatch subagent', 'launch agent', 'delegate this', 'implement with verification', 'run in background'
+  EXECUTE: 'spawn subagent', 'launch agent', 'delegate this', 'implement with verification', 'run in background'
   JUDGE: 'evaluate', 'judge this', 'assess quality', 'verify', 'check my work', 'multi-judge debate'
   DESIGN: 'design architecture', 'multi-agent', 'supervisor pattern', 'swarm', 'coordinate agents'
   EXPLORE: 'tree of thoughts', 'explore solution space', 'generate and prune', 'ideate then narrow'
@@ -14,7 +14,7 @@ when_to_use: |
 ## Decision Router
 
 IF generating multiple competing solutions with meta-judge evaluation → COMPETE mode
-IF dispatching tasks via context-isolated subagents with optional verification → EXECUTE mode
+IF spawning tasks via context-isolated subagents with optional verification → EXECUTE mode
 IF evaluating work with meta-judge + judge pipeline or multi-judge debate → JUDGE mode
 IF designing multi-agent architecture (supervisor/swarm/hierarchical patterns) → DESIGN mode
 IF exploring solution space with systematic pruning (ToT) → EXPLORE mode
@@ -47,9 +47,9 @@ Output: Final solution with `.a.md`, `.b.md`, `.c.md` candidates preserved.
 
 # Mode: EXECUTE
 
-Dispatch fresh subagents with isolated context. Three modes:
+Spawn fresh subagents with isolated context. Three modes:
 
-**DISPATCH:** Simple dispatch with auto model selection, CoT prefix, self-critique suffix.
+**SPAWN:** Simple spawn with auto model selection, CoT prefix, self-critique suffix.
 
 **VERIFY:** Meta-judge + implementor + judge with retry loop (score >= 4.0 = pass, max 3 retries).
 
@@ -85,7 +85,7 @@ Meta-judge runs once (shared spec grounds all evaluation). Judges communicate vi
 
 Design multi-agent architectures for context isolation and coordination.
 
-**Supervisor/Orchestrator:** Central agent decomposes, dispatches, synthesizes. Use for clear decomposition with human oversight.
+**Supervisor/Orchestrator:** Central agent decomposes, spawns, synthesizes. Use for clear decomposition with human oversight.
 
 **Peer-to-Peer/Swarm:** No central control, agents communicate via filesystem. Use for flexible exploration.
 
@@ -128,7 +128,7 @@ Max 2 redesign cycles. If exhausted without passing, escalate to human.
 
 COMPETE: Final solution + candidate solutions (`.a|.b|.c.md`) + judge reports (`.specs/reports/`)
 
-EXECUTE: Task output with verification history (DISPATCH/PLAN-DRIVEN) or pass/fail report (VERIFY)
+EXECUTE: Task output with verification history (SPAWN/PLAN-DRIVEN) or pass/fail report (VERIFY)
 
 JUDGE: Evaluation report with scores, evidence, and verdict (single) or consensus/disagreement summary (debate)
 
