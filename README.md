@@ -164,27 +164,33 @@ Some skills bundle related modes under one name:
 | **git** | ship, review, issues, advanced |
 | **ddd** | architecture, quality, transparency |
 
-## Principles
+## Design Philosophy
 
-The old way: prescriptive XML structures and 20-step procedures.
+Skills in this plugin teach through principles, not procedures. Each skill focuses on what to decide and when to decide it — the how is adapted to your context.
 
-The new way:
+Key ideas:
 
 1. **Goals over procedures** — State what to achieve, not the steps to get there
-2. **Principles over steps** — 3 principles that guide thinking beats a checklist
+2. **Principles over steps** — A few guiding principles beats a long checklist
 3. **Trust Claude** — Don't explain what Claude already knows
 4. **Concise by default** — Every line competes for context; every line must earn its place
-5. **Gotchas, not rules** — "Common mistake: vague descriptions won't route correctly" beats "you must include an objective tag"
+5. **Gotchas, not rules** — "Common mistake: X" teaches better than "you must always do Y"
 
-This plugin practices what it preaches: skills focus on principles and anti-patterns, not procedures.
+This means skills are lighter: they give you the judgment to decide, not the steps to follow.
 
 ## Relationship to taches-cc-resources
 
-This plugin is a direct descendant of [taches-cc-resources](https://github.com/glittercowboy/taches-cc-resources), which introduced valuable structure and organization to Claude Code extensions.
+This plugin builds on [taches-cc-resources](https://github.com/glittercowboy/taches-cc-resources), which established valuable mental models for skills, subagents, and plans. It introduced structure and conventions that helped shape how Claude Code extensions work.
 
-**What changed here:** The prescriptive layer was stripped — the XML templates, the step-by-step procedures, and the complexity theater. What remained are the principles that actually guide good decisions.
+This plugin takes a different approach: it extracts the core principles and presents them in a lighter, more accessible format. The mental models are the same — what changed is the presentation.
 
-If you're migrating from `taches-cc-resources`, this plugin gives you the same mental models with less friction.
+**What this plugin adds:**
+- Focus on principles over procedures
+- Lighter footprint with fewer files to maintain
+- Skills that teach judgment, not templates
+- Built-in hub skills for related capabilities
+
+If you're coming from `taches-cc-resources`, you'll recognize the patterns. This plugin is designed to feel familiar while reducing friction.
 
 ## Troubleshooting
 
