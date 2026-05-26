@@ -93,7 +93,7 @@ Four distinct artifacts with different loading behaviors and token costs:
 
 **Marketplace version** and **plugin version** are independent:
 
-- **Plugin version** (`0.6.0`): Incremented for any content change to this plugin
+- **Plugin version**: Incremented for any content change to this plugin (see `plugins/taches-principled/.claude-plugin/plugin.json` for current version)
 - **Marketplace version** (`.claude-plugin/marketplace.json`): Incremented when releasing a collective update across all plugins
 
 **Update sequence:**
@@ -225,6 +225,7 @@ When gathering context before proceeding, use the interview pattern — not a fi
 - User explicitly specified execution mode via flags
 
 **Generalist guidance for skills:**
+
 ```
 Before proceeding, ensure you have sufficient context:
 1. Understand the goal
@@ -234,30 +235,7 @@ Before proceeding, ensure you have sufficient context:
 Use your tool to ask users your questions and prefill answers. See "User Interaction" section for the canonical invocation phrase and exception — descriptive constraints.
 ```
 
-**Examples from this project:**
-
-*create-plans:*
-> "Before planning, ensure you have sufficient context: understand the goal, clarify scope, set execution mode. Use your tool to ask users your questions and prefill answers."
-
-*create-prompts:*
-> "Gather sufficient context to create the prompt: goal, scope, constraints. Set execution mode: fully autonomous or human-in-the-loop. Use your tool to ask users your questions and prefill answers."
-
-*execute-plans:*
-> "For direct invocation, ensure you have sufficient context to execute: understand the goal, clarify scope, set execution mode. Use your tool to ask users your questions and prefill answers."
-
-*ideation:*
-> "Ask one question per turn to refine the idea — prefer multiple choice when possible. Focus on purpose, constraints, success criteria."
-
-*add-task:*
-> "If user provides no description, ask clarifying questions before creating."
-
----
-
-## Compositional Skill Pairs
-
-The create/execute skill pairs (`create-plans`/`execute-plans`, `create-prompts`/`execute-prompts`) are compositional by design. `create-plans` creates a plan and explicitly invokes `execute-plans` to execute it.
-
-This is not a violation of the self-contained principle — it's explicit compositional intent. The create skill must state that execution requires the execution partner skill.
+The phrasing varies per skill. See individual skill files for exact wording.
 
 ---
 
@@ -284,11 +262,7 @@ These are foundational compositional pairs or serve distinct workflow stages:
 - `create-prompts` + `execute-prompts` — prompt creation lifecycle, separation is intentional
 - `refine-task` + `implement-task` — task lifecycle (refine produces implementation-ready specs, implement executes with verification gates)
 - `ideation` + `add-task` — capture lifecycle (ideation explores options, add-task persists formal backlog items)
-- `sadd` (tp-sadd hub) — structured agent-driven development; no overlap with core skills
-- `git` (tp-git hub) — git workflow automation; no overlap with core skills
-- `fpf` (tp-fpf hub) — first-principles framework; no overlap with core skills
-- `ddd` (tp-ddd hub) — domain-driven design; no overlap with core skills
-- `tdd` (tp-tdd, single skill) — red/green/refactor loop; no overlap with core skills
+- Marketplace hub skills — plugins with multi-mode routing; see marketplace.json for current inventory
 
 ### Completed Consolidations
 
@@ -298,24 +272,28 @@ These skills were merged into hub skills using the hub-and-spoke pattern:
 |----------|---------------|-----------|
 | `diagnose` | `analyse` + `analyse-problem` + `root-cause-tracing` | All do problem investigation; different methods (Five Whys, A3, call-stack) rather than different purposes |
 | `refine` (hub) | `reflexion` (all modes) + `write-concisely` | All improve artifact quality; critique/memorize/polish are modes of "make better" |
-| `subagents` (hub) | `subagent-orchestration` + `create-subagents` | Both teach multi-agent patterns; design vs orchestration are modes of the same capability |
+| `subagent-orchestration` (hub) | `subagent-orchestration` + `create-subagents` | Both teach multi-agent patterns; design vs orchestration are modes of the same capability |
 | `sadd` (tp-sadd) | `do-competitively` + `execute` + `sadd-judge` + `sadd-patterns` + `sadd-tot` | All structured agent-driven development; compete/execute/judge/design/explore are execution modes |
 | `git` (tp-git) | `git-ship` + `git-review` + `git-issues` + `git-advanced` | All git workflow automation; ship/review/issues/advanced are git operation modes |
 | `fpf` (tp-fpf) | `fpf-propose` + `fpf-maintenance` + `fpf-read` | All first-principles reasoning; propose/maintain/query are FPF lifecycle modes |
-| `ddd` (tp-ddd) | `code-architecture` + `code-quality` + `code-transparency` | All domain-driven design; architecture/quality/transparency are code design dimensions |
+| `ddd` (tp-ddd) | `code-architecture` + `code-quality` + `code-transparency` + `code-api` | All domain-driven design; architecture/quality/transparency/API are code design dimensions |
 
-### Consolidation Summary
+Marketplace plugins merged in their own phase. See git history for prior skill names.
 
-The marketplace was consolidated from 34 skills to 20 through hub-and-spoke merging (May 2026). See `.principled/plans/phases/03-hub-consolidation/` for the execution plans.
+### Consolidation History
+
+Hub-and-spoke consolidation reduced skill count by merging related skills into routing-coherent hubs. Run `find plugins -name SKILL.md | wc -l` for accurate inventory.
+
+**Current skill counts:** 24 root + 6 marketplace = 30 total. Run `find plugins -name SKILL.md | wc -l` for accurate inventory. The empirical routing target is 22-28 skills.
 
 | Phase | Hub | Skills Merged |
 |-------|-----|---------------|
 | Root | `refine` | reflexion + write-concisely |
-| Root | `subagents` | subagent-orchestration + create-subagents |
+| Root | `subagent-orchestration` | subagent-orchestration + create-subagents |
 | tp-sadd | `sadd` | do-competitively + execute + sadd-judge + sadd-patterns + sadd-tot |
 | tp-git | `git` | git-ship + git-review + git-issues + git-advanced |
 | tp-fpf | `fpf` | fpf-propose + fpf-maintenance + fpf-read |
-| tp-ddd | `ddd` | code-architecture + code-quality + code-transparency |
+| tp-ddd | `ddd` | code-architecture + code-quality + code-transparency + code-api |
 
 ### Decision Criteria: Merge or Keep Separate?
 
@@ -326,31 +304,21 @@ The marketplace was consolidated from 34 skills to 20 through hub-and-spoke merg
 - The resulting hub has a clear decision router with distinct modes
 
 **Keep separate when:**
-- Skills serve different workflow stages (ideation vs add-task)
+- Skills serve distinct workflow stages (ideation vs add-task)
 - Skills have distinct entry/exit contracts that other skills depend on
 - Trigger density is high (5+ specific phrases) and routing is reliable
-- Skills are compositional pairs (create/execute lifecycle)
 
 ### Target Skill Count
 
-The routing quality breaking point is **22-28 skills** (empirical range; below 22 fat skill complexity dominates, above 28 routing conflation accumulates). The consolidation brought us from 34 down to 20, falling within this optimal range.
+The routing quality breaking point is an empirical range; below it fat skill complexity dominates, above it routing conflation accumulates. Hub-and-spoke consolidation reduced skill count by merging related skills into routing-coherent hubs.
 
-**Current: 20 skills across all plugins (15 root + 5 marketplace). Down from 34 — a 41% reduction.**
+**Current: 30 skills across all plugins (24 root + 6 marketplace). The routing target is 22-28 skills.**
 
 ### Hub-Spoke Pattern in Existing Skills
 
-The `refine` skill is the canonical hub-and-spoke template with 5 modes:
+The `refine` skill is the canonical hub-and-spoke template. Its modes are defined in the skill's Decision Router section — read the actual skill file for current mode inventory.
 
-```
-Five modes in one skill:
-- SIMPLIFY: Code review and cognitive load reduction
-- REVIEW: Multi-agent PR and local changes scanning
-- CRITIQUE: Self-critique with severity scoring
-- MEMORIZE: Learning capture into project memory
-- POLISH: Prose improvement using Strunk & White principles
-```
-
-`subagents` is the second hub example with 2 modes (DESIGN/ORCHESTRATE). Use these patterns for other multi-mode skills. The mode router lives in each hub skill's Decision Router section.
+`subagent-orchestration` is the second hub example with 2 modes (DESIGN/ORCHESTRATE). Use these patterns for other multi-mode skills. The mode router lives in each hub skill's Decision Router section.
 
 ---
 
@@ -410,7 +378,7 @@ Do NOT wrap the path in a Read() call — just state the path. `{baseDir}` resol
 ## Token Economy
 
 - **Commands over skills for on-demand loading** — skills consume context always; commands load when invoked
-- **Tool outputs dominate context** — measured up to **83.9%** of total context usage (Context Engineering Kit); apply progressive disclosure to avoid lost-in-middle effect
+- **Tool outputs dominate context** — typically 80-90% of total usage (Context Engineering Kit); apply progressive disclosure to avoid lost-in-middle effect
 - **Specialized agents with narrow context** — broad-context agents hallucinate more
 - **Token estimation** — every skill should know its approximate cost
 - **500-line guideline** — official stance is under 500 lines for optimal performance; split into separate reference files via progressive disclosure if content exceeds this. Hub skills (e.g., `refine`, `diagnose`) aggregate multiple formerly separate skills and may legitimately exceed this limit — the guideline applies to individual modes within a hub, not the total hub file
@@ -486,7 +454,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] No inline tool lists in subagent spawn instructions (describe role + outcome, never `tools: Read, Edit, Bash`)
 - [ ] User interaction uses clear, structured options
 - [ ] Command files conform to commands-standard.md in `plugins/taches-principled/` (no method prescription, 1-3 sentence outcome instruction, no markdown in body)
-  - Current commands: debug.md, simplify.md, whats-next.md, next-tasks-orchestration.md, ideate.md, implement.md, improve.md, critique.md, learn.md, polish.md, orchestrate.md, design-subagents.md
+  - [Current commands](plugins/taches-principled/commands/): all slash command files in that directory
 - [ ] README synced to all docs/ locations if marketplace docs are present
 - [ ] Skill changes backed by eval evidence (tested against real routing scenarios, not hypothetical)
 - [ ] Skill changes describe actual problems encountered (not theoretical improvements)
@@ -619,7 +587,7 @@ plugins/
 │   └── rules/                    # Guardrails (placeholder — currently empty)
 ├── references/
 │   └── official/                  # Cached Claude Code docs for offline access
-└── {tp-sadd,tp-fpf,tp-git,tp-tdd,tp-ddd}/  # Marketplace plugins
+└── tp-*/  # Marketplace plugins (see marketplace.json for current list)
     ├── .claude-plugin/plugin.json
     ├── skills/{name}/SKILL.md
     ├── agents/
@@ -628,13 +596,7 @@ plugins/
 
 ### Naming Convention
 
-All imported/ported plugins use the `tp-` prefix:
-
-- `tp-sadd` — Structured Agent-Driven Development (sadd hub: compete, execute, judge, design, explore)
-- `tp-fpf` — First Principles Framework (fpf hub: propose, maintain, query)
-- `tp-git` — Git workflow automation (git hub: ship, review, issues, advanced)
-- `tp-tdd` — Test-Driven Development (tdd)
-- `tp-ddd` — Domain-Driven Design principles (ddd hub: architecture, quality, transparency)
+All imported/ported plugins use the `tp-` prefix. Current marketplace plugins are listed in `.claude-plugin/marketplace.json`. Each plugin is self-contained with its own `skills/`, `agents/`, and `commands/` directories.
 
 ### Adding a New Plugin
 
@@ -680,6 +642,23 @@ Every artifact in this ecosystem — skills, agents, commands — must default t
 This marketplace must synergize with any other marketplace or plugin the user may have installed. Every plugin and skill must work standalone with zero dependencies on other plugins in this marketplace. Skills describe their domain using shared workflow vocabulary — never referencing plugins by name. When another plugin provides a capability that overlaps, let routing sort it out: the AI chooses the best match from all installed plugins. Do not add disclaimers, compatibility notes, or installation requirements referencing other plugins. The user's plugin ecosystem is the AI's to navigate — not ours to constrain.
 
 This applies to all external plugins and marketplaces, not just within this project. A user running taches-principled alongside any third-party plugin should experience zero conflicts, zero duplicate routing, and zero assumptions about what else is installed.
+
+---
+
+## Glossary
+
+| Term | Definition |
+|------|------------|
+| **Semantic routing** | AI matches task intent to agent/skill capabilities based on description meaning, not file names |
+| **Hub skill** | Skill using decision routing to dispatch to internal modes (contrast with spoke) |
+| **Spoke skill** | Single-purpose skill doing one thing (contrast with hub) |
+| **Compositional pair** | Two skills with intentional separation for create/execute lifecycle |
+| **Load-bearing** | Separation that serves a functional purpose — removing it breaks the design |
+| **Progressive disclosure** | Loading pattern: frontmatter → body → references (shows policy first, mechanism on demand) |
+| **Native capabilities** | Built-in Claude Code actions: spawn subagent, create task list, use web search, read/write files, use Bash |
+| **Transformer Mandate** | Protocol principle: AI generates and scores, human makes final structural decisions |
+
+---
 
 ## Meta-Rule (applies to this file only)
 
