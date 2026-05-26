@@ -194,13 +194,13 @@ If you're coming from `taches-cc-resources`, you'll recognize the patterns. This
 
 ## Influences
 
-Two projects shaped this plugin's design:
+This plugin imports and refines from two sources:
 
-**taches-cc-resources** — Established the mental models for skills, subagents, and plans in Claude Code. Its directory structure and conventions are reflected throughout this plugin.
+**taches-cc-resources** — The mental models for skills, subagents, and plans in Claude Code come from here. This plugin takes that structure and streamlines it: same patterns, lighter implementation.
 
-**Context Engineering Kit** — Provided the foundational principles for token economy, subagent orchestration, and progressive disclosure. Many of the skill patterns (especially around multi-agent workflows) are directly inspired by this work.
+**Context Engineering Kit** — The methodology for token economy, subagent orchestration, and progressive disclosure is imported and refined here. Many multi-agent patterns come directly from this source.
 
-This plugin brings together these two influences: the structure from taches-cc-resources and the methodology from the Context Engineering Kit.
+This plugin is an import and refinement of these two sources: the structure from taches-cc-resources, the methodology from the Context Engineering Kit.
 
 ## Troubleshooting
 
