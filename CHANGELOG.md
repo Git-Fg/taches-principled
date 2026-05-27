@@ -31,6 +31,16 @@ All notable changes are documented here.
 - **Git availability**: Added `git --version` checks to implement-task and refine-task
 - **Judge tool mismatch**: Added Write tool to judge.md for filesystem communication
 - **TDD Iron Law contradiction**: Removed "write tests" from TDD triggers (Iron Law forbids without failing test first)
+- **tp-force-multiplier hooks**: Fixed prescriptive language → advisory ("Pattern: X suggests Y")
+- **tp-sadd agent tools**: Added Bash to meta-judge/judge, removed unused Edit from generator
+- **create-plans/agents**: Added missing spawn footer to implementer
+
+### Changed
+- **METHOD over-specification** (249 lines removed across 4 skills):
+  - fpf: 7-step procedure → principle statements
+  - diagnose: A3/Five Whys/Fishbone condensed
+  - create-plans: 11-item fan-out → 4 principles
+  - execute-plans: Strategy A 12-step → 5 principles, deviation rules trimmed
 
 ## [0.7.0] — 2026-05-25
 

@@ -31,17 +31,19 @@ If you did not watch the test fail, you do not know whether it tests the right t
 
 ### The Iron Law
 
-ALWAYS write the failing test FIRST. NEVER write production code before the test fails. Write code before the test? MUST delete it. Start over. Not "keep as reference." Not "adapt it while writing tests." Delete means delete. Implement fresh from tests. Period.
+Write the failing test FIRST. Production code before the test fails? Delete it. Start over. Not "keep as reference." Not "adapt it while writing tests." Delete means delete. Implement fresh from tests. Period.
+
+Never skip the failure step — a test you never saw fail proves nothing.
 
 ### Red-Green-Refactor
 
 **RED — Write Failing Test:** Write one minimal test for one behavior. Clear name, real code (mocks only if unavoidable), minimal setup. Requirements: one behavior, clear name, real code.
 
-**Verify RED — Watch It Fail:** MANDATORY. Never skip. Run the test. Confirm it fails (not errors), the failure message matches expectations, and it fails because the feature is missing (not a typo). Test passes? You are testing existing behavior — fix the test. Test errors? Fix the error, re-run until it fails correctly.
+**Verify RED — Watch It Fail:** Never skip. Run the test. Confirm it fails (not errors), the failure message matches expectations, and it fails because the feature is missing (not a typo). Test passes? You are testing existing behavior — fix the test. Test errors? Fix the error, re-run until it fails correctly.
 
 **GREEN — Minimal Code:** Write the simplest code to pass the test. No extra features, no refactoring, no improvements.
 
-**Verify GREEN — Watch It Pass:** MANDATORY. Run the test. Confirm pass, other tests still pass, output is pristine. If the test fails, fix the code — not the test.
+**Verify GREEN — Watch It Pass:** Run the test. Confirm pass, other tests still pass, output is pristine. If the test fails, fix the code — not the test.
 
 **REFACTOR — Clean Up:** After green only. Remove duplication, improve names, extract helpers. Keep tests green. Do not add behavior.
 

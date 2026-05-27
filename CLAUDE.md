@@ -102,6 +102,30 @@ When an agent claims to write findings to disk, it needs the Write tool. When it
 
 **The test:** Read the agent's description, then check its tools. Every capability described must have a corresponding tool available.
 
+### Skill Discovery Optimization
+
+**Claude under-triggers skills.** Research shows the model naturally under-invokes without explicit trigger phrases. This is the primary failure mode — not routing logic errors.
+
+**Reliable triggering requires:**
+- **User vocabulary**: "find the root cause" beats "A3 analysis" — speak how users think
+- **Specific phrases**: 5-10 triggers, no generic words ("improve" matches everything)
+- **CONTRAST sections**: Overlapping domains need explicit disambiguation
+- **Front-load in first 200 chars**: Truncation happens from the end
+
+**What kills routing:**
+- Technical jargon users don't say ("fishbone", "CQRS")
+- Single ambiguous words ("fix", "do", "handle")
+- Vague descriptions matching everything
+- Missing negative cases (what NOT to match)
+
+**Validation (before shipping any skill):**
+```bash
+claude -p "<test-query>" --output-format stream-json 2>&1 | grep Skill
+```
+Test 15-20 real queries, hold out 20%. Overfit = description learned pattern-matching, not routing.
+
+**Hook limitations:** Hooks inject context that nudges reasoning — they cannot directly activate skills. No hook event directly loads a skill. Skill activation is description-matching only.
+
 ### No Inline Tool Lists in Subagent Instructions
 
 When a skill body describes spawning a subagent, never include a specific tool list (`tools: Read, Edit, Bash, WebSearch, Write`). Tool availability varies by environment — WebSearch may be an MCP server, Bash may be restricted, file paths differ per platform.
@@ -181,7 +205,7 @@ Skills are auto-invoked by default by Claude Code — a cold-start instance disc
 - **Cross-skill references**: Never cite other skills' files with paths — use natural language: "see the X.md file in the create-plans skill's references"
 - **Shared references anti-pattern**: Don't create `references/` files expecting cross-skill reuse — paths break on plugin install, content must be inlined or documented here
 - **Decision router**: How to structure SKILL.md for strong reference steering
-- **Description length**: Official cap is 1,536 combined description+when_to_use (raised April 2026); routing density ideal is ~200 chars for optimal trigger clarity. `description` names the trigger phrase; `when_to_use` adds scope boundaries and usage context
+- **Description length**: Official cap is 1,536 combined description+when_to_use; routing density ideal is ~200 chars. `description` names the trigger phrase; `when_to_use` adds scope boundaries. Full routing optimization guide in "Skill Discovery Optimization" section.
 - **Congruence Level (CL)**: Evidence validation for claims about techniques — CL3 (benchmark on identical hardware/OS/software), CL2 (similar but not identical), CL1 (general principle from blog post). Apply congruence penalty when evidence comes from mismatched contexts.
 - **Command format**: See `commands-standard.md` in `plugins/taches-principled/` for lightweight command standards (no markdown in body, 1-3 sentence outcome instruction, conditional skill hints)
 
