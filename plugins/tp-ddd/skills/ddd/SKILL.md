@@ -1,12 +1,11 @@
 ---
 name: ddd
-description: "Domain-Driven Design code quality — structure code with layered architecture and functional core (ARCHITECTURE), apply domain-specific naming and library-first principles (QUALITY), ensure code reveals behavior with visible side effects and explicit control flow (TRANSPARENCY), design REST API contracts with proper resource modeling and versioning (API)."
+description: "Clean, maintainable code with clear structure and visible behavior. Use when code has too much nesting, domain logic leaks into infrastructure, or tests require heavy mocking."
 when_to_use: |
-  ARCHITECTURE: 'where does business logic go', 'where should this logic go', 'should domain know about database', 'how do I test without mocks', 'too much nesting', 'too many parameters', 'function does too much', 'function is too long', 'business logic in controllers'
-  QUALITY: 'what should I name this', 'is utils a good name', 'should I use a library', 'why did this error happen', 'silent failure'
-  TRANSPARENCY: 'hidden side effect', 'does this return or mutate', 'command vs query', 'should this function mutate or return', 'is this a side effect', 'pure function', 'where should I put error handling', 'data unexpectedly changing', 'can't trace value origin', 'mutation disguised as query'
-  API: 'design REST API', 'API endpoint design', 'HTTP semantics', 'API versioning', 'breaking API changes', 'REST resources', 'response format', 'API contract'
-  Use when code has excessive nesting, domain logic leaks into infrastructure, or tests require heavy mocking.
+  ARCHITECTURE: 'where does business logic go', 'too much nesting', 'too many parameters', 'function does too much', 'business logic in controllers'
+  QUALITY: 'what should I name this', 'should I use a library', 'silent failure'
+  TRANSPARENCY: 'hidden side effect', 'does this return or mutate', 'is this a side effect', 'mutation disguised as query'
+  API: 'design REST API', 'API endpoint design', 'HTTP semantics', 'API versioning'
 ---
 
 ## Decision Router

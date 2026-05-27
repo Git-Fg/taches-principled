@@ -1,11 +1,10 @@
 ---
 name: multi-agent-patterns
-description: "Design multi-agent system architectures. Use when choosing between supervisor, swarm, or hierarchical patterns; deciding when context isolation justifies multi-agent overhead; designing consensus mechanisms; or evaluating token cost budgets for distributed agent systems."
+description: "Build systems with multiple Claude agents working together. Use when scaling beyond single-agent limits, coordinating parallel workers, or designing agent teams."
 when_to_use: |
+  Triggers: 'multiple agents', 'agent coordination', 'scale Claude', 'multi-agent', 'agent team', 'parallel workers', 'context isolation'
   Use when designing a multi-agent system from scratch — selecting coordination patterns, sizing agent contexts, and choosing consensus mechanisms.
   Use when evaluating trade-offs between supervisor bottlenecks, peer-to-peer complexity, and hierarchical overhead.
-  Use when diagnosing multi-agent failure modes (telephone game degradation, sycophantic consensus, error propagation cascades).
-  Use when determining isolation strategy (full delegation, instruction passing, or filesystem coordination).
   Do NOT use for subagent spawn execution (use subagent-orchestration instead) or tool design (use tool-design instead).
   Do NOT use for single-agent tasks, simple scripts, or when context window limits are not the primary constraint.
 argument-hint: "[architecture pattern or focus area]"

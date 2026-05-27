@@ -31,7 +31,7 @@ This skill is self-contained — no external skill references needed.
 
 # Create Prompts Skill
 
-Create highly effective prompts that another Claude Code session can execute. Produces XML-structured prompts—not explanations or documentation.
+Create highly effective prompts that another Claude Code session can execute.
 
 ## Core Principle
 
@@ -39,41 +39,18 @@ Create highly effective prompts that another Claude Code session can execute. Pr
 
 ---
 
-## Sections
-
-1. [What Good Looks Like](#what-good-looks-like)
-2. [Adaptive Intake](#adaptive-intake)
-3. [Contextual Questioning](#contextual-questioning)
-4. [Decision Gate Loop](#decision-gate-loop)
-5. [Prompt Generation](#prompt-generation)
-6. [Execution Strategies](#execution-strategies)
-7. [Quality Standards](#quality-standards)
-8. [Anti-Patterns](#anti-patterns)
-9. [Numeric Thresholds](#numeric-thresholds)
-
----
-
 ## What Good Looks Like
 
-### Policy (What Makes a Good Prompt)
+### Policy
 
 A good prompt contains:
-
 - **Objective**: Clear statement of what needs to happen and why it matters
 - **Context**: Project type, tech stack, relevant constraints, who will use the output
 - **Requirements**: Specific, unambiguous instructions
 - **Output**: Exact file paths using relative notation (`./path/to/file`)
 - **Verification**: Explicit success criteria and how to confirm completion
 
-### Mechanism (How to Gather Requirements)
-
-1. Detect whether input is empty or vague
-2. Ask structured questions to fill genuine gaps
-3. Present decision gate before generating
-4. Generate single, parallel, or sequential prompts based on task analysis
-5. Save to `.principled/prompts/[slug]-[number]-[name].md` with sequential numbering
-
-### Indicators of Quality
+### Quality Indicators
 
 | Signal | Good | Bad |
 |--------|------|-----|
@@ -87,33 +64,15 @@ A good prompt contains:
 
 ## Adaptive Intake
 
-### Policy
+### Intake Gate Principle
 
 The intake gate determines whether you need more information before generating. Empty or vague input requires questioning. Specific input proceeds directly to generation.
 
-### Mechanism
+### Analysis Principle
 
-**Before analyzing anything**, check if the input contains a task description.
+From the input, infer task type (coding, analysis, research), complexity (simple vs complex), prompt structure (single vs multiple), execution strategy (parallel vs sequential), and reasoning depth.
 
-**If input is empty or vague** (user ran `/create-prompt` without details):
-- Gather sufficient context to create the prompt: goal, scope, constraints
-- Set execution mode: fully autonomous or human-in-the-loop at milestones
-- Use your tool to ask users your questions and prefill answers
-
-**If input contains a task description**:
-- Proceed directly to adaptive analysis
-
-### Analysis Factors
-
-From the input, extract and infer:
-
-- **Task type**: Coding, analysis, or research
-- **Complexity**: Simple (single file, clear goal) vs complex (multi-file, research needed)
-- **Prompt structure**: Single prompt vs multiple prompts
-- **Execution strategy**: Parallel (independent) vs sequential (dependencies)
-- **Depth needed**: Standard vs extended thinking triggers
-
-### Inference Rules
+### Inference Heuristics
 
 | Observed | Likely Inference |
 |----------|------------------|
@@ -126,341 +85,81 @@ From the input, extract and infer:
 
 ## Contextual Questioning
 
-### Policy
+### Questioning Principle
 
 Ask only about genuine gaps. Don't ask what's already stated. Each question needs options with explanations. User can always select "Other" for custom input.
 
-### Mechanism
+### Question Focus Areas
 
-Generate 2-4 questions per round based on remaining gaps.
+- **Ambiguous scope** — What kind of dashboard/admin/interface?
+- **Unclear target** — Where does this occur (frontend/backend/database)?
+- **Auth/security tasks** — What authentication approach?
+- **Performance tasks** — Load time, runtime, or database concern?
+- **Output clarity** — Production, prototype, or internal tooling?
 
-### Question Templates
-
-**For ambiguous scope** ("build a dashboard"):
-- What kind of dashboard is this?
-  - Admin dashboard: Internal tools, user management, system metrics
-  - Analytics dashboard: Data visualization, reports, business metrics
-  - User-facing dashboard: End-user features, personal data, settings
-
-**For unclear target** ("fix the bug"):
-- Where does this bug occur?
-  - Frontend/UI: Visual issues, user interactions, rendering
-  - Backend/API: Server errors, data processing, endpoints
-  - Database: Queries, migrations, data integrity
-
-**For auth/security tasks**:
-- What authentication approach?
-  - JWT tokens: Stateless, API-friendly
-  - Session-based: Server-side sessions, traditional web
-  - OAuth/SSO: Third-party providers, enterprise
-
-**For performance tasks**:
-- What's the main performance concern?
-  - Load time: Initial render, bundle size, assets
-  - Runtime: Memory usage, CPU, rendering performance
-  - Database: Query optimization, indexing, caching
-
-**For output/deliverable clarity**:
-- What will this be used for?
-  - Production code: Ship to users, needs polish
-  - Prototype/POC: Quick validation, can be rough
-  - Internal tooling: Team use, moderate polish
-
-### Question Rules
-
-- Only ask about genuine gaps
-- Each option needs a description explaining implications
-- Prefer options over free-text when choices are knowable
-- 2-4 questions max per round
+Generate 2-4 questions per round based on remaining gaps. Keep the decision gate loop active until user selects "Proceed."
 
 ---
 
 ## Decision Gate Loop
 
-### Policy
+### Gate Principle
 
-Never proceed without explicit user confirmation. Keep asking questions until user selects "Proceed."
-
-### Mechanism
-
-After receiving answers, present decision gate:
-
-**"I have enough context to create your prompt. Ready to proceed?"**
-
-| Response | Action |
-|----------|--------|
-| Proceed | Create the prompt with current context |
-| Ask more questions | Generate 2-4 new questions based on remaining gaps, then present gate again |
-| Let me add context | Receive additional context, then re-evaluate |
-
-### Loop Rule
-
-Keep the decision gate loop active until user selects "Proceed." Do not skip this step even if you feel you have enough context.
+Never proceed without explicit user confirmation. Present decision gate: "I have enough context to create your prompt. Ready to proceed?" Keep asking questions until user selects "Proceed."
 
 ---
 
 ## Prompt Generation
 
-### Policy
+### Generation Principle
 
-Prompts are XML-structured artifacts that define the contract between the user and the executing agent. The XML structure provides semantic clarity; the content provides execution guidance.
-
-### Mechanism
-
-#### Pre-Generation Analysis
-
-Before generating, determine:
-
-1. **Single vs Multiple Prompts**:
-   - Single: Clear dependencies, single cohesive goal, sequential steps
-   - Multiple: Independent sub-tasks that could be parallelized
-
-2. **Execution Strategy** (if multiple):
-   - Parallel: Independent, no shared file modifications
-   - Sequential: Dependencies, one must finish before next starts
-
-3. **Reasoning depth**:
-   - Simple: Standard prompt
-   - Complex: Extended thinking triggers
-
-4. **Required tools**: File references, bash commands, MCP servers
-
-5. **Quality signals**:
-   - "Go beyond basics" for ambitious work
-   - WHY explanations for constraints
-   - Examples for ambiguous requirements
-
-### Prompt Patterns
-
-#### For Coding Tasks
-
-```xml
-<objective>
-[Clear statement of what needs to be built/fixed/refactored]
-Explain the end goal and why this matters.
-</objective>
-
-<context>
-[Project type, tech stack, relevant constraints]
-[Who will use this, what it's for]
-@[relevant files to examine]
-</context>
-
-<requirements>
-[Specific functional requirements]
-[Performance or quality requirements]
-Be explicit about what Claude should do.
-</requirements>
-
-<implementation>
-[Any specific approaches or patterns to follow]
-[What to avoid and WHY - explain the reasoning behind constraints]
-</implementation>
-
-<output>
-Create/modify files with relative paths:
-- `./path/to/file.ext` - [what this file should contain]
-</output>
-
-<verification>
-Before declaring complete, verify your work:
-- [Specific test or check to perform]
-- [How to confirm the solution works]
-</verification>
-
-<success_criteria>
-[Clear, measurable criteria for success]
-</success_criteria>
-```
-
-#### For Analysis Tasks
-
-```xml
-<objective>
-[What needs to be analyzed and why]
-[What the analysis will be used for]
-</objective>
-
-<data_sources>
-@[files or data to analyze]
-![relevant commands to gather data]
-</data_sources>
-
-<analysis_requirements>
-[Specific metrics or patterns to identify]
-[Depth of analysis needed - use "thoroughly analyze" for complex tasks]
-[Any comparisons or benchmarks]
-</analysis_requirements>
-
-<output_format>
-[How results should be structured]
-Save analysis to: `.principled/prompts/analyses/[descriptive-name].md`
-</output_format>
-
-<verification>
-[How to validate the analysis is complete and accurate]
-</verification>
-```
-
-#### For Research Tasks
-
-```xml
-<research_objective>
-[What information needs to be gathered]
-[Intended use of the research]
-For complex research, include: "Thoroughly explore multiple sources and consider various perspectives"
-</research_objective>
-
-<scope>
-[Boundaries of the research]
-[Sources to prioritize or avoid]
-[Time period or version constraints]
-</scope>
-
-<deliverables>
-[Format of research output]
-[Level of detail needed]
-Save findings to: `.principled/prompts/research/[topic].md`
-</deliverables>
-
-<evaluation_criteria>
-[How to assess quality/relevance of sources]
-[Key questions that must be answered]
-</evaluation_criteria>
-
-<verification>
-Before completing, verify:
-- [All key questions are answered]
-- [Sources are credible and relevant]
-</verification>
-```
+Prompts are XML-structured artifacts that define the contract between the user and the executing agent. Determine single vs multiple prompts, execution strategy, reasoning depth, required tools, and quality signals before generating.
 
 ### Conditional Enhancements
 
-Based on analysis, include these conditionally:
+| Enhancement | When to Use |
+|-------------|-------------|
+| Extended thinking triggers | Complex reasoning/optimization |
+| "Go beyond basics" | Creative/ambitious tasks |
+| WHY explanations | Constraints and requirements |
+| Parallel tool calling | Agentic/multi-step workflows |
 
-| Enhancement | When to Use | Example |
-|-------------|-------------|---------|
-| Extended thinking triggers | Complex reasoning/optimization | "thoroughly analyze", "consider multiple approaches" |
-| "Go beyond basics" | Creative/ambitious tasks | "Include as many relevant features as possible" |
-| WHY explanations | Constraints and requirements | "Never use ellipses because text-to-speech can't pronounce them" |
-| Parallel tool calling | Agentic/multi-step workflows | "Invoke all relevant tools simultaneously" |
-| Research tags | Codebase exploration needed | `<research>` tags |
-| Validation tags | Verification required | `<validation>` tags |
-| Examples tags | Complex/ambiguous requirements | `<examples>` demonstrating desired behavior |
+### Prompt Patterns
+
+See {baseDir}/references/prompt-patterns.md for full XML templates for coding, analysis, and research tasks.
 
 ---
 
 ## Execution Strategies
 
-### Single Prompt
+### Strategy Selection Principle
 
-A single coherent prompt with clear dependencies and sequential steps.
-
-**When**: Clear goal, single cohesive task, sequential execution required.
-
-**Output**: `.principled/prompts/[slug]-XXX-[name].md`
-
-### Parallel Prompts
-
-Multiple independent prompts that can run simultaneously.
-
-**When**: Independent sub-tasks, no shared file modifications, can be parallelized.
-
-**Output**: `.principled/prompts/[slug]-XXX-[name1].md`, `.principled/prompts/[slug]-XXX+1-[name2].md`, etc.
-
-**Post-creation**: Present execution strategy to user.
-
-### Sequential Prompts
-
-Multiple prompts with dependencies where one must complete before the next starts.
-
-**When**: Dependencies exist, shared files, ordering matters.
-
-**Output**: `.principled/prompts/[slug]-XXX-[name1].md` → `.principled/prompts/[slug]-XXX+1-[name2].md` → etc.
-
-**Post-creation**: Present execution strategy with dependency chain to user.
+Match execution strategy to task dependencies:
+- **Single Prompt**: Clear goal, sequential execution required
+- **Parallel Prompts**: Independent sub-tasks, no shared file modifications
+- **Sequential Prompts**: Dependencies exist, ordering matters
 
 ---
 
 ## Quality Standards
 
-### Clarity First
-
-If anything is unclear, ask before proceeding. A few clarifying questions save time.
-
-**Test**: Would a colleague with minimal context understand this prompt?
-
-### Context is Critical
-
-Always include WHY the task matters, WHO it's for, and WHAT it will be used for.
-
-### Be Explicit
-
-Generate prompts with explicit, specific instructions. Default to precision over brevity.
-
-### Scope Assessment
-
-| Task Type | Prompt Length | Structure |
-|-----------|---------------|-----------|
-| Simple | Concise | Minimal tags |
-| Complex | Comprehensive | Full structure with extended thinking |
-
-### Context Loading
-
-Only request file reading when the task explicitly requires understanding existing code:
-
-- "Examine @package.json for dependencies" (when adding new packages)
-- "Review @src/database/* for schema" (when modifying data layer)
-- Skip file reading for greenfield features
-
-### Output Clarity
-
-Every prompt must specify exactly where to save outputs using relative paths.
-
-### Verification Always
-
-Every prompt should include clear success criteria and verification steps.
+- **Clarity First**: Would a colleague with minimal context understand this?
+- **Context is Critical**: Include WHY, WHO, and WHAT.
+- **Be Explicit**: Precision over brevity.
+- **Verification Always**: Every prompt includes clear success criteria.
 
 ---
 
 ## Anti-Patterns
 
-### Vague Objective
-
-**Bad**: "Implement auth"
-
-**Good**: "Build JWT-based login with refresh token rotation because stateless auth scales better for API-first architecture"
-
-### Missing Context
-
-**Bad**: "Fix the bug in the code"
-
-**Good**: "Fix the null pointer exception in ./src/services/UserService.ts:45 that occurs when user.email is undefined during registration"
-
-### No Verification
-
-**Bad**: "Create the feature" (no success criteria)
-
-**Good**: "Verify: `npm test` passes, manual smoke test at localhost:3000 shows new UI"
-
-### Generic Instructions
-
-**Bad**: "Go ahead and implement this however you think best"
-
-**Good**: "Follow the existing patterns in ./src/api/*.ts for consistency with error handling"
-
-### No Output Specification
-
-**Bad**: "Generate some tests"
-
-**Good**: "Save test file to ./tests/unit/auth.test.ts with coverage for valid/invalid credentials and token refresh"
-
-### Over-Structuring
-
-**Bad**: Including `<metadata>`, `<history>`, `<notes>` tags that no executing agent will use
-
-**Good**: Only tags that contribute to execution: objective, context, requirements, output, verification
+| Bad | Good |
+|-----|------|
+| "Implement auth" | "Build JWT-based login with refresh token rotation because stateless auth scales better" |
+| "Fix the bug" | "Fix the null pointer exception in ./src/services/UserService.ts:45" |
+| "Create the feature" | "Verify: npm test passes, manual smoke test at localhost:3000" |
+| "Go ahead and implement" | "Follow existing patterns in ./src/api/*.ts" |
+| "Generate some tests" | "Save test file to ./tests/unit/auth.test.ts" |
+| Include unused tags | Only tags that contribute to execution |
 
 ---
 
@@ -472,11 +171,8 @@ Every prompt should include clear success criteria and verification steps.
 | Prompts per generation | 2-4 typical (12 max) | Beyond this suggests task should be split |
 | Tasks per prompt | 2-3 typical | Quality degradation at higher task counts |
 | Filename words | 5 max | Keep concise for globbing |
-| Prompt length | As needed for clarity | Precision over brevity |
 
 **Split signal**: If a task has >3 subsystem touches, >5 files, or requires research + implementation, split into multiple prompts.
-
----
 
 ---
 
@@ -489,4 +185,3 @@ Every prompt should include clear success criteria and verification steps.
 - Execution strategy matches task dependencies
 - Sequential numbering applied correctly
 - Output saved to `.principled/prompts/[slug]-[number]-[name].md`
-- Decision tree presented to user

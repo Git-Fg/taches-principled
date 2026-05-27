@@ -2,14 +2,26 @@
 name: security
 description: "Static and dependency security analysis — scan for vulnerabilities, detect exposed secrets, audit auth patterns, check compliance. Modes: SAST, DEPENDENCY-AUDIT, SECRETS-DETECTION, COMPLIANCE."
 when_to_use: |
-  SAST: 'security audit', 'XSS', 'SQL injection', 'auth review', 'injection vulnerability', 'broken access control', 'CORS misconfiguration', 'IDOR'
-  DEPENDENCY-AUDIT: 'scan dependencies', 'check for outdated packages', 'npm audit', 'Snyk', 'vulnerable dependencies', 'CVE check', 'supply chain'
-  SECRETS-DETECTION: 'API key exposed', 'hardcoded secret', 'credentials in code', 'token leaked', '.env committed', 'secret scanning'
-  COMPLIANCE: 'compliance check', 'security standards', 'GDPR', 'SOC2', 'OWASP', 'security certification', 'audit readiness'
+  SAST: 'security audit', 'XSS', 'SQL injection', 'auth review'
+  DEPENDENCY-AUDIT: 'scan dependencies', 'npm audit', 'vulnerable dependencies'
+  SECRETS-DETECTION: 'API key exposed', 'hardcoded secret', 'credentials in code'
+  COMPLIANCE: 'compliance check', 'GDPR', 'SOC2', 'OWASP'
   IMMEDIATELY before production deployment, before merging security-related PRs, or when fixing vulnerabilities.
   Do NOT use for architecture design (use ddd) or general code quality (use refine REVIEW).
 user-invocable: true
 argument-hint: "[mode] [target] [--severity critical|high|medium|low]"
+---
+
+## Routing Guidance
+
+| If you need to... | Use this mode |
+|-------------------|---------------|
+| Find code vulnerabilities (injection, auth, access control) | SAST |
+| Check for outdated/vulnerable dependencies | DEPENDENCY-AUDIT |
+| Find API keys or credentials in code | SECRETS-DETECTION |
+| Verify compliance with security standards | COMPLIANCE |
+
+**Quick routing:** Scan code patterns = SAST. Scan packages = DEPENDENCY-AUDIT. Scan for secrets = SECRETS-DETECTION. Audit compliance = COMPLIANCE.
 ---
 
 ## Decision Router

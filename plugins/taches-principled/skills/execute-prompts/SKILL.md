@@ -24,25 +24,12 @@ This skill is self-contained — no cross-skill routing needed.
 
 ---
 
-## Sections
-
-- [Policy vs. Mechanism](#policy-vs-mechanism)
-- [Execution Strategies](#execution-strategies)
-- [Execution Mode Intake](#execution-mode-intake)
-- [Argument Parsing](#argument-parsing)
-- [File Resolution](#file-resolution)
-- [Archival and Git Workflow](#archival-and-git-workflow)
-- [Anti-Patterns](#anti-patterns)
-- [Numeric Thresholds](#numeric-thresholds)
-
----
-
 ## Policy vs. Mechanism
 
 **Policy** = which execution strategy to use (determined by prompt relationships)
 **Mechanism** = how to parse, resolve, and execute (the operational method)
 
-A task conflating policy and mechanism becomes rigid — it runs prompts instead of achieving outcomes. State the strategy based on prompt dependencies; keep the parsing logic separate.
+State the strategy based on prompt dependencies; keep the parsing logic separate.
 
 ### Strategy Selection
 
@@ -52,7 +39,7 @@ A task conflating policy and mechanism becomes rigid — it runs prompts instead
 | Multiple independent prompts | Parallel | Maximize throughput |
 | Multiple dependent prompts | Sequential | Each must complete before next |
 
-**Default:** When multiple prompts are specified without a flag, use sequential for safety. Dependencies are often implicit.
+**Default:** When multiple prompts are specified without a flag, use sequential for safety.
 
 ---
 
@@ -60,81 +47,21 @@ A task conflating policy and mechanism becomes rigid — it runs prompts instead
 
 ### Single Execution
 
-Use when: one prompt target, or user explicitly requests one-at-a-time.
-
-**Mechanism:**
-1. Read the complete prompt file
-2. Delegate to a general-purpose subagent
-3. Wait for completion
-4. Archive to `.principled/prompts/completed/`
-5. Commit work via git
-6. Return results
+Read the complete prompt file, delegate to a general-purpose subagent, wait for completion, archive to `.principled/prompts/completed/`, commit work, return results.
 
 ### Parallel Execution
 
-Use when: multiple prompts with no interdependencies.
+Read all prompt files, track each prompt's execution as a distinct unit, dispatch ALL subagents in one message for true parallelization. After completion, archive all prompts, commit all work, return consolidated results.
 
-**Critical constraint:** ALL subagent dispatches MUST occur in a SINGLE message. This is the mechanism that enables true parallelization — not batching, not async/await, but concurrent dispatch in one token emission.
-
-**Mechanism:**
-1. Read all prompt files
-2. Track each prompt's execution as a distinct unit — resolution, dispatch, completion
-3. Dispatch ALL subagents in one message
-4. For parallel execution, track each subagent's completion independently to enable partial failure reporting
-5. Wait for all completions
-6. Archive all prompts
-7. Commit all work
-8. Return consolidated results
-
-**Explorer Subagent Protocol:**
-When executing multiple prompts in parallel, coordination through shared state:
-1. Check `.principled/scratch/multi-agent-state.md` for any prior execution context
-2. Write current execution batch info to scratchpad
-3. Each subagent should have **Write tool access** to update scratchpad
-4. After completion, read scratchpad for any cross-agent findings
-5. Consolidate results before archival
+**Critical constraint:** ALL subagent dispatches MUST occur in a SINGLE message. Sequential token emission creates sequential execution.
 
 ### Sequential Execution
 
-Use when: prompts have dependencies (output of one feeds into another).
-
-**Mechanism:**
-1. Read first prompt file
-2. Dispatch subagent
-3. Wait for completion
-4. Track progression through the chain — each prompt's completion gates the next
-5. Archive completed prompt
-6. Repeat for each subsequent prompt
-7. Commit all work
-8. Return consolidated results
-
-**Failure handling:** If any prompt fails, stop the chain and report. Do not continue with dependent prompts.
-
----
-
-## Execution Mode Intake
-
-**Pre-execution check:** Before executing multiple prompts, ensure execution mode is set.
-
-If mode is already specified (via flag or prior context), skip this step.
-
-If mode is not specified:
-1. Understand the goal — what prompts are being executed
-2. Clarify scope — any dependencies or constraints
-3. Set execution mode — autonomous or human-in-the-loop
-
-Use your tool to ask users your questions and prefill answers. Default to autonomous when user says "run" without qualification.
-
-**When to skip:**
-- User said "step through" or "confirm before each" — use step-through mode
-- Single prompt only
-- Flag already specifies mode (`--parallel`, `--sequential`)
+Read first prompt file, dispatch subagent, wait for completion, track progression through the chain. Repeat for each subsequent prompt. If any prompt fails, stop the chain and report.
 
 ---
 
 ## Argument Parsing
-
-The execution target is determined by `$ARGUMENTS`.
 
 ### Input Forms
 
@@ -147,68 +74,33 @@ The execution target is determined by `$ARGUMENTS`.
 | `"005 006 007 --parallel"` | Multiple prompts, parallel |
 | `"005 006 007 --sequential"` | Multiple prompts, sequential |
 
-**Parsing rules:**
-- Arguments that are not `--parallel` or `--sequential` are prompt identifiers
-- Multiple prompts without a flag default to sequential (safety over speed)
+**Parsing rules:** Arguments that are not `--parallel` or `--sequential` are prompt identifiers. Multiple prompts without a flag default to sequential.
 
 ---
 
 ## File Resolution
 
-For each prompt identifier, resolve to a concrete file path.
+### Resolution Principle
 
-### Resolution Method
-
-| Identifier Type | Matching Method |
-|----------------|-----------------|
-| Empty or "last" | `ls -t .principled/prompts/*.md \| head -1` |
-| Number (e.g., "5") | Zero-padded match: "5" matches "005-_.md" |
-| Text (e.g., "auth") | Filename contains string anywhere |
-
-### Resolution Outcomes
+For each prompt identifier, resolve to a concrete file path. Match by number (zero-padded) or by text (filename contains string). Always verify file exists before dispatch.
 
 | Outcome | Action |
 |---------|--------|
 | Exactly one match | Use that file |
 | Multiple matches | List candidates, ask user to choose |
-| No match | Track as failed state, report error with available prompts listing |
-
-**Always verify file exists before dispatch.** Assumed existence is a race condition.
+| No match | Track as failed state, report error |
 
 ---
 
 ## Archival and Git Workflow
 
-After each prompt completes successfully, archive it and commit the resulting work.
+### Archival Principle
 
-### Archival
-
-- Destination: `.principled/prompts/completed/`
-- Preserve original filename
-- Add completion metadata if desired
+Archive to `.principled/prompts/completed/` only after confirmed completion. On failure, keep in place and report error.
 
 ### Git Workflow
 
-**Stage files explicitly:**
-```bash
-git add [file1] [file2]
-```
-Never `git add .` — stage only files you modified.
-
-**Commit format:**
-```
-[type]: [specific description]
-```
-
-| Change Type | Commit Type |
-|-------------|-------------|
-| New feature | `feat:` |
-| Bug fix | `fix:` |
-| Refactor | `refactor:` |
-| Style/format | `style:` |
-| Documentation | `docs:` |
-| Tests | `test:` |
-| Maintenance | `chore:` |
+Stage files explicitly: `git add [file1] [file2]`. Never `git add .` — stage only files you modified. Commit format: `[type]: [specific description]`.
 
 After execution completes, consider capturing insights from the results into project memory via `refine memorize`.
 
@@ -218,29 +110,13 @@ After execution completes, consider capturing insights from the results into pro
 
 **The Thought/Action/Observation Anti-Pattern is documented in the execute-plans skill.**
 
-### Parallelization Without True Concurrency
+### Anti-Patterns
 
-**Anti-pattern:** Spawning subagents across multiple messages for "parallel" execution.
+**Parallelization Without True Concurrency:** Spawning subagents across multiple messages for "parallel" execution. Fix: All parallel subagent dispatches MUST be in a single message.
 
-**Why it fails:** Sequential token emission creates sequential execution. The illusion of parallelization with sequential latency.
+**Ignoring Dependencies in Sequential:** Running prompts in sequence without checking if they have actual dependencies. Fix: Explicitly ask user if prompts are dependent, or default to parallel when unsure.
 
-**Fix:** All parallel subagent dispatches MUST be in a single message.
-
-### Ignoring Dependencies in Sequential
-
-**Anti-pattern:** Running prompts in sequence without checking if they have actual dependencies.
-
-**Why it fails:** Wastes time on independent prompts; misses parallelization opportunity.
-
-**Fix:** Explicitly ask user if prompts are dependent, or default to parallel when unsure.
-
-### Archiving Before Completion
-
-**Anti-pattern:** Archiving prompts before execution finishes.
-
-**Why it fails:** Failed prompts remain in the queue instead of being flagged.
-
-**Fix:** Archive only after confirmed completion. On failure, keep in place and report error.
+**Archiving Before Completion:** Archiving prompts before execution finishes. Fix: Archive only after confirmed completion.
 
 ---
 
@@ -252,7 +128,7 @@ After execution completes, consider capturing insights from the results into pro
 | Prompts per sequential chain | No hard limit | Stop on failure; user controls scope |
 | Commit message length | 72 chars max | Standard git convention |
 
-**Parallel execution is all-or-nothing:** If you cannot fit all parallel Task calls in one message, fall back to sequential. Batched "parallel" is sequential with added latency.
+**Parallel execution is all-or-nothing:** If you cannot fit all parallel Task calls in one message, fall back to sequential.
 
 ---
 

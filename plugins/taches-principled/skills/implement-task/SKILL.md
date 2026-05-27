@@ -31,13 +31,13 @@ IF user is done implementing → verify completion and move task to done
 
 First: verify git is available. Run `git --version` to confirm. If git is not installed or not in PATH, fail with error: "Git is not available. Install git or ensure it is in your PATH, then retry."
 
-Orchestrate multi-step task implementation with automated quality verification. Each implementation step spawns a dedicated subagent, then verified by an independent judge subagent. Supports three verification patterns (simple skip, critical panel, per-item judges) plus final Definition of Done verification.
+Orchestrate multi-step task implementation with automated quality verification. Each implementation step spawns a dedicated subagent, then verified by an independent judge subagent. Supports three verification patterns plus final Definition of Done verification.
 
-The orchestrator spawns and aggregates but never implements or evaluates directly. Every implementation step gets a dedicated agent. Every verification gets an independent judge. Context protection is paramount — reading artifacts yourself causes context overflow and command loss, which is the most common failure mode in multi-step workflows.
+The orchestrator spawns and aggregates but never implements or evaluates directly. Every implementation step gets a dedicated agent. Every verification gets an independent judge.
 
 ## Core Principle
 
-Context is the orchestrator's most precious resource. Protecting it means delegating everything: implementations to developer agents, evaluations to judge agents, and reading only the task file. The orchestrator that reads artifacts stops being able to orchestrate.
+Context is the orchestrator's most precious resource. Protecting it means delegating everything: implementations to developer agents, evaluations to judge agents. The orchestrator that reads artifacts stops being able to orchestrate.
 
 ## Configuration
 
@@ -84,418 +84,88 @@ Context is the orchestrator's most precious resource. Protecting it means delega
 
 ## Phase 0: Select Task and Move to In-Progress
 
-### Step 0.1: Resolve Task File
+### Task Resolution Principle
 
-If the user provides a task file name or path as the first positional argument:
-- Search in order: `in-progress/`, `todo/`, `done/`
-- Set `TASK_FOLDER` to the matching folder
-- Error if not found in any folder
+Resolve task file: search in order `in-progress/`, `todo/`, `done/`. If argument empty, auto-select single file from in-progress/ or todo/.
 
-If argument is empty or contains only flags:
-- Check `in-progress/` first: `ls .specs/tasks/in-progress/*.md`
-  - If exactly 1 file: select it as the task
-  - If multiple files: list them and ask user which to continue
-  - If no files: continue to check `todo/`
-- Check `todo/`: `ls .specs/tasks/todo/*.md`
-  - If exactly 1 file: select it
-  - If multiple files: list them and ask user which to implement
-  - If no files: report "No tasks available. Create one first." and stop
+### Continue Mode Principle
 
-### Step 0.2: Move to In-Progress
+Detect `[DONE]` markers on step titles. Launch judge to verify last completed step state. If PASS, resume from next step. If FAIL, re-implement that step.
 
-If task is in `todo/`:
-```bash
-git mv .specs/tasks/todo/<TASK_FILE> .specs/tasks/in-progress/
-# Fallback: mv .specs/tasks/todo/<TASK_FILE> .specs/tasks/in-progress/
-```
+### Refine Mode Principle
 
-If task is already in `in-progress/`, keep it there.
-
-### Step 0.3: Handle --continue Mode
-
-1. Parse the task file for `[DONE]` markers on step titles (e.g., `### Step 2: Create Service [DONE]`)
-2. Find the highest step number marked `[DONE]` — this is `LAST_COMPLETED_STEP`
-3. If `LAST_COMPLETED_STEP > 0`:
-   - Launch a judge subagent to verify the artifacts from that completed step
-   - If judge PASS: set `RESUME_FROM = LAST_COMPLETED_STEP + 1`
-   - If judge FAIL: set `RESUME_FROM = LAST_COMPLETED_STEP` (re-implement the step)
-4. If `LAST_COMPLETED_STEP == 0`: set `RESUME_FROM = 1`
-5. In Phase 2, skip all steps before `RESUME_FROM`
-
-### Step 0.4: Handle --refine Mode
-
-1. **Detect changed project files** (not task file — the project's source files):
-
-   ```bash
-   STAGED=$(git diff --cached --name-only)
-   UNSTAGED=$(git diff --name-only)
-   ```
-
-   Determine comparison mode:
-
-   | Staged | Unstaged | Compare Against | Command |
-   |--------|----------|-----------------|---------|
-   | Yes | Yes | Unstaged only | `git diff --name-only` |
-   | Yes | No | Last commit | `git diff HEAD --name-only` |
-   | No | Yes | Last commit | `git diff HEAD --name-only` |
-   | No | No | No changes, inform user | - |
-
-2. **Load the task file** and extract step-to-file mapping from each step's "Expected Output" section, subtask descriptions mentioning file paths, and `#### Verification` artifact paths.
-
-3. **Map changed files to steps**: for each changed file, find which step(s) created or modified it. Build a set of affected step numbers.
-
-4. **Determine scope**: `REFINE_FROM` = minimum of affected step numbers. All steps from `REFINE_FROM` onwards need re-verification. Steps before `REFINE_FROM` are preserved as-is.
-
-5. **Pass context**: Provide the git diff output for affected files as `USER_CHANGES_CONTEXT` to both judge and implementation subagents. Sub-agents must build upon user fixes, not overwrite them.
-
-### Step 0.5: Display Configuration
-
-```markdown
-| Setting | Value |
-|---------|-------|
-| **Task File** | `<path>` |
-| **Standard Threshold** | X.X/5.0 |
-| **Critical Threshold** | Y.Y/5.0 |
-| **Max Iterations** | N |
-| **Human Checkpoints** | `<steps or None>` |
-| **Skip Judges** | true/false |
-| **Continue Mode** | true/false |
-| **Refine Mode** | true/false |
-```
+Detect git changes to project files. Map changed files to implementation steps via Expected Output and Verification sections. Re-verify from earliest affected step. Pass user changes as context to subagents.
 
 ## Phase 1: Load and Analyze Task
 
-This is the ONLY phase where the orchestrator reads a file. After this, all implementation details come from subagent reports.
+This is the ONLY phase where the orchestrator reads a file.
 
-1. **Read the task file once** — extract the `## Implementation Process` section
-2. **Parse all steps** with their dependencies, parallel annotations (`Parallel with:`), and `#### Verification` sections
-3. **Classify each step's verification level**:
+**Verification Level Classification Principle:**
+- No verification section → Pattern A (skip)
+- Single Judge → Pattern B, 1 judge, standard threshold
+- Panel of 2 Judges → Pattern B, 2 judges, critical threshold
+- Per-Item Judges → Pattern C, 1 judge per item
 
-| Level | When | Judge Config |
-|-------|------|--------------|
-| None | Simple ops (mkdir, delete, config) | Skip (Pattern A) |
-| Single Judge | Non-critical artifacts | 1 judge, standard threshold (Pattern B) |
-| Panel of 2 Judges | Critical artifacts | 2 judges, median voting, critical threshold (Pattern B) |
-| Per-Item Judges | Multiple similar items | 1 judge per item, parallel (Pattern C) |
-
-4. **Create progress tracking todo list** for all steps
+Critical steps always use critical threshold regardless of verification level.
 
 ## Phase 2: Execute Implementation Steps
 
-Execute steps in dependency order. Steps marked `Parallel with:` run simultaneously. Each step follows one of three patterns.
+Execute steps in dependency order. Steps marked `Parallel with:` run simultaneously.
 
-### Pattern A: Simple Step (No Verification)
+### Verification Patterns
 
-Used for: directory creation, configuration changes, deletions, and other straightforward operations.
+**Pattern A: Simple Step**
+No verification needed. Spawn implementation agent, mark done, proceed.
 
-**Spawn implementation subagent:**
-
-```
-Implement Step [N]: [Step Title]
-
-Task File: <TASK_PATH>
-Step Number: [N]
-
-Execute ONLY Step [N]: [Step Title]. Do NOT execute any other steps.
-
-Follow the Expected Output and Success Criteria exactly.
-
-When complete, report:
-1. Files created/modified (paths)
-2. Confirmation that success criteria are met
-3. Any issues encountered
-```
-
-**Spawn Footer**
-When spawned as a subagent:
-- Your context starts fresh — no access to prior conversation or other subagents' outputs
-- Return structured output (file paths, findings, and any artifacts) to the orchestrator
-- If you encounter anything unexpected or have any question or doubt, stop and report back
-- Do not proceed silently on assumptions.
-
-**Failure Signal**
-If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
-
-**After completion:**
-- Use the agent's report to know what was created — do NOT read the created files
-- Mark step complete: update task file with `[DONE]` on step title, subtasks as `[X]`
-- Update progress tracking
-
----
-
-### Pattern B: Single Item with Verification
-
+**Pattern B: Single Item with Verification**
 Implementation with 1-2 independent judges. Aggregation uses median. Iterate on FAIL.
 
-**Implementation:** Spawn a developer subagent to create the artifact following the Expected Output and Success Criteria exactly.
-
-**Verification:** Launch judge(s) — 1 for standard threshold, 2 for critical threshold (parallel). Each judge scores criteria 1-5 with justification BEFORE the score, then returns overall weighted score and PASS/FAIL.
-
-**Aggregation (panel of 2):** Median per criterion, sum(median x weight) for overall, PASS if overall >= threshold. Flag criteria with >2.0 variance between judges.
-
-**On FAIL:** Re-implement with judge feedback, re-verify. Iterate until PASS or MAX_ITERATIONS reached.
-
----
-
-### Pattern C: Multi-Item with Per-Item Judges
-
+**Pattern C: Multi-Item with Per-Item Judges**
 1 judge per item, parallel execution. Iterate only failing items on FAIL.
-
-**Implementation:** Spawn developer subagents in parallel — one per item.
-
-**Verification:** Spawn evaluator subagents in parallel — one per item. Each scores 1-5 with justification, returns overall score and PASS/FAIL.
-
-**Aggregation:** items_passed / items_total.
-
-**On any FAIL:** Re-implement only failing items with feedback, re-verify only those. Iterate until ALL PASS or MAX_ITERATIONS reached.
-
----
 
 ### Human-in-the-Loop Checkpoint
 
-Triggered after a step PASSES (not on FAIL) if the step number is in `HUMAN_IN_THE_LOOP_STEPS` (or if ALL steps are enabled):
-
-```markdown
----
-## Human Review Checkpoint - Step [N]
-
-**Step:** [Step Title]
-**Step Type:** standard/critical
-**Judge Score:** X.X/[threshold]
-**Status:** PASS
-
-**Artifacts Created/Modified:**
-- <artifact_path>
-
-**Judge Feedback:**
-<feedback summary>
-
-> Continue? [Y/n/feedback]:
----
-```
-
-If user provides feedback: incorporate into next step or re-implement current step with feedback.
-If user says "n": pause workflow, report current progress.
-
-### Verification Level Determination
-
-When a step's `#### Verification` section specifies:
-- **None** → Pattern A (skip verification)
-- **Single Judge** → Pattern B with 1 judge, standard threshold
-- **Panel of 2 Judges** → Pattern B with 2 judges, critical threshold
-- **Per-Item Judges** → Pattern C, standard threshold
-
-If the step is marked as critical in the task file metadata, always use the critical threshold regardless of verification level.
+Triggered after a step PASSES if the step is in `HUMAN_IN_THE_LOOP_STEPS`. Present judge feedback and artifacts. On user feedback, incorporate into next step. On "n", pause workflow.
 
 ## Phase 3: Final Verification (Definition of Done)
 
-After all implementation steps complete and pass their per-step verification:
+After all steps complete, spawn DoD verification subagent to verify each checkbox item.
 
-1. **Spawn a DoD verification subagent**:
-
-```
-Verify all Definition of Done items in the task file.
-
-Task File: <TASK_PATH>
-
-Your task:
-1. Read the "## Definition of Done (Task Level)" section
-2. Go through each checkbox item one by one
-3. For each item, verify by: running tests, checking compilation, verifying file existence, checking patterns and linting
-4. Mark each passed item with [X] in the task file
-5. Return structured report:
-
-| Item | Status | Evidence |
-|------|--------|----------|
-| <item> | PASS/FAIL/BLOCKED | <evidence> |
-| ... | ... | ... |
-
-Overall pass rate: X/Y
-Failing items with specific reasons.
-```
-
-**Spawn Footer**
-When spawned as a subagent:
-- Your context starts fresh — no access to prior conversation or other subagents' outputs
-- Return structured output (file paths, findings, and any artifacts) to the orchestrator
-- If you encounter anything unexpected or have any question or doubt, stop and report back
-- Do not proceed silently on assumptions.
-
-**Failure Signal**
-If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
-
-2. **Review results**: If all items PASS, verify that `[X]` markers were written by checking the end of the task file.
-
-3. **On any FAIL**: Launch fix subagents for each failing item with the failure details. After fixes, re-launch the DoD verification (step 1). Iterate until all PASS.
+**On any FAIL:** Launch fix subagents for failing items, then re-verify. Iterate until all PASS.
 
 ## Phase 4: Move Task to Done
 
-After DoD verification passes:
-
 ```bash
 git mv .specs/tasks/in-progress/<TASK_FILE> .specs/tasks/done/
-# Fallback: mv .specs/tasks/in-progress/<TASK_FILE> .specs/tasks/done/
 ```
 
 ## Phase 5: Report
 
-Generate the implementation summary:
-
-```markdown
-### Implementation Summary
-
-| Step | Title | Status | Verification | Score | Iterations |
-|------|-------|--------|--------------|-------|------------|
-| 1 | [Title] | PASS | Skipped | N/A | 1 |
-| 2 | [Title] | PASS | Panel (2) | 4.5/5 | 1 |
-| ... | ... | ... | ... | ... | ... |
-
-### Verification Summary
-
-| Metric | Value |
-|--------|-------|
-| Total steps | X |
-| Verified steps | Y |
-| Passed first try | Z |
-| Required iteration | W |
-| Total fix-verify cycles | V |
-
-### Definition of Done
-
-| Item | Status | Evidence |
-|------|--------|----------|
-| <DoD item> | PASS | <evidence> |
-
-**Task Status:** DONE — `.specs/tasks/done/<filename>`
-```
-
-## Usage Walkthrough
-
-### Example: Implementing a Feature with Verification
-
-```
-User: /implement add-validation.feature.md
-
-Phase 0: Task selected: .specs/tasks/todo/add-validation.feature.md
-         Moving to in-progress...
-
-Phase 1: Task loaded. 4 steps identified:
-  Step 1: Create directories (None)
-  Step 2: Create ValidationService (Panel of 2 Judges)
-  Step 3: Create validators (Per-Item Judges, 3 items)
-  Step 4: Integration test (Single Judge)
-
-Phase 2: Executing...
-
-Step 1: Developer agent → directories created. Marked DONE.
-
-Step 2: Developer agent → service + tests created.
-  Judge 1: 4.3/5.0 PASS | Judge 2: 4.5/5.0 PASS
-  Panel: 4.4/5.0 ✅ Marked DONE.
-
-Step 3: 3 developer agents (parallel) → 3 validators created.
-  3 judges (parallel) → 2 PASS, 1 FAIL (weak edge case coverage)
-  Fix + re-judge → ALL PASS ✅ Marked DONE.
-
-Step 4: Developer agent → integration test.
-  Judge → 4.2/5.0 PASS ✅ Marked DONE.
-
-Phase 3: DoD verification → 5/5 items PASS ✅
-
-Phase 4: Moved to .specs/tasks/done/
-
-Phase 5: Summary generated.
-```
-
-### Example: Handling Verification Failure with Iteration
-
-```
-Step 3: ValidationService implementation complete.
-Launching 2 judges...
-
-Judge 1: 3.5/5.0 FAIL | Judge 2: 3.2/5.0 FAIL
-Issues: Missing edge case tests (2.5/5), custom Result type instead of project standard (3.0/5)
-
-Iteration 1: Developer agent fixes issues...
-Re-launching judges...
-Judge 1: 4.2/5.0 PASS | Judge 2: 4.4/5.0 PASS
-Panel: 4.3/5.0 ✅ Marked DONE.
-```
-
-## Verification Specifications Reference
-
-Task files define verification requirements in `#### Verification` sections within each implementation step.
-
-### Section Structure
-
-```markdown
-#### Verification
-
-**Level:** None | Single Judge | Panel of 2 Judges | Per-Item Judges
-**Artifact:** `<file_path>`, `<file_path>`, ...
-**Threshold:** X.X/5.0 (optional — defaults to standard or critical threshold)
-
-**Rubric:**
-
-| Criterion | Weight | Description |
-|-----------|--------|-------------|
-| <Name> | 0.XX | <What to evaluate, specific and measurable> |
-| ... | ... | ... |
-```
-
-### Rubric Requirements
-- Weights MUST sum to 1.0
-- Each criterion has a clear, measurable description
-- Typically 3-6 criteria per rubric
-- Descriptions use concrete terms (file paths, function names, behaviors)
-
-### Scoring Scale (per criterion)
-
-| Score | Label | Meaning |
-|-------|-------|---------|
-| 1 | Poor | Missing essential elements, fundamental misunderstanding |
-| 2 | Below Average | Some correct elements, significant gaps |
-| 3 | Adequate | Meets basic requirements, functional but minimal |
-| 4 | Good | Meets all requirements, few minor issues |
-| 5 | Excellent | Exceptional quality, exceeds expectations |
+Generate implementation summary with step status, verification results, and DoD verification.
 
 ## Evaluation Integrity Rules
 
-- **Score 5.0/5.0 is a hallucination** — reject and re-run the judge. Perfect scores are practically impossible in rigorous evaluation.
+- **Score 5.0/5.0 is a hallucination** — reject and re-run the judge.
 - **Missing numerical score** — reject and re-run the judge.
-- **Excessively long reports** instead of structured evaluation — reject and re-run.
-- **Use thresholds from configuration**, not hardcoded values.
-- **After MAX_ITERATIONS reached**: proceed to next step with warning — do not block indefinitely.
-- **Chain-of-thought required**: judges must provide justification BEFORE the score for each criterion, not after.
+- **Chain-of-thought required**: judges must provide justification BEFORE the score.
+- **After MAX_ITERATIONS reached**: proceed to next step with warning.
 
-## Panel Voting Algorithm (Pattern B with 2 Judges)
+## Panel Voting Algorithm
 
-1. **Collect**: table with each criterion and both judge scores
-2. **Median**: average of both scores per criterion
+1. **Collect**: both judge scores per criterion
+2. **Median**: average scores per criterion
 3. **High variance check**: if |score1 - score2| > 2.0, flag for potential disagreement
 4. **Weighted overall**: sum(median x weight) for all criteria
 5. **Pass/fail**: overall >= threshold
 
-If high variance is detected: present both evaluators' reasoning to the user and ask for resolution. If user declines, use the median (conservative).
+If high variance detected: present both perspectives to user for resolution. If user declines, use median (conservative).
 
 ## Error Handling
 
-### Implementation Sub-Agent Failure
-If a developer agent reports failure: present the failure details to the user, ask clarifying questions that could help resolve, then re-launch the subagent with clarifications incorporated.
-
-### Judge Returns FAIL
-Automatic retry: re-launch the implementation subagent with judge feedback included. The implementation subagent must address the specific failing criteria.
-
-If the step is in HUMAN_IN_THE_LOOP_STEPS: trigger human checkpoint after the re-implementation but before the next judge retry.
-
-After MAX_ITERATIONS (default 3) reached: proceed to next step automatically. Log a warning in the final summary. Do not ask permission unless the step is in HUMAN_IN_THE_LOOP_STEPS.
-
-### Judge Disagreement (difference > 2.0)
-Present both perspectives with evidence. Ask the user to resolve: "Judges disagree on [criterion]. Your decision?" Proceed based on user response.
-
-### Refine Mode Edge Cases
-- **No changes detected**: "No project file changes detected since last commit. Make edits first, then run --refine again."
-- **Changes do not map to steps**: "Changed files don't match any implementation step's expected outputs. Verify manually or run without --refine."
+- **Implementation failure**: Present details to user, re-launch with clarifications
+- **Judge FAIL**: Re-launch implementation with feedback. Iterate until PASS or MAX_ITERATIONS
+- **Judge disagreement (>2.0)**: Ask user to resolve
+- **Refine edge cases**: No changes detected or changes don't map to steps
 
 ## Design Decisions
 

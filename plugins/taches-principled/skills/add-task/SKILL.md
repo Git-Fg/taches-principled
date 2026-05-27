@@ -18,23 +18,17 @@ IF user provides no description → ask clarifying questions before creating
 
 # Add Task
 
-Creates a draft task specification file from user intent. Sets up the standardized folder structure, classifies the task type, generates a file name from an action-oriented title, and preserves the original user prompt exactly for downstream refinement. The draft is intentionally minimal — a container for future analysis, not the final specification.
+Creates a draft task specification file from user intent. Sets up the standardized folder structure, classifies the task type, generates a file name from an action-oriented title, and preserves the original user prompt exactly for downstream refinement.
 
 ## Core Principle
 
 Capture intent exactly as stated. The draft preserves the original user prompt verbatim. Future stages enrich it with analysis, architecture, and verification.
 
-## Process
+## Process Principle
 
-### Phase 1: Ensure Directory Structure
-1. Create task directories if missing: `.specs/tasks/{draft,todo,in-progress,done}/` and `.specs/scratchpad/`
-2. Add `.specs/scratchpad/` to `.gitignore` if not already present
-3. Verification: all required directories exist
+Document intent, verify directory structure exists, classify task type, generate filename, persist to draft folder. Title must start with an action verb (Add, Fix, Update, Implement, Remove, Refactor).
 
-### Phase 2: Analyze Input
-1. Extract the core task objective from user input
-2. Identify implied type using the classification table
-3. Note any dependencies (task files this depends on — assume none if not provided)
+### Task Type Classification
 
 | Type | Extension | Use When |
 |------|-----------|----------|
@@ -45,32 +39,6 @@ Capture intent exactly as stated. The draft preserves the original user prompt v
 | docs | `.docs.md` | Documentation changes only |
 | chore | `.chore.md` | Maintenance, dependency updates |
 | ci | `.ci.md` | CI/CD configuration changes |
-
-### Phase 3: Generate File Name
-1. Create short name from title: lowercase, hyphenated, 3-5 words, no special characters
-2. Form file name: `<short-name>.<type>.md`
-3. Verify uniqueness across all status folders to avoid overwrites
-
-### Phase 4: Create Task File
-
-Write task file to `.specs/tasks/draft/<short-name>.<type>.md`:
-
-```markdown
----
-title: <action-oriented title>
-depends_on: <list of dependency task files>
----
-
-## Initial User Prompt
-
-{EXACT user input as provided}
-
-## Description
-
-// Will be filled in future stages
-```
-
-Title must start with an action verb (Add, Fix, Update, Implement, Remove, Refactor). Only add `depends_on` if dependencies were explicitly provided.
 
 ## Output
 
@@ -84,10 +52,7 @@ Depends on: <list or "none">
 ## Design Decisions
 
 ### Separate draft and todo folders
-Draft is for unrefined tasks; todo is for tasks ready to implement. The separation enforces refinement as a required step, preventing premature implementation of underspecified work. This follows the principle that specification quality precedes implementation.
+Draft is for unrefined tasks; todo is for tasks ready to implement. The separation enforces refinement as a required step.
 
 ### Type as file extension
-The file extension encodes the task type directly, making it visible in file listings and grep searches without opening the file. This enables tooling to filter or group tasks by type.
-
-### Relationship to development pipeline
-Creates the input artifact for the refinement workflow. Draft tasks are enriched by the refinement workflow which adds analysis, architecture, decomposition, and verification sections before moving them to todo/. CONTRAST sections in this skill's when_to_use disambiguate from create-plans and ideation.
+The file extension encodes the task type directly, making it visible in file listings and grep searches without opening the file.

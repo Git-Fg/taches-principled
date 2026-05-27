@@ -1,6 +1,6 @@
 ---
 name: sadd
-description: "subagent-Driven Development — design multi-agent systems and execute tasks with quality verification: generate competing solutions with meta-judge evaluation, spawn tasks via context-isolated subagents, run structured judge evaluations, or explore solution space with tree-of-thoughts pruning. Modes: COMPETE, EXECUTE, JUDGE, DESIGN, EXPLORE."
+description: "Structured development with multiple competing solutions and quality verification. Use when generating alternatives and selecting the best, running independent verification, or coordinating parallel execution via subagents."
 when_to_use: |
   COMPETE: 'best-of-N', 'competitive generation', 'generate multiple solutions', 'quality over speed'
   EXECUTE: 'spawn subagent', 'launch agent', 'delegate this', 'implement with verification', 'run in background'

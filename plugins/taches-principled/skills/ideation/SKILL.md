@@ -32,62 +32,35 @@ IF idea is fully formed and documented → no need for this skill
 
 # Brainstorm Mode
 
-Collaborative dialogue that turns rough ideas into documented designs. Operates before implementation planning. Uses structured questioning to surface purpose, constraints, and success criteria, then incrementally validates a design section by section. One question per message builds clarity without overwhelming.
+Collaborative dialogue that turns rough ideas into documented designs. Operates before implementation planning.
 
 ## Core Principle
 
 Designs emerge through exploration, not dictation. Single questions answered one at a time build clarity without overwhelming the participant.
 
-## Process
+### Brainstorm Process Principle
 
-### Phase 1: Understand the Idea
-1. Read current project context (files, docs, recent commits) for grounding
-2. Ask one question per turn to refine the idea — prefer multiple choice when possible
-3. Focus on: purpose, constraints, success criteria
-4. Verification: can you state the core problem in one sentence?
+Explore the idea with single questions focusing on purpose, constraints, and success criteria. Generate 6 approaches with trade-offs (3 high-probability anchors, 3 diverse tail explorations). Present the design section by section, confirming each before proceeding.
 
-### Phase 2: Explore Approaches
-1. Generate 6 possible approaches with trade-offs: 3 high-probability (>0.80) as anchors, 3 diverse tail explorations (<0.10)
-2. Present options with your recommendation and reasoning
-3. Verification: do the approaches cover distinct solution regions (not minor variations of each other)?
-
-### Phase 3: Present the Design
-1. Break the design into sections of 200-300 words each
-2. Present each section and confirm "does this look right?" before proceeding
-3. Cover: architecture, components, data flow, error handling, testing
-4. Be ready to revisit and clarify when something does not make sense
-5. Verification: every section validated before the next begins
-
-## Output
-
-Validated design written to `.specs/plans/<topic>.design.md`, committed to git.
+Output: Validated design written to `.specs/plans/<topic>.design.md`, committed to git.
 
 ## Design Decisions
 
 ### One question at a time
-Multiple questions overwhelm and cause topic abandonment. Single questions force prioritization and make it easy to say "no."
+Multiple questions overwhelm and cause topic abandonment.
 
 ### Probability-based exploration
-High-probability options establish the expected path; low-probability options prevent premature convergence. Sampling from both tails avoids confirmation bias.
+High-probability options establish the expected path; low-probability options prevent premature convergence.
 
 ### Section-by-section validation
-Presenting the full design at once invites rubber-stamping. Incremental validation catches misunderstandings early.
-
-### Relationship to development pipeline
-Produces validated design specifications that feed into task creation and implementation planning. Operates at the earliest stage of the development lifecycle. CONTRAST sections in this skill disambiguate from add-task and create-plans.
+Incremental validation catches misunderstandings early.
 
 # Create Ideas Mode
 
-Generate 6 distinct responses for a given topic: 3 high-probability anchors (>0.80) representing central solutions, and 3 diverse tail explorations (<0.10) exploring different solution regions. Each response includes explanatory text and a numeric probability. Responses must be genuinely distinct from one another — no overlapping or minor-variation responses.
+Generate 6 distinct responses for a given topic: 3 high-probability anchors (>0.80) representing central solutions, and 3 diverse tail explorations (<0.10) exploring different solution regions. Responses must be genuinely distinct.
 
 ## Failure Signal
 
 ```json
 {"status": "failed", "reason": "no-viable-options|user-abandoned|scope-too-broad", "completed_portion": "...", "retry_possible": true|false}
 ```
-
-| status | reason | retry_possible |
-|--------|--------|---------------|
-| `failed` | `no-viable-options` | `false` |
-| `failed` | `user-abandoned` | `false` |
-| `failed` | `scope-too-broad` | `true` |
