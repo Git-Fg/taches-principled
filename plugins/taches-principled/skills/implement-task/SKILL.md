@@ -29,6 +29,8 @@ IF user is done implementing → verify completion and move task to done
 
 # Implement Task
 
+First: verify git is available. Run `git --version` to confirm. If git is not installed or not in PATH, fail with error: "Git is not available. Install git or ensure it is in your PATH, then retry."
+
 Orchestrate multi-step task implementation with automated quality verification. Each implementation step spawns a dedicated subagent, then verified by an independent judge subagent. Supports three verification patterns (simple skip, critical panel, per-item judges) plus final Definition of Done verification.
 
 The orchestrator spawns and aggregates but never implements or evaluates directly. Every implementation step gets a dedicated agent. Every verification gets an independent judge. Context protection is paramount — reading artifacts yourself causes context overflow and command loss, which is the most common failure mode in multi-step workflows.
@@ -221,156 +223,31 @@ If unable to complete the task, return: {"status": "failed", "reason": "...", "c
 
 ---
 
-### Pattern B: Critical Step (Panel of 1 or 2 Judges)
+### Pattern B: Single Item with Verification
 
-Used for: artifacts requiring evaluation confidence. Single judge for non-critical, panel of 2 for critical.
+Implementation with 1-2 independent judges. Aggregation uses median. Iterate on FAIL.
 
-**1. Spawn implementation subagent** (same as Pattern A with judge loop added):
+**Implementation:** Spawn a developer subagent to create the artifact following the Expected Output and Success Criteria exactly.
 
-```
-Implement Step [N]: [Step Title]
+**Verification:** Launch judge(s) — 1 for standard threshold, 2 for critical threshold (parallel). Each judge scores criteria 1-5 with justification BEFORE the score, then returns overall weighted score and PASS/FAIL.
 
-Task File: <TASK_PATH>
-Step Number: [N]
+**Aggregation (panel of 2):** Median per criterion, sum(median x weight) for overall, PASS if overall >= threshold. Flag criteria with >2.0 variance between judges.
 
-Execute ONLY Step [N]. Follow Expected Output and Success Criteria exactly.
-
-When complete, report:
-1. Files created/modified (paths)
-2. Confirmation of completion
-3. Self-critique summary (what could be improved)
-```
-
-**Spawn Footer**
-When spawned as a subagent:
-- Your context starts fresh — no access to prior conversation or other subagents' outputs
-- Return structured output (file paths, findings, and any artifacts) to the orchestrator
-- If you encounter anything unexpected or have any question or doubt, stop and report back
-- Do not proceed silently on assumptions.
-
-**Failure Signal**
-If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
-
-**2. After completion**, receive the agent's report and note artifact paths. Do NOT read artifacts.
-
-**3. Spawn judge subagent(s):**
-
-For Single Judge (standard threshold): launch 1 judge.
-For Panel of 2 Judges (critical threshold): launch 2 judges in parallel.
-
-Each judge receives:
-```
-Evaluate artifact at: <artifact_path from implementation report>
-
-Rubric: <paste from step's #### Verification section>
-
-Context:
-- Task File: <TASK_PATH>
-- Verify Step [N] ONLY: [Step Title]
-- Threshold: <threshold for step type>
-
-Score each criterion 1-5 with chain-of-thought justification BEFORE the score.
-You can run tests, check imports, validate syntax to verify the artifact.
-
-Return: scores per criterion with evidence, overall weighted score, PASS/FAIL, specific improvements if FAIL.
-```
-
-**Spawn Footer**
-When spawned as a subagent:
-- Your context starts fresh — no access to prior conversation or other subagents' outputs
-- Return structured output (file paths, findings, and any artifacts) to the orchestrator
-- If you encounter anything unexpected or have any question or doubt, stop and report back
-- Do not proceed silently on assumptions.
-
-**Failure Signal**
-If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
-
-**4. Aggregate results (panel of 2):**
-- Median per criterion = average of both scores
-- Flag high-variance criteria (difference > 2.0)
-- Weighted overall = sum(criterion_median x weight)
-- PASS if overall >= threshold
-
-**5. On FAIL:**
-- Re-launch a implementation subagent with judge feedback
-- Re-verify with judge(s)
-- Iterate until PASS or MAX_ITERATIONS reached
-- If MAX_ITERATIONS reached and still failing, log warning and proceed to next step
-
-**6. On PASS:** Mark step complete. If step is in HUMAN_IN_THE_LOOP_STEPS, trigger human-in-the-loop checkpoint.
+**On FAIL:** Re-implement with judge feedback, re-verify. Iterate until PASS or MAX_ITERATIONS reached.
 
 ---
 
-### Pattern C: Multi-Item Step (Per-Item Judges)
+### Pattern C: Multi-Item with Per-Item Judges
 
-Used for: steps creating multiple similar items (validators, handlers, endpoints, test cases).
+1 judge per item, parallel execution. Iterate only failing items on FAIL.
 
-**1. Spawn implementation subagents in parallel** — one per item:
+**Implementation:** Spawn developer subagents in parallel — one per item.
 
-```
-Implement Step [N], Item: [Item Name]
+**Verification:** Spawn evaluator subagents in parallel — one per item. Each scores 1-5 with justification, returns overall score and PASS/FAIL.
 
-Task File: <TASK_PATH>
-Step Number: [N]
-Item: [Item Name]
+**Aggregation:** items_passed / items_total.
 
-Create ONLY [Item Name] from Step [N]. Do NOT create other items or steps.
-
-When complete, report:
-1. File path created
-2. Confirmation of completion
-3. Self-critique summary
-```
-
-**Spawn Footer**
-When spawned as a subagent:
-- Your context starts fresh — no access to prior conversation or other subagents' outputs
-- Return structured output (file paths, findings, and any artifacts) to the orchestrator
-- If you encounter anything unexpected or have any question or doubt, stop and report back
-- Do not proceed silently on assumptions.
-
-**Failure Signal**
-If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
-
-**2. After all complete**, collect reports and artifact paths. Do NOT read artifacts.
-
-**3. Spawn evaluation subagents in parallel** — one per item:
-
-Each judge:
-```
-Evaluate artifact at: <item_path>
-
-Rubric: <paste from step's #### Verification section>
-
-Context:
-- Task File: <TASK_PATH>
-- Step [N]: [Step Title]
-- Verify ONLY this item: [Item Name]
-- Threshold: <threshold>
-
-Score each criterion 1-5 with chain-of-thought justification BEFORE the score.
-
-Return: scores with evidence, overall score, PASS/FAIL, improvements if FAIL.
-```
-
-**Spawn Footer**
-When spawned as a subagent:
-- Your context starts fresh — no access to prior conversation or other subagents' outputs
-- Return structured output (file paths, findings, and any artifacts) to the orchestrator
-- If you encounter anything unexpected or have any question or doubt, stop and report back
-- Do not proceed silently on assumptions.
-
-**Failure Signal**
-If unable to complete the task, return: {"status": "failed", "reason": "...", "completed_portion": "...", "retry_possible": true/false}
-
-**4. Aggregate results:** items_passed / items_total
-
-**5. On any FAIL:**
-- Re-implement only the failing items with judge feedback
-- Re-verify only failing items
-- Iterate until ALL PASS or MAX_ITERATIONS reached
-
-**6. On ALL PASS:** Mark step complete. If step is in HUMAN_IN_THE_LOOP_STEPS, trigger human-in-the-loop checkpoint.
+**On any FAIL:** Re-implement only failing items with feedback, re-verify only those. Iterate until ALL PASS or MAX_ITERATIONS reached.
 
 ---
 

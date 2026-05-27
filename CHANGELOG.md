@@ -6,13 +6,20 @@ All notable changes are documented here.
 
 ### Added
 - **tp-force-multiplier plugin**: Hook-driven coaching plugin that steers Claude to use subagents and skills more via real-time semantic coaching. Three hooks: SessionStart (lightweight hint), Stop (pattern detection with 5+ tools), PostCompact (pre-pressure reminder). No tool injection, zero blocking, semantic patterns only.
+- **CLAUDE.md rules**: Added 4 new rules for instruction clarity
+  - Deterministic Language for Execution Rules (strong vs soft language calibration)
+  - Infrastructure Assumption Rule (verify prerequisites before dependent operations)
+  - Path Configuration Rule (use arguments, not hardcoded paths)
+  - Agent Tool Contract Rule (tools must match stated capabilities)
 
-### Added
+### Changed
 - **references/official/**: Updated hooks.md, skills.md, subagents.md, commands.md, and marketplaces.md with marketplace conventions (effort/effort field, shell: bash, hub skills, {baseDir} syntax, CONTRAST sections, maxTurns:15, memory:local, canonical spawn vocab, command format)
 
 ### Changed
 - **Lifecycle hints removed**: Removed soft-orchestration lifecycle hints from add-task, create-prompts, implement-task per debate WEAK verdict — CONTRAST sections and decision routers are sufficient for routing
 - **tp-tdd/tdd**: Added CONTRAST section clarifying distinction from test strategy skill
+- **refine-task**: Trimmed business analysis section (70 lines removed) — procedure condensed to principle
+- **implement-task**: Trimmed Pattern B/C detailed walkthroughs (150 lines removed) — step-by-step scripts condensed to policy
 
 ### Fixed
 - **Routing BLOCKERs** (3): Removed overlapping trigger phrases causing routing conflicts
@@ -21,6 +28,9 @@ All notable changes are documented here.
 - **Failure signal BLOCKERs** (2): Added missing Failure Signal sections
   - ideation: added no-viable-options/user-abandoned/scope-too-broad failure modes
   - claude-headless: added session-timeout/permission-denied/tool-unavailable failure modes
+- **Git availability**: Added `git --version` checks to implement-task and refine-task
+- **Judge tool mismatch**: Added Write tool to judge.md for filesystem communication
+- **TDD Iron Law contradiction**: Removed "write tests" from TDD triggers (Iron Law forbids without failing test first)
 
 ## [0.7.0] — 2026-05-25
 

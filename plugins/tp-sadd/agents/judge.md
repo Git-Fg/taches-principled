@@ -2,7 +2,7 @@
 name: judge
 description: Evaluates candidate solutions against a meta-judge YAML specification. Use in COMPETE/JUDGE/VERIFY modes — multiple judges run in parallel, each producing independent scores and comparative analysis.
 context: fork
-tools: Read, Grep, Glob
+tools: Read, Write, Grep, Glob
 model: sonnet
 skills: [sadd]
 ---

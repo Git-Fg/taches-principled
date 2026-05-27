@@ -31,6 +31,8 @@ IF user is done working on this task → proceed to implementation
 
 # Plan Task
 
+First: verify git is available. Run `git --version` to confirm. If git is not installed or not in PATH, fail with error: "Git is not available. Install git or ensure it is in your PATH, then retry."
+
 Refine a draft task specification through a coordinated multi-phase workflow. The workflow runs parallel analysis (research, codebase impact, business requirements), synthesizes findings into architecture, decomposes into implementation steps, reorganizes for parallel execution, and adds verification rubrics. Each phase includes an independent quality evaluation before the next phase proceeds.
 
 The original user intent is preserved throughout. Refinement adds layers of analysis on top without overwriting what the user asked for.
@@ -263,79 +265,18 @@ Spawn a codebase exploration subagent. The agent analyzes the project structure 
 
 ### Phase 2c: Business Analysis
 
-Spawn a business analysis subagent to refine the task description and create comprehensive acceptance criteria. Uses a scratchpad-first methodology: all analysis happens in a scratchpad file, and only verified findings are copied to the task file.
+Comprehensive scratchpad-first analysis guides the refinement. Document purpose, constraints, success criteria. Progressive detail as needed.
 
-**Agent task — mandatory stages (perform each in order):**
-
-**Stage 1: Setup Scratchpad.** Before any analysis, create a scratchpad file. The scratchpad captures the entire thinking process. Only the final validated output goes into the task file. Structure the scratchpad with sections for each analysis stage below.
-
-**Stage 2: Requirements Discovery.** Work through the problem definition step by step in the scratchpad. Do not accept the surface-level description at face value — probe deeper:
-
-If the task file has an empty Description (placeholders only), then the user prompt is the only source of requirements. Extract as much signal as possible from it. Note any ambiguities explicitly for downstream resolution.
-
-If the user prompt itself is ambiguous (e.g., "make it better"), identify what information is missing and document the assumptions you make rather than blocking on clarification.
-
-```
-Step 1: What is the surface-level user request?
-Step 2: What is the user actually trying to accomplish?
-Step 3: What is the business value or user value?
-Step 4: Who benefits from this change and how?
-Step 5: What constraints or considerations exist?
-Therefore, the root problem is: <synthesis>
-```
-
-Define scope boundaries clearly:
-- What is included in this task?
-- What is explicitly NOT included?
-- What are the boundary cases?
-
-**Stage 3: Concept Extraction.** Identify the core elements of the feature or change:
-
-```
-Actors: Who interacts with this?
-Actions/Behaviors: What does the system do?
-Data Entities: What data is involved?
-Constraints: What limitations exist?
-Implicit Assumptions: What is assumed but not stated?
-```
-
-**Stage 4: Requirements Analysis.** Break requirements into functional and non-functional categories. For each functional criterion, verify testability:
-
-- Is this specific enough for a QA engineer to write a test case without asking questions?
-- Does it have clear Given/When/Then components?
-- Is the outcome measurable and verifiable?
-
-Document primary flow, alternative flows, and error scenarios. Remove criteria that fail testability or merge them into testable ones.
-
-**Stage 5: Synthesis.** Distill findings into a refined description and acceptance criteria. Lead with the problem, then the solution, then boundaries. Write for a developer who needs to understand WHY before WHAT. The refined description should be 2-3 paragraphs covering what is being built, why it is needed, who benefits, and key constraints.
-
-**Stage 6: Update Task File.** Read the current task file, then update it with:
-- Refined Description section covering what/why/who/constraints
-- Scope section (included, excluded)
-- User scenarios (primary flow, alternatives, error handling)
-- Acceptance Criteria section with functional and non-functional requirements using testable format
-- Preserve frontmatter and original user prompt unchanged
-
-**Stage 7: Self-Critique Loop (mandatory).** In the scratchpad, verify against these questions:
-
-```
-| # | Question | Reasoning | Rating |
-|---|----------|-----------|--------|
-| 1 | Requirements completeness: are all functional requirements captured including edge cases? | | COMPLETE/PARTIAL/MISSING |
-| 2 | Scope clarity: explicit boundaries with out-of-scope list? | | COMPLETE/PARTIAL/MISSING |
-| 3 | Acceptance criteria testability: can a QA engineer write tests without clarifying questions? | | COMPLETE/PARTIAL/MISSING |
-| 4 | Business value traceability: does every requirement trace to a stated goal? | | COMPLETE/PARTIAL/MISSING |
-| 5 | No implementation details: is the spec free of tech choices, APIs, code structure? | | COMPLETE/PARTIAL/MISSING |
-```
-
-Check for common failure modes:
-- Vague terms like "quickly", "properly", "correctly" without metrics
-- Happy-path-only scenarios with no error cases
-- Implementation details in acceptance criteria instead of WHAT
-- Untestable criteria
-- Unclear scope boundaries
-
-Fix all critical and high-priority gaps before completing. Document gaps found and revisions made in the scratchpad.
+**Agent task:**
+- Use a scratchpad to capture the complete analysis process
+- Do NOT accept surface-level descriptions at face value — probe for underlying intent
+- Define scope boundaries (included, excluded, boundary cases)
+- Extract core elements: actors, actions/behaviors, data entities, constraints
+- Break requirements into functional and non-functional categories
+- Verify testability: clear Given/When/Then, measurable outcomes
+- Synthesize the refined description (2-3 paragraphs: what, why, who, constraints)
+- Write validated conclusions to the task file: Description, Scope, User Scenarios, Acceptance Criteria
+- Run self-critique against completeness, scope clarity, testability, and no-implementation-details rules
 
 **Artifacts:**
 - Scratchpad: `.specs/scratchpad/<hex-id>.md`

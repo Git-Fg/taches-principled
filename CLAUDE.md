@@ -60,6 +60,48 @@ A system cannot transform itself — this is a protocol principle, not a capabil
 
 This principle applies to decision-making workflows; execution autonomy is separate and appropriate for implementation tasks.
 
+### Deterministic Language for Execution Rules
+
+**Execution-critical requirements use strong language (ALWAYS, NEVER, MUST). Exploratory guidance uses soft language (consider, prefer, typically).**
+
+**Strong language** — Non-negotiable execution requirements:
+- "ALWAYS verify git availability before spawning git-dependent subagents"
+- "NEVER hardcode file paths in skill bodies"
+- "MUST use `{baseDir}` for skill-internal file references"
+
+**Soft language** — Heuristics and guidance:
+- "Consider using parallel subagents for exploration"
+- "Prefer Haiku for execution, Sonnet for reasoning"
+
+**The test:** If removing the rule would produce visibly wrong output, use strong language. If removing it just means a different reasonable approach, use soft language.
+
+**Anti-pattern:** "should", "can", "may" in execution-critical contexts — these signal optionality where the skill actually requires the behavior.
+
+### Infrastructure Assumption Rule
+
+**ALWAYS verify infrastructure prerequisites before executing dependent operations.**
+
+Skills that rely on external tools (git, gh, npm, python, etc.) must check availability before assuming the environment provides them. This prevents mid-execution failures where the skill's logic is sound but the environment is missing a dependency.
+
+### Path Configuration Rule
+
+**Use command arguments and environment variables for paths — never hardcode absolute paths.**
+
+- `{{CLAUDE_WORKING_DIR}}` for the current working directory
+- `$ARGUMENTS` for user-provided path parameters
+- `{baseDir}` for skill-internal file references (resolves at load time)
+- Bash environment variables (`$HOME`, `$PWD`) for shell operations
+
+This ensures skills work across environments: the same skill executes correctly whether the project is at `/work/repo`, `/home/user/project`, or any other path.
+
+### Agent Tool Contract Rule
+
+**An agent's declared tools MUST match its stated capabilities.**
+
+When an agent claims to write findings to disk, it needs the Write tool. When it claims to execute shell commands, it needs Bash. If the capability exists in the description but the tools field is missing, the agent cannot fulfill its contract.
+
+**The test:** Read the agent's description, then check its tools. Every capability described must have a corresponding tool available.
+
 ### No Inline Tool Lists in Subagent Instructions
 
 When a skill body describes spawning a subagent, never include a specific tool list (`tools: Read, Edit, Bash, WebSearch, Write`). Tool availability varies by environment — WebSearch may be an MCP server, Bash may be restricted, file paths differ per platform.
