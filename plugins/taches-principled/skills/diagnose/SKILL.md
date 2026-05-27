@@ -84,20 +84,7 @@ Force complete, concise root-cause-to-resolution thinking onto a single page. If
 
 ### Process
 
-**Phase 1: Frame the Problem**
-1. **Background** — Why this matters: context, business impact, urgency, who is affected
-2. **Current Condition** — What is happening now: facts, data, metrics, examples (not opinions)
-3. **Goal/Target** — What success looks like: specific, measurable, time-bound targets
-
-**Phase 2: Analyze Root Causes**
-4. **Root Cause Analysis** — Why the problem exists using Five Whys or Fishbone. Dig until reaching systemic or process-level causes.
-
-**Phase 3: Plan and Execute**
-5. **Countermeasures** — Specific actions addressing root causes. Each countermeasure traces to a specific root cause from section 4.
-6. **Implementation Plan** — Timeline, responsibilities, dependencies, milestones.
-
-**Phase 4: Verify**
-7. **Follow-up** — Success metrics, monitoring plan, review dates. Verify success and prevent recurrence.
+Observe symptom, define scope, identify causes using Five Whys or Fishbone, fix at the origin, verify. A3 paper size constraint forces complete thinking — if analysis exceeds one page, decompose into sub-problems.
 
 ### Template
 
@@ -131,15 +118,7 @@ Every surface symptom is the end of a causal chain. Treating the symptom leaves 
 
 ### Process
 
-1. State the problem clearly — the specific symptom
-2. Ask "Why did this happen?" — answer with the direct cause
-3. For each answer, ask "Why?" again — trace one level deeper
-4. Repeat until reaching a systemic cause (missing process, validation, automation, or design gap)
-5. Validate by tracing forward — root cause → symptom should be a logical chain
-6. If branches emerge, explore each independently
-7. Propose solutions addressing the root cause — not intermediate answers
-
-The name "five" is a guideline — stop when you reach a process, system, or policy cause.
+Ask "why" iteratively until reaching a systemic cause. Every answer becomes the next question. Stop when reaching a missing process, validation, automation, or design gap. Propose solutions at the root cause level, not intermediate answers. "Five" is a guideline — stop when systemic.
 
 ### Output
 
@@ -168,12 +147,7 @@ Every surface symptom has multiple potential contributing factors. Treating one 
 
 ### Process
 
-1. State the problem clearly — the "head" of the fish
-2. For each category, brainstorm potential causes (don't stop at the first one)
-3. Identify which causes are symptoms vs. root causes
-4. Cross-reference — mark causes that span multiple categories (systemic)
-5. Prioritize — score by impact and likelihood
-6. Propose solutions tied to specific root causes
+State the problem as the "head." Explore all six categories (People, Process, Technology, Environment, Methods, Materials) — don't stop at the first cause. Cross-reference causes spanning multiple categories (systemic). Prioritize by impact and likelihood. Propose solutions tied to root causes.
 
 ### Output
 

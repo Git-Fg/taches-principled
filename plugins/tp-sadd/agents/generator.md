@@ -2,7 +2,7 @@
 name: generator
 description: Produces independent candidate solutions from a meta-judge evaluation specification. Use in COMPETE mode — multiple generators run in parallel, each producing one complete solution.
 context: fork
-tools: Read, Write, Edit, Bash, Grep, Glob
+tools: Read, Write, Bash, Grep, Glob
 model: sonnet
 skills: [sadd]
 ---

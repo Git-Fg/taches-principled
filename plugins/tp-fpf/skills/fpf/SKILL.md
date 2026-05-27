@@ -22,44 +22,15 @@ Execute complete First Principles Framework cycle with ADI (Abduction-Deduction-
 
 ## Process
 
-**Step 1: Initialize Context**
-```bash
-mkdir -p .fpf/{evidence,decisions,sessions,knowledge/{L0,L1,L2,invalid}}
-```
-Spawn subagent to analyze scope and write context to `.fpf/context.md`.
+**Initialize:** Set up `.fpf/` structure and document context. Spawn subagent to capture scope.
 
-**Step 2: Generate Hypotheses (Parallel)**
-Launch 3-5 agents generating competing hypotheses:
-- High-probability candidates (obvious explanations)
-- Low-probability alternatives (creative but plausible)
-Each written to `.fpf/knowledge/L0/{id}.md`
+**Generate in parallel:** Launch 3-5 agents for competing hypotheses — obvious explanations and creative alternatives. Each hypothesis starts at L0 (unverified).
 
-**Step 3: Verify Logic (Parallel per hypothesis)**
-For each L0 hypothesis:
-- Verify internal logical consistency
-- Check for hidden assumptions
-- Move to L1 (verified) or invalid
+**Verify logic in layers:** Move hypotheses through L0 (raw) → L1 (internally consistent) → L2 (evidence-validated). Invalidate at any layer if checks fail.
 
-**Step 4: Validate Evidence (Parallel per hypothesis)**
-For each L1 hypothesis:
-- Search for supporting/refuting evidence in codebase
-- Cross-reference with existing knowledge
-- Move to L2 (validated) or invalid
+**Audit trust:** For L2 hypotheses, calculate R_eff (evidence reliability) and identify WLNK (weakest link). Higher trust = more confident decision basis.
 
-**Step 5: Audit Trust (Parallel per hypothesis)**
-For each L2 hypothesis:
-- Calculate R_eff (evidence reliability score)
-- Identify WLNK (weakest link)
-- Write audit report to `.fpf/evidence/`
-
-**Step 6: Decide**
-Spawn subagent to:
-- Review all L2 hypotheses and audit reports
-- Create Design Rationale Record (DRR) in `.fpf/decisions/`
-- Present recommendation with rationale
-
-**Step 7: Present Final Summary**
-Present results, ask if user agrees. If not, iterate from step 6.
+**Decide and document:** Review all L2 hypotheses, create Design Rationale Record (DRR) with recommendation, present to user.
 
 ## Artifacts Created
 
@@ -79,16 +50,11 @@ Present results, ask if user agrees. If not, iterate from step 6.
 
 FPF lifecycle operations — reset reasoning cycles, reconcile with code changes, manage evidence freshness.
 
-## 1. Reset Cycle
+## Reset Cycle
 
-**Soft Reset (Archive):**
-1. Create session archive in `.fpf/sessions/` with what was completed, why reset, key decisions
-2. Clear active work areas
+**Soft Reset:** Archive current session state with what was completed and key decisions. Clear active work areas.
 
-**Hard Reset:**
-1. Archive `.fpf/` to `.fpf/archive/`
-2. Create fresh `.fpf/` structure
-3. Start new hypothesis cycle
+**Hard Reset:** Archive entire `.fpf/` directory, create fresh structure, start new hypothesis cycle.
 
 ## 2. Reconcile with Code
 
@@ -125,21 +91,11 @@ Search FPF knowledge base, display hypothesis details with assurance information
 
 ## Query Process
 
-1. Search `.fpf/knowledge/L0/`, `.fpf/knowledge/L1/`, `.fpf/knowledge/L2/`, `.fpf/knowledge/invalid/`, `.fpf/decisions/`
-2. For each found hypothesis, display:
-   - Title, layer (L0/L1/L2), kind, scope
-   - If layer >= L1: audit section with R_eff score
-   - Dependencies if exist
-   - Evidence summary
-3. Present in table format
+Search all hypothesis layers (L0, L1, L2, invalid) and decisions. For each match, display title, layer, kind, R_eff score (if L1+), dependencies, and evidence summary in table format.
 
 ## Status Process
 
-1. Check `.fpf/` directory structure exists
-2. Count hypotheses per layer
-3. Check evidence freshness (scan `.fpf/evidence/` for expired)
-4. Count decisions in `.fpf/decisions/`
-5. Report to user
+Verify `.fpf/` structure exists. Count hypotheses per layer. Check evidence freshness (scan for expired). Count decisions. Report to user.
 
 ## Output
 

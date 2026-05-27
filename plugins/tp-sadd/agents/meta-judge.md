@@ -2,7 +2,7 @@
 name: meta-judge
 description: Generates YAML evaluation specifications for competitive multi-agent generation. Use as the first agent in COMPETE/JUDGE/VERIFY modes — creates rubrics, scoring criteria, and hidden pass thresholds that downstream judges evaluate against.
 context: fork
-tools: Read, Write, Grep, Glob
+tools: Read, Write, Bash, Grep, Glob
 model: sonnet
 skills: [sadd]
 ---

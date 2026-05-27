@@ -5,20 +5,22 @@ import sys
 
 payload = json.load(sys.stdin)
 
-# Subagents tip - role-based with "for example" framing
+# Subagents tip - advisory framing
 print(json.dumps({
     "decision": {
         "notification": {
-            "message": "Essential: Orchestrate, do not execute. Subagents own parallel work. For example: exploration, implementation, verification, critique, or any task with independent parts, spawn immediately. Do not wait until you are stuck. If a task has independent parts, fan out without hesitation."
+            "message": "Pattern: Tasks with independent parts benefit from parallel fan-out. When work can be distributed, spawn subagents for exploration, implementation, verification, or critique. Delegation accelerates; sequential execution bottlenecks."
         }
     }
 }))
+sys.exit(0)
 
-# Skills tip - stronger mandate
+# Skills tip - advisory framing
 print(json.dumps({
     "decision": {
         "notification": {
-            "message": "Essential: You must use and abuse proactively from all available skills. Skills are not optional, use them as soon as it may be relevant. Loading the wrong skill is much worse than forgetting to load the right one."
+            "message": "Pattern: Available skills encode proven methods — consider loading when context suggests methodological advantage. Relevant skills reduce pattern reinvention; skipping them means carrying complexity manually."
         }
     }
 }))
+sys.exit(0)

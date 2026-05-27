@@ -265,7 +265,7 @@ Always check for existing artifacts in `.principled/plans/` before starting — 
 
 ## Explore with Subagent Fan-Out
 
-Before creating a plan, understand the project thoroughly. Use subagent fan-out to explore in parallel:
+Before creating a plan, understand the project thoroughly. Use parallel subagent exploration:
 
 **Read the agents folder** — each markdown file is a subagent prompt template:
 - `{baseDir}/agents/explorer.md` — project structure mapping
@@ -277,53 +277,16 @@ Before creating a plan, understand the project thoroughly. Use subagent fan-out 
 
 Read the relevant agent, fill in placeholders like `{{context}}`, `{{task}}`, `{{scope}}`, and dispatch it as a subagent.
 
-**Fan-out pattern for exploration:**
-
-1. **Explorer agents** — Map project structure, find key files, identify patterns. Spawn 3-5 in parallel, each covering different areas (frontend, backend, config, tests, docs).
-
-2. **Researcher agents** — For unfamiliar technologies or patterns in the spec, spawn parallel researchers to find current best practices.
-
-3. **Architect agents** — When facing complex decisions (auth strategy, state management, API design), spawn an architect subagent to evaluate trade-offs.
-
-**Fan-out rules:**
+**Fan-out principles:**
+- Use 3-5 parallel explorer agents for project structure (different areas: frontend, backend, config, tests)
+- Use researcher agents for unfamiliar technologies — find current best practices
+- Use architect agents for complex decisions (auth strategy, state management, API design)
 - All parallel subagent dispatches MUST occur in a single message
-- Each subagent should have disjoint scope (different files/areas)
-- Subagents start cold — pass all context in the spawn prompt
+- Each subagent has disjoint scope (different files/areas)
 - Cap at 5 concurrent subagents to avoid coordination overhead
+- All findings written to centralized scratchpad: `.principled/scratch/{plan-id}-exploration.md`
 
-**Task coordination — when to track vs. delegate:**
-
-Tracking (orchestrator retains):
-- Coordinating dependencies and sequencing decisions
-- Aggregating findings from multiple subagents
-- Making trade-off calls when researchers disagree
-- Final verdict on plan quality before handoff
-
-Delegating (subagent owns execution):
-- Parallel exploration of disjoint areas
-- Deep research on specific technical questions
-- Implementation of well-scoped, independent tasks
-- Verification against specific criteria
-
-Signal: if a task requires seeing output from another task to proceed, it is a dependency — handle it in the orchestrator, not a subagent. Subagents should be able to complete their scope without waiting for other subagents.
-
-**Example explore phase:**
-
-Read the agent templates, then dispatch parallel subagents for exploration:
-1. Explorer agents (3-5) — map project structure across different areas (frontend, backend, config, tests)
-2. Researcher agents — find best practices for unfamiliar technologies
-3. Architect agents — evaluate trade-offs for complex decisions
-
-After all complete, aggregate findings into understanding of the project.
-
-**Subagent handoff:** Every subagent must receive explicit handoff with:
-- Who spawned it and why (role and purpose)
-- What context it needs to work with
-- What scope to cover (specific files/areas)
-- What success criteria to meet (pass/fail conditions)
-- How to report back (structured format)
-
-Without clear handoff, subagents operate without proper scope boundaries. The orchestrator must provide all context inline — subagents start cold with no conversation history.
+**Task coordination:** Orchestrator tracks dependencies and sequencing. Subagents own independent execution. A task that requires output from another task is a dependency — handle in orchestrator.
 
 ### Centralized Scratchpad Protocol
 
@@ -383,23 +346,7 @@ Each subagent role uses a model matched to its cognitive load:
 
 After exploration, create plans in a structured loop: one phase at a time, looping a critic subagent until no HIGH findings between phases.
 
-### Loop Structure
-
-For each phase plan:
-
-```
-1. Synthesize exploration findings into phase scope
-2. Write phase PLAN.md (2-3 tasks, verification per task)
-3. Spawn critic subagent to review the plan
-   - Focus: task granularity, missing edge cases, dependency ordering
-   - Critic writes findings to scratchpad
-4. Read scratchpad, revise plan based on critic feedback
-5. Loop until critic finds no HIGH findings
-6. Check: is planner context approaching 50%?
-   - If yes: create handoff document, route to execution gate
-   - If no: proceed to next phase
-7. Repeat for next phase
-```
+Synthesize exploration findings into phase scope. Write phase PLAN.md (2-3 tasks, verification per task). Spawn critic subagent to review the plan. Read scratchpad, revise based on critic feedback. Loop until critic finds no HIGH findings. Check context usage — if approaching 50%, create handoff document. Repeat for next phase.
 
 ### Context Management Across Phases
 

@@ -90,33 +90,15 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 **Policy:** Executor is an intelligent orchestrator that decomposes the plan, executes independent tasks in parallel, and loops a critic subagent at milestones until no HIGH findings remain. No user interaction.
 
-**Core Concept:** The executor reads the plan, analyzes task dependencies and resource conflicts, decomposes into parallelizable vs sequential groups, spawns multiple worker subagents in parallel for independent tasks, spawns single workers for sequential dependency chains, loops a critic subagent until no HIGH findings, aggregates results, and commits.
+**Core Concept:** Analyze dependencies. Execute parallel workers. Review at milestones. Commit results.
 
-**How it differs from old implementation:**
-- **Before:** Single subagent does everything sequentially
-- **After:** Executor analyzes plan, spawns PARALLEL workers for independent tasks, spawns REVIEWER at milestones
-
-**Note:** All agent templates (implementer, critic, researcher, verifier) are in the `agents/` folder — read the relevant template before spawning.
-
-**Executor (main orchestrator) responsibilities:**
-```
-1. Analyze plan structure and task relationships
-2. Build dependency graph (task → files touched, prerequisites)
-3. Pre-execution: spawn critic to challenge the plan (devil's advocate)
-4. If critic finds critical issues: fix plan before proceeding
-5. Identify conflict-free groups (tasks touching different files)
-6. Spawn parallel workers for independent task groups (max 3-5 workers)
-   - **Context rule:** Subagents start with FRESH context — no inheritance from orchestrator.
-     Every piece of context needed must be in the spawn prompt: file paths, prior findings, constraints, success criteria.
-     A subagent cannot reference "as we discussed" or "from earlier" — it has no idea what that means.
-     **URL:** https://code.claude.com/docs/en/sub-agents#what-loads-at-startup
-7. Spawn sequential workers for dependent chains (ordered execution)
-8. At milestone (every 2-3 tasks or phase boundary): spawn CRITIC subagent to review intermediate output
-9. If critic finds issues: executor fixes before continuing
-10. Aggregate all results
-11. Create SUMMARY.md
-12. Commit
-```
+**Executor responsibilities:**
+1. Analyze plan structure, build dependency graph
+2. Pre-execution: spawn critic to challenge the plan (devil's advocate)
+3. Identify conflict-free groups (tasks touching different files)
+4. Spawn parallel workers for independent groups (max 3-5), sequential workers for dependent chains
+5. At milestones (every 2-3 tasks): spawn critic subagent to review intermediate output
+6. Loop until no HIGH findings, then aggregate and create SUMMARY.md
 
 **Parallel execution rules:**
 - Two tasks are parallelizable if: they touch different files AND neither depends on output of the other
@@ -334,125 +316,17 @@ For tasks that are architecturally significant or touch 5+ files, integrate crit
 
 ## Deviation Handling
 
-**Deviations are normal, not failures.** Plans are guides, not straitjackets. Apply these rules automatically:
+**Deviations are normal, not failures.** Plans are guides, not straitjackets. Apply rules automatically:
 
-### Deviation Rule 1: Auto-fix bugs
+| Rule | Trigger | Action |
+|------|---------|--------|
+| Auto-fix bugs | Code doesn't work (errors, broken behavior) | Fix immediately, document in Summary |
+| Auto-add missing criticals | Essential features missing (security, correctness) | Add immediately, document in Summary |
+| Auto-fix blockers | Something prevents completing current task | Fix to unblock, document |
+| Heuristic architectural | Significant structural modification needed | Choose simplest correct path, log decision |
+| Log enhancements | Nice-to-have improvements | Log to ISSUES.md, continue |
 
-**Trigger:** Code doesn't work as intended (errors, broken behavior, incorrect output)
-
-**Action:** Fix immediately. Document in Summary.
-
-**Examples:**
-- Wrong SQL query returning incorrect data
-- Logic errors (inverted condition, off-by-one, infinite loop)
-- Type errors, null pointer exceptions, undefined references
-- Broken validation (accepts invalid input, rejects valid input)
-- Security vulnerabilities (SQL injection, XSS, insecure auth)
-
-**Process:** Fix inline → add/update tests → verify → track → continue
-
----
-
-### Deviation Rule 2: Auto-add missing critical functionality
-
-**Trigger:** Code missing essential features for correctness, security, or basic operation
-
-**Action:** Add immediately. Document in Summary.
-
-**Examples:**
-- Missing error handling (no try/catch, unhandled promise rejections)
-- No input validation (accepts malicious data)
-- Missing null/undefined checks (crashes on edge cases)
-- No authentication on protected routes
-- Missing authorization checks (users can access others' data)
-
-**Process:** Add inline → add tests → verify → track → continue
-
----
-
-### Deviation Rule 3: Auto-fix blocking issues
-
-**Trigger:** Something prevents completing current task
-
-**Action:** Fix immediately to unblock. Document in Summary.
-
-**Examples:**
-- Missing dependency (package not installed, import fails)
-- Wrong types blocking compilation
-- Broken import paths (file moved, wrong relative path)
-- Missing environment variable (app won't start)
-
-**Process:** Fix blocker → verify task proceeds → continue → track
-
----
-
-### Deviation Rule 4: Heuristic architectural decisions
-
-**Trigger:** Fix/addition requires significant structural modification
-
-**Action:** Evaluate using heuristic rules, choose the path with best signal. Log decision with rationale. Do NOT ask the user.
-
-**Numeric thresholds for "significant":**
-- Schema migration affecting 3+ tables or entities
-- API surface change affecting 5+ endpoints
-- New file requiring architectural pattern integration
-- Dependency addition that changes execution model
-- Authentication/authorization model change
-
-**Heuristic decision rules (same as Strategy C):**
-- Default to simplest path: minimal surface area change
-- Prefer reversible choices: if two options are equally valid, choose the one easier to undo
-- Follow the plan's implicit direction: if the plan recommends a library or pattern, follow it
-- Log every decision with format: `Deviation R4: chose X over Y because [reason]`
-
-**Examples — IS architectural (still decide heuristically, don't ask):**
-- Adding new database table: check if the plan implied it, if yes proceed, if no log as enhancement and defer
-- Major schema changes: default to additive changes (add columns, don't restructure existing)
-- Dependency addition: check if the dependency provides capabilities already in the stack, if so use existing, if not add
-- Breaking API change: default to deprecation+new-approach over breaking changes
-
-**Examples — IS NOT architectural (decide yourself):**
-- Which naming to use for a variable
-- Where to put a file within an existing structure
-- Which color scheme to use
-- Minor formatting or style choices
-
-**Process:**
-1. Evaluate: is the change genuinely necessary, or is it an enhancement?
-2. If necessary (bug fix, blocker removal): proceed with simplest correct approach
-3. If enhancement: log as enhancement, continue current task
-4. Log decision: `Deviation R4: [choice] because [reason]`
-5. Continue execution
-
-**Example log entries:**
-- `Deviation R4: added users table because plan implied user data storage`
-- `Deviation R4: deferred Supabase edge functions migration because authentication path uses Next.js API routes — simpler to keep unified`
-- `Deviation R4: chose deprecation over breaking change for /api/v1/users -> /api/v2/users`
-
----
-
-### Deviation Rule 5: Log non-critical enhancements
-
-**Trigger:** Improvement that would enhance code but isn't essential now
-
-**Action:** Log to `.principled/plans/ISSUES.md`. Continue task.
-
-**Examples:**
-- Performance optimization (works correctly, just slower than ideal)
-- Code refactoring (works, but could be cleaner)
-- Better naming (works, but variables could be clearer)
-
-**Process:** Create ISSUES.md if missing → add entry with ISS-XXX → notify → continue
-
----
-
-### Rule Priority
-
-| Priority | Rule | Action |
-|----------|------|--------|
-| 1 | Architectural changes | Evaluate heuristically, choose simplest correct path, log |
-| 2 | Bugs, missing criticals, blockers | Fix automatically, track |
-| 3 | Non-critical enhancements | Log to ISSUES.md, continue |
+**Priority:** Architectural decisions first (heuristic), bugs/missing/blockers second (auto), enhancements last (log).
 
 ---
 

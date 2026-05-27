@@ -6,7 +6,8 @@ import sys
 print(json.dumps({
     "decision": {
         "notification": {
-            "message": "Power move: Spawn subagents now to offload work before context pressure increases."
+            "message": "Pattern: Context pressure increasing. Subagent fan-out distributes work before capacity constraints — consider delegation before complexity compounds."
         }
     }
 }))
+sys.exit(0)
