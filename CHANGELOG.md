@@ -41,6 +41,17 @@ All notable changes are documented here.
   - diagnose: A3/Five Whys/Fishbone condensed
   - create-plans: 11-item fan-out → 4 principles
   - execute-plans: Strategy A 12-step → 5 principles, deviation rules trimmed
+- **Trigger optimization** (5 skills improved):
+  - tp-fpf: removed jargon (ADI, R_eff), lead with user vocabulary
+  - multi-agent-patterns: rewritten for cold-start clarity
+  - tp-ddd: modes moved out of first line
+  - security: triggers capped at 3-4 per mode
+  - tp-sadd: softened jargon ("meta-judge" → "quality verification")
+- **METHOD reduction round 2** (1,212 lines removed across 6 skills):
+  - implement-task: 520→181 (-65%), subagent-orchestration: 592→213 (-64%)
+  - create-prompts: 493→187 (-62%), execute-prompts: 273→149 (-45%)
+  - add-task: 94→58 (-38%), ideation: 94→66 (-30%)
+- **Skill discovery optimization**: Added CLAUDE.md section on reliable triggering, hook limitations, validation protocol
 
 ## [0.7.0] — 2026-05-25
 
