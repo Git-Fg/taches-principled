@@ -1,99 +1,69 @@
 # tp-vps-governance
 
-VPS operator toolkit for Claude Code headless usage. Governs configuration, propagates rules, and manages agent memory.
+VPS governance plugin for Claude Code. Two focused skills for headless VPS operations: config auditing and memory curation.
 
 ## Installation
 
 ```bash
-git clone https://github.com/Git-Fg/taches-principled ~/.claude/plugins/tp-vps-governance
+cp -r plugins/tp-vps-governance ~/.claude/plugins/
 ```
 
-Or manually copy `plugins/tp-vps-governance/` into `~/.claude/plugins/`.
+Or clone the full repo and symlink.
 
-## What It Does
+## Skills
 
-Three governance skills for headless VPS operations:
+| Skill | Triggers | Purpose |
+|-------|----------|---------|
+| **config-auditor** | "audit config", "check CLAUDE.md", "optimize rules" | Audit CLAUDE.md hierarchy for conflicts, duplications, and optimization opportunities |
+| **memory-curator** | "audit memory", "clean up memory", "memory hygiene" | Discover, deduplicate, and archive stale memory files on long-running VPS instances |
 
-| Skill | Trigger Phrases | Purpose |
-|-------|-----------------|---------|
-| **config-auditor** | "audit config", "check CLAUDE.md" | Verify project configuration consistency and CLAUDE.md structure |
-| **rule-propagator** | "sync rules", "propagate rules to agents" | Distribute rule updates across agent definitions |
-| **memory-curator** | "audit memory", "clean up auto-memory" | Analyze and prune agent memory files |
+## config-auditor
 
-## Skills Overview
+Scans your CLAUDE.md hierarchy from project root to global, detecting:
 
-### config-auditor
+- **Conflicts**: contradictory rules at different levels (tabs vs spaces)
+- **Duplications**: same rule in multiple files wasting tokens
+- **Optimization opportunities**: rules that could be path-scoped, files that could be split
 
-Scans project configuration for consistency:
-- CLAUDE.md structure validation
-- Settings.json permission checks
-- Skill listing budget analysis
+```bash
+# Audit current project
+/config-auditor audit --dry-run
 
-Trigger: `claude -p "audit config" --project /path/to/project`
+# Find only conflicts
+/config-auditor conflicts
 
-### rule-propagator
+# Get optimization recommendations
+/config-auditor optimize
+```
 
-Syncs rule files across the plugin ecosystem:
-- Detects stale rules in agent definitions
-- Reports rules needing updates
-- Validates rule consistency
+## memory-curator
 
-Trigger: `claude -p "sync rules" --project ~/.claude`
+Manages Claude Code memory on long-running VPS instances:
 
-### memory-curator
+- **Audit**: discover all memory locations, score health (green/yellow/red)
+- **Dedup**: find and merge duplicate entries across projects
+- **Archive**: move stale entries (>30 days) to archive with recovery manifest
+- **Clean**: full maintenance pass (dedup + archive)
 
-Manages agent memory lifecycle:
-- Identifies stale memory files
-- Prunes entries older than threshold
-- Reports memory usage by agent
+```bash
+# Audit memory usage
+/memory-curator audit --dry-run
 
-Trigger: `claude -p "audit memory" --project ~/.claude`
+# Full cleanup with auto-confirm
+/memory-curator clean --yes --days 30
+```
 
 ## Headless Usage
 
-Run governance checks in CI/CD pipelines:
+All skills default to `--dry-run` (read-only). Use `--yes` to apply changes.
 
 ```bash
-# Dry-run mode — report issues without changes
-claude -p "audit config" --project /work --dry-run
-
-# Auto-apply fixes (use with caution)
-claude -p "sync rules" --project ~/.claude --yes
-
-# Memory cleanup with confirmation
-claude -p "clean up auto-memory" --project ~/.claude
+# CI/CD pipeline example
+claude -p "/config-auditor audit" --project /work --dry-run
+claude -p "/memory-curator audit" --project ~/.claude --dry-run
 ```
-
-### Flags
-
-| Flag | Effect |
-|------|--------|
-| `--dry-run` | Preview changes without applying |
-| `--yes` | Auto-confirm all prompts |
-| `--output-format stream-json` | Machine-readable output for automation |
-
-## Hooks
-
-### SessionStart
-
-On session begin, checks for:
-- Missing CLAUDE.md → suggests init
-- Outdated rules → suggests sync
-- Memory bloat → suggests audit
-
-Displays coaching message if governance gaps detected.
-
-## Principles
-
-- **Read-only by default**: Audit skills report only unless `--yes` specified
-- **Safe execution**: No eval/exec, uses subprocess for shell commands
-- **Zero blocking**: Suggestions never prevent operations
 
 ## Requirements
 
-- Claude Code v2.1+ with headless mode support
-- Python 3.8+ for hook scripts
-
-## Customization
-
-Edit skill files in `skills/` to adjust thresholds, message formats, and trigger phrases.
+- Claude Code v2.1+
+- Python 3.8+ (for memory-curator dedup script)

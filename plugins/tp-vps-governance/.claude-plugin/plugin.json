@@ -2,7 +2,7 @@
   "name": "tp-vps-governance",
   "displayName": "TP VPS Governance",
   "version": "0.1.0",
-  "description": "VPS operator toolkit for Claude Code headless usage — config auditing, rule propagation, and memory management.",
+  "description": "VPS governance for Claude Code — config auditing and memory curation.",
   "author": {
     "name": "Felix",
     "email": "felix@example.com"
@@ -16,6 +16,7 @@
     "vps",
     "headless",
     "governance",
-    "rules"
+    "config-audit",
+    "memory"
   ]
 }
