@@ -48,6 +48,12 @@
       "version": "0.1.0",
       "source": "./plugins/tp-force-multiplier",
       "description": "Hook-driven coaching plugin — steers Claude to use subagents and skills via real-time semantic coaching. Hooks only, no skills."
+    },
+    {
+      "name": "tp-vps-governance",
+      "version": "0.1.0",
+      "source": "./plugins/tp-vps-governance",
+      "description": "VPS governance plugin for Claude Code — config auditing and memory curation. Two focused skills for headless VPS operations."
     }
   ]
 }
