@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
-"""Lightweight session start coaching via systemMessage."""
+"""Lightweight session start coaching."""
 import json
 import sys
 
-# Read input (discard - we don't need it for this hook)
-try:
-    json.load(sys.stdin)
-except:
-    pass
+payload = json.load(sys.stdin)
 
-# SessionStart hook: output systemMessage for immediate coaching hint
-# Valid output fields for SessionStart: continue, suppressOutput, stopReason,
-# decision (approve/block), reason, systemMessage, terminalSequence, permissionDecision
+# Comprehensive coaching - subagents AND skills mandate
 print(json.dumps({
-    "systemMessage": "Pattern: Tasks with independent parts benefit from parallel fan-out. When work can be distributed, spawn subagents for exploration, implementation, verification, or critique. Delegation accelerates; sequential execution bottlenecks."
+    "systemMessage": "Essential: For any task involving exploration, implementation, self-review, self-critic, or similar work, spawn subagents immediately and run them in parallel. Do not wait until you are stuck. If a task has independent parts, fan out subagents without hesitation. Also: Proactively load and abuse skills for method frameworks, debugging, review, critique, simplification, ideation, planning, and implementation. Skills are not optional — use them from session start. If a workflow matches a known skill pattern, load it immediately."
 }))
 sys.exit(0)
