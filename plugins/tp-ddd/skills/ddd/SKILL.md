@@ -10,10 +10,10 @@ when_to_use: |
 
 ## Decision Router
 
-IF code structure or layering issue → ARCHITECTURE mode
+IF code structure or layering issue → ARCHITECTURE mode — ALWAYS spawn a codebase scanner subagent to map structure
 IF naming or error handling issue → QUALITY mode
 IF behavior visibility or data flow issue → TRANSPARENCY mode
-IF REST API contract design, resource modeling, or versioning issue → API mode
+IF REST API contract design, resource modeling, or versioning issue → API mode — ALWAYS spawn an endpoint auditor subagent to review contracts
 
 ---
 

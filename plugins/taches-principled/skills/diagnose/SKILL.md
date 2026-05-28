@@ -33,10 +33,10 @@ argument-hint: "[problem description] [--mode A3|FIVE-WHYS|FISHBONE|STACK-TRACE|
 
 ## Decision Router
 
-IF investigating a specific incident, recurring issue, or major problem needing structured documentation → use **A3** mode
+IF investigating a specific incident, recurring issue, or major problem needing structured documentation → use **A3** mode — ALWAYS spawn an explorer subagent to investigate before analysis
 IF problem has a clear single causal chain from symptom to root → use **FIVE-WHYS** mode
-IF problem has multiple potential contributing factors across domains → use **FISHBONE** mode
-IF an error surfaces deep in execution with a long call chain → use **STACK-TRACE** mode
+IF problem has multiple potential contributing factors across domains → use **FISHBONE** mode — ALWAYS spawn category-specific explorer subagents in parallel for each factor
+IF an error surfaces deep in execution with a long call chain → use **STACK-TRACE** mode — ALWAYS spawn trace subagents to instrument code before failure points
 IF the problem type is unclear or the user wants auto-selection → use **AUTO** mode
 IF user specifies a mode explicitly → apply that mode directly
 

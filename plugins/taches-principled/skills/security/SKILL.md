@@ -27,9 +27,13 @@ argument-hint: "[mode] [target] [--severity critical|high|medium|low]"
 ## Decision Router
 
 IF scanning for injection, auth, or access control patterns in code → **SAST** mode
+  **ALWAYS spawn pattern-matching subagents per OWASP category**
 IF checking for vulnerable or outdated dependencies → **DEPENDENCY-AUDIT** mode
+  **ALWAYS spawn audit subagents per package manager**
 IF finding exposed API keys, tokens, or credentials in code → **SECRETS-DETECTION** mode
+  **ALWAYS spawn scanner subagents per secret type**
 IF verifying compliance with security standards or certifications → **COMPLIANCE** mode
+  **ALWAYS spawn compliance checker subagents for each regulation**
 IF ambiguous → ask: "Are you scanning code patterns, dependencies, exposed secrets, or compliance standards?"
 
 ---

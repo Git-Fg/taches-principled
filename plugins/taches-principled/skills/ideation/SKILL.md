@@ -11,6 +11,9 @@ argument-hint: "[feature concept, problem, or topic]"
 
 IF user wants to explore or refine an unformed idea → use brainstorm mode: collaborative questioning to refine
 IF user wants creative idea generation (not refinement) → use create-ideas mode
+  **ALWAYS spawn 3 high-probability anchor subagents for convergent exploration**
+  **ALWAYS spawn 3 diverse subagents for divergent tail exploration**
+  **ALWAYS aggregate findings inline after parallel completion**
 IF user has simple task capture needs → use add-task instead
 IF user needs formal planning with milestones → use create-plans instead
 IF user already knows exactly what they want → skip to design capture directly

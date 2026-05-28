@@ -7,4 +7,4 @@ argument-hint: [learning to capture]
 
 $ARGUMENTS
 
-Capture the key insight or learning. Write it to project memory with name, description, and metadata fields.
+Spawn a reflection subagent to validate the framing before writing to memory. Capture the key insight or learning with name, description, and metadata fields.

@@ -513,4 +513,4 @@ Skill creation follows phases: requirements → draft → verify → integrate. 
 
 **Principle over procedure:** A skill about coordinated work should demonstrate coordination. Frame each phase as a tracked task with clear completion criteria. Trust the agent to determine execution order from the principles, not from scripted steps.
 
-For pre-commit verification of threshold checks, load `{baseDir}/references/skill-self-testing.md`. After drafting a skill body, loop a reviewer subagent until no HIGH findings — it verifies routing signal density, delta clarity, and anti-pattern quality before the skill enters the loading pool.
+For pre-commit verification of threshold checks, load `{baseDir}/references/skill-self-testing.md`. ALWAYS spawn a reviewer subagent and loop until no HIGH findings — it verifies routing signal density, delta clarity, and anti-pattern quality before the skill enters the loading pool.
