@@ -9,8 +9,8 @@ A Claude Code plugin for building skills, subagents, hooks, and project plans.
 ## Quick Start
 
 ```bash
-/plugin marketplace add Git-Fg/taches-principled
-/plugin install taches-principled
+claude plugin marketplace add Git-Fg/taches-principled
+claude plugin install taches-principled
 ```
 
 ### Try These First
@@ -93,18 +93,19 @@ Specialized agents for quality, review, and evaluation work.
 | **prompt-engineer** | Reviews prompts for clarity and effectiveness |
 | **debug-tracer** | Systematic debugging and root cause tracing |
 
-### 6 Marketplace Plugins
+### 7 Marketplace Plugins
 
-Six standalone plugins, each independently installable. Each extends the core with specialized capabilities.
+Seven standalone plugins, each independently installable. Each extends the core with specialized capabilities.
 
 | Plugin | Focus |
-|-------|-------|
+|--------|-------|
 | **tp-sadd** | Structured agent-driven development with meta-judge |
 | **tp-fpf** | First Principles Framework for hypothesis-driven decisions |
 | **tp-git** | Git workflow automation |
 | **tp-tdd** | Test-driven development with red-green-refactor |
 | **tp-ddd** | Domain-driven design guardrails |
 | **tp-force-multiplier** | Hook-driven coaching for subagent and skill usage |
+| **tp-vps-governance** | Config auditing and memory curation for VPS |
 
 ## Installation
 
@@ -119,19 +120,17 @@ Install the marketplace and all plugins in one go:
 
 ```bash
 # Add the marketplace
-claude plugin marketplace add anthropics/claude-plugins-official
 claude plugin marketplace add Git-Fg/taches-principled
 
 # Install all plugins
-claude plugin install claude-md-management
-claude plugin install code-simplifier
-claude plugin install typescript-lsp
 claude plugin install taches-principled
 claude plugin install tp-ddd
 claude plugin install tp-fpf
 claude plugin install tp-git
 claude plugin install tp-sadd
 claude plugin install tp-tdd
+claude plugin install tp-force-multiplier
+claude plugin install tp-vps-governance
 ```
 
 ### Individual Plugin Installation
@@ -143,11 +142,13 @@ Install only the plugins you need:
 claude plugin install taches-principled
 
 # Optional plugins
-claude plugin install tp-ddd     # Domain-driven design
-claude plugin install tp-fpf     # First principles reasoning
-claude plugin install tp-git     # Git workflow automation
-claude plugin install tp-sadd   # Structured agent-driven development
-claude plugin install tp-tdd    # Test-driven development
+claude plugin install tp-ddd              # Domain-driven design
+claude plugin install tp-fpf              # First principles reasoning
+claude plugin install tp-git             # Git workflow automation
+claude plugin install tp-sadd            # Structured agent-driven development
+claude plugin install tp-tdd             # Test-driven development
+claude plugin install tp-force-multiplier # Hook-driven coaching
+claude plugin install tp-vps-governance  # VPS governance
 ```
 
 ### Reinstall / Reset
@@ -156,11 +157,9 @@ To fully reinstall from scratch:
 
 ```bash
 # Uninstall all plugins
-claude plugin uninstall claude-md-management code-simplifier typescript-lsp
-claude plugin uninstall taches-principled tp-ddd tp-fpf tp-git tp-sadd tp-tdd
+claude plugin uninstall taches-principled tp-ddd tp-fpf tp-git tp-sadd tp-tdd tp-force-multiplier tp-vps-governance
 
-# Remove marketplaces
-claude plugin marketplace remove claude-plugins-official
+# Remove marketplace
 claude plugin marketplace remove taches-principled
 
 # Re-add and reinstall (from Full Marketplace Setup above)
@@ -170,11 +169,11 @@ claude plugin marketplace remove taches-principled
 
 ```bash
 claude plugins list                    # Show installed plugins
-claude plugin details <name>           # Show plugin details and token cost
+claude plugin details <name>          # Show plugin details and token cost
 claude plugin uninstall <name>        # Remove a plugin
 claude plugin marketplace list         # Show configured marketplaces
 claude plugin marketplace remove <name> # Remove a marketplace
-claude plugin prune                    # Clean up unused dependencies
+claude plugin prune                   # Clean up unused dependencies
 ```
 
 ### Manual (without marketplace)
