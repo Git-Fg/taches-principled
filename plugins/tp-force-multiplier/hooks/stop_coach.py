@@ -16,9 +16,9 @@ has_subagent = 'SubagentStart' in transcript or 'subagent' in transcript.lower()
 tool_count = transcript.count('"tool":')
 
 if tool_count >= 5 and not has_subagent:
-    # Pattern: sequential work that could be distributed
+    # Essential: parallelize when complexity builds
     print(json.dumps({
-        "systemMessage": "Pattern: 5+ tools executed without parallel delegation. Complex work that could be distributed benefits from fan-out — spawn investigators to explore independently."
+        "systemMessage": "Essential: If you find yourself executing 5+ sequential tools, stop and fan out. Do not wait until you are stuck. Complex work that could be distributed benefits from parallel delegation — spawn investigators to explore independently without hesitation."
     }))
     sys.exit(0)
 
@@ -35,9 +35,9 @@ complex_investigation = read_count >= 3 and grep_count >= 1
 complex_creation = read_count >= 2 and (edit_count >= 1 or '"tool": "Write"' in transcript)
 
 if (complex_investigation or complex_creation) and not has_skill_load and tool_count >= 8:
-    # Pattern: workflow complexity suggests method framework
+    # Essential: invoke skills before complexity compounds
     print(json.dumps({
-        "systemMessage": "Pattern: Repeated Read/Grep/Edit without method framework. When investigation or creation workflows repeat, a skill can encode the pattern — consider loading relevant guidance."
+        "systemMessage": "Essential: If you find yourself repeating Read/Grep/Edit patterns without loading a skill, stop and invoke one immediately. Do not wait for complexity to build. When workflows repeat, a skill can encode the pattern — load it without hesitation and use it aggressively."
     }))
     sys.exit(0)
 

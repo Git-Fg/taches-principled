@@ -5,6 +5,6 @@ import sys
 
 # PostCompact hook - output systemMessage for coaching
 print(json.dumps({
-    "systemMessage": "Pattern: Context pressure increasing. Subagent fan-out distributes work before capacity constraints — consider delegation before complexity compounds."
+    "systemMessage": "Essential: If context pressure is increasing, fan out immediately. Do not wait until you are stuck. Before complexity compounds, deploy all capabilities — skills, tools, and subagents. Context constraints are a signal to distribute work, not a signal to compress it."
 }))
 sys.exit(0)
