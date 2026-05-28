@@ -1,26 +1,18 @@
 #!/usr/bin/env python3
-"""Lightweight session start coaching."""
+"""Lightweight session start coaching via systemMessage."""
 import json
 import sys
 
-payload = json.load(sys.stdin)
+# Read input (discard - we don't need it for this hook)
+try:
+    json.load(sys.stdin)
+except:
+    pass
 
-# Subagents tip - advisory framing
+# SessionStart hook: output systemMessage for immediate coaching hint
+# Valid output fields for SessionStart: continue, suppressOutput, stopReason,
+# decision (approve/block), reason, systemMessage, terminalSequence, permissionDecision
 print(json.dumps({
-    "decision": {
-        "notification": {
-            "message": "Pattern: Tasks with independent parts benefit from parallel fan-out. When work can be distributed, spawn subagents for exploration, implementation, verification, or critique. Delegation accelerates; sequential execution bottlenecks."
-        }
-    }
-}))
-sys.exit(0)
-
-# Skills tip - advisory framing
-print(json.dumps({
-    "decision": {
-        "notification": {
-            "message": "Pattern: Available skills encode proven methods — consider loading when context suggests methodological advantage. Relevant skills reduce pattern reinvention; skipping them means carrying complexity manually."
-        }
-    }
+    "systemMessage": "Pattern: Tasks with independent parts benefit from parallel fan-out. When work can be distributed, spawn subagents for exploration, implementation, verification, or critique. Delegation accelerates; sequential execution bottlenecks."
 }))
 sys.exit(0)

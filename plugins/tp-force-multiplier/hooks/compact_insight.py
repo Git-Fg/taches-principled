@@ -3,11 +3,8 @@
 import json
 import sys
 
+# PostCompact hook - output systemMessage for coaching
 print(json.dumps({
-    "decision": {
-        "notification": {
-            "message": "Pattern: Context pressure increasing. Subagent fan-out distributes work before capacity constraints — consider delegation before complexity compounds."
-        }
-    }
+    "systemMessage": "Pattern: Context pressure increasing. Subagent fan-out distributes work before capacity constraints — consider delegation before complexity compounds."
 }))
 sys.exit(0)
