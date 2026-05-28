@@ -68,6 +68,10 @@ A good prompt contains:
 
 The intake gate determines whether you need more information before generating. Empty or vague input requires questioning. Specific input proceeds directly to generation.
 
+### Intake Directive
+
+**ALWAYS spawn a researcher subagent to gather project context before questioning.** The researcher should explore the codebase structure, existing patterns, and relevant files to inform the questioning phase. This ensures questions target genuine gaps rather than discoverable information.
+
 ### Analysis Principle
 
 From the input, infer task type (coding, analysis, research), complexity (simple vs complex), prompt structure (single vs multiple), execution strategy (parallel vs sequential), and reasoning depth.
@@ -115,6 +119,10 @@ Never proceed without explicit user confirmation. Present decision gate: "I have
 
 Prompts are XML-structured artifacts that define the contract between the user and the executing agent. Determine single vs multiple prompts, execution strategy, reasoning depth, required tools, and quality signals before generating.
 
+### Multi-Prompt Generation Directive
+
+**ALWAYS spawn parallel subagents for tasks with >2 independent prompts.** When generating multiple prompts, dispatch them in parallel rather than sequentially. Each subagent handles one prompt independently, ensuring focused execution and reduced generation time.
+
 ### Conditional Enhancements
 
 | Enhancement | When to Use |
@@ -142,6 +150,10 @@ Match execution strategy to task dependencies:
 ---
 
 ## Quality Standards
+
+### Quality Verification Directive
+
+**ALWAYS spawn a critic subagent to review generated prompts before delivery.** The critic evaluates clarity, completeness, specificity, and adherence to the prompt structure standards. Iterate until the critic finds no HIGH-severity issues.
 
 - **Clarity First**: Would a colleague with minimal context understand this?
 - **Context is Critical**: Include WHY, WHO, and WHAT.

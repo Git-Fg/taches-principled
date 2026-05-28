@@ -58,6 +58,12 @@ FPF lifecycle operations — reset reasoning cycles, reconcile with code changes
 
 ## 2. Reconcile with Code
 
+**ALWAYS spawn a subagent to scan git diff and cross-reference affected files.** The subagent should:
+- Run `git diff --name-only <baseline_commit> HEAD` to identify changed files
+- Cross-reference each changed file against evidence `carrier_ref` fields
+- Flag evidence with carrier_ref pointing to stale or modified files
+- Report findings before any reconciliation action is taken
+
 Detect context drift from git diff:
 ```bash
 git diff --name-only <baseline_commit> HEAD
@@ -94,6 +100,12 @@ Search FPF knowledge base, display hypothesis details with assurance information
 Search all hypothesis layers (L0, L1, L2, invalid) and decisions. For each match, display title, layer, kind, R_eff score (if L1+), dependencies, and evidence summary in table format.
 
 ## Status Process
+
+**ALWAYS spawn a subagent to verify .fpf/ structure and scan evidence freshness.** The subagent should:
+- Verify all required directories exist (context/, knowledge/L0-L2/, invalid/, evidence/, decisions/)
+- Scan all evidence files for `valid_until` timestamps
+- Flag expired and stale evidence with dates and reasons
+- Report directory structure state and freshness summary
 
 Verify `.fpf/` structure exists. Count hypotheses per layer. Check evidence freshness (scan for expired). Count decisions. Report to user.
 

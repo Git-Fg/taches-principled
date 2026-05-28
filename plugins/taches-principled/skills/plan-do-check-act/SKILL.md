@@ -36,12 +36,27 @@ Never implement a change without knowing how you will measure success. Never con
 5. **Verification:** Success criteria are numeric and measurable, not subjective
 
 ### Phase 2: Do
+
+**ALWAYS spawn an executor subagent to implement the change.** The executor should:
+- Implement the change at small scale first
+- Document what was actually done and any deviations from plan
+- Collect data throughout — include unexpected observations
+- Write execution log to `.principled/pdca/[cycle]-do.md`
+
 1. Implement the change at small scale first
 2. Document what was actually done and any deviations from plan
 3. Collect data throughout — include unexpected observations
 4. **Verification:** The experiment ran as designed (deviations are documented, not hidden)
 
 ### Phase 3: Check
+
+**ALWAYS spawn a grader subagent to evaluate results against success criteria.** The grader should:
+- Measure results numerically against the hypothesis metrics
+- Compare before vs. after with specific data points
+- Determine whether the hypothesis held with objective evidence
+- Identify why the hypothesis failed if it did not hold
+- Write evaluation to `.principled/pdca/[cycle]-check.md`
+
 1. Measure results against success criteria
 2. Compare to baseline: before vs. after
 3. Did the hypothesis hold? If not, why?
@@ -49,6 +64,13 @@ Never implement a change without knowing how you will measure success. Never con
 5. **Verification:** Analysis is objective — success or failure of the hypothesis, not judgment on effort
 
 ### Phase 4: Act
+
+**ALWAYS spawn a writer subagent to document the cycle outcome and next steps.** The writer should:
+- If successful: Document the standardized change, update relevant documentation, create monitoring/automation notes
+- If unsuccessful: Document the refined hypothesis and planned adjustments for cycle N+1
+- If partially successful: Document what was standardized and what remains for next cycle
+- Write outcome to `.principled/pdca/[cycle]-act.md`
+
 - **If successful:** Standardize the change — update documentation, train the team, add automation or monitoring
 - **If unsuccessful:** Understand why the hypothesis failed, refine it, start a new cycle
 - **If partially successful:** Standardize what worked, plan next cycle for remaining issues
