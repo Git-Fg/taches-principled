@@ -171,6 +171,33 @@ This asymmetry is load-bearing:
 
 **The test:** "Is this describing WHAT to do or HOW to do it?" — Orchestration = skill. Execution details = agent prompt.
 
+### Agent Description Pattern
+
+Agent descriptions inject into Claude's system prompt for routing, but **agents cannot self-invoke** — skills explicitly spawn them via "spawn a [role] subagent". However, improved descriptions make the spawn intent explicit and self-documenting.
+
+**Recommended structure:**
+```yaml
+description: |
+  ACTIVATES: [explicit trigger condition — when to invoke]
+  LOOP: [termination criterion — usually "until no HIGH findings"]
+  Output: [what the agent produces]
+```
+
+**Examples:**
+
+| Agent | ACTIVATES | LOOP | Output |
+|-------|-----------|------|--------|
+| `self-review` | after any artifact creation | until no HIGH findings | severity-ranked findings |
+| `self-critic` | after any artifact creation | until no HIGH findings | real-world impact assessment |
+| `critic` | after every 2-3 tasks or phase boundary | until no HIGH (blocker) | blocker/warning/suggestion |
+| `grader` | after any skill modification | once per evaluation | grade out of 10 + top change |
+
+**Why this matters:**
+- Frontmatter is parsed for semantic routing
+- Loop invariants make activation conditions explicit
+- Skills that spawn agents match by role, not description — but humans reading agent files understand intent
+- The pattern future-proofs for potential agent self-invocation if routing improves
+
 ### Artifact Taxonomy
 
 Four distinct artifacts with different loading behaviors and token costs:
