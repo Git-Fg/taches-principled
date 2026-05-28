@@ -45,7 +45,7 @@
     },
     {
       "name": "tp-force-multiplier",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "source": "./plugins/tp-force-multiplier",
       "description": "Hook-driven coaching plugin — steers Claude to use subagents and skills via real-time semantic coaching. Hooks only, no skills."
     },
