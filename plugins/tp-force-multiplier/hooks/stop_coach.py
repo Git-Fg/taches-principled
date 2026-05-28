@@ -18,26 +18,20 @@ tool_count = transcript.count('"tool":')
 if tool_count >= 5 and not has_subagent:
     # Essential: parallelize when complexity builds
     print(json.dumps({
-        "systemMessage": "Essential: If you find yourself executing 5+ sequential tools, stop and fan out. Do not wait until you are stuck. Complex work that could be distributed benefits from parallel delegation — spawn investigators to explore independently without hesitation."
+        "systemMessage": "Essential: If you find yourself executing 5+ sequential operations, stop and fan out. Do not wait until you are stuck. Complex work that could be distributed benefits from parallel delegation — spawn investigators to explore independently without hesitation."
     }))
     sys.exit(0)
 
 # Skill gap detection: complex workflow without skill loaded
 has_skill_load = '/skill' in transcript.lower() or 'SKILL.md' in transcript
-read_count = transcript.count('"tool": "Read"')
-grep_count = transcript.count('"tool": "Grep"')
-edit_count = transcript.count('"tool": "Edit"')
+tool_patterns = ['Read', 'Grep', 'Edit', 'Write', 'Bash', 'Search']
+pattern_count = sum(transcript.count(f'"tool": "{t}"') for t in tool_patterns)
 
-# Complex investigation: 3+ reads and greps
-complex_investigation = read_count >= 3 and grep_count >= 1
-
-# Complex creation: reads followed by writes/edits
-complex_creation = read_count >= 2 and (edit_count >= 1 or '"tool": "Write"' in transcript)
-
-if (complex_investigation or complex_creation) and not has_skill_load and tool_count >= 8:
+# Complex workflow: high tool count without skills
+if pattern_count >= 6 and not has_skill_load and tool_count >= 8:
     # Essential: invoke skills before complexity compounds
     print(json.dumps({
-        "systemMessage": "Essential: If you find yourself repeating Read/Grep/Edit patterns without loading a skill, stop and invoke one immediately. Do not wait for complexity to build. When workflows repeat, a skill can encode the pattern — load it without hesitation and use it aggressively."
+        "systemMessage": "Essential: If you find yourself repeating complex workflows without loading skills, stop and invoke them immediately. Do not wait for complexity to build. When patterns repeat, a skill can encode the method — load it without hesitation and use it aggressively."
     }))
     sys.exit(0)
 
