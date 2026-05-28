@@ -1,6 +1,6 @@
 ---
 name: create-prompts
-description: "Creates executable prompts for Claude Code. Use when user says 'write me a prompt', 'generate a prompt', or 'create a prompt for this task'."
+description: "Create executable prompts for Claude Code. Use when writing prompts for other sessions or agents."
 when_to_use: |
   Use when the user says:
   - "write me a prompt"
@@ -14,7 +14,7 @@ when_to_use: |
   - "craft a prompt for [goal]"
   IMMEDIATELY when the user wants to create a reusable prompt artifact that another Claude Code session can execute.
   Do NOT use for executing prompts directly, reviewing existing prompts, or one-off questions.
-  Do NOT use when the goal is to create a reusable Claude Code skill (use create-skills).
+  Do NOT use when the goal is to create a reusable Claude Code skill (use skill-authoring).
 argument-hint: [task description]
 ---
 
@@ -121,7 +121,7 @@ Prompts are XML-structured artifacts that define the contract between the user a
 
 ### Multi-Prompt Generation Directive
 
-**ALWAYS spawn parallel subagents for tasks with >2 independent prompts.** When generating multiple prompts, dispatch them in parallel rather than sequentially. Each subagent handles one prompt independently, ensuring focused execution and reduced generation time.
+**ALWAYS spawn parallel prompt-engineer subagents for tasks with >2 independent prompts.** When generating multiple prompts, dispatch them in parallel rather than sequentially. Each prompt-engineer agent handles one prompt independently, ensuring focused execution and reduced generation time.
 
 ### Conditional Enhancements
 
