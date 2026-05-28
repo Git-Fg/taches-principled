@@ -1,7 +1,7 @@
 ---
 name: debug
 skill: diagnose
-description: Apply systematic debugging methodology to investigate issues deeply
+description: Apply systematic debugging methodology to investigate issues
 argument-hint: [issue description]
 ---
 

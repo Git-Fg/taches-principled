@@ -359,7 +359,7 @@ git push
 
 ## Skill Authoring
 
-Skills are auto-invoked by default by Claude Code — a cold-start instance discovers and routes to them based on description matching, not prior conversation. Skill authoring is taught by the `create-skills` skill. See that skill for:
+Skills are auto-invoked by default by Claude Code — a cold-start instance discovers and routes to them based on description matching, not prior conversation. Skill authoring is taught by the `skill-authoring` skill. See that skill for:
 - **Skill categories**: Constraint/Guardrail, Orchestration, Domain Expertise, Quality Assurance, Creative Direction
 - **Policy vs. Mechanism**: The unifying principle for skill design — declare intent before implementation. Policy is *what* the skill decides (trigger scope, routing, boundaries); mechanism is *how* the skill executes (tools, steps, details)
 - **Progressive disclosure**: The loading pattern that shows policy upfront and mechanism on demand (frontmatter → body → references); the official tactic for staying under the 500-line guideline
@@ -374,7 +374,7 @@ Skills are auto-invoked by default by Claude Code — a cold-start instance disc
 - **Congruence Level (CL)**: Evidence validation for claims about techniques — CL3 (benchmark on identical hardware/OS/software), CL2 (similar but not identical), CL1 (general principle from blog post). Apply congruence penalty when evidence comes from mismatched contexts.
 - **Command format**: See `commands-standard.md` in `plugins/taches-principled/` for lightweight command standards (no markdown in body, 1-3 sentence outcome instruction, conditional skill hints)
 
-**How to access:** The `create-skills` skill is auto-discovered. Use `/create-skills` or invoke via the Skill tool.
+**How to access:** The `skill-authoring` skill is auto-discovered. Use `/skill-authoring` or invoke via the Skill tool.
 
 ---
 
@@ -712,7 +712,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] **No hardcoded drift targets:** Avoid specific counts or versions in prose. Replace with references: "run `find plugins -name SKILL.md | wc -l` for accurate count."
 - [ ] **Discovery over enumeration:** Don't enumerate what could be queried from filesystem. The filesystem is ground truth — don't reimplement it in prose.
 
-For skill-authoring self-check, see `create-skills` skill.
+For skill-authoring self-check, see `skill-authoring` skill.
 
 ---
 
@@ -935,13 +935,13 @@ This applies to all external plugins and marketplaces, not just within this proj
 
 ## References
 
-- [Claude Code Skills Documentation](https://code.claude.com/docs/en/skills)
-- [Claude Code Subagents Documentation](https://code.claude.com/docs/en/sub-agents)
-- [Claude Code Plugin Creation Guide](https://code.claude.com/docs/en/plugins)
-- [Claude Code Plugin Marketplaces Documentation](https://code.claude.com/docs/en/plugin-marketplaces)
-- [Claude Code Hooks Reference](https://code.claude.com/docs/en/hooks)
-- [Claude Code Commands Reference](https://code.claude.com/docs/en/commands)
-- [Plugin Submission Guide](https://claude.com/docs/plugins/submit)
+- [Claude Code Skills Documentation](https://code.claude.com/docs/en/skills.md)
+- [Claude Code Subagents Documentation](https://code.claude.com/docs/en/sub-agents.md)
+- [Claude Code Plugin Creation Guide](https://code.claude.com/docs/en/plugins.md)
+- [Claude Code Plugin Marketplaces Documentation](https://code.claude.com/docs/en/plugin-marketplaces.md)
+- [Claude Code Hooks Reference](https://code.claude.com/docs/en/hooks.md)
+- [Claude Code Commands Reference](https://code.claude.com/docs/en/commands.md)
+- [Plugin Submission Guide](https://claude.com/docs/plugins/submit.md)
 - [context-engineering-kit](https://github.com/NeoLabHQ/context-engineering-kit) — foundational influence on the token economy model and subagent orchestration patterns
 - [ClaudeFast — Hidden Skill Budget Setting](https://claudefa.st/blog/guide/mechanics/skill-listing-budget) — skillListingBudgetFraction mechanics (v2.1.129+)
 - [GitHub Gist — Skill Budget Research](https://gist.github.com/alexey-pelykh/faa3c304f731d6a962efc5fa2a43abe1) — empirical budget calculation and compression strategies

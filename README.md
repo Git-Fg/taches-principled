@@ -31,7 +31,7 @@ Skills load on demand and give Claude domain expertise without bloating every co
 
 | Skill | When to Use |
 |-------|-------------|
-| **create-skills** | Building new skills or improving existing ones |
+| **skill-authoring** | Building new skills or improving existing ones |
 | **create-plans** | Planning projects, phases, or features for Claude to build |
 | **create-prompts** | Creating executable prompts for Claude Code sessions |
 | **execute-prompts** | Executing prompts via delegated sub-tasks |
@@ -44,7 +44,7 @@ Skills load on demand and give Claude domain expertise without bloating every co
 | **implement-task** | Implementing refined task specs with verification |
 | **refine-task** | Refining draft specs into implementation-ready tasks |
 | **update-docs** | Maintaining project documentation |
-| **skill-creator** | Editing and optimizing existing skills |
+| **skill-authoring** | Editing and optimizing existing skills |
 | **claude-headless** | Batch and headless Claude Code workflows |
 | **tool-design** | Designing agent tools and MCP integrations |
 | **security** | Security-first code review and threat modeling |

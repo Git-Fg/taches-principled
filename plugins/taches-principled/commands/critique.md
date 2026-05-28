@@ -1,7 +1,7 @@
 ---
 name: critique
 skill: refine
-description: Get independent multi-perspective critique on high-stakes work
+description: Get independent critique on high-stakes decisions and completed work
 argument-hint: [work to critique]
 ---
 

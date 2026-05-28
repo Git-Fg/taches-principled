@@ -7,4 +7,4 @@ argument-hint: [topic or problem]
 
 $ARGUMENTS
 
-Fan out generator subagents for each creative direction, use web search for reference patterns and inspiration, aggregate divergent outputs before synthesis. Generate 4-6 distinct options for the topic before evaluating any single one.
+Fan out generator subagents for each creative direction, use web search for reference patterns and inspiration, aggregate divergent outputs before synthesis. Generate distinct options for the topic before evaluating any single one.
