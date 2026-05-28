@@ -107,16 +107,30 @@ When an agent claims to write findings to disk, it needs the Write tool. When it
 **Claude under-triggers skills.** Research shows the model naturally under-invokes without explicit trigger phrases. This is the primary failure mode — not routing logic errors.
 
 **Reliable triggering requires:**
-- **User vocabulary**: "find the root cause" beats "A3 analysis" — speak how users think
+- **User vocabulary in frontmatter**: "find the root cause" beats "A3 analysis" — speak how users think
 - **Specific phrases**: 5-10 triggers, no generic words ("improve" matches everything)
 - **CONTRAST sections**: Overlapping domains need explicit disambiguation
 - **Front-load in first 200 chars**: Truncation happens from the end
 
 **What kills routing:**
-- Technical jargon users don't say ("fishbone", "CQRS")
+- Technical jargon in description/when_to_use ("fishbone", "CQRS", "ADI")
 - Single ambiguous words ("fix", "do", "handle")
 - Vague descriptions matching everything
 - Missing negative cases (what NOT to match)
+
+**Frontmatter vs Body — The Clear Distinction:**
+
+| Layer | Purpose | Language |
+|-------|---------|----------|
+| **description** | Routing signal — triggers skill loading | User vocabulary only |
+| **when_to_use** | Additional triggers | User vocabulary only |
+| **Body** | Teaching methodology | Technical precision OK |
+
+**Example (tp-fpf):**
+- **Description:** "Generate and evaluate competing hypotheses" (user vocabulary)
+- **Body:** "Execute complete FPF cycle with ADI (Abduction-Deduction-Induction)" (technical)
+
+This separation is intentional: frontmatter must match user vocabulary for routing; body teaches domain experts with precise terminology after the skill loads. Never remove technical terms from the body — only from description and when_to_use.
 
 **Validation (before shipping any skill):**
 ```bash
