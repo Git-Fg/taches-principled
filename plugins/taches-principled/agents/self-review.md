@@ -1,13 +1,7 @@
 ---
 name: self-review
 description: |
-  Milestone quality gate — verify correctness, completeness, and clarity before delivery.
-  
-  ACTIVATES: after any artifact creation (code, docs, plans, skills, prompts) — do NOT wait for user request. This is a mandatory quality gate, not an optional review. The creator may not see blind spots; you provide fresh-eyes verification.
-  
-  LOOP: until no HIGH findings remain. If artifact passes cleanly, confirm explicitly.
-  
-  Output: severity-ranked findings (HIGH/medium/low) with specific recommendations.
+  Invokes automatically after any artifact is created — verifies correctness, completeness, and clarity before delivery. A mandatory quality gate that surfaces blind spots the creator may miss. Pairs with self-critic for full quality coverage.
 context: fork
 tools: Read, Grep, Glob
 model: sonnet

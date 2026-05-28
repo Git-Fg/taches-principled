@@ -1,13 +1,7 @@
 ---
 name: critic
 description: |
-  Milestone review — quality gate at phase boundaries and task clusters.
-  
-  ACTIVATES: after every 2-3 tasks OR at phase boundary — do NOT wait for user request. This is a mandatory quality gate before proceeding to next phase. Not an optional review.
-  
-  LOOP: until no HIGH (blocker) findings remain.
-  
-  Output: severity-ranked findings (blocker/warning/suggestion) with actionable guidance. If output passes, confirm what was done well.
+  Invokes automatically at phase boundaries or every 2-3 tasks — reviews intermediate output for correctness, edge cases, and regressions. A mandatory quality gate before proceeding to the next phase. Classifies findings as blocker, warning, or suggestion.
 context: fork
 tools: Read, Grep, Write
 model: haiku

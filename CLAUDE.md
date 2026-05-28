@@ -173,30 +173,21 @@ This asymmetry is load-bearing:
 
 ### Agent Description Pattern
 
-Agent descriptions inject into Claude's system prompt for routing, but **agents cannot self-invoke** — skills explicitly spawn them via "spawn a [role] subagent". However, improved descriptions make the spawn intent explicit and self-documenting.
+Agent descriptions inject into Claude's system prompt for routing, but **agents cannot self-invoke** — skills explicitly spawn them via "spawn a [role] subagent". Improved descriptions use natural language to describe behavior and activation conditions.
 
-**Recommended structure:**
-```yaml
-description: |
-  ACTIVATES: [explicit trigger condition — when to invoke]
-  LOOP: [termination criterion — usually "until no HIGH findings"]
-  Output: [what the agent produces]
-```
+**Pattern:** Natural language sentences, not structured syntax. Describe WHAT the agent is and WHEN it activates, not procedural instructions.
 
-**Examples:**
+**Good examples (natural language):**
+- "Invokes automatically after any artifact is created — verifies correctness, completeness, and clarity before delivery"
+- "Invokes automatically at phase boundaries or every 2-3 tasks — reviews intermediate output for correctness, edge cases, and regressions"
 
-| Agent | ACTIVATES | LOOP | Output |
-|-------|-----------|------|--------|
-| `self-review` | after any artifact creation | until no HIGH findings | severity-ranked findings |
-| `self-critic` | after any artifact creation | until no HIGH findings | real-world impact assessment |
-| `critic` | after every 2-3 tasks or phase boundary | until no HIGH (blocker) | blocker/warning/suggestion |
-| `grader` | after any skill modification | once per evaluation | grade out of 10 + top change |
+**Bad examples (structured syntax):**
+- "ACTIVATES: after any artifact creation\nLOOP: until no HIGH findings\nOutput: severity-ranked findings"
+- Any structured key:value or bullet format
 
-**Why this matters:**
-- Frontmatter is parsed for semantic routing
-- Loop invariants make activation conditions explicit
-- Skills that spawn agents match by role, not description — but humans reading agent files understand intent
-- The pattern future-proofs for potential agent self-invocation if routing improves
+**Why natural language works better:** Structured syntax in descriptions can break fuzzy semantic matching. A sentence like "Invokes automatically after any artifact is created" routes better than "ACTIVATES: [condition]" because it reads as natural intent rather than configuration.
+
+**The pattern future-proofs:** For potential agent self-invocation if routing improves, natural language descriptions are more readable and routing-friendly than structured formats.
 
 ### Artifact Taxonomy
 
