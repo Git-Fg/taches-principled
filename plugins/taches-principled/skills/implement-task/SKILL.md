@@ -1,6 +1,6 @@
 ---
 name: implement-task
-description: "Execute refined task implementations with automated quality verification. Each step spawns a developer agent, then an independent judge verifies. Iterates until quality threshold is met."
+description: "Execute refined tasks with verification gates. Spawn developer, then judge agent. Iterate until quality threshold."
 when_to_use: |
   Use when the user says:
   - "implement this task"

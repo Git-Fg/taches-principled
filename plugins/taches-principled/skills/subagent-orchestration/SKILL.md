@@ -1,6 +1,6 @@
 ---
 name: subagents
-description: "Implement multi-agent orchestration — spawn parallel workers, fan out tasks, coordinate subagents, or manage background agents. Use when delegating work, running in parallel, or orchestrating agent teams."
+description: "Design multi-agent architectures and orchestrate parallel execution. Hub skill combining agent definition and execution."
 when_to_use: |
   Do NOT use for single-agent tasks, simple scripts, or non-agent workflows.
 ---

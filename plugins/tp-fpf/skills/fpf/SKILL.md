@@ -1,6 +1,6 @@
 ---
 name: fpf
-description: "Generate and evaluate competing hypotheses. Use when deciding between alternatives, auditing evidence quality, or tracking decision rationale."
+description: "Generate and evaluate competing hypotheses. Use when deciding between alternatives or tracking decision rationale."
 when_to_use: |
   PROPOSE: 'first principles', 'hypothesize', 'propose options', 'FPF', 'evaluate from first principles', 'reason from scratch', 'generate hypotheses', 'evaluate alternatives', 'compare solutions', 'make a decision'
   MAINTAIN: 'reset FPF', 'soft reset', 'hard reset', 'archive FPF', 'clear FPF state', 'refresh FPF', 'reconcile FPF', 'sync FPF with code', 'detect drift', 'check evidence freshness', 'waive', 'deprecate'

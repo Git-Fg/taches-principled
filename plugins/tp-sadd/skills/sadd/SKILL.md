@@ -1,6 +1,6 @@
 ---
 name: sadd
-description: "Structured development with multiple competing solutions and quality verification. Use when generating alternatives and selecting the best, running independent verification, or coordinating parallel execution via subagents."
+description: "Multi-agent development: generate alternatives, verify quality, coordinate workers."
 when_to_use: |
   COMPETE: 'best-of-N', 'competitive generation', 'generate multiple solutions', 'quality over speed'
   EXECUTE: 'spawn subagent', 'launch agent', 'delegate this', 'implement with verification', 'run in background'

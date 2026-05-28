@@ -1,6 +1,6 @@
 ---
 name: archive-plan
-description: "Archive completed plan artifacts and extract learnings into project memory. Use when user says 'archive this plan', 'wrap up', 'done with this plan', 'ship it', or 'extract learnings'."
+description: "Archive completed plans and extract learnings into project memory. Use when wrapping up or shipping a plan."
 when_to_use: |
   Use when the user says "archive", "wrap up", "done with this plan", "ship it", "extract learnings", "archive this plan", or "close out this plan".
   AFTER execute-plans completes and SUMMARY.md is created.

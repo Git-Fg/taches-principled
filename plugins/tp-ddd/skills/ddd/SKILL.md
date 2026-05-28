@@ -1,6 +1,6 @@
 ---
 name: ddd
-description: "Clean, maintainable code with clear structure and visible behavior. Use when code has too much nesting, domain logic leaks into infrastructure, or tests require heavy mocking."
+description: "Clean code with clear structure: reduce nesting, fix domain logic leaks, minimize mocking. Use when code quality issues."
 when_to_use: |
   ARCHITECTURE: 'where does business logic go', 'too much nesting', 'too many parameters', 'function does too much', 'business logic in controllers'
   QUALITY: 'what should I name this', 'should I use a library', 'silent failure'

@@ -1,6 +1,6 @@
 ---
 name: tool-design
-description: "Designs agent tools and MCP integrations. Use when user asks to 'design tools', 'create tool descriptions', 'implement MCP', 'reduce tool complexity', or mentions tool naming conventions, tool consolidation, or agent-tool interfaces."
+description: "Design agent tools and MCP integrations. Use when creating tools, debugging tool failures, or optimizing tool sets."
 when_to_use: |
   Do NOT use for general API design, backend services, or non-agent tooling.
 ---

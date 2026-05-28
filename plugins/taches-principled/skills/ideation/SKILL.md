@@ -1,6 +1,6 @@
 ---
 name: ideation
-description: "Refine rough ideas into documented designs through single-question dialogue, or generate 6 distinct creative options using probability sampling. Two modes: concept refinement and divergent generation."
+description: "Refine rough ideas or generate creative options with probability sampling. Two modes: refinement and divergent generation."
 when_to_use: |
   Use when the user says "I have an idea", "help me figure out", "design this", "what are my options", "let's brainstorm", "help me think through this", or "let's think about".
   IMMEDIATELY when a concept is vague or unformed — BEFORE sketching architecture or writing code.

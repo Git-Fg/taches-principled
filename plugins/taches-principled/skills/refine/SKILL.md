@@ -1,6 +1,6 @@
 ---
 name: refine
-description: "Quality improvement hub with four modes: simplify complexity, self-critique with severity scoring, memorize learnings, and polish prose. Use when user says 'simplify this', 'reduce complexity', 'review this PR', 'check my changes', 'critique this', 'what could be better', 'capture this learning', 'make this clearer', or 'clean up this text'."
+description: "Improve code quality: simplify, critique with scoring, memorize learnings, polish prose."
 when_to_use: |
   Use when the user says "simplify", "reduce complexity", "review", "PR", "check my changes", "critique", "what could be better", "reflect", "capture this learning", "make this clearer", "write more concisely", "clean up text", or "improve the writing".
   IMMEDIATELY before merging or committing significant code changes (SIMPLIFY or REVIEW).

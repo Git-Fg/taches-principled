@@ -1,6 +1,6 @@
 ---
 name: multi-agent-patterns
-description: "Build systems with multiple Claude agents working together. Use when scaling beyond single-agent limits, coordinating parallel workers, or designing agent teams."
+description: "Design multi-agent systems: select coordination patterns, size contexts, choose consensus mechanisms. Use when scaling."
 when_to_use: |
   Triggers: 'multiple agents', 'agent coordination', 'scale Claude', 'multi-agent', 'agent team', 'parallel workers', 'context isolation'
   Use when designing a multi-agent system from scratch — selecting coordination patterns, sizing agent contexts, and choosing consensus mechanisms.

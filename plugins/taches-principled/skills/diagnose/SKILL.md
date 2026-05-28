@@ -1,6 +1,6 @@
 ---
 name: diagnose
-description: "Auto-selects or directly applies the right problem investigation method for a given target. Five modes: A3 (structured incident documentation), Five Whys (single-path causal chains), Fishbone (multi-category cause mapping), Stack Trace (call-chain debugging), and Auto (method selection). Use when user says 'analyze this problem', 'find the root cause', 'trace this bug', or 'why is this happening'."
+description: "Auto-selects investigation method: A3, Five Whys, Fishbone, Stack Trace. Use when analyzing problems or finding root causes."
 when_to_use: |
   Use when the user says:
   - "analyze this problem"
@@ -36,7 +36,7 @@ argument-hint: "[problem description] [--mode A3|FIVE-WHYS|FISHBONE|STACK-TRACE|
 IF investigating a specific incident, recurring issue, or major problem needing structured documentation → use **A3** mode — ALWAYS spawn an explorer subagent to investigate before analysis
 IF problem has a clear single causal chain from symptom to root → use **FIVE-WHYS** mode
 IF problem has multiple potential contributing factors across domains → use **FISHBONE** mode — ALWAYS spawn category-specific explorer subagents in parallel for each factor
-IF an error surfaces deep in execution with a long call chain → use **STACK-TRACE** mode — ALWAYS spawn trace subagents to instrument code before failure points
+IF an error surfaces deep in execution with a long call chain → use **STACK-TRACE** mode — ALWAYS spawn a debug-tracer subagent to instrument code before failure points and trace backward through the call chain
 IF the problem type is unclear or the user wants auto-selection → use **AUTO** mode
 IF user specifies a mode explicitly → apply that mode directly
 

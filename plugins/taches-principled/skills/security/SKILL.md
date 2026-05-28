@@ -1,6 +1,6 @@
 ---
 name: security
-description: "Static and dependency security analysis — scan for vulnerabilities, detect exposed secrets, audit auth patterns, check compliance. Modes: SAST, DEPENDENCY-AUDIT, SECRETS-DETECTION, COMPLIANCE."
+description: "Security scan: vulnerabilities, secrets, auth patterns. Modes: SAST, DEPENDENCY-AUDIT, SECRETS-DETECTION, COMPLIANCE."
 when_to_use: |
   SAST: 'security audit', 'XSS', 'SQL injection', 'auth review'
   DEPENDENCY-AUDIT: 'scan dependencies', 'npm audit', 'vulnerable dependencies'

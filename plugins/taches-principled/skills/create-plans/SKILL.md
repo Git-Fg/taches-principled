@@ -1,6 +1,6 @@
 ---
 name: create-plans
-description: "Creates executable project plans that Claude implements directly. Use when user says 'plan', 'sketch', 'roadmap', or 'break down a project'."
+description: "Create executable project plans. Use when planning features, roadmaps, or breaking down projects."
 when_to_use: |
   Use when the user says "make a plan", "plan this out", "sketch a roadmap", or "break down this project".
   IMMEDIATELY when starting new work that needs structured decomposition.

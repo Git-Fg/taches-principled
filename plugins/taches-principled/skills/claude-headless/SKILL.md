@@ -1,6 +1,6 @@
 ---
 name: claude-headless
-description: "Executes claude -p headless for batch/automated workflows. Use when user asks about 'claude -p', 'pipe mode', '--stream flag', non-interactive CLI, MCP testing in pipelines, or batch Claude invocations."
+description: "Execute claude -p for batch workflows. Use when running pipe mode, non-interactive CLI, or testing in pipelines."
 when_to_use: |
   Do NOT use for general MCP questions, subagent log analysis without headless intent, or API streaming.
 ---

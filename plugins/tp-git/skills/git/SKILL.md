@@ -1,6 +1,6 @@
 ---
 name: git
-description: "Git workflow operations — ship commits with conventional messages and emoji, post inline PR review comments (single and batched), load GitHub issues and create technical specs, manage commits with git notes and work on multiple branches with git worktrees. Modes: SHIP, REVIEW, ISSUES, ADVANCED."
+description: "Git operations: ship commits, post PR comments, load issues, manage branches. Modes: SHIP, REVIEW, ISSUES, ADVANCED."
 when_to_use: |
   SHIP: 'commit', 'ship', 'commit and push', 'create PR', 'pull request', 'publish changes', 'conventional commit'
   REVIEW: 'review PR', 'inline comment', 'add comment to PR', 'line-by-line feedback', 'post review comments'

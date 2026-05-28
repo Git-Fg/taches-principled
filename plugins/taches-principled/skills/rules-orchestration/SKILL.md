@@ -1,6 +1,6 @@
 ---
 name: rules-orchestration
-description: "Manages CLAUDE.md and .claude/rules/ lifecycle — analyzes conversations for rule-worthy insights, synthesizes proposals, integrates into rules, and maintains quality. Use when refining project conventions, updating CLAUDE.md after significant work, or codifying discovered patterns."
+description: "Manage CLAUDE.md and rules — extract learnings, add rules, restructure, and review. Use when updating project conventions."
 when_to_use: |
   Use when the user says:
   - "update my rules"

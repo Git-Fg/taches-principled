@@ -1,6 +1,6 @@
 ---
 name: update-docs
-description: Update project documentation after code changes — READMEs, guides, API docs, and JSDoc. Preserves existing style and follows project conventions.
+description: "Update documentation after code changes — READMEs, guides, API docs. Preserves style and conventions."
 when_to_use: |
   Use when the user says:
   - "update the docs"
