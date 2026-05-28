@@ -1,6 +1,13 @@
 ---
 name: self-critic
-description: Adversarial critique for any artifact — code, docs, plans, skills, prompts. Use after creation to find flaws, edge cases, and unchecked assumptions before delivery.
+description: |
+  Adversarial stress-test — finds flaws, edge cases, and unchecked assumptions before delivery.
+  
+  ACTIVATES: after any artifact creation (code, docs, plans, skills, prompts) — do NOT wait for user request. Pair with self-review: where self-review checks "did we build it right?", self-critic asks "what could make it fail?". Adversarial posture — assume failure, question everything.
+  
+  LOOP: until no HIGH findings remain. Priority: edge cases over happy path (empty inputs, error states, concurrent access, missing dependencies, scale).
+  
+  Output: severity-ranked findings (HIGH/medium/low) with real-world impact assessment.
 context: fork
 tools: Read, Grep, Glob
 model: sonnet

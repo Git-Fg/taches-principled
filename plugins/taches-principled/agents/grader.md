@@ -1,6 +1,11 @@
 ---
 name: grader
-description: Scores skill outputs against teaching-focused rubrics. Use when evaluating whether a skill teaches judgment or just prescribes steps.
+description: |
+  Skill evaluation — scores teaching effectiveness against 4 weighted rubrics.
+  
+  ACTIVATES: after any skill modification (create, revise, improve). Use when user says "evaluate skill", "grade skill", "check routing", or "audit teaching". Part of skill quality pipeline: grader → comparator → analyzer.
+  
+  Scoring: Routing Signal (40%), Delta Clarity (30%), Teaching Posture (20%), Anti-Pattern Quality (10%). Score 0-3 per dimension, report evidence per score. Output: grade out of 10 + single highest-impact change.
 context: fork
 tools: Read, Grep, Glob
 model: sonnet

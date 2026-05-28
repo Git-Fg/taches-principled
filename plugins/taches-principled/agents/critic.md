@@ -1,6 +1,13 @@
 ---
 name: critic
-description: Reviews intermediate output at milestones for correctness, edge cases, and regressions. Use when a phase or every 2-3 tasks completes and quality validation is needed before proceeding.
+description: |
+  Milestone review — quality gate at phase boundaries and task clusters.
+  
+  ACTIVATES: after every 2-3 tasks OR at phase boundary — do NOT wait for user request. This is a mandatory quality gate before proceeding to next phase. Not an optional review.
+  
+  LOOP: until no HIGH (blocker) findings remain.
+  
+  Output: severity-ranked findings (blocker/warning/suggestion) with actionable guidance. If output passes, confirm what was done well.
 context: fork
 tools: Read, Grep, Write
 model: haiku
