@@ -31,7 +31,7 @@ pattern_count = sum(transcript.count(f'"tool": "{t}"') for t in tool_patterns)
 if pattern_count >= 6 and not has_skill_load and tool_count >= 8:
     # Essential: invoke skills before complexity compounds
     print(json.dumps({
-        "systemMessage": "Essential: If you find yourself repeating complex workflows without loading skills, stop and invoke them immediately. Do not wait for complexity to build. When patterns repeat, a skill can encode the method — load it without hesitation and use it aggressively."
+        "systemMessage": "Essential: If you find yourself repeating complex workflows without loading skills, subagents, or other native tools, stop and invoke them immediately. Do not wait for complexity to build. When patterns repeat, capabilities can encode the method — deploy them without hesitation and use them aggressively."
     }))
     sys.exit(0)
 
