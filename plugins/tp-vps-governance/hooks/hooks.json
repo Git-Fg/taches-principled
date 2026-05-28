@@ -1,0 +1,12 @@
+{
+  "hooks": [
+    {
+      "event": "SessionStart",
+      "matcher": "*",
+      "command": {
+        "command": "python3 hooks/session_start.py",
+        "reason": "Check for rules-manifest.yaml and suggest /rule-propagator init if missing"
+      }
+    }
+  ]
+}

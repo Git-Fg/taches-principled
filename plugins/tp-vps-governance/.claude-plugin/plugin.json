@@ -1,0 +1,21 @@
+{
+  "name": "tp-vps-governance",
+  "displayName": "TP VPS Governance",
+  "version": "0.1.0",
+  "description": "VPS operator toolkit for Claude Code headless usage — config auditing, rule propagation, and memory management.",
+  "author": {
+    "name": "Felix",
+    "email": "felix@example.com"
+  },
+  "homepage": "https://github.com/Git-Fg/taches-principled",
+  "repository": "https://github.com/Git-Fg/taches-principled",
+  "license": "MIT",
+  "keywords": [
+    "taches-principled",
+    "claude-code",
+    "vps",
+    "headless",
+    "governance",
+    "rules"
+  ]
+}
