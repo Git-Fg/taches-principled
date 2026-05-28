@@ -50,6 +50,15 @@ This marketplace is designed for a **costly, highly-capable main agent** orchest
 
 **The rule:** If a task takes more than 5 minutes of inline work or touches more than 2 files, spawn a subagent for it (empirical heuristic — tuned to the point where coordination overhead costs less than context consumption). Never burn expensive main-agent context on work a cheap subagent can do.
 
+### Subagent Spawn as Default
+
+Skills involving exploration, implementation, reflection, brainstorm, or debate MUST enforce subagent spawning in their decision routers. Use strong language (ALWAYS, MUST) for spawn directives, not soft language (consider, prefer).
+
+**Pattern:** "ALWAYS spawn a [role] subagent for [task type]"
+**Location:** Decision router, at the point where spawn/inline decision is made
+
+This compensates for AI tendency to default to inline execution for perceived simplicity.
+
 ### Transformer Mandate
 
 A system cannot transform itself — this is a protocol principle, not a capability limitation:
@@ -68,6 +77,7 @@ This principle applies to decision-making workflows; execution autonomy is separ
 - "ALWAYS verify git availability before spawning git-dependent subagents"
 - "NEVER hardcode file paths in skill bodies"
 - "MUST use `{baseDir}` for skill-internal file references"
+- "ALWAYS spawn a [role] subagent for exploration/research/implementation/critique" — spawn directives to counter inline-execution bias
 
 **Soft language** — Heuristics and guidance:
 - "Consider using parallel subagents for exploration"
