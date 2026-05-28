@@ -110,23 +110,79 @@ Six standalone plugins, each independently installable. Each extends the core wi
 
 ### Prerequisites
 
-- Claude Code with plugin support
-- Verify with `/version`
+- Claude Code with plugin support (`claude --version` >= 2.1)
+- Verify with `claude --version`
 
-### Marketplace (recommended)
+### Full Marketplace Setup
+
+Install the marketplace and all plugins in one go:
 
 ```bash
-/plugin marketplace add Git-Fg/taches-principled
-/plugin install taches-principled
+# Add the marketplace
+claude plugin marketplace add anthropics/claude-plugins-official
+claude plugin marketplace add Git-Fg/taches-principled
+
+# Install all plugins
+claude plugin install claude-md-management
+claude plugin install code-simplifier
+claude plugin install typescript-lsp
+claude plugin install taches-principled
+claude plugin install tp-ddd
+claude plugin install tp-fpf
+claude plugin install tp-git
+claude plugin install tp-sadd
+claude plugin install tp-tdd
 ```
 
-### Manual
+### Individual Plugin Installation
+
+Install only the plugins you need:
+
+```bash
+# Core plugin (required)
+claude plugin install taches-principled
+
+# Optional plugins
+claude plugin install tp-ddd     # Domain-driven design
+claude plugin install tp-fpf     # First principles reasoning
+claude plugin install tp-git     # Git workflow automation
+claude plugin install tp-sadd   # Structured agent-driven development
+claude plugin install tp-tdd    # Test-driven development
+```
+
+### Reinstall / Reset
+
+To fully reinstall from scratch:
+
+```bash
+# Uninstall all plugins
+claude plugin uninstall claude-md-management code-simplifier typescript-lsp
+claude plugin uninstall taches-principled tp-ddd tp-fpf tp-git tp-sadd tp-tdd
+
+# Remove marketplaces
+claude plugin marketplace remove claude-plugins-official
+claude plugin marketplace remove taches-principled
+
+# Re-add and reinstall (from Full Marketplace Setup above)
+```
+
+### Plugin Management Commands
+
+```bash
+claude plugins list                    # Show installed plugins
+claude plugin details <name>           # Show plugin details and token cost
+claude plugin uninstall <name>        # Remove a plugin
+claude plugin marketplace list         # Show configured marketplaces
+claude plugin marketplace remove <name> # Remove a marketplace
+claude plugin prune                    # Clean up unused dependencies
+```
+
+### Manual (without marketplace)
 
 ```bash
 cp -r plugins/taches-principled/skills/* ~/.claude/skills/
 cp -r plugins/taches-principled/commands/* ~/.claude/commands/
 cp -r plugins/taches-principled/agents/* ~/.claude/agents/
-ls ~/.claude/skills/
 ```
 
 Run from repo root after clone, or from extracted release directory.
