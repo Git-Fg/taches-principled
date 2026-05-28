@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 hooks/session_start.py",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session_start.py",
             "reason": "Surface lightweight coaching at session start"
           }
         ]
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 hooks/stop_coach.py",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stop_coach.py",
             "reason": "End-of-turn coaching based on observed patterns"
           }
         ]
@@ -30,7 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 hooks/compact_insight.py",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/compact_insight.py",
             "reason": "Post-compaction coaching before context pressure"
           }
         ]
