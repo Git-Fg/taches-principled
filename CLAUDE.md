@@ -50,6 +50,50 @@ This marketplace is designed for a **costly, highly-capable main agent** orchest
 
 **The rule:** If a task takes more than 5 minutes of inline work or touches more than 2 files, spawn a subagent for it (empirical heuristic — tuned to the point where coordination overhead costs less than context consumption). Never burn expensive main-agent context on work a cheap subagent can do.
 
+### Subagent-First Execution Contract
+
+**Default to subagents. Inline execution is the exception, not the norm.**
+
+This contract inverts the usual framing. Most skills treat subagent spawning as an optional optimization ("spawn if the task is big"). That framing fails because Claude's default mode is to execute inline — it requires less cognitive effort and activates automatically. To override this default, the skill must make subagent spawning the path of least resistance.
+
+**The contract:**
+
+| Work Type | Default Mode | Exception (inline allowed) |
+|-----------|-------------|---------------------------|
+| Exploration | Spawn explorer subagent(s) | Directory listing of <5 files |
+| Implementation | Spawn implementer subagent(s) | 1-file edit with <10 lines |
+| Research | Spawn researcher subagent(s) | Single web search query |
+| Verification | Spawn verification subagent(s) | Running a single test command |
+| Critique/Review | Spawn critic subagent(s) | Glance-check of trivial output |
+| Brainstorm/Ideate | Spawn ideation subagent(s) | Never — always parallel |
+| Debate/Compare | Spawn competing subagent(s) | Never — always parallel |
+| Reflection | Spawn self-review + self-critic subagents | Never — always after artifact |
+
+**Why this works:** The skill body states the default mode as a standing instruction, not a conditional recommendation. Claude reads "Spawn a researcher subagent to investigate" as the intended path, not "Consider spawning if the task seems large" as a suggestion it can skip.
+
+**Minimal spawn instruction pattern (copy-paste into skill bodies):**
+
+```
+## Execution Mode
+
+**Default: subagent delegation.** For [exploration/implementation/research/etc.], 
+spawn a [role] subagent with the task scope below. The main agent synthesizes 
+results; it never performs the work inline.
+
+**Spawn pattern:**
+- Scope: [specific files/questions to address]
+- Role: [explorer/implementer/researcher/critic/etc.]
+- Model: [haiku/sonnet based on complexity]
+- Output: [what the subagent must return]
+
+After subagent returns: synthesize findings, then spawn follow-up subagents 
+for verification and critique. Loop until no HIGH findings.
+```
+
+**Anti-pattern:** "If the task is complex, consider using subagents." This is optional language — Claude's default mode wins. Use declarative language: "Spawn subagents for [task type]."
+
+**The 5-minute/2-files heuristic is dead.** Replace it with: **"If the skill loaded, the work is non-trivial by definition — spawn subagents."** The skill exists precisely because the task exceeds trivial inline execution. Trust the skill's own existence as the signal.
+
 ### Transformer Mandate
 
 A system cannot transform itself — this is a protocol principle, not a capability limitation:
@@ -111,6 +155,7 @@ When an agent claims to write findings to disk, it needs the Write tool. When it
 - **Specific phrases**: 5-10 triggers, no generic words ("improve" matches everything)
 - **CONTRAST sections**: Overlapping domains need explicit disambiguation
 - **Front-load in first 200 chars**: Truncation happens from the end
+- **Subagent signal**: Descriptions of skills that delegate should mention "spawn subagents" or "fan out" — this signals to Claude that loading this skill means orchestration, not inline execution
 
 **What kills routing:**
 - Technical jargon in description/when_to_use ("fishbone", "CQRS", "ADI")
@@ -320,6 +365,7 @@ Skills are auto-invoked by default by Claude Code — a cold-start instance disc
 - **Progressive disclosure**: The loading pattern that shows policy upfront and mechanism on demand (frontmatter → body → references); the official tactic for staying under the 500-line guideline
 - **Delta principle**: Only document what differs from default behavior
 - **Skill anatomy**: Frontmatter and body structure
+- **Subagent-first authoring**: Every skill that explores, implements, researches, or creates must declare subagent spawning as its default execution mode in the body — not as an optional tip
 - **Anti-patterns**: What to avoid in skill design
 - **Cross-skill references**: Never cite other skills' files with paths — use natural language: "see the X.md file in the create-plans skill's references"
 - **Shared references anti-pattern**: Don't create `references/` files expecting cross-skill reuse — paths break on plugin install, content must be inlined or documented here
@@ -344,6 +390,7 @@ Commands are trigger accelerators, not method carriers. Their value is in the fi
 - Teach Claude what mental frame to reach for when a user types `/something`
 - Provide a memorable trigger phrase shorter than the skill description
 - Add semantic framing the skill can't provide without being bloated
+- **Trigger the skill + subagent chain**: A command named `/debug` should make Claude load the `diagnose` skill AND immediately spawn subagents for investigation — the command is the spark, the skill provides the method, subagents do the work
 
 **What commands don't need to do:**
 - Carry unique logic the skill doesn't have
@@ -653,6 +700,8 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] README synced to all docs/ locations if marketplace docs are present
 - [ ] Skill changes backed by eval evidence (tested against real routing scenarios, not hypothetical)
 - [ ] Skill changes describe actual problems encountered (not theoretical improvements)
+- [ ] **Subagent spawn check**: Every skill that explores, implements, researches, or creates has explicit spawn instructions in its body — not optional tips, not conditional recommendations. The default execution mode is subagent delegation.
+- [ ] **Critique loop check**: Every skill that produces artifacts ends with "spawn self-review and self-critic subagents, loop until no HIGH findings" or equivalent
 - [ ] **Skill budget check**: Run `/context` and `/doctor` — verify no skills dropped or descriptions truncated
 - [ ] **Description length check**: All descriptions ≤150 chars, front-loaded triggers in first 50 chars
 - [ ] **Routing validation**: Tested 15-20 real queries with held-out cases (20%)
@@ -866,6 +915,8 @@ This applies to all external plugins and marketplaces, not just within this proj
 | **Progressive disclosure** | Loading pattern: frontmatter → body → references (shows policy first, mechanism on demand) |
 | **Native capabilities** | Built-in Claude Code actions: spawn subagent, create task list, use web search, read/write files, use Bash |
 | **Transformer Mandate** | Protocol principle: AI generates and scores, human makes final structural decisions |
+| **Subagent-first** | Design principle where subagent spawning is the default execution mode, inline work is the exception |
+| **Critique loop** | Pattern of spawning review subagents after artifact creation, iterating until no HIGH findings remain |
 | **Skill budget** | Claude Code's 1% context limit for skill metadata; exceeded skills are silently dropped |
 | **Front-load** | Placing trigger keywords at the start of descriptions so they survive truncation from the end |
 | **CONTRAST section** | Explicit negative cases in descriptions to prevent false positive routing |
