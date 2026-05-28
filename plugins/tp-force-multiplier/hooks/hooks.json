@@ -1,28 +1,40 @@
 {
-  "hooks": [
-    {
-      "event": "SessionStart",
-      "matcher": "*",
-      "command": {
-        "command": "python3 hooks/session_start.py",
-        "reason": "Surface lightweight coaching at session start"
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_DIR}/hooks/session_start.py",
+            "reason": "Surface lightweight coaching at session start"
+          }
+        ]
       }
-    },
-    {
-      "event": "Stop",
-      "matcher": "*",
-      "command": {
-        "command": "python3 hooks/stop_coach.py",
-        "reason": "End-of-turn coaching based on observed patterns"
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_DIR}/hooks/stop_coach.py",
+            "reason": "End-of-turn coaching based on observed patterns"
+          }
+        ]
       }
-    },
-    {
-      "event": "PostCompact",
-      "matcher": "*",
-      "command": {
-        "command": "python3 hooks/compact_insight.py",
-        "reason": "Post-compaction coaching before context pressure"
+    ],
+    "PostCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_DIR}/hooks/compact_insight.py",
+            "reason": "Post-compaction coaching before context pressure"
+          }
+        ]
       }
-    }
-  ]
+    ]
+  }
 }

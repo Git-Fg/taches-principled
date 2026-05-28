@@ -22,6 +22,7 @@ All notable changes are documented here.
 - **implement-task**: Trimmed Pattern B/C detailed walkthroughs (150 lines removed) — step-by-step scripts condensed to policy
 
 ### Fixed
+- **tp-force-multiplier hooks.json**: Fixed format from array-based to nested object structure per Claude Code hooks reference — changed `{"hooks": [{event:..., ...}]}` to `{"hooks": {"EventName": [{matcher:..., hooks:[...]}]}}`
 - **Routing BLOCKERs** (3): Removed overlapping trigger phrases causing routing conflicts
   - refine-task: removed "plan this out", "/plan", "make this actionable", "break this down into steps"
   - execute-plans: removed "execute" from description and when_to_use
