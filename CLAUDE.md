@@ -212,6 +212,23 @@ Four distinct artifacts with different loading behaviors and token costs:
 
 **Key insight:** Commands preferred over skills for token efficiency — skills populate context every session, commands only load when invoked.
 
+## Artifact Systems
+
+This marketplace uses two distinct artifact systems with orthogonal purposes:
+
+**.principled/** — General artifact container
+- `plans/` — Active plans, briefs, roadmaps
+- `scratch/` — Debug sessions, temp artifacts
+- `memory/` — Cross-session handoffs
+- `attic/` — Archived completed work
+
+**.fpf/** — Structured decision system (tp-fpf plugin)
+- Hypothesis lifecycle with evidence validation
+- L0 (raw) → L1 (verified) → L2 (validated) progression
+- R_eff scoring and trust auditing
+
+**Relationship:** FPF and Principled are orthogonal. FPF answers "which hypothesis should we trust?" Principled answers "where did we put that artifact?" They can reference each other but don't compete. FPF decisions may inform plans; plans may cite FPF decisions — but both systems remain independent.
+
 ---
 
 ## Version Management

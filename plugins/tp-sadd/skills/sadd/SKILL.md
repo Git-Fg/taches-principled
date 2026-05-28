@@ -26,10 +26,11 @@ Generate 3+ solutions in parallel with meta-judge evaluation and adaptive synthe
 ## Process
 
 **Phase 1: Parallel Generation + Meta-Judge**
-Spawn 4 agents in parallel: meta-judge (generates evaluation YAML) + 3 generators producing independent solutions.
+ALWAYS spawn meta-judge first to generate evaluation rubric before generator subagents launch.
+ALWAYS spawn 3 generator subagents in parallel after meta-judge delivers rubric.
 
 **Phase 2: Multi-Judge Evaluation**
-3 judges in parallel evaluate all solutions against meta-judge spec. Each produces comparative analysis and vote.
+ALWAYS spawn 3 judge subagents in parallel for independent scoring.
 
 **Phase 3: Adaptive Strategy**
 | Condition | Strategy |
@@ -47,7 +48,7 @@ Output: Final solution with `.a.md`, `.b.md`, `.c.md` candidates preserved.
 
 # Mode: EXECUTE
 
-Spawn fresh subagents with isolated context. Three modes:
+ALWAYS spawn fresh subagents with isolated context for each implementation attempt.
 
 **SPAWN:** Simple spawn with auto model selection, CoT prefix, self-critique suffix.
 
@@ -71,7 +72,7 @@ Evaluate work using meta-judge then judge subagents. Three modes:
 
 **SINGLE:** Meta-judge generates spec, one judge evaluates.
 
-**DEBATE:** 3 judges in parallel, consensus check after each round, max 3 rounds.
+**DEBATE:** ALWAYS spawn 3 judge subagents in parallel, consensus check after each round, max 3 rounds.
 
 **MULTI-ROUND:** Independent analysis → debate rounds → consensus or disagreement report.
 
@@ -110,13 +111,14 @@ Tree of Thoughts: explore solution space with systematic pruning and expansion.
 
 ## Process
 
-**Phase 1: Exploration** — 3 agents, 6 proposals each (high-probability + creative).
+**Phase 1: Exploration**
+ALWAYS spawn 3 exploration subagents for divergent coverage.
 
-**Phase 2: Pruning** — Meta-judge generates spec, 3 judges score and vote for top 3.
+**Phase 2: Pruning** — Meta-judge generates spec, ALWAYS spawn 3 judge subagents to score and vote for top 3.
 
-**Phase 3: Expansion** — 3 agents expand selected proposals into full solutions.
+**Phase 3: Expansion** — ALWAYS spawn 3 agent subagents to expand selected proposals into full solutions.
 
-**Phase 4: Evaluation** — 2nd meta-judge + 3 judges assess solutions.
+**Phase 4: Evaluation** — ALWAYS spawn 2nd meta-judge + 3 judge subagents to assess solutions.
 
 **Phase 5: Adaptive Strategy** — SELECT_AND_POLISH (unanimous), REDESIGN (all < 3.0), FULL_SYNTHESIS (split).
 

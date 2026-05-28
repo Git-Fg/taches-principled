@@ -48,6 +48,9 @@ Create well-formatted commits with conventional messages and publish pull reques
 3. **Title:** Emoji + type + scope: `✨(scope): description`
 4. **Create:** Draft PR by default, convert to ready when complete
 
+**Spawn Directives:**
+- **ALWAYS spawn a subagent to run pre-flight checks (lint, type-check) in parallel while main agent prepares commit message**
+
 ---
 
 # Mode: REVIEW
@@ -65,6 +68,9 @@ Post line-specific comments on PR diffs. Supports single comments and batched mu
 ## Batch Review
 
 Group related comments into one review to reduce notification noise. Review events: COMMENT, APPROVE, REQUEST_CHANGES.
+
+**Spawn Directives:**
+- **ALWAYS fan out subagents to review each changed file in parallel — main agent synthesizes findings**
 
 ---
 
@@ -89,6 +95,9 @@ mkdir -p ./specs/issues
 4. Save as `*.specs.md`
 
 Bug fixes: emphasize test plan and reproduction. Features: emphasize technical approach.
+
+**Spawn Directives:**
+- **ALWAYS spawn parallel subagents when loading multiple issues — one subagent per issue**
 
 ---
 
@@ -119,6 +128,9 @@ git worktree remove <path>                    # remove
 ```
 
 Use worktrees instead of stashing when switching contexts. One worktree per active branch.
+
+**Spawn Directives:**
+- **ALWAYS spawn subagents for parallel worktree setup or multi-worktree operations**
 
 ---
 
