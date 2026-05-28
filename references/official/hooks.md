@@ -58,6 +58,13 @@ Hooks are user-defined shell commands, HTTP endpoints, or LLM prompts that execu
 
 Plugins can define hooks in `hooks/hooks.json` within the plugin directory. These hooks fire when the plugin is enabled.
 
+**Plugin-relative paths:** Plugin hook commands should use `${CLAUDE_PLUGIN_ROOT}` to reference files within the plugin directory. This environment variable exports the plugin's root directory path.
+
+| Variable | Scope | Use Case |
+|---|---|---|
+| `CLAUDE_PLUGIN_ROOT` | Plugin hooks | Plugin-internal scripts and resources |
+| `CLAUDE_PROJECT_DIR` | Project hooks | Project-level hook scripts |
+
 Example structure:
 ```json
 {
@@ -66,7 +73,7 @@ Example structure:
       "event": "SubagentStop",
       "matcher": "*",
       "command": {
-        "command": "python3 hooks/notify.py",
+        "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/notify.py",
         "reason": "Log subagent completions"
       }
     }
@@ -75,7 +82,6 @@ Example structure:
 ```
 
 Supported events for plugin hooks: SessionStart, SubagentStart, SubagentStop, Stop, PostCompact.
-| Skill or agent frontmatter | While component active | Yes |
 
 ## Matcher Patterns
 
