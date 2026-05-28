@@ -86,7 +86,7 @@ Systematically add test coverage for existing local changes. For when code alrea
 1. **Preparation** — Read project testing conventions, identify test command and coverage tools, run full suite for baseline
 2. **Analysis** — Identify changed files via git status (uncommitted) or latest commit if everything committed. Filter non-code files. Assess complexity.
 3. **Direct Writing** (simple single-file) — Read changed file, review existing test patterns for style and conventions, create tests for all identified cases, run and iterate until passing
-4. **Agent Dispatch** (complex multi-file) — Launch one analysis agent per file to identify test cases, then one developer agent per file to create tests, then one verification agent per file to confirm coverage. Coordinate through shared test case lists.
+4. **Agent Dispatch** (complex multi-file) — Spawn analysis subagents per file to identify test cases, then spawn developer subagents per file to create tests, then spawn verification subagents per file to confirm coverage. Coordinate through shared test case lists.
 
 ### Agent Templates
 
@@ -112,7 +112,7 @@ Fix the test, not the business logic — unless the logic itself contains a bug.
 
 1. **Preparation** — Read project conventions, identify test command, run full suite to establish baseline, parse output for all failing files
 2. **Analysis** — For each failing file, determine cause: test expectations outdated (update assertions), test setup broken (fix mocks or fixtures), or business logic bug (rare — confirm before changing)
-3. **Fix** — Simple single-file: read the test, identify root cause, fix to match current behavior, run to verify, iterate until passing. Complex multi-file: dispatch one agent per failing file with context (why it broke), target (specific file), run command, and constraint to preserve test intent.
+3. **Fix** — Simple single-file: read the test, identify root cause, fix to match current behavior, run to verify, iterate until passing. Complex multi-file: spawn fix-agent subagents per failing file with context (why it broke), target (specific file), run command, and constraint to preserve test intent.
 4. **Verification** — Run full suite, iterate on remaining failures, verify coverage maintained
 
 ### Agent Template

@@ -7,4 +7,4 @@ argument-hint: [topic or area]
 
 $ARGUMENTS
 
-Capture a handoff document covering: scope, changes made, key decisions, remaining steps with file paths, blockers, and critical context. Prioritize zero information loss for a cold-start reader. If a recent archive exists in .principled/attic/, include the archive reference and top learnings.
+Capture a handoff document covering: scope, changes made, key decisions, remaining steps with file paths, blockers, and critical context. Prioritize zero information loss for a cold-start reader. Fan out subagents to capture scope, changes, decisions, and blockers in parallel, then spawn a synthesizer subagent to compose the handoff document. If a recent archive exists in .principled/attic/, include the archive reference and top learnings.

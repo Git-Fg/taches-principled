@@ -50,15 +50,6 @@ This marketplace is designed for a **costly, highly-capable main agent** orchest
 
 **The rule:** If a task takes more than 5 minutes of inline work or touches more than 2 files, spawn a subagent for it (empirical heuristic — tuned to the point where coordination overhead costs less than context consumption). Never burn expensive main-agent context on work a cheap subagent can do.
 
-### Subagent Spawn as Default
-
-Skills involving exploration, implementation, reflection, brainstorm, or debate MUST enforce subagent spawning in their decision routers. Use strong language (ALWAYS, MUST) for spawn directives, not soft language (consider, prefer).
-
-**Pattern:** "ALWAYS spawn a [role] subagent for [task type]"
-**Location:** Decision router, at the point where spawn/inline decision is made
-
-This compensates for AI tendency to default to inline execution for perceived simplicity.
-
 ### Transformer Mandate
 
 A system cannot transform itself — this is a protocol principle, not a capability limitation:
@@ -77,7 +68,6 @@ This principle applies to decision-making workflows; execution autonomy is separ
 - "ALWAYS verify git availability before spawning git-dependent subagents"
 - "NEVER hardcode file paths in skill bodies"
 - "MUST use `{baseDir}` for skill-internal file references"
-- "ALWAYS spawn a [role] subagent for exploration/research/implementation/critique" — spawn directives to counter inline-execution bias
 
 **Soft language** — Heuristics and guidance:
 - "Consider using parallel subagents for exploration"
@@ -114,7 +104,7 @@ When an agent claims to write findings to disk, it needs the Write tool. When it
 
 ### Skill Discovery Optimization
 
-**Claude under-triggers skills.** Research shows the model naturally under-invokes without explicit trigger phrases. This is the primary failure mode — not routing logic errors.
+**Claude under-triggers skills.** Research shows the model naturally under-invokes without explicit trigger phrases. This is the primary failure mode — not routing logic errors. The routing mechanism is pure LLM semantic reasoning: Claude reads the skill listing in its system prompt and matches user intent against descriptions using native language understanding. There is no algorithmic routing, no keyword matching, no embedding search.
 
 **Reliable triggering requires:**
 - **User vocabulary in frontmatter**: "find the root cause" beats "A3 analysis" — speak how users think
@@ -127,6 +117,7 @@ When an agent claims to write findings to disk, it needs the Write tool. When it
 - Single ambiguous words ("fix", "do", "handle")
 - Vague descriptions matching everything
 - Missing negative cases (what NOT to match)
+- Structured syntax ("ACTIVATES:", "LOOP:", "Output:") — breaks fuzzy semantic matching
 
 **Frontmatter vs Body — The Clear Distinction:**
 
@@ -212,22 +203,91 @@ Four distinct artifacts with different loading behaviors and token costs:
 
 **Key insight:** Commands preferred over skills for token efficiency — skills populate context every session, commands only load when invoked.
 
-## Artifact Systems
+---
 
-This marketplace uses two distinct artifact systems with orthogonal purposes:
+## Skill Budget Management
 
-**.principled/** — General artifact container
-- `plans/` — Active plans, briefs, roadmaps
-- `scratch/` — Debug sessions, temp artifacts
-- `memory/` — Cross-session handoffs
-- `attic/` — Archived completed work
+Claude Code v2.1.129+ enforces a skill listing budget that silently drops skills when exceeded. This is the single most important operational constraint for this marketplace.
 
-**.fpf/** — Structured decision system (tp-fpf plugin)
-- Hypothesis lifecycle with evidence validation
-- L0 (raw) → L1 (verified) → L2 (validated) progression
-- R_eff scoring and trust auditing
+### The Budget Mechanics
 
-**Relationship:** FPF and Principled are orthogonal. FPF answers "which hypothesis should we trust?" Principled answers "where did we put that artifact?" They can reference each other but don't compete. FPF decisions may inform plans; plans may cite FPF decisions — but both systems remain independent.
+Two settings control skill visibility:
+
+| Setting | Type | Default | Purpose |
+|---------|------|---------|---------|
+| `skillListingBudgetFraction` | decimal `0 < x ≤ 1` | `0.01` (1%) | Caps total skill metadata at this fraction of context window |
+| `skillListingMaxDescChars` | positive integer | `1536` | Per-skill description character cap |
+
+**How they interact:**
+1. Individual descriptions longer than `skillListingMaxDescChars` are truncated from the END
+2. Total listing checked against `skillListingBudgetFraction`
+3. If still over budget, lowest-priority (least-used) skills lose descriptions ENTIRELY — not truncated, dropped
+
+**Budget math by model:**
+
+| Model | Context | 1% Default | 2% (Doubled) | Per-skill cost |
+|-------|---------|-----------|-------------|----------------|
+| Sonnet 4.6 (200K) | 200,000 | ~2,000 tokens | ~4,000 tokens | ~75-150 tokens |
+| Sonnet 4.6 [1M] | 1,000,000 | ~10,000 tokens | ~20,000 tokens | ~75-150 tokens |
+| Opus 4.7 (1M) | 1,000,000 | ~10,000 tokens | ~20,000 tokens | ~75-150 tokens |
+
+**Our ecosystem:**
+- taches-principled hub: ~15 skills + ~8 agents = ~23 items
+- tp-sadd: 3 agents
+- tp-ddd, tp-fpf, tp-tdd: ~3 skills each
+- **Total: ~30+ items in listing**
+- At 75-150 tokens/item: **2,250-4,500 tokens = OVER BUDGET on 200K models**
+
+**⚠️ CRITICAL:** Skills will be SILENTLY DROPPED. The warning only fires when significantly over. Run `/context` at session start to check the Skills: line. Run `/doctor` to see which skills are affected.
+
+### Mitigation Strategies
+
+**Option 1: Disable unused skills (free)**
+- Run `/skills` to toggle individual skills off
+- Move project-specific skills to `.claude/skills/` (project-scoped) instead of `~/.claude/skills/` (user-scoped)
+- Project skills only count when inside that project
+
+**Option 2: Raise budget in settings.json (costly)**
+```json
+{
+  "skillListingBudgetFraction": 0.02,
+  "skillListingMaxDescChars": 2048
+}
+```
+- Every increment costs tokens on EVERY session
+- 0.02 on 200K = ~4,000 tokens per session permanently reserved
+- Only recommended for 1M context models or usage-based billing
+- File: `~/.claude/settings.json` or project `.claude/settings.json`
+
+**Option 3: Compress descriptions (free, sustainable) — PREFERRED**
+- Target: ≤150 characters per description for shipped skills
+- Hard ceiling: 650 characters (skills dropped beyond this)
+- Front-load trigger keywords in first 50 characters
+- Move all detail to SKILL.md body
+- Use `name-only` in `skillOverrides` for low-priority skills
+
+**Description audit command:**
+```bash
+find plugins -name "SKILL.md" | xargs awk '/^description:/{print length($0), FILENAME}' | sort -rn
+```
+
+**Capacity by description length (empirical):**
+
+| Description Length | Skills That Fit |
+|-------------------|----------------|
+| 263 chars (observed avg) | ~42 skills |
+| 200 chars | ~52 skills |
+| 150 chars | ~60 skills |
+| 130 chars | ~67 skills |
+| 100 chars | ~75 skills |
+
+### Before Any Commit — Budget Check
+
+- [ ] Run `/context` in fresh session — verify Skills: line stays under budget fraction
+- [ ] Run `/doctor` — confirm no skills are being dropped or truncated
+- [ ] Audit description lengths — all descriptions ≤150 chars
+- [ ] Verify front-loaded triggers — first 50 chars contain primary keywords
+- [ ] Check `skillOverrides` — low-priority skills set to `name-only` if needed
 
 ---
 
@@ -593,6 +653,9 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] README synced to all docs/ locations if marketplace docs are present
 - [ ] Skill changes backed by eval evidence (tested against real routing scenarios, not hypothetical)
 - [ ] Skill changes describe actual problems encountered (not theoretical improvements)
+- [ ] **Skill budget check**: Run `/context` and `/doctor` — verify no skills dropped or descriptions truncated
+- [ ] **Description length check**: All descriptions ≤150 chars, front-loaded triggers in first 50 chars
+- [ ] **Routing validation**: Tested 15-20 real queries with held-out cases (20%)
 
 ### Skill Quality Gate
 
@@ -645,7 +708,7 @@ When referencing subagent spawning in skills, use the canonical form: **"spawn a
 **Why "spawn" over "dispatch/launch":**
 - "Spawn" is the canonical verb for subagent creation in Claude Code
 - "dispatch" and "launch" are non-canonical — avoid them in new skill documentation; existing uses are tolerable but should be migrated over time
-- Always pair with role name: "spawn a researcher subagent", "spawn a critic subagent"
+- Always pair with role name: "spawn a researcher subagent", "spawn a critic subagent", "spawn a verification subagent"
 
 **When citing subagents in natural language:**
 - ✅ "spawn a critic subagent" — explicit spawn verb + role
@@ -803,6 +866,10 @@ This applies to all external plugins and marketplaces, not just within this proj
 | **Progressive disclosure** | Loading pattern: frontmatter → body → references (shows policy first, mechanism on demand) |
 | **Native capabilities** | Built-in Claude Code actions: spawn subagent, create task list, use web search, read/write files, use Bash |
 | **Transformer Mandate** | Protocol principle: AI generates and scores, human makes final structural decisions |
+| **Skill budget** | Claude Code's 1% context limit for skill metadata; exceeded skills are silently dropped |
+| **Front-load** | Placing trigger keywords at the start of descriptions so they survive truncation from the end |
+| **CONTRAST section** | Explicit negative cases in descriptions to prevent false positive routing |
+| **Under-triggering** | Claude's tendency to not invoke skills without explicit trigger phrases — primary routing failure mode |
 
 ---
 
@@ -825,5 +892,5 @@ This applies to all external plugins and marketplaces, not just within this proj
 - [Claude Code Commands Reference](https://code.claude.com/docs/en/commands)
 - [Plugin Submission Guide](https://claude.com/docs/plugins/submit)
 - [context-engineering-kit](https://github.com/NeoLabHQ/context-engineering-kit) — foundational influence on the token economy model and subagent orchestration patterns
-
-**Official documentation** is cached locally in `references/official/` for offline access and consistency across team members.
+- [ClaudeFast — Hidden Skill Budget Setting](https://claudefa.st/blog/guide/mechanics/skill-listing-budget) — skillListingBudgetFraction mechanics (v2.1.129+)
+- [GitHub Gist — Skill Budget Research](https://gist.github.com/alexey-pelykh/faa3c304f731d6a962efc5fa2a43abe1) — empirical budget calculation and compression strategies

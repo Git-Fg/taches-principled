@@ -7,4 +7,4 @@ argument-hint: [topic or problem]
 
 $ARGUMENTS
 
-Generate 4-6 distinct creative directions for the topic before evaluating any single one. Use web search for reference patterns and inspiration. Record each option in enough detail that any direction can be pursued in a fresh session, then converge after breadth is established.
+Fan out generator subagents for each creative direction, use web search for reference patterns and inspiration, aggregate divergent outputs before synthesis. Generate 4-6 distinct options for the topic before evaluating any single one.
