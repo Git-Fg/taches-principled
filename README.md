@@ -186,6 +186,17 @@ cp -r plugins/taches-principled/agents/* ~/.claude/agents/
 
 Run from repo root after clone, or from extracted release directory.
 
+## Environment Variables
+
+These environment variables are available in hooks and custom configurations:
+
+| Variable | Purpose |
+|----------|---------|
+| `CLAUDE_PLUGIN_ROOT` | Plugin-relative paths (e.g., `${CLAUDE_PLUGIN_ROOT}/hooks/*.py`) |
+| `CLAUDE_PROJECT_DIR` | Project-relative paths (e.g., `${CLAUDE_PROJECT_DIR}/src`) |
+
+Use `CLAUDE_PLUGIN_ROOT` when referencing files inside the plugin itself. Use `CLAUDE_PROJECT_DIR` when referencing files in the user's project.
+
 ## Design Philosophy
 
 Skills in this plugin teach through principles, not procedures. Each skill focuses on what to decide and when to decide it — the how is adapted to your context.
