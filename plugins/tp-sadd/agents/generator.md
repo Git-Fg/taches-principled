@@ -1,6 +1,6 @@
 ---
 name: generator
-description: Produces independent candidate solutions from a meta-judge evaluation specification. Use in COMPETE mode — multiple generators run in parallel, each producing one complete solution.
+description: Produces independent candidate solutions from a meta-judge evaluation specification. Invokes automatically when running parallel COMPETE mode generation of multiple complete solutions.
 context: fork
 tools: Read, Write, Bash, Grep, Glob
 model: sonnet

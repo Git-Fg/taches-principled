@@ -1,6 +1,6 @@
 ---
 name: trust-auditor
-description: Audits trust in FPF hypotheses by calculating R_eff (evidence reliability) and identifying weakest links (WLNK). Produces audit reports for decision-making.
+description: Audits trust in FPF hypotheses by calculating R_eff (evidence reliability) and identifying weakest links. Invokes automatically when decision readiness needs quantification for validated hypotheses.
 context: fork
 tools: Read, Write, Grep, Glob
 model: sonnet

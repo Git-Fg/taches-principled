@@ -1,6 +1,6 @@
 ---
 name: hypothesis-generator
-description: Generates competing hypotheses from first principles for the FPF PROPOSE cycle. Produces both high-probability and low-probability alternatives with explicit assumptions.
+description: Generates competing hypotheses from first principles for the FPF PROPOSE cycle. Invokes automatically when exploring multiple explanations with explicit assumptions for a problem.
 context: fork
 tools: Read, Write, Grep, Glob, Bash
 model: sonnet

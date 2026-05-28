@@ -1,6 +1,6 @@
 ---
 name: evidence-validator
-description: Validates evidence supporting or refuting FPF hypotheses. Cross-references with codebase and existing knowledge base. Promotes L1 hypotheses to L2 or marks invalid.
+description: Validates evidence supporting or refuting FPF hypotheses. Invokes automatically when cross-referencing with codebase and existing knowledge to promote L1 hypotheses to L2.
 context: fork
 tools: Read, Write, Grep, Glob, Bash
 model: sonnet

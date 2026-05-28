@@ -1,6 +1,6 @@
 ---
 name: debug-tracer
-description: Traces bugs backward through call stacks to find original triggers. Instruments code before failure points to capture cause context. Use in diagnose STACK-TRACE mode or whenever a bug has a long call chain.
+description: Traces bugs backward through call stacks to find original triggers. Invokes automatically when debugging complex call chains or using diagnose STACK-TRACE mode.
 context: fork
 tools: Read, Write, Edit, Grep, Glob, Bash
 model: sonnet

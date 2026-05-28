@@ -1,6 +1,6 @@
 ---
 name: judge
-description: Evaluates candidate solutions against a meta-judge YAML specification. Use in COMPETE/JUDGE/VERIFY modes — multiple judges run in parallel, each producing independent scores and comparative analysis.
+description: Evaluates candidate solutions against a meta-judge YAML specification. Invokes automatically when scoring solutions and producing comparative analysis in COMPETE/JUDGE/VERIFY modes.
 context: fork
 tools: Read, Write, Bash, Grep, Glob
 model: sonnet
