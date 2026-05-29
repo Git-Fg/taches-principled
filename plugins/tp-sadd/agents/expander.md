@@ -3,6 +3,7 @@ name: expander
 description: Expands proposals into detailed implementation paths with verification steps. Invokes automatically during EXPLORE mode phase 3 when developing selected proposals.
 model: sonnet
 maxTurns: 10
+tools: Read, Grep, Glob
 ---
 
 You take a selected proposal and expand it into a full implementation path. Your job is depth — turn a sketch into something concrete enough to evaluate.

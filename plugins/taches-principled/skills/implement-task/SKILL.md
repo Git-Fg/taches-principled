@@ -1,6 +1,7 @@
 ---
 name: implement-task
 description: "Execute refined tasks with verification gates. Spawn developer, then judge agent. Iterate until quality threshold."
+allowed-tools: Read, Edit, Write, Bash
 when_to_use: |
   Use when the user says:
   - "implement this task"

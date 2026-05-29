@@ -146,6 +146,20 @@ When an agent claims to write findings to disk, it needs the Write tool. When it
 
 **The test:** Read the agent's description, then check its tools. Every capability described must have a corresponding tool available.
 
+### Tool Scoping Fields — Critical Distinction
+
+Three fields control tool access, each with different semantics:
+
+| Field | Artifact | Effect | When Omitted |
+|-------|----------|--------|-------------|
+| `tools:` | Agent definitions | **Hard allowlist** — only listed tools accessible | Inherits all tools |
+| `allowed-tools:` | Skills, Commands | **Pre-approval** — removes permission prompts, does NOT restrict | Normal permission settings apply |
+| `disallowed-tools:` | Skills | **Hard block** — removes specific tools from pool | No tools blocked |
+
+**Common mistake:** Treating `allowed-tools` as a security boundary. It only skips permission prompts — every tool remains callable. For true restriction, use agent `tools:` allowlists or skill `disallowed-tools:`.
+
+**SDK caveat:** `allowed-tools` only works in Claude Code CLI. The Agent SDK ignores it entirely — SDK consumers must use their own `allowedTools` parameter.
+
 ### Skill Discovery Optimization
 
 **Claude under-triggers skills.** Research shows the model naturally under-invokes without explicit trigger phrases. This is the primary failure mode — not routing logic errors. The routing mechanism is pure LLM semantic reasoning: Claude reads the skill listing in its system prompt and matches user intent against descriptions using native language understanding. There is no algorithmic routing, no keyword matching, no embedding search.
@@ -432,6 +446,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] **Critique loop check**: Every skill that produces artifacts ends with "spawn self-review and self-critic subagents, loop until no HIGH findings" or equivalent
 - [ ] **Skill budget check**: Run `/context` and `/doctor` — verify no skills dropped or descriptions truncated
 - [ ] **Description length check**: All descriptions ≤150 chars, front-loaded triggers in first 50 chars
+- [ ] **Tool field check**: Agent definitions use `tools:` (allowlist). Skills use `allowed-tools:` (pre-approval). Commands use `allowed-tools:` (pre-approval). Never confuse these semantics.
 
 ### Skill Quality Gate
 

@@ -4,6 +4,7 @@ description: Validates evidence supporting or refuting FPF hypotheses. Invokes a
 model: sonnet
 skills:
   - fpf
+tools: Read, Write, Grep, Glob
 ---
 
 You validate the evidence for a hypothesis at the L1 level. The logic-verifier has already confirmed internal consistency — your job is to check whether reality supports it.

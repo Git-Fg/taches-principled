@@ -107,6 +107,26 @@ $ARGUMENTS
 Plain text outcome instruction (1-3 sentences, no markdown).
 ```
 
+### allowed-tools in Commands
+
+Commands use `allowed-tools` to pre-approve tools so Claude can use them without permission prompts. This is a UX feature, not a security boundary — unlisted tools remain callable per normal permission settings.
+
+**Format:**
+```yaml
+allowed-tools: Bash(git:*), Read            # Comma-separated
+allowed-tools: ["Read", "Write", "Bash"]    # YAML array
+allowed-tools: Bash(git:*), Bash(gh:*)      # Multiple Bash filters
+```
+
+**Bash command filters** — restrict which bash commands are pre-approved:
+- `Bash(git:*)` — only git commands auto-approved
+- `Bash(npm:*)` — only npm commands auto-approved
+- `Bash(*)` — all bash commands auto-approved
+
+**When omitted:** Tool permissions follow the conversation's normal settings.
+
+**Security note:** For true tool restriction, use skill `disallowed-tools:` or agent `tools:` allowlists instead. `allowed-tools` only removes friction, not access.
+
 ### Command vs Skill Precedence
 
 When a command and skill have the same name, the **skill takes precedence**. Commands are trigger accelerators; skills carry methodology.

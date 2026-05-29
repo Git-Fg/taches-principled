@@ -1,6 +1,7 @@
 ---
 name: config-auditor
 description: "Audit CLAUDE.md hierarchy for conflicts, duplications, and optimization opportunities on VPS instances."
+allowed-tools: Read, Glob, Grep, Edit
 when_to_use: |
   Use when the user says:
   - "audit config"

@@ -1,6 +1,7 @@
 ---
 name: refine
 description: "Improve code quality: simplify, critique with scoring, memorize learnings, polish prose."
+allowed-tools: Read, Edit, Write
 when_to_use: |
   Use when the user says "simplify", "reduce complexity", "review", "PR", "check my changes", "critique", "what could be better", "reflect", "capture this learning", "make this clearer", "write more concisely", "clean up text", or "improve the writing".
   IMMEDIATELY before merging or committing significant code changes (SIMPLIFY or REVIEW).

@@ -1,6 +1,7 @@
 ---
 name: rules-orchestration
 description: "Manage CLAUDE.md and rules — extract learnings, add rules, restructure, and review. Use when updating project conventions."
+allowed-tools: Read, Edit, Write, Bash, Grep
 when_to_use: |
   Use when the user says:
   - "update my rules"

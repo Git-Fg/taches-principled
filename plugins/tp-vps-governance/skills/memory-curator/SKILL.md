@@ -1,6 +1,7 @@
 ---
 name: memory-curator
 description: "Audit, deduplicate, and archive Claude Code memory files. Cleans auto-memory and agent-memory that accumulate on long-running VPS instances."
+allowed-tools: Read, Write, Glob, Bash
 when_to_use: |
   Use when the user says:
   - "audit memory"

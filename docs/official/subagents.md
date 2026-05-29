@@ -46,7 +46,7 @@ Only `name` and `description` are required. All other fields are optional.
 |-------|----------|------|-------------|---------|-------------|
 | `name` | Yes | string | Lowercase letters, hyphens only | — | Unique identifier. Hooks receive this as `agent_type`. Filename does not need to match. |
 | `description` | Yes | string | Natural language | — | When Claude should delegate to this subagent. Include trigger phrases like "proactively" to encourage use. |
-| `tools` | No | array | Tool names (e.g., `Read`, `Edit`, `Bash`) | Inherit all | Allowlist of tools. Omit to inherit all. Can use `Agent(name)` for subagent restriction. |
+| `tools` | No | array or comma-separated string | Tool names (e.g., `["Read", "Edit", "Bash"]` or `Read, Edit, Bash`) | Inherit all | Hard allowlist of tools. Only listed tools are available — all others are blocked. Omit to inherit all tools. This is a true security boundary, unlike skill `allowed-tools` which only pre-approves. Can use `Agent(name)` for subagent restriction. |
 | `disallowedTools` | No | array | Tool names | None | Denylist of tools to remove from inherited/set list. Applied first, then `tools` resolves. |
 | `model` | No | string | `sonnet`, `opus`, `haiku`, full ID, or `inherit` | `inherit` | Which AI model to use. `inherit` uses main conversation's model. |
 | `permissionMode` | No | string | `default`, `acceptEdits`, `auto`, `dontAsk`, `bypassPermissions`, `plan` | `default` | How the subagent handles permission prompts. Ignored for plugin subagents. |
@@ -72,6 +72,19 @@ name: reviewer
 description: Reviews code for quality and best practices
 ---
 ```
+
+**Agent with tool restriction:**
+```yaml
+---
+name: read-only-analyst
+description: Analyzes code patterns without modification capabilities
+tools: ["Read", "Grep", "Glob"]
+---
+
+You are a read-only code analyst. You cannot modify files — only read and report findings.
+```
+
+Note: The `tools` field here acts as a hard allowlist. This agent can ONLY use Read, Grep, and Glob — no Edit, Write, or Bash, even if the parent session allows them. This differs from skill `allowed-tools`, which pre-approves tools without restricting availability.
 
 **Full-featured agent:**
 ```yaml
@@ -421,6 +434,13 @@ Plugin-level agents are available system-wide. Skill-internal agents are prompt 
 **An agent's declared tools MUST match its stated capabilities.**
 
 When an agent claims to write findings to disk, it needs the Write tool. When it claims to execute shell commands, it needs Bash. If the capability exists in the description but the tools field is missing, the agent cannot fulfill its contract.
+
+**Agent `tools:` vs Skill `allowed-tools:`** — These are fundamentally different:
+- Agent `tools:` — Hard allowlist. Only listed tools are accessible. Security boundary.
+- Skill `allowed-tools:` — Pre-approval only. Removes permission prompts but does not restrict tool availability.
+- Skill `disallowed-tools:` — Hard block. Removes specific tools from the pool.
+
+When an agent is spawned by a skill, the agent's `tools:` field takes precedence for tool scoping. The skill's `allowed-tools` applies only to the main conversation context, not to subagents.
 
 ### Subagent-First Execution
 

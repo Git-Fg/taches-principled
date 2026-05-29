@@ -1,6 +1,7 @@
 ---
 name: multi-agent-patterns
 description: "Design multi-agent systems: select coordination patterns, size contexts, choose consensus mechanisms. Use when scaling."
+allowed-tools: Read, Grep, Glob
 when_to_use: |
   Triggers: 'multiple agents', 'agent coordination', 'scale Claude', 'multi-agent', 'agent team', 'parallel workers', 'context isolation'
   Use when designing a multi-agent system from scratch — selecting coordination patterns, sizing agent contexts, and choosing consensus mechanisms.

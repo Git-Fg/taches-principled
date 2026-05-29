@@ -8,6 +8,7 @@ when_to_use: |
   ADVANCED: 'git notes', 'worktree', 'multiple branches', 'annotate commit', 'metadata', 'work on parallel branches'
   IMMEDIATELY when user wants to ship changes, review PRs, or load GitHub issues.
   FIRST when creating commits, PRs, or analyzing issues before implementation.
+allowed-tools: [Bash(git:*,gh:*)]
 ---
 
 ## Decision Router

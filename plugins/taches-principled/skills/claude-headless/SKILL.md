@@ -1,6 +1,7 @@
 ---
 name: claude-headless
 description: "Execute claude -p for batch workflows. Use when running pipe mode, non-interactive CLI, or testing in pipelines."
+allowed-tools: Bash, Read, Write
 when_to_use: |
   Do NOT use for general MCP questions, subagent log analysis without headless intent, or API streaming.
 ---

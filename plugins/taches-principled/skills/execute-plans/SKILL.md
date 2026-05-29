@@ -1,6 +1,7 @@
 ---
 name: execute-plans
 description: "Executes PLAN.md files using intelligent strategies based on checkpoint types. Use when user says 'run plan', 'build it', or 'do it'."
+allowed-tools: Read, Write, Bash, Grep
 when_to_use: |
   Use when the user says "run plan", "do it", or "build it".
   IMMEDIATELY when ready to progress from PLAN to SUMMARY.

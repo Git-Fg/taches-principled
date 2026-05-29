@@ -157,6 +157,18 @@ Isolated command execution without file access.
 - Bash-only isolation prevents file tampering
 - General-purpose respects user permission settings
 
+### Tool Restriction Semantics
+
+Agent `tools:` is a hard allowlist — only listed tools are available, everything else is blocked. This is fundamentally different from skill `allowed-tools:` which only pre-approves tools without restricting availability.
+
+| Mechanism | Scope | Effect |
+|-----------|-------|--------|
+| Agent `tools: ["Read", "Grep"]` | Subagent only | Can ONLY use Read and Grep. All other tools blocked. |
+| Skill `allowed-tools: Read, Grep` | Main conversation | Can use Read and Grep without prompts. Other tools still available per normal permissions. |
+| Skill `disallowed-tools: Bash` | Main conversation | Bash is completely unavailable while skill is active. |
+
+When choosing tool access for a custom agent, default to the minimum needed. Read-only agents get `["Read", "Grep", "Glob"]`. Implementation agents get the full set. Never grant more access than the agent's role requires.
+
 ---
 
 ## What Loads at Startup

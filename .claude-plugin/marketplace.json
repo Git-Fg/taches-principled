@@ -8,7 +8,7 @@
     {
       "name": "taches-principled",
       "source": "./plugins/taches-principled",
-      "version": "0.8.0",
+      "version": "0.8.1",
       "displayName": "Taches Principled",
       "author": { "name": "Felix", "email": "felix@example.com" },
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -39,7 +39,7 @@
     {
       "name": "tp-sadd",
       "source": "./plugins/tp-sadd",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "displayName": "TP Structured Agent-Driven Development",
       "author": { "name": "Felix", "email": "felix@example.com" },
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -57,7 +57,7 @@
     {
       "name": "tp-fpf",
       "source": "./plugins/tp-fpf",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "displayName": "TP First Principles Framework",
       "author": { "name": "Felix", "email": "felix@example.com" },
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -75,7 +75,7 @@
     {
       "name": "tp-git",
       "source": "./plugins/tp-git",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "displayName": "TP Git",
       "author": { "name": "Felix", "email": "felix@example.com" },
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -130,7 +130,7 @@
     {
       "name": "tp-vps-governance",
       "source": "./plugins/tp-vps-governance",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "displayName": "TP VPS Governance",
       "author": { "name": "Felix", "email": "felix@example.com" },
       "homepage": "https://github.com/Git-Fg/taches-principled",

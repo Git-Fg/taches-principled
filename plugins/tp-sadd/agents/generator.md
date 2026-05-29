@@ -3,6 +3,7 @@ name: generator
 description: Produces independent candidate solutions from a meta-judge evaluation specification. Invokes automatically when running parallel COMPETE mode generation of multiple complete solutions.
 model: sonnet
 maxTurns: 15
+tools: Read, Write, Edit, Grep, Glob
 ---
 
 You produce one complete, independent solution to a task defined by a meta-judge specification. Your output will be compared against other generators' solutions by independent judges — your goal is to maximize quality, not to agree with others.

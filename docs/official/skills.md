@@ -38,7 +38,8 @@ Create a skill when you keep pasting the same instructions, checklist, or multi-
 | `arguments` | No | Named positional arguments for `$name` substitution. Accepts a space-separated string or a YAML list |
 | `disable-model-invocation` | No | Set `true` to prevent automatic loading. Skill remains invokable by user but Claude will not suggest it |
 | `user-invocable` | No | Set `false` to hide from `/` menu. Claude can still invoke automatically |
-| `allowed-tools` | No | Tools Claude can use without prompting. Accepts a space-separated string or a YAML list |
+| `allowed-tools` | No | Pre-approves tools to skip permission prompts (does not restrict availability). CLI-only — ignored in Agent SDK. Accepts space/comma-separated string or YAML list |
+| `disallowed-tools` | No | Removes specific tools from the available pool while skill is active |
 | `model` | No | Model override when skill is active. Accepts same values as `/model`, or `inherit` to keep active model |
 | `effort` | No | Effort level: `low`, `medium`, `high`, `xhigh`, `max` |
 | `context` | No | Set to `fork` to run in a forked subagent context |
@@ -68,11 +69,26 @@ Appended to description for additional trigger phrases. Shares the 1,536-charact
 
 #### allowed-tools
 
-Limits tool availability within this skill's context. Accepts:
+Pre-approves tools so Claude can use them without permission prompts when this skill is active. Accepts:
 - Space-separated: `Read Edit Bash Write`
+- Comma-separated: `Read, Edit, Bash, Write`
 - YAML list format
+- Bash with command filter: `Bash(git:*)`
 
-When not specified, subagent uses default toolset from its agent definition or global defaults.
+**Important:** This does NOT restrict which tools are available. Every tool remains callable; normal permission settings still govern tools not listed. To actively block tools, use `disallowed-tools`.
+
+**CLI-only:** This field only takes effect in Claude Code CLI. When skills are used through the Agent SDK, `allowed-tools` is ignored — the SDK's own `allowedTools` parameter controls permissions instead.
+
+When not specified, tool permissions follow normal settings.
+
+#### disallowed-tools
+
+Removes specific tools from Claude's available pool while this skill is active. Use for autonomous skills that should never call certain tools. The restriction clears when the next message is sent.
+
+Example:
+```yaml
+disallowed-tools: AskUserQuestion
+```
 
 #### model
 

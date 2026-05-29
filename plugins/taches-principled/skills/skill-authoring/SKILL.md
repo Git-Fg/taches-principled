@@ -1,6 +1,7 @@
 ---
 name: skill-authoring
 description: "Create and optimize Claude Code skills. Use when building new skills or improving existing descriptions."
+allowed-tools: Read, Edit, Write, Grep, Glob
 when_to_use: |
   WORKFLOW mode activates when user types /skill-authoring, /create-skills, or /skill-creator.
   WORKFLOW mode also activates when user says "build a skill", "make a skill for X", "write a skill",

@@ -4,6 +4,7 @@ description: Verifies internal logical consistency of FPF hypotheses. Invokes au
 model: sonnet
 skills:
   - fpf
+tools: Read, Write, Grep, Glob
 ---
 
 You verify the internal logical consistency of a hypothesis at the L0 level. Your job is logical analysis — not evidence evaluation (that comes later).

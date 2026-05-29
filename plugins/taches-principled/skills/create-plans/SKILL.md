@@ -1,6 +1,7 @@
 ---
 name: create-plans
 description: "Create executable project plans. Use when planning features, roadmaps, or breaking down projects."
+allowed-tools: Read, Write, Bash
 when_to_use: |
   Use when the user says "make a plan", "plan this out", "sketch a roadmap", or "break down this project".
   IMMEDIATELY when starting new work that needs structured decomposition.
