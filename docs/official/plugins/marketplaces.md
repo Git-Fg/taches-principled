@@ -105,13 +105,36 @@ The taches-principled repository uses a **monolithic marketplace-centric model**
 
 ### Plugin Structure
 
-This marketplace uses a **monolithic model with `strict: false`** — all plugin metadata is in `marketplace.json`, no per-plugin `plugin.json` is needed.
+This marketplace uses `strict: false` — all plugin metadata lives in `marketplace.json`. No per-plugin `plugin.json` files exist.
 
 | Aspect | Behavior |
 |--------|----------|
 | **Catalog** | Single `marketplace.json` contains all plugin metadata |
+| **Plugin entries** | Uses `source` field (not `path`) for plugin references |
 | **Distribution** | Users install one marketplace, receive all plugins |
 | **Version management** | One place to bump, one push, all plugins updated |
+
+**Example marketplace.json structure:**
+
+```json
+{
+  "version": "1.0.0",
+  "description": "Task execution and workflow plugins for Claude Code",
+  "strict": false,
+  "plugins": [
+    {
+      "name": "tp-sadd",
+      "source": "./plugins/tp-sadd",
+      "description": "Structured agent-driven development with competitive execution"
+    },
+    {
+      "name": "tp-fpf",
+      "source": "./plugins/tp-fpf",
+      "description": "First-principles reasoning and hypothesis generation"
+    }
+  ]
+}
+```
 
 The key insight: **bundling is a distribution convenience, not a runtime coupling**. Users get everything with one install, but each plugin functions as if installed standalone.
 
@@ -152,13 +175,10 @@ This allows plugins to suggest collaboration without creating dependencies. If t
 
 | Version | Source | Purpose |
 |---------|--------|---------|
-| **Plugin version** | `marketplace.json` | Per-plugin release tracking |
-| **Marketplace version** | `marketplace.json` | Collective release tracking |
+| **Plugin version** | `marketplace.json` entry | Per-plugin release tracking |
+| **Marketplace version** | `marketplace.json` root | Collective release tracking |
 
-**Schema:** The marketplace uses a flat schema optimized for catalog display:
-- `description` at root: marketplace-level summary (max 200 chars)
-- `description` per plugin: one-line catalog entry (max 150 chars)
-- This marketplace uses `strict: false` — marketplace.json is the sole source of truth
+The `strict: false` model means `marketplace.json` is the sole source of truth — no per-plugin `plugin.json` is used for version information.
 
 ### Rationale
 

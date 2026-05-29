@@ -34,7 +34,7 @@ Source: https://code.claude.com/docs/en/plugins
 
 | Directory | Purpose |
 |---|---|
-| `.claude-plugin/` | Contains `plugin.json` manifest (or `marketplace.json` for monolithic market)
+| `.claude-plugin/` | Contains `marketplace.json` catalog (monolithic model — all plugin metadata centralized) |
 | `skills/` | Skills as `<name>/SKILL.md` directories |
 | `commands/` | Flat markdown skill files (use `skills/` for new plugins) |
 | `agents/` | Custom agent definitions |
@@ -48,18 +48,24 @@ Source: https://code.claude.com/docs/en/plugins
 ## Quickstart: Create Your First Plugin
 
 1. Create plugin directory
-2. Create `.claude-plugin/plugin.json` manifest
+2. Add plugin entry to `marketplace.json` in `.claude-plugin/`
 3. Create `skills/<name>/SKILL.md`
 4. Test with `--plugin-dir` flag
 
-## Plugin Manifest (plugin.json)
+## Plugin Manifest (marketplace.json)
+
+This marketplace uses a monolithic model with `marketplace.json` as the single source of truth for all plugin metadata.
 
 | Field | Purpose |
 |---|---|
-| `name` | Unique identifier and skill namespace |
-| `description` | Shown in plugin manager |
-| `version` | Optional; if set, users only receive updates when bumped |
-| `author` | Optional attribution |
+| `plugins` | Array of plugin entries |
+| `plugins[].name` | Unique identifier and skill namespace |
+| `plugins[].description` | Shown in plugin manager |
+| `plugins[].version` | Optional; if set, users only receive updates when bumped |
+| `plugins[].author` | Optional attribution |
+| `plugins[].url` | Plugin repository URL |
+
+With `strict: false` in marketplace.json, the catalog is authoritative for all plugin metadata.
 
 ## Adding Components
 
@@ -88,10 +94,11 @@ Source: https://code.claude.com/docs/en/plugins
 
 ## Converting Standalone to Plugin
 
-1. Create plugin structure with `.claude-plugin/plugin.json`
-2. Migrate hooks to `hooks/hooks.json`
-3. Migrate skills to `skills/` directory
-4. Test with `--plugin-dir`
+1. Create plugin structure under `plugins/<name>/`
+2. Add plugin entry to `.claude-plugin/marketplace.json`
+3. Migrate hooks to `hooks/hooks.json`
+4. Migrate skills to `skills/` directory
+5. Test with `--plugin-dir`
 
 ## See Also
 

@@ -216,7 +216,7 @@ Four artifact types exist with distinct loading behaviors and token costs: Comma
 
 **Marketplace version** and **plugin version** are independent:
 
-- **Plugin version**: Incremented for any content change to this plugin (see `plugins/taches-principled/.claude-plugin/plugin.json` for current version)
+- **Plugin version**: Incremented for any content change to a plugin (see `marketplace.json` for current versions)
 - **Marketplace version** (`.claude-plugin/marketplace.json`): Incremented when releasing a collective update across all plugins
 
 **Update sequence:**
@@ -224,8 +224,8 @@ Four artifact types exist with distinct loading behaviors and token costs: Comma
 # 1. Make your changes
 git add -A && git commit -m "message"
 
-# 2. Bump plugin version (minor for features, patch for fixes)
-# Edit plugins/taches-principled/.claude-plugin/plugin.json — bump "version" field
+# 2. Bump plugin version in marketplace.json (minor for features, patch for fixes)
+# Edit .claude-plugin/marketplace.json — bump the "version" field for the affected plugin
 
 # 3. Push
 git push
@@ -502,32 +502,49 @@ Skills are graded on four weighted dimensions. **Routing Signal** (40%) measures
 
 This repository uses a **monolithic marketplace-centric model** — see [docs/official/plugins/marketplaces.md](docs/official/plugins/marketplaces.md) for the canonical architecture explanation.
 
-### Quick Reference
+### Architecture
+
+**Single source of truth:** `marketplace.json` is the sole authoritative catalog for all plugins. It contains all plugin metadata including versions and locations.
 
 **Distribution:** Single `marketplace.json` bundles all plugins. Users install one marketplace, receive everything.
 
-**Runtime:** Each plugin is fully independent — zero code sharing, zero dependencies, zero runtime coupling.
+**Runtime:** Each plugin is fully independent — zero code sharing, zero dependencies, zero runtime coupling. Plugins remain architecturally isolated even though all metadata lives in one file.
 
-**Version management:** Plugin versions in individual `plugin.json` files; marketplace version bumped only on collective releases.
+**Version management:** Plugin versions live in `marketplace.json`, not in per-plugin files.
 
-For the full rationale and technical details, see the marketplaces documentation.
+### Marketplace Configuration
+
+The `marketplace.json` uses the `source` field (not `path`) to specify plugin locations:
+
+```json
+{
+  "plugins": [
+    {
+      "name": "plugin-name",
+      "version": "1.0.0",
+      "source": "plugins/plugin-name"
+    }
+  ]
+}
+```
+
+For the full schema and `strict: false` behavior, see the [marketplaces documentation](docs/official/plugins/marketplaces.md).
 
 ### Directory Structure
 
 ```
 plugins/
-├── tp-git/                          # Git workflow automation (independent plugin)
-│   ├── .claude-plugin/plugin.json   # Own version, own metadata
+├── tp-git/                    # Git workflow automation (independent plugin)
 │   └── skills/{name}/SKILL.md
-├── tp-sadd/                        # Structured agent-driven dev (independent plugin)
-├── tp-fpf/                         # First-principles reasoning (independent plugin)
-└── tp-vps-governance/              # Memory management (independent plugin)
+├── tp-sadd/                   # Structured agent-driven dev (independent plugin)
+├── tp-fpf/                    # First-principles reasoning (independent plugin)
+└── tp-vps-governance/         # Memory management (independent plugin)
 
 .claude-plugin/
-└── marketplace.json                # Single catalog for all plugins
+└── marketplace.json            # Single source of truth for all plugin metadata
 ```
 
-Each plugin under `plugins/` is fully standalone. The `marketplace.json` is the single source of truth for the plugin catalog.
+Each plugin under `plugins/` is fully standalone. The `marketplace.json` is the sole source of truth for the plugin catalog.
 
 ### Naming Convention
 
@@ -535,11 +552,10 @@ All imported/ported plugins use the `tp-` prefix. Current marketplace plugins ar
 
 ### Adding a New Plugin
 
-1. Create `plugins/{name}/.claude-plugin/plugin.json` with version `0.1.0`
-2. Create `plugins/{name}/skills/{skill-name}/` directories
-3. Write SKILL.md files following the decision router + policy/mechanism patterns used by existing skills
-4. Add plugin entry to `.claude-plugin/marketplace.json`
-5. Bump marketplace version
+1. Create `plugins/{name}/skills/{skill-name}/` directories
+2. Write SKILL.md files following the decision router + policy/mechanism patterns used by existing skills
+3. Add plugin entry to `.claude-plugin/marketplace.json` with `source` pointing to the plugin directory
+4. Bump marketplace version
 
 **Remember:** The new plugin must work standalone. It cannot import or reference other plugins' files.
 

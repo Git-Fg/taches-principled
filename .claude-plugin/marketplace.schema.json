@@ -15,6 +15,11 @@
       "pattern": "^\\d+\\.\\d+\\.\\d+$",
       "description": "Semantic version"
     },
+    "strict": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enforce strict validation of plugin metadata"
+    },
     "description": {
       "type": "string",
       "maxLength": 200,
@@ -31,14 +36,14 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "path"],
+        "required": ["name", "source"],
         "properties": {
           "name": {
             "type": "string",
             "pattern": "^[a-z0-9-]+$",
             "description": "Plugin identifier (kebab-case)"
           },
-          "path": {
+          "source": {
             "type": "string",
             "pattern": "^\\./",
             "description": "Relative path starting with ./"
