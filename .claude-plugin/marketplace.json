@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "taches-principled",
-      "path": "./plugins/taches-principled",
+      "source": "./plugins/taches-principled",
       "version": "0.8.0",
       "displayName": "Taches Principled",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -38,7 +38,7 @@
     },
     {
       "name": "tp-sadd",
-      "path": "./plugins/tp-sadd",
+      "source": "./plugins/tp-sadd",
       "version": "0.3.0",
       "displayName": "TP Structured Agent-Driven Development",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -56,7 +56,7 @@
     },
     {
       "name": "tp-fpf",
-      "path": "./plugins/tp-fpf",
+      "source": "./plugins/tp-fpf",
       "version": "0.3.0",
       "displayName": "TP First Principles Framework",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -74,7 +74,7 @@
     },
     {
       "name": "tp-git",
-      "path": "./plugins/tp-git",
+      "source": "./plugins/tp-git",
       "version": "0.3.0",
       "displayName": "TP Git",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -91,7 +91,7 @@
     },
     {
       "name": "tp-tdd",
-      "path": "./plugins/tp-tdd",
+      "source": "./plugins/tp-tdd",
       "version": "0.3.0",
       "displayName": "TP Test-Driven Development",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -108,7 +108,7 @@
     },
     {
       "name": "tp-ddd",
-      "path": "./plugins/tp-ddd",
+      "source": "./plugins/tp-ddd",
       "version": "0.3.0",
       "displayName": "TP Domain-Driven Design",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -120,7 +120,7 @@
     },
     {
       "name": "tp-force-multiplier",
-      "path": "./plugins/tp-force-multiplier",
+      "source": "./plugins/tp-force-multiplier",
       "version": "0.1.1",
       "displayName": "TP Force Multiplier",
       "author": { "name": "Git-Fg", "email": "felix@example.com" },
@@ -129,7 +129,7 @@
     },
     {
       "name": "tp-vps-governance",
-      "path": "./plugins/tp-vps-governance",
+      "source": "./plugins/tp-vps-governance",
       "version": "0.1.0",
       "displayName": "TP VPS Governance",
       "author": { "name": "Felix", "email": "felix@example.com" },
