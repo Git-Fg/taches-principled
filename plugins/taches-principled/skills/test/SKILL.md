@@ -217,4 +217,4 @@ When a generated input causes a failure, the test framework tries smaller inputs
 
 ## Integration with TDD
 
-Property-based tests complement TDD: use TDD for known cases and edge cases you can anticipate; use property-based for combinatorial exploration. A complete test suite has both.
+ALWAYS spawn a test-strategist subagent for complex test suite planning. Property-based tests complement TDD: use TDD for known cases and edge cases you can anticipate; use property-based for combinatorial exploration. A complete test suite has both.

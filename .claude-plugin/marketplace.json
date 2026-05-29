@@ -1,59 +1,151 @@
 {
   "name": "taches-principled",
   "version": "0.9.1",
+  "strict": false,
+  "owner": { "name": "Felix" },
   "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, and development skills.",
-  "owner": {
-    "name": "Felix",
-    "email": "felix@example.com"
-  },
   "plugins": [
     {
       "name": "taches-principled",
+      "path": "./plugins/taches-principled",
       "version": "0.8.0",
-      "source": "./plugins/taches-principled",
-      "description": "Core: principle-based skills for the full development lifecycle — plan, execute, author, review, analyze, improve, ideate, implement, document, and refine. 16 skills with decision routers."
+      "displayName": "Taches Principled",
+      "author": { "name": "Felix", "email": "felix@example.com" },
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, and test strategy.",
+      "keywords": [
+        "claude-code",
+        "skills",
+        "subagents",
+        "planning",
+        "review",
+        "kaizen",
+        "analysis",
+        "ideation",
+        "documentation",
+        "code-simplify",
+        "multi-agent",
+        "tool-design",
+        "security",
+        "testing",
+        "headless",
+        "archive",
+        "learnings",
+        "rules"
+      ]
     },
     {
       "name": "tp-sadd",
+      "path": "./plugins/tp-sadd",
       "version": "0.3.0",
-      "source": "./plugins/tp-sadd",
-      "description": "Structured agent-driven development with meta-judge verification — single/competitive/sequential/parallel execution, sub-agent dispatch, and multi-perspective judging."
+      "displayName": "TP Structured Agent-Driven Development",
+      "author": { "name": "Felix", "email": "felix@example.com" },
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "description": "Structured agent-driven development with multi-pattern evaluation — judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
+      "keywords": [
+        "taches-principled",
+        "claude-code",
+        "evaluation",
+        "subagents",
+        "judge"
+      ]
     },
     {
       "name": "tp-fpf",
+      "path": "./plugins/tp-fpf",
       "version": "0.3.0",
-      "source": "./plugins/tp-fpf",
-      "description": "First Principles Framework — query knowledge, manage evidence freshness, reconcile with code changes, and run full hypothesis cycles for auditable decisions."
+      "displayName": "TP First Principles Framework",
+      "author": { "name": "Felix", "email": "felix@example.com" },
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "description": "First Principles Framework — structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
+      "keywords": [
+        "taches-principled",
+        "claude-code",
+        "reasoning",
+        "fpf",
+        "decisions"
+      ]
     },
     {
       "name": "tp-git",
+      "path": "./plugins/tp-git",
       "version": "0.3.0",
-      "source": "./plugins/tp-git",
-      "description": "Git workflow automation — issue management, conventional commits, PR creation, inline PR reviews, git notes, and worktree-based parallel development."
+      "displayName": "TP Git",
+      "author": { "name": "Felix", "email": "felix@example.com" },
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "description": "Git workflow automation — conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
+      "keywords": [
+        "taches-principled",
+        "claude-code",
+        "git",
+        "version-control"
+      ]
     },
     {
       "name": "tp-tdd",
+      "path": "./plugins/tp-tdd",
       "version": "0.3.0",
-      "source": "./plugins/tp-tdd",
-      "description": "Test-driven development — strict red-green-refactor, retroactive coverage for existing code, and test repair after logic changes."
+      "displayName": "TP Test-Driven Development",
+      "author": { "name": "Felix", "email": "felix@example.com" },
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "description": "Test-driven development — write tests first, watch them fail, implement to pass. Add post-hoc test coverage for existing code. Fix broken tests after refactoring with verification.",
+      "keywords": [
+        "taches-principled",
+        "claude-code",
+        "tdd",
+        "testing"
+      ]
     },
     {
       "name": "tp-ddd",
+      "path": "./plugins/tp-ddd",
       "version": "0.3.0",
-      "source": "./plugins/tp-ddd",
-      "description": "DDD development practices — code-transparency (visible behavior), code-architecture (layered structure, FCIS, early returns, file limits), and code-quality (domain naming, library-first, typed errors). 4 modes answering: what does it do, how to structure, is it idiomatic."
+      "displayName": "TP Domain-Driven Design",
+      "author": { "name": "Felix", "email": "felix@example.com" },
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "description": "DDD development practices — code-transparency (visible behavior), code-architecture (layered structure), and code-quality (domain naming, typed errors). 3 discoverable skills answering: what does it do, how to structure, is it idiomatic.",
+      "keywords": ["taches-principled", "claude-code", "ddd", "architecture"]
     },
     {
       "name": "tp-force-multiplier",
+      "path": "./plugins/tp-force-multiplier",
       "version": "0.1.1",
-      "source": "./plugins/tp-force-multiplier",
-      "description": "Hook-driven coaching plugin — steers Claude to use subagents and skills via real-time semantic coaching. Hooks only, no skills."
+      "displayName": "TP Force Multiplier",
+      "author": { "name": "Git-Fg", "email": "felix@example.com" },
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "description": "Hook-driven coaching plugin that steers Claude to use subagents and skills more — observes behavior patterns and surfaces immediate coaching hints."
     },
     {
       "name": "tp-vps-governance",
+      "path": "./plugins/tp-vps-governance",
       "version": "0.1.0",
-      "source": "./plugins/tp-vps-governance",
-      "description": "VPS governance plugin for Claude Code — config auditing and memory curation. Two focused skills for headless VPS operations."
+      "displayName": "TP VPS Governance",
+      "author": { "name": "Felix", "email": "felix@example.com" },
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "description": "VPS governance for Claude Code — config auditing and memory curation.",
+      "keywords": [
+        "taches-principled",
+        "claude-code",
+        "vps",
+        "headless",
+        "governance",
+        "config-audit",
+        "memory"
+      ]
     }
   ]
 }

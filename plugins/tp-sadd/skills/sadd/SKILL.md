@@ -28,6 +28,7 @@ Generate 3+ solutions in parallel with meta-judge evaluation and adaptive synthe
 **Phase 1: Parallel Generation + Meta-Judge**
 ALWAYS spawn meta-judge first to generate evaluation rubric before generator subagents launch.
 ALWAYS spawn 3 generator subagents in parallel after meta-judge delivers rubric.
+ALWAYS set maxTurns: 15 for this mode to prevent runaway generation loops.
 
 **Phase 2: Multi-Judge Evaluation**
 ALWAYS spawn 3 judge subagents in parallel for independent scoring.
@@ -51,8 +52,10 @@ Output: Final solution with `.a.md`, `.b.md`, `.c.md` candidates preserved.
 ALWAYS spawn fresh subagents with isolated context for each implementation attempt.
 
 **SPAWN:** Simple spawn with auto model selection, CoT prefix, self-critique suffix.
+ALWAYS set maxTurns: 15 for this mode to prevent runaway execution loops.
 
 **VERIFY:** Meta-judge + implementor + judge with retry loop (score >= 4.0 = pass, max 3 retries).
+ALWAYS set maxTurns: 15 for this mode.
 
 **PLAN-DRIVEN:** Execute plan tasks sequentially with code review between each, or in parallel with integration check.
 
@@ -73,6 +76,7 @@ Evaluate work using meta-judge then judge subagents. Three modes:
 **SINGLE:** Meta-judge generates spec, one judge evaluates.
 
 **DEBATE:** ALWAYS spawn 3 judge subagents in parallel, consensus check after each round, max 3 rounds.
+ALWAYS set maxTurns: 15 for this mode.
 
 **MULTI-ROUND:** Independent analysis → debate rounds → consensus or disagreement report.
 
@@ -96,6 +100,15 @@ Design multi-agent architectures for context isolation and coordination.
 
 Context isolation is the primary benefit — subagents exist to give each execution a clean context window, not to anthropomorphize role division.
 
+## Execution
+
+**Default: subagent delegation.** For DESIGN mode, spawn an architect subagent to recommend pattern based on complexity analysis. The main agent synthesizes findings; it never designs inline.
+
+**Spawn pattern:**
+- Scope: Analyze task complexity (scope, dependencies, coordination needs)
+- Role: architect subagent
+- Output: Pattern recommendation (supervisor/swarm/hierarchical) with rationale
+
 ## Design Guidelines
 
 - Default to filesystem-based inter-agent communication
@@ -113,6 +126,7 @@ Tree of Thoughts: explore solution space with systematic pruning and expansion.
 
 **Phase 1: Exploration**
 ALWAYS spawn 3 exploration subagents for divergent coverage.
+ALWAYS set maxTurns: 15 for this mode to prevent runaway exploration loops.
 
 **Phase 2: Pruning** — Meta-judge generates spec, ALWAYS spawn 3 judge subagents to score and vote for top 3.
 

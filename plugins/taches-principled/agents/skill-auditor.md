@@ -1,7 +1,6 @@
 ---
 name: skill-auditor
 description: Reviews Claude Code skills for clarity, conciseness, and usefulness. Invoke when auditing or improving SKILL.md files.
-context: fork
 tools: Read, Grep, Glob
 model: sonnet
 skills: [skill-authoring]

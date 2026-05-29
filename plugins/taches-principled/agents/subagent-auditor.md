@@ -1,7 +1,6 @@
 ---
 name: subagent-auditor
 description: Expert subagent auditor for Claude Code. Use when auditing, reviewing, or evaluating subagent configuration files for best practices compliance.
-context: fork
 tools: Read, Grep, Glob
 model: sonnet
 skills: [subagents]

@@ -1,7 +1,6 @@
 ---
 name: rules-analyzer
 description: "Analyzes conversation transcripts and skill outputs for rule-worthy insights. Extracts conventions, anti-patterns, and codifiable knowledge."
-context: fork
 model: sonnet
 tools: Read, Write, Grep, Glob
 ---

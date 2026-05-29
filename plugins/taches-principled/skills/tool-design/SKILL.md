@@ -257,7 +257,7 @@ This creates a feedback loop: agents using tools generate failure data, which ag
 
 ### Testing Tool Design
 
-Evaluate tool designs against five criteria: unambiguity, completeness, recoverability, efficiency, and consistency. Test by presenting representative agent requests and evaluating the resulting tool calls against expected behavior.
+ALWAYS spawn a tool-tester subagent to validate tool designs against five criteria: unambiguity, completeness, recoverability, efficiency, and consistency. The subagent evaluates representative agent requests against expected behavior.
 
 ## Practical Guidance
 

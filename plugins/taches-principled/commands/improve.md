@@ -6,3 +6,5 @@ argument-hint: [artifact or file to improve]
 ---
 
 $ARGUMENTS
+
+Fan out reviewer subagents to scan code in parallel, aggregate findings, spawn critic subagent for quality gate before delivery.

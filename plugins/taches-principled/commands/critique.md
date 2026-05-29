@@ -7,4 +7,4 @@ argument-hint: [work to critique]
 
 $ARGUMENTS
 
-Spawn 2-3 judge subagents with isolated context to review the work independently. Synthesize findings into severity-ranked issues with consensus areas and action items.
+Fan out subagents to spawn 2-3 judge subagents with isolated context to review the work independently. Synthesize findings into severity-ranked issues with consensus areas and action items.

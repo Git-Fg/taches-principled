@@ -2,7 +2,6 @@
 name: self-review
 description: |
   Invokes automatically after any artifact is created — verifies correctness, completeness, and clarity before delivery. A mandatory quality gate that surfaces blind spots the creator may miss. Pairs with self-critic for full quality coverage.
-context: fork
 tools: Read, Grep, Glob
 model: sonnet
 skills: [refine]

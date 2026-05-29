@@ -1,7 +1,6 @@
 ---
 name: rules-auditor
 description: "Audits existing .claude/rules/ and CLAUDE.md for quality issues — duplication, bloat, missing path scoping, contradictions, and vagueness."
-context: fork
 model: sonnet
 tools: Read, Grep, Glob
 ---

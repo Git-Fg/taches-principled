@@ -186,153 +186,29 @@ Test 15-20 real queries, hold out 20%. Overfit = description learned pattern-mat
 
 **Hook limitations:** Hooks inject context that nudges reasoning — they cannot directly activate skills. No hook event directly loads a skill. Skill activation is description-matching only.
 
+See [Hooks](docs/official/hooks.md) for hook lifecycle events and patterns.
+
 ### No Inline Tool Lists in Subagent Instructions
 
-When a skill body describes spawning a subagent, never include a specific tool list (`tools: Read, Edit, Bash, WebSearch, Write`). Tool availability varies by environment — WebSearch may be an MCP server, Bash may be restricted, file paths differ per platform.
-
-**Instead:** Describe the role and outcome. Let the agent definition in `agents/` or the default toolset handle tool configuration.
-
-| ❌ Incorrect (inline tool list) | ✅ Correct (role + outcome) |
-|--------------------------------|---------------------------|
-| "Spawn a subagent (Haiku, tools: Read, Write, Grep, Glob, Bash) to scan the project" | "Spawn an explorer subagent to map project structure and report findings" |
-| "Spawn a researcher (Sonnet, WebSearch, Read, Write) to search for patterns" | "Spawn a researcher subagent to investigate patterns and persist findings" |
-| "Spawn a critic (Haiku, Read, Grep, Write) to review completeness" | "Spawn a critic subagent to review the work for gaps and inconsistencies" |
-
-**Why:** Agent definitions in `plugins/taches-principled/agents/` already configure tools per role. Inline lists duplicate this, break when tools change or are unavailable, and force subagent dispatchers to know tool names they shouldn't need to care about.
+Describe the role and outcome instead — agent definitions configure tools per role. See [Agent Types](docs/official/agent-types.md) for tool access by type.
 
 ### Orchestration Topology: Where Skills End and Agents Begin
 
-**Skills** teach WHAT to decide: routing triggers, delegation boundaries, when to stop and ask.
-
-**Agents** teach HOW to execute: verification protocols, reporting formats, artifact delivery standards.
-
-This asymmetry is load-bearing:
-- **Skills** reference agents by role (e.g., "spawn a critic subagent"). The main agent reads the agent file and uses its content as the system prompt for the spawned subagent.
-- **Agents** are self-contained execution templates. Never spawn subagents from an agent prompt.
-
-**The pattern:** When a skill says "spawn a [role] subagent", the main agent:
-1. Reads `{baseDir}/agents/[role].md`
-2. Uses the markdown body (after frontmatter) as the subagent's system prompt
-3. Fills in placeholders (`{{context}}`, `{{task}}`, `{{scope}}`) with task-specific details
-
-**The test:** "Is this describing WHAT to do or HOW to do it?" — Orchestration = skill. Execution details = agent prompt.
+Skills teach WHAT to decide (routing triggers, delegation boundaries); agents teach HOW to execute (verification protocols, reporting formats, artifact delivery standards). See [Subagents](docs/official/subagents.md) for all default frontmatter fields.
 
 ### Agent Description Pattern
 
-Agent descriptions inject into Claude's system prompt for routing, but **agents cannot self-invoke** — skills explicitly spawn them via "spawn a [role] subagent". Improved descriptions use natural language to describe behavior and activation conditions.
-
-**Pattern:** Natural language sentences, not structured syntax. Describe WHAT the agent is and WHEN it activates, not procedural instructions.
-
-**Good examples (natural language):**
-- "Invokes automatically after any artifact is created — verifies correctness, completeness, and clarity before delivery"
-- "Invokes automatically at phase boundaries or every 2-3 tasks — reviews intermediate output for correctness, edge cases, and regressions"
-
-**Bad examples (structured syntax):**
-- "ACTIVATES: after any artifact creation\nLOOP: until no HIGH findings\nOutput: severity-ranked findings"
-- Any structured key:value or bullet format
-
-**Why natural language works better:** Structured syntax in descriptions can break fuzzy semantic matching. A sentence like "Invokes automatically after any artifact is created" routes better than "ACTIVATES: [condition]" because it reads as natural intent rather than configuration.
-
-**The pattern future-proofs:** For potential agent self-invocation if routing improves, natural language descriptions are more readable and routing-friendly than structured formats.
+Agent descriptions inject into Claude's system prompt for routing, but agents cannot self-invoke. Use natural language sentences, not structured syntax. See [Subagents](docs/official/subagents.md) for pattern guidance.
 
 ### Artifact Taxonomy
 
-Four distinct artifacts with different loading behaviors and token costs:
-
-| Artifact | Loading | Token Cost | Use Case |
-|----------|---------|------------|----------|
-| **Command** | User-invoked with `/name` | Zero until used | Trigger accelerators |
-| **Skill** | Auto-loaded into context | Always present | Method teaching, routing |
-| **Agent** | Fresh Claude instance per spawn | Per-spawn | Parallel execution, independent context |
-| **Workflow Command** | Orchestrates agents via filesystem prompts | Per-spawn + coordination | Complex multi-phase workflows |
-
-**Key insight:** Commands preferred over skills for token efficiency — skills populate context every session, commands only load when invoked.
+Four artifact types exist with distinct loading behaviors and token costs: Commands (user-invoked, zero until used), Skills (auto-loaded, always present), Agents (per-spawn), and Workflow Commands (per-spawn with coordination). See [Skills](docs/official/skills.md) for the full taxonomy and loading mechanics.
 
 ---
 
 ## Skill Budget Management
 
-Claude Code v2.1.129+ enforces a skill listing budget that silently drops skills when exceeded. This is the single most important operational constraint for this marketplace.
-
-### The Budget Mechanics
-
-Two settings control skill visibility:
-
-| Setting | Type | Default | Purpose |
-|---------|------|---------|---------|
-| `skillListingBudgetFraction` | decimal `0 < x ≤ 1` | `0.01` (1%) | Caps total skill metadata at this fraction of context window |
-| `skillListingMaxDescChars` | positive integer | `1536` | Per-skill description character cap |
-
-**How they interact:**
-1. Individual descriptions longer than `skillListingMaxDescChars` are truncated from the END
-2. Total listing checked against `skillListingBudgetFraction`
-3. If still over budget, lowest-priority (least-used) skills lose descriptions ENTIRELY — not truncated, dropped
-
-**Budget math by model:**
-
-| Model | Context | 1% Default | 2% (Doubled) | Per-skill cost |
-|-------|---------|-----------|-------------|----------------|
-| Sonnet 4.6 (200K) | 200,000 | ~2,000 tokens | ~4,000 tokens | ~75-150 tokens |
-| Sonnet 4.6 [1M] | 1,000,000 | ~10,000 tokens | ~20,000 tokens | ~75-150 tokens |
-| Opus 4.7 (1M) | 1,000,000 | ~10,000 tokens | ~20,000 tokens | ~75-150 tokens |
-
-**Our ecosystem:**
-- taches-principled hub: ~15 skills + ~8 agents = ~23 items
-- tp-sadd: 3 agents
-- tp-ddd, tp-fpf, tp-tdd: ~3 skills each
-- **Total: ~30+ items in listing**
-- At 75-150 tokens/item: **2,250-4,500 tokens = OVER BUDGET on 200K models**
-
-**⚠️ CRITICAL:** Skills will be SILENTLY DROPPED. The warning only fires when significantly over. Run `/context` at session start to check the Skills: line. Run `/doctor` to see which skills are affected.
-
-### Mitigation Strategies
-
-**Option 1: Disable unused skills (free)**
-- Run `/skills` to toggle individual skills off
-- Move project-specific skills to `.claude/skills/` (project-scoped) instead of `~/.claude/skills/` (user-scoped)
-- Project skills only count when inside that project
-
-**Option 2: Raise budget in settings.json (costly)**
-```json
-{
-  "skillListingBudgetFraction": 0.02,
-  "skillListingMaxDescChars": 2048
-}
-```
-- Every increment costs tokens on EVERY session
-- 0.02 on 200K = ~4,000 tokens per session permanently reserved
-- Only recommended for 1M context models or usage-based billing
-- File: `~/.claude/settings.json` or project `.claude/settings.json`
-
-**Option 3: Compress descriptions (free, sustainable) — PREFERRED**
-- Target: ≤150 characters per description for shipped skills
-- Hard ceiling: 650 characters (skills dropped beyond this)
-- Front-load trigger keywords in first 50 characters
-- Move all detail to SKILL.md body
-- Use `name-only` in `skillOverrides` for low-priority skills
-
-**Description audit command:**
-```bash
-find plugins -name "SKILL.md" | xargs awk '/^description:/{print length($0), FILENAME}' | sort -rn
-```
-
-**Capacity by description length (empirical):**
-
-| Description Length | Skills That Fit |
-|-------------------|----------------|
-| 263 chars (observed avg) | ~42 skills |
-| 200 chars | ~52 skills |
-| 150 chars | ~60 skills |
-| 130 chars | ~67 skills |
-| 100 chars | ~75 skills |
-
-### Before Any Commit — Budget Check
-
-- [ ] Run `/context` in fresh session — verify Skills: line stays under budget fraction
-- [ ] Run `/doctor` — confirm no skills are being dropped or truncated
-- [ ] Audit description lengths — all descriptions ≤150 chars
-- [ ] Verify front-loaded triggers — first 50 chars contain primary keywords
-- [ ] Check `skillOverrides` — low-priority skills set to `name-only` if needed
+**Claude Code enforces a 1% context limit for skill metadata.** Exceeded skills are silently dropped. Run `/context` and `/doctor` before commits. See [Skills](docs/official/skills.md) for mechanics.
 
 ---
 
@@ -359,77 +235,15 @@ git push
 
 ## Skill Authoring
 
-Skills are auto-invoked by default by Claude Code — a cold-start instance discovers and routes to them based on description matching, not prior conversation. Skill authoring is taught by the `skill-authoring` skill. See that skill for:
-- **Skill categories**: Constraint/Guardrail, Orchestration, Domain Expertise, Quality Assurance, Creative Direction
-- **Policy vs. Mechanism**: The unifying principle for skill design — declare intent before implementation. Policy is *what* the skill decides (trigger scope, routing, boundaries); mechanism is *how* the skill executes (tools, steps, details)
-- **Progressive disclosure**: The loading pattern that shows policy upfront and mechanism on demand (frontmatter → body → references); the official tactic for staying under the 500-line guideline
-- **Delta principle**: Only document what differs from default behavior
-- **Skill anatomy**: Frontmatter and body structure
-- **Subagent-first authoring**: Every skill that explores, implements, researches, or creates must declare subagent spawning as its default execution mode in the body — not as an optional tip
-- **Anti-patterns**: What to avoid in skill design
-- **Cross-skill references**: Never cite other skills' files with paths — use natural language: "see the X.md file in the create-plans skill's references"
-- **Shared references anti-pattern**: Don't create `references/` files expecting cross-skill reuse — paths break on plugin install, content must be inlined or documented here
-- **Decision router**: How to structure SKILL.md for strong reference steering
-- **Description length**: Official cap is 1,536 combined description+when_to_use; routing density ideal is ~200 chars. `description` names the trigger phrase; `when_to_use` adds scope boundaries. Full routing optimization guide in "Skill Discovery Optimization" section.
-- **Congruence Level (CL)**: Evidence validation for claims about techniques — CL3 (benchmark on identical hardware/OS/software), CL2 (similar but not identical), CL1 (general principle from blog post). Apply congruence penalty when evidence comes from mismatched contexts.
-- **Command format**: See `commands-standard.md` in `plugins/taches-principled/` for lightweight command standards (no markdown in body, 1-3 sentence outcome instruction, conditional skill hints)
+For detailed guidance on skill categories, policy/mechanism pattern, progressive disclosure, frontmatter fields, cross-skill references, decision routers, description optimization, and command format, see the `skill-authoring` skill.
 
-**How to access:** The `skill-authoring` skill is auto-discovered. Use `/skill-authoring` or invoke via the Skill tool.
+For frontmatter field reference, see [Skills](docs/official/skills.md).
 
 ---
 
 ## Commands
 
-Commands are trigger accelerators, not method carriers. Their value is in the first three words Claude hears when a user invokes them — not in the body content.
-
-**Both commands and skills are auto-invoked by default.** A cold-start Claude instance discovers and invokes them based on their descriptions — no prior conversation, no session history. Commands and skills with the same name: the skill takes precedence. Commands without a matching skill are still usable as standalone triggers.
-
-**Never evaluate a command by comparing its body to the skill's body.** Structural overlap analysis is insufficient. A command that seems redundant may be teaching the trigger while the skill teaches the method.
-
-**What commands do:**
-- Teach Claude what mental frame to reach for when a user types `/something`
-- Provide a memorable trigger phrase shorter than the skill description
-- Add semantic framing the skill can't provide without being bloated
-- **Trigger the skill + subagent chain**: A command named `/debug` should make Claude load the `diagnose` skill AND immediately spawn subagents for investigation — the command is the spark, the skill provides the method, subagents do the work
-
-**What commands don't need to do:**
-- Carry unique logic the skill doesn't have
-- Restate the skill's methodology in fewer words
-- Add information the skill already teaches
-
-**Important — "outcome not method" reconciled:** The "tell the outcome, not the method" rule means don't restate the *skill's internal methodology* (e.g., "apply A3 problem-solving with five whys and fishbone diagram"). It does NOT mean avoid naming native capabilities. "Fan out subagents", "create a task list", "use web search" are direct capability names that tell Claude WHAT to do — they are the outcome. Contrast with skill methodology: "use diagnose's A3 mode with severity scoring" — that's method. Commands name what, skills teach how.
-
-**Example:** `/debug` teaches "when you see a bug, think root cause first." The `diagnose` skill's decision router covers five investigation modes (A3, Five Whys, Fishbone, Stack Trace, Auto). The command doesn't need to repeat that — it just needs to make Claude reach for the right skill with the right mindset.
-
-**Anti-pattern:** Evaluating commands by word-for-word overlap with the skill body. This misses the semantic framing value. A command that says "Find the root cause and verify the fix" teaches a different trigger than a skill description that starts "Apply systematic debugging methodology."
-
-**When a command IS hollow:** It adds nothing to the trigger — not the framing, not the mindset, not the prioritization. If the command body could be replaced with `$ARGUMENTS` and nothing would be lost, it's hollow. But `$ARGUMENTS` alone is a valid command if the description provides the trigger.
-
-**Direct language principle:** Command bodies must name native capabilities explicitly, not describe them indirectly. Use direct keywords the model routes to immediately — "fan out subagents", "create a task list", "use web search", "spawn a critic subagent", "capture output to a file". Direct language = immediate routing = zero context drift.
-
-**Why:** Every instance of indirect language for a native capability adds interpretation overhead. "Divide into independent streams" requires the model to recognize this means subagent fan-out. "Maintain a visible record of progress" requires inference to reach "create a task list". "Consult external references" requires deduction to land on "use web search". That overhead is context drift — tokens spent on semantic disambiguation that could be spent on execution. One sentence of direct language routes to the right behavior in a single pass. One sentence of vague semantics fragments across 3-5 possible interpretations, each consuming model capacity without advancing the goal.
-
-**The balance with skills:**
-- **Commands** name native capabilities directly — WHAT to do
-- **Skills** teach method and judgment — HOW to do it
-- **Command descriptions (frontmatter)** route to skills — WHICH skill to load
-- Command bodies never cite skill names or skill methodology. They only state the outcome using the native vocabulary the model already understands.
-
-**Good vs bad examples:**
-
-| Instead of this (vague) | Use this (direct) | Why |
-|--------------------------|--------------------|-----|
-| "Divide into independent streams of work" | "Fan out subagents to explore in parallel" | "Fan out subagents" maps immediately to subagent spawn. The vague version drifts through 5 syntactic parses. |
-| "Maintain a visible record of progress" | "Create a task list tracking all items" | Indirect language requires inference. |
-| "Consult external references for up-to-date information" | "Use web search to verify current state" | "Use web search" routes to the search tool. The vague version sounds like reading local docs. |
-| "Organize your approach and track what needs doing" | "Create a task list for each step, then fan out subagents" | Both native capacities named explicitly. No inference needed. |
-
-**What direct language prevents:**
-- **Ambiguous tool routing:** "Consult external references" could mean web search, local docs, MCP resources, or skill references. "Use web search" is unambiguous.
-- **Paraphrase decay:** Vague phrasing gets re-paraphrased at every turn, drifting further from the intended action. Direct keywords can't decay — they route identically every time.
-- **Skill bleed:** When a command body sounds like a skill, the model loads both skill and command context for the same trigger. Direct language keeps the command lightweight and the skill focused.
-
-**The test:** Read the command body. Can the model act on it without interpreting any phrase? If a phrase could mean two different actions, replace it with the specific native capability name.
+**Commands are trigger accelerators, not method carriers.** Use direct native vocabulary. See [Commands](docs/official/commands.md) for format standards. Commands with the same name as a skill: the skill takes precedence.
 
 ---
 
@@ -453,55 +267,15 @@ The goal is a smooth handoff between thinking and doing. Questions belong in the
 
 ## User Interview Pattern
 
-When gathering context before proceeding, use the interview pattern — not a fixed formula. The goal is to understand intent, clarify scope, and set execution expectations.
+When gathering context before proceeding, use the interview pattern — not a fixed formula.
 
 **The canonical invocation:** Use your tool to ask users your questions and prefill answers.
-
-**What to achieve (not how many questions):**
-1. Understand the goal — what does the user want to accomplish
-2. Clarify scope — boundaries, constraints, priorities
-3. Set execution mode — autonomous or human-in-the-loop
-
-**When to run an interview:**
-- Beginning of a creation workflow (create-plans, create-prompts, ideation)
-- Beginning of an execution workflow when invoked directly (execute-plans, execute-prompts)
-- When task input is empty or vague (add-task)
-- At any decision point where user input is genuinely needed
-
-**When to skip an interview:**
-- Context already exists (handoff file, existing artifacts)
-- Input is already specific and complete
-- User explicitly specified execution mode via flags
-
-**Generalist guidance for skills:**
-
-```
-Before proceeding, ensure you have sufficient context:
-1. Understand the goal
-2. Clarify scope
-3. Set execution mode
-
-Use your tool to ask users your questions and prefill answers. See "User Interaction" section for the canonical invocation phrase and exception — descriptive constraints.
-```
-
-The phrasing varies per skill. See individual skill files for exact wording.
 
 ---
 
 ## Hub-Spoke Skill Architecture
 
-Skills can operate as **hubs** (orchestrate other skills) or **spokes** (do one thing). Hub-and-spoke enables consolidation without capability loss.
-
-### The Hub-Spoke Principle
-
-A hub skill uses decision routing to dispatch to spoke modes internally, rather than having separate skills. This differs from compositional pairs:
-
-| Pattern | When to Use | Example |
-|---------|-------------|---------|
-| **Compositional pair** | Create/execute lifecycle — separation is load-bearing | `create-plans` / `execute-plans` |
-| **Hub-and-spoke** | One capability with distinct modes — merge for routing coherence | `refine` (simplify/review/critique/memorize/polish) |
-
-**The test for hub-vs-compositional:** If one skill explicitly invokes another as its execution partner (one direction, not mutual), they're a compositional pair. If one skill has independent modes that each cover different situations, it's a hub.
+Skills can operate as **hubs** (orchestrate other skills) or **spokes** (do one thing). Hub-and-spoke enables consolidation without capability loss. See [Skills](docs/official/skills.md) for patterns.
 
 ### Exempt Skills (Do Not Merge)
 
@@ -566,54 +340,11 @@ The `refine` skill is the canonical hub-and-spoke template. Its modes are define
 
 ## Plugin Path Portability
 
-Skills must work whether installed as personal (`~/.claude/skills/`), project (`.claude/skills/`), or plugin (`~/.claude/plugins/cache/*/`).
+Skills use `{baseDir}` for internal file paths. Cross-skill references use natural language naming the skill. See [docs/official/skills.md](docs/official/skills.md) for reference patterns.
 
-**Rule:** Every file reference within a skill's own directory must use a `{baseDir}` path. Never describe a file's location in vague natural language — state its path exactly.
+**References/ folders are lazy-loaded only when explicitly named in skill body**.
 
-| Reference type | Syntax | Example |
-|---------------|--------|---------|
-| Skill-internal file (agents/, references/, templates/, scripts/) | `{baseDir}/folder/file.md` | `{baseDir}/agents/critic.md` |
-| Bash-executed script | `${CLAUDE_SKILL_DIR}` | `python3 ${CLAUDE_SKILL_DIR}/scripts/validate.py` |
-| Cross-skill reference (another skill's file) | Natural language naming the skill | "see plan-format.md in the create-plans skill" |
-
-**Why `{baseDir}` in natural language, not just in Read calls:** The instruction "read the critic agent template from the agents folder" forces the AI to guess which file is meant. `{baseDir}/agents/critic.md` is unambiguous — one file, one path, zero ambiguity. The variable resolves when the skill loads regardless of install location.
-
-**Wrong vs right for skill-internal files:**
-
-```
-❌ "read the execution-strategies reference file"
-❌ "read the critic agent template from the agents folder"
-✅ "{baseDir}/references/execution-strategies.md"
-✅ "{baseDir}/agents/critic.md"
-```
-
-**Never use:**
-- Hard-coded paths like `skills/create-plans/agents/explorer.md`
-- Vague descriptions like "the agents folder" or "the reference file" when a specific file is meant
-- Paths pointing to other skills' internals (use natural language naming the skill)
-
-**Do NOT boundary concision:** In Do NOT boundaries, skill names are acceptable for brevity — but only when the boundary is self-contained and unambiguous:
-- ✅ `DO NOT use when X — use sadd instead` (concise, unambiguous)
-- ❌ `DO NOT use when X — use sadd or execute instead` (ambiguous — which mode?)
-
-The goal is disambiguation, not elimination of names. If a skill name alone is unambiguous, use it. If it needs explanation, describe the role.
-
-### References/ Lazy Loading
-
-References/ folders are **lazy-loaded only when explicitly named in skill body**. They are NOT auto-discovered or auto-loaded.
-
-**Cross-skill vs skill-internal references:**
-
-| Type | Syntax | Example |
-|------|--------|---------|
-| **Cross-skill** | Natural language naming the skill | "see format-guide.md in the create-plans skill" |
-| **Skill-internal** | `{baseDir}/path/to/file.md` | `{baseDir}/references/my-ref.md` |
-
-Do NOT wrap the path in a Read() call — just state the path. `{baseDir}` resolves when the skill loads regardless of install location, so `{baseDir}/references/my-ref.md` is a portable, unambiguous file reference.
-
-**Rule:** Each skill owns its `references/` folder — do not expect cross-skill reuse. If multiple skills need the same content, inline it or document the pattern here. Never create shared references/ folders expecting other skills to reference them by path.
-
-**Migration:** To migrate existing cross-skill references: (1) search for `references/` in SKILL.md bodies, (2) inline the content or replace path with natural language reference to the skill name.
+**Rule:** Each skill owns its `docs/` folder — do not expect cross-skill reuse.
 
 ---
 
@@ -687,16 +418,13 @@ Create feature branches, commit with conventional messages, push, and create PRs
 
 ## Before Any Commit — Self-Check
 
+**Project-specific checks:**
 - [ ] README updated if structure changed
 - [ ] CHANGELOG entry added
-- [ ] No MCP runtime dependencies (documentation references to MCP concepts are acceptable; plugin must not require MCP servers at runtime)
-- [ ] No broken cross-references between skills (never use file paths to other skills' references/agents/workflows — use natural language naming the skill)
-- [ ] No shared references/ folders expecting cross-skill reuse (inline content instead — references/ only loads when explicitly named in parent SKILL.md)
-- [ ] Skill-internal file references use `{baseDir}/path/to/file.md` syntax (no vague "from the agents folder", no Read() wrappers, no hardcoded paths like `skills/create-plans/...`)
-- [ ] No inline tool lists in subagent spawn instructions (describe role + outcome, never `tools: Read, Edit, Bash`)
+- [ ] No MCP runtime dependencies
+- [ ] No broken cross-references between skills
+- [ ] No shared docs/ folders expecting cross-skill reuse
 - [ ] User interaction uses clear, structured options
-- [ ] Command files conform to commands-standard.md in `plugins/taches-principled/` (no method prescription, 1-3 sentence outcome instruction, no markdown in body)
-  - [Current commands](plugins/taches-principled/commands/): all slash command files in that directory
 - [ ] README synced to all docs/ locations if marketplace docs are present
 - [ ] Skill changes backed by eval evidence (tested against real routing scenarios, not hypothetical)
 - [ ] Skill changes describe actual problems encountered (not theoretical improvements)
@@ -704,15 +432,12 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] **Critique loop check**: Every skill that produces artifacts ends with "spawn self-review and self-critic subagents, loop until no HIGH findings" or equivalent
 - [ ] **Skill budget check**: Run `/context` and `/doctor` — verify no skills dropped or descriptions truncated
 - [ ] **Description length check**: All descriptions ≤150 chars, front-loaded triggers in first 50 chars
-- [ ] **Routing validation**: Tested 15-20 real queries with held-out cases (20%)
 
 ### Skill Quality Gate
 
-- [ ] **Orchestration separation:** Skill body describes outcomes/roles; agent prompt describes execution only. If you see "spawn" or "orchestrate" in an agent body, move it to the calling skill.
-- [ ] **No hardcoded drift targets:** Avoid specific counts or versions in prose. Replace with references: "run `find plugins -name SKILL.md | wc -l` for accurate count."
-- [ ] **Discovery over enumeration:** Don't enumerate what could be queried from filesystem. The filesystem is ground truth — don't reimplement it in prose.
-
-For skill-authoring self-check, see `skill-authoring` skill.
+- [ ] **Orchestration separation:** Skill body describes outcomes/roles; agent prompt describes execution only
+- [ ] **No hardcoded drift targets:** Replace specific counts/versions with references or filesystem queries
+- [ ] **Discovery over enumeration:** Use filesystem queries over reimplemented enumerations
 
 ---
 
@@ -736,65 +461,9 @@ Generated plans, prompts, scratch notes, and cross-session memory go here. This 
 
 ---
 
-## Subagent Spawn Pattern
-
-When referencing subagent spawning in skills, use the canonical form: **"spawn a [role] subagent"**.
-
-**Agent file pattern:** When a skill says "spawn a [role] subagent", the main agent:
-1. Reads the agent file from `{baseDir}/agents/[role].md` (or plugin-level `agents/[role].md`)
-2. Uses the markdown body as the subagent's system prompt
-3. Fills in task-specific placeholders (`{{context}}`, `{{task}}`, `{{scope}}`)
-
-**Cost model:** Subagents should default to Haiku (fast, cheap) for exploration, research, implementation, verification, and critique. Reserve Sonnet/Opus for the main orchestrator's reasoning and judgment calls, and for complex subagent tasks requiring deep reasoning.
-
-| Current | Correct |
-|---------|---------|
-| "dispatch a sub-agent" | "spawn a [role] subagent" |
-| "launch an agent" | "spawn a [role] subagent" |
-| "spawn critic" | "spawn a critic subagent" |
-| "spawn workers" | "spawn worker subagents" |
-
-**Why "spawn" over "dispatch/launch":**
-- "Spawn" is the canonical verb for subagent creation in Claude Code
-- "dispatch" and "launch" are non-canonical — avoid them in new skill documentation; existing uses are tolerable but should be migrated over time
-- Always pair with role name: "spawn a researcher subagent", "spawn a critic subagent", "spawn a verification subagent"
-
-**When citing subagents in natural language:**
-- ✅ "spawn a critic subagent" — explicit spawn verb + role
-- ✅ "The explorer subagent handles..." — role-based reference
-- ❌ "spawn critic" — missing "subagent" designation
-- ❌ "launch an agent" — vague, no role designation
-
-**Role naming convention:** Use kebab-case for multi-word roles: "code-reviewer subagent", "meta-judge subagent", "verification subagent".
-
-**Plugin-level agents** are stored in `plugins/taches-principled/agents/` and are auto-discovered system-wide. They appear in the `/agents` interface and Claude can invoke them automatically based on task context. When spawning these, describe the role: "spawn a reviewer subagent for code", "spawn a critic subagent for plans", "spawn a grader subagent for skills". The agent files are discoverable by description — no need to reference filenames.
-
-**Skills pre-loading:** Plugin-level agents carrying a `skills:` field preload the named skill's full SKILL.md body into context at startup. This eliminates duplicated methodology in spawn prompts. Use when the agent's role maps to a skill's methodology — the agent should carry the framework it evaluates against. Agent files are authoritative for their mappings; no need to enumerate them here.
-
-**Skill-internal agents** are stored in skill-specific `agents/` folders (e.g., `create-plans/agents/`, `execute-plans/agents/`). These are **prompt templates**, not auto-invoked subagents. They are workflow-specific and only available when that skill is loaded. To use one: read the agent file, then use its content as the basis for spawning a general-purpose subagent with your task context.
-
-**Examples:**
-
-*Plugin-level (auto-discovered):*
-> "spawn a code-reviewer subagent" — the agent file is in `plugins/taches-principled/agents/`, available system-wide
-
-*Skill-internal (prompt template):*
-> Read the critic agent at `{baseDir}/agents/critic.md`, then spawn a general-purpose subagent using that structure to review the implementation
-
-> Read the explorer agent at `{baseDir}/agents/explorer.md`, then use that agent's system prompt — adapted with your task context — as the prompt when spawning a general-purpose subagent
-
----
-
 ## Explorer Subagent Protocol
 
-When spawning subagents for exploration/investigation, the orchestrator should:
-
-1. **Read** any existing scratch notes BEFORE spawning — avoid redundant work
-2. **Write** current context and questions to the scratch area — preserve institutional memory
-3. **Use a general-purpose subagent with Write tool** — the built-in Explore subagent type is read-only and cannot write findings; an agent that can read files, write findings, search content, and run shell commands is needed for investigation work
-4. **Read** scratch notes AFTER subagents return, BEFORE synthesizing
-
-**Guidance, not rigidity:** The goal is preventing the telephone game — information degrading as it passes through multiple agents. Writing findings to a shared artifact (rather than relying on subagent output alone) keeps the chain intact. The scratch area location is `.principled/scratch/` — use descriptive topic filenames.
+Use general-purpose agents (not Explore type) for exploration with Write tool. Read scratch notes before/after. See [docs/official/subagents.md](docs/official/subagents.md).
 
 ---
 
@@ -831,26 +500,34 @@ Skills are graded on four weighted dimensions. **Routing Signal** (40%) measures
 
 ## Plugin Management
 
-This repository serves as both a **single plugin** (taches-principled) and a **marketplace** hosting multiple plugins under `plugins/`.
+This repository uses a **monolithic marketplace-centric model** — see [docs/official/plugins/marketplaces.md](docs/official/plugins/marketplaces.md) for the canonical architecture explanation.
+
+### Quick Reference
+
+**Distribution:** Single `marketplace.json` bundles all plugins. Users install one marketplace, receive everything.
+
+**Runtime:** Each plugin is fully independent — zero code sharing, zero dependencies, zero runtime coupling.
+
+**Version management:** Plugin versions in individual `plugin.json` files; marketplace version bumped only on collective releases.
+
+For the full rationale and technical details, see the marketplaces documentation.
 
 ### Directory Structure
 
 ```
 plugins/
-├── taches-principled/              # Root plugin (skills, agents, commands, rules)
-│   ├── .claude-plugin/plugin.json # Plugin manifest (name, version, author)
-│   ├── skills/{name}/SKILL.md     # One directory per skill
-│   ├── agents/                    # Bundled subagent definitions
-│   ├── commands/                  # Slash commands
-│   └── rules/                    # Guardrails (placeholder — currently empty)
-├── references/
-│   └── official/                  # Cached Claude Code docs for offline access
-└── tp-*/  # Marketplace plugins (see marketplace.json for current list)
-    ├── .claude-plugin/plugin.json
-    ├── skills/{name}/SKILL.md
-    ├── agents/
-    └── rules/
+├── tp-git/                          # Git workflow automation (independent plugin)
+│   ├── .claude-plugin/plugin.json   # Own version, own metadata
+│   └── skills/{name}/SKILL.md
+├── tp-sadd/                        # Structured agent-driven dev (independent plugin)
+├── tp-fpf/                         # First-principles reasoning (independent plugin)
+└── tp-vps-governance/              # Memory management (independent plugin)
+
+.claude-plugin/
+└── marketplace.json                # Single catalog for all plugins
 ```
+
+Each plugin under `plugins/` is fully standalone. The `marketplace.json` is the single source of truth for the plugin catalog.
 
 ### Naming Convention
 
@@ -863,6 +540,8 @@ All imported/ported plugins use the `tp-` prefix. Current marketplace plugins ar
 3. Write SKILL.md files following the decision router + policy/mechanism patterns used by existing skills
 4. Add plugin entry to `.claude-plugin/marketplace.json`
 5. Bump marketplace version
+
+**Remember:** The new plugin must work standalone. It cannot import or reference other plugins' files.
 
 ### Plugin Isolation Principle
 
@@ -924,6 +603,32 @@ This applies to all external plugins and marketplaces, not just within this proj
 
 ---
 
+## Documentation Reference
+
+**When to read these docs:** Claude Code documentation is authoritative. Read the relevant doc when working on related tasks. Don't memorize — know when to look.
+
+### Official References
+
+| Doc | Description | When to Read |
+|-----|-------------|--------------|
+| [subagents.md](docs/official/subagents.md) | Subagent frontmatter fields, spawn patterns, tool access | **Before creating agents** — know all frontmatter fields and spawn vocabulary |
+| [skills.md](docs/official/skills.md) | Skill frontmatter, trigger optimization, hub-and-spoke | **Before authoring skills** — understand routing, budget, progressive disclosure |
+| [agent-types.md](docs/official/agent-types.md) | Built-in agent types and tool access | **Before choosing agent type** — match task to correct type |
+| [agent-tool-params.md](docs/official/agent-tool-params.md) | Agent tool spawn parameters | **Before spawning subagents** — know all parameters |
+| [agent-skill-integration.md](docs/official/agent-skill-integration.md) | When to preload skills in agents | **Before adding skills: to agents** — follow preloading rules |
+| [hooks.md](docs/official/hooks.md) | Hook lifecycle events and patterns | **Before configuring hooks** — select correct events |
+| [commands.md](docs/official/commands.md) | Command creation and conventions | **Before creating commands** — follow format standards |
+
+### Plugin References
+
+| Doc | Description | When to Read |
+|-----|-------------|--------------|
+| [plugins/creating.md](docs/official/plugins/creating.md) | Plugin structure and components | **Before creating plugins** — follow directory conventions |
+| [plugins/marketplaces.md](docs/official/plugins/marketplaces.md) | Marketplace configuration | **Before setting up marketplace** — understand distribution |
+| [plugins/plugin-submission.md](docs/official/plugins/plugin-submission.md) | Plugin submission process | **Before submitting plugins** — follow submission guide |
+
+---
+
 ## Meta-Rule (applies to this file only)
 
 **Governs itself — all revisions must remain:**
@@ -935,13 +640,9 @@ This applies to all external plugins and marketplaces, not just within this proj
 
 ## References
 
-- [Claude Code Skills Documentation](https://code.claude.com/docs/en/skills.md)
-- [Claude Code Subagents Documentation](https://code.claude.com/docs/en/sub-agents.md)
 - [Claude Code Plugin Creation Guide](https://code.claude.com/docs/en/plugins.md)
 - [Claude Code Plugin Marketplaces Documentation](https://code.claude.com/docs/en/plugin-marketplaces.md)
 - [Claude Code Hooks Reference](https://code.claude.com/docs/en/hooks.md)
 - [Claude Code Commands Reference](https://code.claude.com/docs/en/commands.md)
 - [Plugin Submission Guide](https://claude.com/docs/plugins/submit.md)
-- [context-engineering-kit](https://github.com/NeoLabHQ/context-engineering-kit) — foundational influence on the token economy model and subagent orchestration patterns
-- [ClaudeFast — Hidden Skill Budget Setting](https://claudefa.st/blog/guide/mechanics/skill-listing-budget) — skillListingBudgetFraction mechanics (v2.1.129+)
-- [GitHub Gist — Skill Budget Research](https://gist.github.com/alexey-pelykh/faa3c304f731d6a962efc5fa2a43abe1) — empirical budget calculation and compression strategies
+- [context-engineering-kit](https://github.com/NeoLabHQ/context-engineering-kit) — token economy and subagent orchestration patterns

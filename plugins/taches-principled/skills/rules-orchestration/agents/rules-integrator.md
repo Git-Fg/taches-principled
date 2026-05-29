@@ -1,7 +1,6 @@
 ---
 name: rules-integrator
 description: "Integrates approved rule proposals into .claude/rules/ and CLAUDE.md. Handles file creation, updates, and git operations."
-context: fork
 model: sonnet
 tools: Read, Write, Edit, Bash, Grep, Glob
 ---

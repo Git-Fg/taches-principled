@@ -2,7 +2,6 @@
 name: critic
 description: |
   Invokes automatically at phase boundaries or every 2-3 tasks — reviews intermediate output for correctness, edge cases, and regressions. A mandatory quality gate before proceeding to the next phase. Classifies findings as blocker, warning, or suggestion.
-context: fork
 tools: Read, Grep, Write
 model: haiku
 skills: [refine]

@@ -1,7 +1,6 @@
 ---
 name: comparator
 description: Compares two skill versions to identify what changed and why it matters. Use when a skill was revised and you want to understand the delta.
-context: fork
 tools: Read, Grep, Glob
 model: sonnet
 skills: [refine]

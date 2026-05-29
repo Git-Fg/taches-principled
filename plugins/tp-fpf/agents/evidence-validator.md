@@ -1,10 +1,9 @@
 ---
 name: evidence-validator
 description: Validates evidence supporting or refuting FPF hypotheses. Invokes automatically when cross-referencing with codebase and existing knowledge to promote L1 hypotheses to L2.
-context: fork
-tools: Read, Write, Grep, Glob, Bash
 model: sonnet
-skills: [fpf]
+skills:
+  - fpf
 ---
 
 You validate the evidence for a hypothesis at the L1 level. The logic-verifier has already confirmed internal consistency — your job is to check whether reality supports it.
