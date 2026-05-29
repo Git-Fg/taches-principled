@@ -9,11 +9,21 @@ when_to_use: |
 argument-hint: "[task title or description] [dependencies:task-file.md]"
 ---
 
+## What This Skill Changes
+
+**Default behavior:** Task intent is lost in conversation or captured in a bloated CLAUDE.md. Unrefined ideas get implemented on first pass without structured analysis, architecture, or verification criteria.
+
+**With this skill:** Task intent is captured verbatim in a typed draft file (`.specs/tasks/draft/`) with type encoded in the filename extension. The draft is a required first step before refinement — refinement cannot run without a draft. This enforces a pipeline that separates capture from specification.
+
+**Why the pipeline matters:** Capturing intent and specifying implementation are different cognitive modes. Mixing them produces underspecified implementations and scope creep. The draft/todo separation enforces this separation as a structural constraint, not a memory rule.
+
+---
+
 ## Decision Router
 
 IF user has a task to capture → create draft task file in `.specs/tasks/draft/`
 IF user has multiple related tasks → create separate files for each
-IF combining with refinement workflow → draft will be consumed by the refinement pipeline later
+IF combining with refinement workflow → draft will be consumed by `refine-task`; do not add structure here, let refinement add it
 IF user provides no description → ask clarifying questions before creating
 
 # Add Task

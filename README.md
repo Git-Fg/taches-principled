@@ -1,6 +1,6 @@
 # TACHES Principled
 
-**Version:** 0.9.0
+**Version:** 0.10.0
 
 A Claude Code plugin for building skills, subagents, hooks, and project plans.
 
@@ -93,9 +93,9 @@ Specialized agents for quality, review, and evaluation work.
 | **prompt-engineer** | Reviews prompts for clarity and effectiveness |
 | **debug-tracer** | Systematic debugging and root cause tracing |
 
-### 7 Marketplace Plugins
+### 8 Marketplace Plugins
 
-Seven standalone plugins, each independently installable. Each extends the core with specialized capabilities.
+Eight standalone plugins, each independently installable. Each extends the core with specialized capabilities.
 
 | Plugin | Focus |
 |--------|-------|
@@ -106,6 +106,7 @@ Seven standalone plugins, each independently installable. Each extends the core 
 | **tp-ddd** | Domain-driven design guardrails |
 | **tp-force-multiplier** | Hook-driven coaching for subagent and skill usage |
 | **tp-vps-governance** | Config auditing and memory curation for VPS |
+| **tp-meta** | Session meta-review, behavioral analysis, and GitHub issue reporting |
 
 ## Installation
 
@@ -131,9 +132,7 @@ claude plugin install tp-sadd
 claude plugin install tp-tdd
 claude plugin install tp-force-multiplier
 claude plugin install tp-vps-governance
-```
-
-### Individual Plugin Installation
+claude plugin install tp-meta
 
 Install only the plugins you need:
 
@@ -149,6 +148,7 @@ claude plugin install tp-sadd            # Structured agent-driven development
 claude plugin install tp-tdd             # Test-driven development
 claude plugin install tp-force-multiplier # Hook-driven coaching
 claude plugin install tp-vps-governance  # VPS governance
+claude plugin install tp-meta             # Session meta-review
 ```
 
 ### Reinstall / Reset
@@ -157,7 +157,7 @@ To fully reinstall from scratch:
 
 ```bash
 # Uninstall all plugins
-claude plugin uninstall taches-principled tp-ddd tp-fpf tp-git tp-sadd tp-tdd tp-force-multiplier tp-vps-governance
+claude plugin uninstall taches-principled tp-ddd tp-fpf tp-git tp-sadd tp-tdd tp-force-multiplier tp-vps-governance tp-meta
 
 # Remove marketplace
 claude plugin marketplace remove taches-principled

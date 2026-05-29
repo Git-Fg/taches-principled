@@ -487,4 +487,4 @@ Agent definitions already configure tools per role. Inline lists duplicate this 
 - **Plugin version**: Incremented for any content change
 - **Marketplace version**: Incremented for collective updates across plugins
 
-When adding new agents, bump the plugin version in `.claude-plugin/plugin.json`.
+When adding new agents, bump the plugin version in `.claude-plugin/marketplace.json` (the sole version source under `strict: false`).

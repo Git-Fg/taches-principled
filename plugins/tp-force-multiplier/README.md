@@ -28,10 +28,6 @@ PostCompact: "Consider spawning subagents to offload work before context pressur
 
 This plugin is part of the taches-principled marketplace. Install via Claude Code plugin marketplace.
 
-## Customization
-
-Create `skills/force-multiplier/SKILL.md` to customize thresholds and messages.
-
 ## Principles
 
 - **Semantic only**: Describe behavior, don't name tools/skills

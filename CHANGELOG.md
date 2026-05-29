@@ -2,6 +2,15 @@
 
 All notable changes are documented here.
 
+## [0.10.0] — 2026-05-29
+
+### Added
+- **tp-meta plugin**: Session meta-review and behavioral analysis plugin with 3 skills, 1 agent, and 3 commands.
+  - `session-inspect` skill: parses Claude Code session transcripts (JSONL) into structured data — tool calls, errors, cost, loaded plugins, behavioral events.
+  - `meta-review` skill: reviews sessions for behavioral anti-patterns, investigates root causes with parallel subagent fan-out, and produces scoped findings.
+  - `meta-issue` skill: creates GitHub issues from meta-review findings, sanitized for public sharing with privacy audit gate.
+  - `meta-reviewer` agent: diagnostic agent that reads JSONL transcripts and identifies tool misuse, skipped verifications, and instruction-following failures with root cause scoping (PLUGIN/USER-FILE/ENVIRONMENT/MODEL).
+
 ## [0.9.0] — 2026-05-27
 
 ### Added

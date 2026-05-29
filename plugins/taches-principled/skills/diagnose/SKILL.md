@@ -9,27 +9,24 @@ when_to_use: |
   - "why did this happen"
   - "trace this back"
   - "what's causing this"
-  - "dig deeper into why X is broken"
-  - "what's the underlying cause"
   - "trace the root cause of X"
-  - "apply five whys to this"
-  - "run a fishbone analysis on X"
-  - "why is X failing" (when X is a recurring problem)
-  - "analyze this"
-  - "look into this code"
-  - "what's wrong here"
-  - "find the problem"
+  - "apply five whys"
+  - "fishbone analysis"
   - "trace this bug"
-  - "find where it started"
   - "what called this"
-  - "where did this come from"
-  - "figure out what's wrong"
-  - "root cause"
-  - "why is this happening"
-  IMMEDIATELY when investigating incidents, recurring issues, systemic failures, or bugs with long call chains. Use AUTO mode for method auto-selection when the problem type is unclear.
-  CONTRAST with fpf: diagnose investigates why something is broken (past-focused); fpf evaluates competing options to decide a path forward (future-focused). Prefer diagnose when "problem" or "issue" appears without alternatives specified.
-  CONTRAST with refine: diagnose investigates why something is broken (past, causal); refine improves quality of existing artifacts (present, corrective). Prefer diagnose when the issue is unknown; prefer refine when the issue is known and needs fixing.
+  IMMEDIATELY when investigating incidents, recurring issues, systemic failures, or bugs with long call chains.
+  CONTRAST with fpf and refine: diagnose investigates why something is broken (past, causal, unknown type); fpf evaluates competing options to decide a path forward (future); refine improves known artifacts (present, corrective). Prefer diagnose when "problem" or "issue" appears without alternatives.
 argument-hint: "[problem description] [--mode A3|FIVE-WHYS|FISHBONE|STACK-TRACE|AUTO]"
+---
+
+## What This Skill Changes
+
+**Default behavior:** Claude assumes symptoms are the problem — it fixes where errors appear and follows the happy path forward through code, missing the actual trigger.
+
+**With this skill:** Claude traces backward from symptoms to root causes. Each investigation method (A3, Five Whys, Fishbone, Stack Trace) targets a different problem structure. AUTO mode removes method-selection overhead when the problem type is already clear.
+
+**Why this matters:** Fixing symptoms is the most expensive kind of fix. Every "I fixed it" that recurs with a different input is a symptom-level fix. Systematic root cause tracing produces solutions that don't come back.
+
 ---
 
 ## Decision Router

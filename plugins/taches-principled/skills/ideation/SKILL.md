@@ -10,10 +10,7 @@ argument-hint: "[feature concept, problem, or topic]"
 ## Decision Router
 
 IF user wants to explore or refine an unformed idea → use brainstorm mode: collaborative questioning to refine
-IF user wants creative idea generation (not refinement) → use create-ideas mode
-  **ALWAYS spawn 3 high-probability anchor subagents for convergent exploration**
-  **ALWAYS spawn 3 diverse subagents for divergent tail exploration**
-  **ALWAYS aggregate findings inline after parallel completion**
+IF user wants creative idea generation (not refinement) → use **create-ideas** mode
 IF user has simple task capture needs → use add-task instead
 IF user needs formal planning with milestones → use create-plans instead
 IF user already knows exactly what they want → skip to design capture directly
@@ -32,6 +29,33 @@ IF idea is fully formed and documented → no need for this skill
 
 - CONTRAST with add-task: ideation explores and refines ideas through dialogue; add-task captures task intent for later refinement. Use ideation when the idea is vague; use add-task when intent is clear.
 - CONTRAST with create-plans: ideation explores what to build and why; create-plans decomposes what to build into executable tasks. Use ideation at concept stage; use create-plans at decision stage.
+
+---
+
+## What This Skill Changes
+
+**Default behavior:** Claude treats "design this" as design-capture — it asks for requirements and jumps to a solution. "Brainstorm" requests get flattened to a list rather than explored through dialogue.
+
+**With this skill:** Idea exploration is preceded by constraint elicitation. "Design this" requests trigger collaborative dialogue before any solution generation. create-ideas mode generates 6 probability-weighted options (3 anchors, 3 tail) rather than 1-2 variations.
+
+**Why probability sampling:** High-probability anchors cover the obvious solutions. Low-probability tail explorations prevent premature convergence on the first plausible option. Without both, brainstorming produces safe consensus, not creative options.
+
+---
+
+## Execution Mode
+
+**Default: subagent delegation.** For creative idea generation, spawn parallel subagents. The main agent synthesizes results — it never generates ideas inline.
+
+**Spawn pattern for create-ideas mode:**
+- ALWAYS spawn 3 **high-probability anchor** subagents for convergent exploration (>0.80 probability)
+- ALWAYS spawn 3 **diverse tail** subagents for divergent exploration (<0.10 probability)
+- ALWAYS aggregate findings inline after all 6 complete
+- Scope: the topic, the generative brief, constraints from brainstorm mode (if any)
+- Output: `.specs/plans/<topic>.design.md`
+
+**Spawn pattern for brainstorm mode:**
+- Main agent runs collaborative dialogue directly
+- Spawn explorer subagent only when codebase research is needed to validate constraints
 
 # Brainstorm Mode
 

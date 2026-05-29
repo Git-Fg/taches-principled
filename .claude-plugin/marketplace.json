@@ -1,6 +1,6 @@
 {
   "name": "taches-principled",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "strict": false,
   "owner": { "name": "Felix" },
   "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, and development skills.",
@@ -145,6 +145,25 @@
         "governance",
         "config-audit",
         "memory"
+      ]
+    },
+    {
+      "name": "tp-meta",
+      "source": "./plugins/tp-meta",
+      "version": "0.1.0",
+      "displayName": "TP Meta Review",
+      "author": { "name": "Felix", "email": "felix@example.com" },
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "description": "Session meta-review and behavioral analysis — parse transcripts, diagnose anti-patterns, investigate root causes, and create GitHub issues from findings.",
+      "keywords": [
+        "taches-principled",
+        "claude-code",
+        "meta-review",
+        "session-analysis",
+        "behavioral-review",
+        "self-critic"
       ]
     }
   ]

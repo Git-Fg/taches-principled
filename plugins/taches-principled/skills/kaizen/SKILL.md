@@ -11,6 +11,16 @@ when_to_use: |
 argument-hint: Applied automatically when implementing, refactoring, designing, or handling errors
 ---
 
+## What This Skill Changes
+
+**Default behavior:** Claude makes code decisions on intuition — adds abstractions for anticipated flexibility, fixes multiple issues at once, handles errors after they occur, and introduces new patterns without checking existing conventions.
+
+**With this skill:** Every code decision gets filtered through four design-time constraints. Abstractions require concrete current need (YAGNI/JIT). Fixes land one at a time, verified between each. Errors are prevented at design time through type systems and validation layers. New patterns require team consensus before entering the codebase.
+
+**Why this matters:** Design-level constraints are 10x cheaper than runtime fixes. Catching bad abstractions and speculative code at decision time prevents months of refactoring debt.
+
+---
+
 ## Decision Router
 
 IF implementing code, refactoring, making architecture decisions, or handling errors → apply all four kaizen pillars as design-time constraints
