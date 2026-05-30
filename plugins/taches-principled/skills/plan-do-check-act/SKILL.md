@@ -1,6 +1,6 @@
 ---
 name: plan-do-check-act
-description: Four-phase iterative PDCA cycle: plan a change, implement at small scale, measure results, then standardize or adjust based on evidence.
+description: "Plan a change, try it at small scale, measure results, then standardize or adjust based on evidence."
 when_to_use: |
   Use when the user says "let's try an experiment", "test this hypothesis", "run a PDCA cycle", "try this and measure it", "design a test", "plan an experiment", "A/B test this", or "measure improvement".
   IMMEDIATELY when solving problems where outcomes need measurement — BEFORE concluding, standardizing, or shipping.

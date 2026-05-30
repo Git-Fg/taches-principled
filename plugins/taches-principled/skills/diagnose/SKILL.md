@@ -1,6 +1,6 @@
 ---
 name: diagnose
-description: "Auto-selects investigation method: A3, Five Whys, Fishbone, Stack Trace. Use when analyzing problems or finding root causes."
+description: "Find root causes of recurring problems, failed fixes, and complex bugs. Auto-selects the right investigation method."
 allowed-tools: Read, Write
 when_to_use: |
   Use when the user says:

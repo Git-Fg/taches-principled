@@ -1,6 +1,6 @@
 ---
 name: security
-description: "Security scan: vulnerabilities, secrets, auth patterns. Modes: SAST, DEPENDENCY-AUDIT, SECRETS-DETECTION, COMPLIANCE."
+description: "Scan for security vulnerabilities, exposed secrets, and broken authentication patterns before production deployment."
 allowed-tools: Read, Grep, Glob, Bash, Edit
 when_to_use: |
   SAST: 'security audit', 'XSS', 'SQL injection', 'auth review'

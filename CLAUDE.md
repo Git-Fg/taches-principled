@@ -160,15 +160,35 @@ Three fields control tool access, each with different semantics:
 
 **SDK caveat:** `allowed-tools` only works in Claude Code CLI. The Agent SDK ignores it entirely — SDK consumers must use their own `allowedTools` parameter.
 
-### Skill Discovery Optimization
+### Skill Discovery & Routing Metadata
 
-**Claude under-triggers skills.** Research shows the model naturally under-invokes without explicit trigger phrases. This is the primary failure mode — not routing logic errors. The routing mechanism is pure LLM semantic reasoning: Claude reads the skill listing in its system prompt and matches user intent against descriptions using native language understanding. There is no algorithmic routing, no keyword matching, no embedding search.
+**Discovery is a "Metadata-Only" Gate.** Claude decides which skill to load based **exclusively** on the text pre-injected into its system prompt. At the moment of routing, the skill **body is invisible.**
+
+**Routing Participants — Fields Only:**
+- **Skills:** `description` + `when_to_use`
+- **Agents:** `description` (NOT the body prompt)
+- **Commands:** `description`
+
+**Metadata vs. Body Strategy:**
+- **Metadata (The "Hook"):** Must use **User Vocabulary**. Speak how the user thinks (e.g., "Find the bug," "Clean up this code"). Avoid technical methodology (no "Fishbone," "ADI," or "Heuristics"). If the user doesn't say it, don't put it in the metadata.
+- **Body (The "Method"):** Must use **Technical Precision**. This is where you teach the specialized framework. Once the skill is loaded, jargon is a tool for accuracy.
+
+**The 200-Character Rule:** Triggers must appear in the first 200 characters of the metadata. Anything later is subject to truncation in high-context sessions and becomes an unreliable signal.
+
+**The "Context: Fork" Signal:** If a skill uses `context: fork`, the metadata **MUST** include words like "fan out," "delegate," or "spawn subagents." This signals to the router that this is an orchestration capability, not an inline task.
+
+**Anti-Pattern — No Method Leaking:** Never put the "How" in the `description`.
+- *Bad:* "Uses A3 methodology to document root causes."
+- *Bad:* "Complete test lifecycle — Red-Green-Refactor TDD"
+- *Good:* "Document and solve major recurring problems or failures."
+- *Good:* "Write tests first, then implementation."
+
+This separation is intentional: frontmatter must match user vocabulary for routing; body teaches domain experts with precise terminology after the skill loads. Never remove technical terms from the body — only from description and when_to_use.
 
 **Reliable triggering requires:**
 - **User vocabulary in frontmatter**: "find the root cause" beats "A3 analysis" — speak how users think
 - **Specific phrases**: 5-10 triggers, no generic words ("improve" matches everything)
 - **CONTRAST sections**: Overlapping domains need explicit disambiguation
-- **Front-load in first 200 chars**: Truncation happens from the end
 - **Subagent signal**: Descriptions of skills that delegate should mention "spawn subagents" or "fan out" — this signals to Claude that loading this skill means orchestration, not inline execution
 
 **What kills routing:**
@@ -177,20 +197,6 @@ Three fields control tool access, each with different semantics:
 - Vague descriptions matching everything
 - Missing negative cases (what NOT to match)
 - Structured syntax ("ACTIVATES:", "LOOP:", "Output:") — breaks fuzzy semantic matching
-
-**Frontmatter vs Body — The Clear Distinction:**
-
-| Layer | Purpose | Language |
-|-------|---------|----------|
-| **description** | Routing signal — triggers skill loading | User vocabulary only |
-| **when_to_use** | Additional triggers | User vocabulary only |
-| **Body** | Teaching methodology | Technical precision OK |
-
-**Example (tp-fpf):**
-- **Description:** "Generate and evaluate competing hypotheses" (user vocabulary)
-- **Body:** "Execute complete FPF cycle with ADI (Abduction-Deduction-Induction)" (technical)
-
-This separation is intentional: frontmatter must match user vocabulary for routing; body teaches domain experts with precise terminology after the skill loads. Never remove technical terms from the body — only from description and when_to_use.
 
 **Validation (before shipping any skill):**
 ```bash

@@ -2,6 +2,17 @@
 
 All notable changes are documented here.
 
+## [0.11.0] — 2026-05-30
+
+### Changed
+- **CLAUDE.md Skill Discovery**: Rewrote section as "Skill Discovery & Routing Metadata" — explicitly names routing-participant fields (description, when_to_use only), defines the "Metadata-Only Gate" concept, elevates 200-char rule, and adds Anti-Pattern "No Method Leaking" with bad/good examples.
+- **Skill descriptions cleaned** (5 skills, jargon → user vocabulary):
+  - `diagnose`: "A3, Five Whys, Fishbone, Stack Trace" → "Find root causes of recurring problems, failed fixes, and complex bugs"
+  - `security`: "SAST, DEPENDENCY-AUDIT, SECRETS-DETECTION, COMPLIANCE" → "Scan for security vulnerabilities, exposed secrets, and broken authentication patterns"
+  - `kaizen`: "YAGNI" → "avoid over-engineering"
+  - `plan-do-check-act`: "PDCA cycle" → "Plan a change, try it at small scale, measure results"
+  - `tdd`: "Red-Green-Refactor TDD" → "Write tests first, then implementation"
+
 ## [0.10.0] — 2026-05-29
 
 ### Added
