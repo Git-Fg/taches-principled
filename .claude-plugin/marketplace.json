@@ -1,6 +1,6 @@
 {
   "name": "taches-principled",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "strict": false,
   "owner": { "name": "Felix" },
   "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, and development skills.",

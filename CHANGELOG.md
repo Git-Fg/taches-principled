@@ -2,7 +2,11 @@
 
 All notable changes are documented here.
 
-## [0.11.0] — 2026-05-30
+## [0.11.0] — 2026-06-01
+
+### Added
+- **scope-work skill** (canonical plugin): Unified entry point for task lifecycle — infers work scale from input and routes to `add-task` (nano-spec), `refine-task` (task-spec), or `create-plans` (roadmap). 261 lines across SKILL.md + 3 references.
+- **New official docs**: `docs/official/permissions.md` and `docs/official/plugins/plugins-reference.md` (refreshed from source).
 
 ### Changed
 - **CLAUDE.md Skill Discovery**: Rewrote section as "Skill Discovery & Routing Metadata" — explicitly names routing-participant fields (description, when_to_use only), defines the "Metadata-Only Gate" concept, elevates 200-char rule, and adds Anti-Pattern "No Method Leaking" with bad/good examples.
@@ -12,6 +16,33 @@ All notable changes are documented here.
   - `kaizen`: "YAGNI" → "avoid over-engineering"
   - `plan-do-check-act`: "PDCA cycle" → "Plan a change, try it at small scale, measure results"
   - `tdd`: "Red-Green-Refactor TDD" → "Write tests first, then implementation"
+- **Must-do cleanup pass** (commit `55a6ba0`):
+  - H1: Removed 2 tracked `.pyc` files; broadened `.gitignore` to `plugins/**/__pycache__/`
+  - H2: Fixed broken CONTRAST references to non-existent `rule-propagator`
+  - H4: Standardized `tp-force-multiplier` author to "Felix" across all 9 plugins
+  - H5: Added `repository`, `license`, `keywords` to all marketplace.json entries
+  - M3: Moved `commands-standard.md` to `docs/templates/command.md`
+  - M4: Stripped redundant `shell: bash` from 33 files
+  - M5: Stripped redundant `user-invocable: true` from 2 files
+  - M6: Stripped dead YAML frontmatter from 15 templates/workflows
+- **Plugin subagent rename for global uniqueness**: prefixed plugin subagents to avoid collisions when the `Agent` tool resolves across the marketplace:
+  - `plugins/taches-principled/skills/create-plans/agents/{architect,explorer,implementer}` → `plan-{architect,explorer,implementer}`
+  - `plugins/taches-principled/skills/rules-orchestration/agents/{rules-analyzer,rules-auditor,rules-integrator}` → `transcript-rules-{analyzer,auditor,integrator}`
+  - `plugins/tp-sadd/agents/{architect,explorer}` → `sadd-{architect,explorer}`
+  - `plugins/taches-principled/agents/implementer` → `global-implementer`
+  - `plugins/taches-principled/skills/execute-plans/agents/researcher` → `execute-researcher`
+- **README brittleness reduction**:
+  - Stripped 4 magic-number count headers (`### 23 Skills`, `### 14 Commands`, `### 13 Agents`, `### 8 Marketplace Plugins`).
+  - Collapsed 3 enumeration tables (Skills, Commands, Agents) to 5 curated examples each + filesystem pointers.
+  - Fixed unclosed code block fence in "Full Marketplace Setup" (line 110).
+  - Added `### README Hygiene` subsection to CLAUDE.md "Before Any Commit" self-check to make the discipline explicit.
+- **CLAUDE.md description cap reconciliation**: changed self-check from `≤150 chars` to `≤1,536 chars` (combined `description` + `when_to_use`) to match the official cap per `docs/official/skills.md`.
+
+### Removed
+- **Orphan agent files** (untracked, unreferenced, superseded): `global-rules-{analyzer,auditor,integrator}.md` — the `transcript-rules-*` agents in `rules-orchestration/` do this work.
+- **Empty directories**: `plugins/taches-principled/rules/`, `plugins/tp-vps-governance/agents/`.
+- **Tracked Python bytecode** (2 files in `tp-force-multiplier/hooks/__pycache__/`).
+- **Stale `.gitignore` line** referencing the removed `launch-subagent` skill directory.
 
 ## [0.10.0] — 2026-05-29
 
