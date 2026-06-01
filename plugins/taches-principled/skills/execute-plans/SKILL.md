@@ -533,7 +533,7 @@ IF spawning autonomous worker → read the autonomous-execution template
 IF spawning segment worker → read the segment-execution template
 IF spawning milestone critic → spawn a critic subagent (general-purpose with write access)
 IF spawning parallel worker → spawn a global-implementer subagent
-IF spawning researcher → spawn an execute-researcher subagent (namespaced under execute-plans)
+IF spawning researcher → spawn a researcher subagent
 IF spawning verifier → spawn a plan-verifier subagent
 **Orchestration:** Five parallel patterns for subagent work
 

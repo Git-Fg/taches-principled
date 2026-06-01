@@ -58,6 +58,8 @@ Comprehensive analysis of CLAUDE.md hierarchy and .claude/rules/ structure.
    - Token waste from duplication
    - Health score: green / yellow / red
 
+**Token estimation rule:** 1 line of markdown ≈ 12 tokens. Multiply line count by 12 to get token estimate. For averaged estimates (e.g., "~850 tokens"), multiply total line count by 12.
+
 5. **Output** — Present structured report:
    ```
    ## Config Audit Report
@@ -117,6 +119,7 @@ Identifies consolidation opportunities.
    - Unused rules (no matching file patterns in project)
    - Large files that should be split (frontmatter + multiple path-scopes)
 3. Calculate potential token savings per action
+   **Token estimation rule:** 1 line of markdown ≈ 12 tokens. Multiply line count by 12 to get token estimate.
 4. Present prioritized recommendations
 
 ### Output Format
@@ -125,11 +128,11 @@ Identifies consolidation opportunities.
 
 1. [HIGH] Consolidate "TypeScript strict" rule
    Found in: 3 files → Move to .claude/rules/typescript.md
-   Token savings: ~80 tokens
+   Token savings: ~80 tokens (~7 lines saved)
 
 2. [MEDIUM] Add path: frontmatter to rules/code-style.md
    Current: loads everywhere → Target: only src/
-   Token savings: ~40 tokens
+   Token savings: ~40 tokens (~3 lines saved)
 
 Total potential savings: ~120 tokens (14% reduction)
 ```

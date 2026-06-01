@@ -78,7 +78,7 @@ Each plugin below is independently installable and extends the core with special
 | **tp-git** | Git workflow automation |
 | **tp-tdd** | Test-driven development with red-green-refactor |
 | **tp-ddd** | Domain-driven design guardrails |
-| **tp-force-multiplier** | Hook-driven coaching for subagent and skill usage |
+| **tp-force-multiplier** | Hooks-only (SessionStart, PostCompact) — ambient coaching, no skills/agents/commands |
 | **tp-vps-governance** | Config auditing and memory curation for VPS |
 | **tp-meta** | Session meta-review, behavioral analysis, and GitHub issue reporting |
 

@@ -126,8 +126,7 @@ Complex skills (multiple workflows, extensive domain knowledge) → use folders:
 skill-name/
 ├── SKILL.md          # Principles, routing
 ├── agents/           # Bundled subagent prompts
-├── workflows/        # Step-by-step procedures
-├── references/       # Domain knowledge
+├── references/       # Step-by-step procedures + domain knowledge
 ├── templates/        # Output structures
 └── scripts/          # Executable code
 ```
@@ -335,7 +334,7 @@ skill-name/
 
 **Two canonical rules:**
 
-1. **Path resolution**: Any path within a skill that points to its own supporting content resolves within that skill's folder. Use clean relative paths like `references/file.md`, `agents/template.md`, `workflows/run.md`. Never use complex variables like `{baseDir}` or `${CLAUDE_SKILL_DIR}`.
+1. **Path resolution**: Any path within a skill that points to its own supporting content resolves within that skill's folder. Use clean relative paths like `references/file.md`, `agents/template.md`. Never use complex variables like `{baseDir}` or `${CLAUDE_SKILL_DIR}`.
 
 2. **Centralized routing**: ONLY SKILL.md cites supporting files. Reference files must never cross-cite other reference files. The SKILL.md is the sole router — all citations flow through it, never peer-to-peer between references.
 

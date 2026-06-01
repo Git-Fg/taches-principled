@@ -6,20 +6,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session_start.py",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/session_start.py\"",
             "reason": "Surface lightweight coaching at session start"
-          }
-        ]
-      }
-    ],
-    "PostCompact": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/compact_insight.py",
-            "reason": "Post-compaction coaching before context pressure"
           }
         ]
       }

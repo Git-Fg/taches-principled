@@ -239,7 +239,7 @@ Four artifact types with distinct loading behaviors and token costs:
 
 1. **Default resolution**: Any path written within a skill that points to its own supporting content is, by default, resolved within that skill's folder. For example, a reference to `references/plan-format.md` from within the `create-plans` skill resolves to `plugins/taches-principled/skills/create-plans/references/plan-format.md`.
 
-2. **Centralized routing**: ONLY the main SKILL.md file is permitted to cite supporting files. Reference files (in `references/`, `agents/`, `workflows/`, `templates/`, `scripts/` folders) must never cross-cite other reference files. The SKILL.md is the sole, centralized router for all internal citations.
+2. **Centralized routing**: ONLY the main SKILL.md file is permitted to cite supporting files. Reference files (in `references/`, `agents/`, `templates/`, `scripts/` folders) must never cross-cite other reference files. The SKILL.md is the sole, centralized router for all internal citations.
 
 **Strong language requirements:**
 - Use deterministic, imperative citations. Never use passive language like "You can read", "See reference", or "Optional guide available at".

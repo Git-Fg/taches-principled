@@ -1,13 +1,13 @@
 {
   "name": "taches-principled",
   "version": "0.11.0",
-  "strict": false,
   "owner": { "name": "Felix" },
   "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, and development skills.",
   "plugins": [
     {
       "name": "taches-principled",
       "source": "./plugins/taches-principled",
+      "strict": false,
       "version": "0.8.2",
       "displayName": "Taches Principled",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -39,6 +39,7 @@
     {
       "name": "tp-sadd",
       "source": "./plugins/tp-sadd",
+      "strict": false,
       "version": "0.3.2",
       "displayName": "TP Structured Agent-Driven Development",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -57,6 +58,7 @@
     {
       "name": "tp-fpf",
       "source": "./plugins/tp-fpf",
+      "strict": false,
       "version": "0.3.1",
       "displayName": "TP First Principles Framework",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -75,6 +77,7 @@
     {
       "name": "tp-git",
       "source": "./plugins/tp-git",
+      "strict": false,
       "version": "0.3.1",
       "displayName": "TP Git",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -92,23 +95,28 @@
     {
       "name": "tp-tdd",
       "source": "./plugins/tp-tdd",
-      "version": "0.3.0",
-      "displayName": "TP Test-Driven Development",
+      "strict": false,
+      "version": "0.4.0",
+      "displayName": "TP Test-Driven Development & Strategy",
       "author": { "name": "Felix", "email": "felix@example.com" },
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
       "license": "MIT",
-      "description": "Test-driven development — write tests first, watch them fail, implement to pass. Add post-hoc test coverage for existing code. Fix broken tests after refactoring with verification.",
+      "description": "Test-driven development and test strategy — write tests first (red-green-refactor), add post-hoc coverage for existing code, fix broken tests after refactoring, and decide what to test (coverage analysis, mock strategy, fixture design, property-based testing).",
       "keywords": [
         "taches-principled",
         "claude-code",
         "tdd",
-        "testing"
+        "testing",
+        "test-strategy",
+        "coverage",
+        "property-based"
       ]
     },
     {
       "name": "tp-ddd",
       "source": "./plugins/tp-ddd",
+      "strict": false,
       "version": "0.3.0",
       "displayName": "TP Domain-Driven Design",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -121,13 +129,14 @@
     {
       "name": "tp-force-multiplier",
       "source": "./plugins/tp-force-multiplier",
+      "strict": false,
       "version": "0.1.1",
       "displayName": "TP Force Multiplier",
       "author": { "name": "Felix", "email": "felix@example.com" },
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
       "license": "MIT",
-      "description": "Hook-driven coaching plugin that steers Claude to use subagents and skills more — observes behavior patterns and surfaces immediate coaching hints.",
+      "description": "Hooks-only coaching plugin (no skills, no agents, no commands). Surfaces SessionStart and PostCompact reminders to use subagents and skills. Install only when you want ambient coaching — not a routing target.",
       "keywords": [
         "claude-code",
         "hooks",
@@ -138,6 +147,7 @@
     {
       "name": "tp-vps-governance",
       "source": "./plugins/tp-vps-governance",
+      "strict": false,
       "version": "0.1.1",
       "displayName": "TP VPS Governance",
       "author": { "name": "Felix", "email": "felix@example.com" },
@@ -158,6 +168,7 @@
     {
       "name": "tp-meta",
       "source": "./plugins/tp-meta",
+      "strict": false,
       "version": "0.1.0",
       "displayName": "TP Meta Review",
       "author": { "name": "Felix", "email": "felix@example.com" },

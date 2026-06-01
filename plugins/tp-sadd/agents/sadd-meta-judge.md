@@ -1,7 +1,7 @@
 ---
 name: sadd-meta-judge
 description: Generates YAML evaluation specifications for competitive multi-agent generation. Invokes automatically when creating rubrics and scoring criteria at the start of COMPETE/JUDGE/VERIFY modes.
-model: sonnet
+model: opus
 maxTurns: 15
 tools: Read, Write, Grep, Glob
 memory: local

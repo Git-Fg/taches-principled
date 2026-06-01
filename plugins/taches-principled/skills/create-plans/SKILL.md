@@ -270,7 +270,7 @@ Always check for existing artifacts in `.principled/plans/` before starting — 
 
 Before creating a plan, understand the project thoroughly. Use parallel subagent exploration:
 
-**Fan-out spawn instructions:** For project exploration, spawn a plan-explorer subagent. For unfamiliar technologies, spawn a researcher subagent. For complex architectural decisions, spawn a plan-architect subagent. For plan review and challenge, spawn a critic subagent. For verification criteria, spawn a plan-verifier subagent. For task execution, spawn a plan-implementer subagent. Read the relevant agent, fill in placeholders, and dispatch it as a subagent.
+**Fan-out spawn instructions:** For project exploration, spawn a plan-explorer subagent. For unfamiliar technologies, spawn a researcher subagent. For complex architectural decisions, spawn a plan-architect subagent. For plan review and challenge, spawn a critic subagent. For verification criteria, spawn a plan-verifier subagent. For task execution, spawn a global-implementer subagent. Read the relevant agent, fill in placeholders, and dispatch it as a subagent.
 
 **Fan-out principles:**
 - Use 3-5 parallel plan-explorer agents for project structure (different areas: frontend, backend, config, tests)
@@ -514,7 +514,7 @@ IF writing phase plan → BEFORE tasks read `references/plan-format.md` and `ref
 IF scope is unclear → BEFORE decomposing read `references/scope-estimation.md`
 IF automation available → BEFORE running commands read `references/cli-automation.md`
 IF managing milestones → read `references/milestone-management.md`
-IF spawning subagents → for project exploration spawn a plan-explorer; for research spawn a researcher; for trade-off evaluation spawn a plan-architect; for plan review spawn a critic; for verification criteria spawn a plan-verifier; for task execution spawn a plan-implementer
+IF spawning subagents → for project exploration spawn a plan-explorer; for research spawn a researcher; for trade-off evaluation spawn a plan-architect; for plan review spawn a critic; for verification criteria spawn a plan-verifier; for task execution spawn a global-implementer
 
 ---
 
