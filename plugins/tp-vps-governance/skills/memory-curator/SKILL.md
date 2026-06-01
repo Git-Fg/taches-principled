@@ -87,6 +87,20 @@ Find and merge duplicate memory entries.
 3. **Dry-run** (default): show what would change
 4. **With --yes**: apply merge/remove actions
 
+### Execution
+
+To run deduplication, execute the bundled script directly:
+
+```bash
+# Dry-run (default): discover and report duplicates
+!python3 ${CLAUDE_SKILL_DIR}/scripts/dedup.py --directory ~/.claude/projects --threshold 0.7
+
+# With --yes flag to auto-resolve (keeps newest, archives older)
+!python3 ${CLAUDE_SKILL_DIR}/scripts/dedup.py --directory ~/.claude/projects --threshold 0.7 --yes
+```
+
+**Note:** The script accepts `--directory` (positional) and `--threshold` (-t) flags. Pass `--yes` to apply actions; without it, the script only reports findings.
+
 ### Output Format
 ```
 Duplicate Group: 3 files, similarity 87%
@@ -141,6 +155,20 @@ Full maintenance: deduplication + archiving in one pass.
 3. **Create backup** before any destructive action
 4. **Always requires --yes** (safety: no dry-run default)
 5. **Summary**: files removed, space freed, archived count
+
+### Execution
+
+To run clean mode, execute the bundled scripts directly:
+
+```bash
+# Deduplicate all project memory (auto-resolve with --yes keeps newest, archives older)
+!python3 ${CLAUDE_SKILL_DIR}/scripts/dedup.py --directory ~/.claude/projects --threshold 0.7 --yes
+
+# Deduplicate agent memory
+!python3 ${CLAUDE_SKILL_DIR}/scripts/dedup.py --directory ~/.claude/agent-memory --threshold 0.7 --yes
+```
+
+**Note:** Deduplication requires `--yes` flag to apply actions. Without it, the script runs in dry-run mode and only reports findings. Archive operations are handled separately via the ARCHIVE mode.
 
 ### Safety
 - Pre-flight check: verify backup location is writable
