@@ -8,6 +8,7 @@ argument-hint: "Optional: documentation type or area (api, guides, readme, jsdoc
 ## Routing Guidance
 
 - IMMEDIATELY after code changes affecting user-facing APIs or workflows, BEFORE committing.
+- CONTRAST with create-plans: update-docs updates documentation AFTER code changes; create-plans creates plans BEFORE code changes.
 
 ## Decision Router
 

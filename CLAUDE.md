@@ -164,10 +164,14 @@ Hub-and-spoke consolidation target: 22-28 skills. Run `find plugins -name SKILL.
 **Directory structure:**
 ```
 plugins/
-├── tp-git/                    # Independent plugin
-├── tp-sadd/                   # Independent plugin
-├── tp-fpf/                    # Independent plugin
-└── tp-vps-governance/         # Independent plugin
+├── tp-git/                    # Git workflow automation
+├── tp-sadd/                   # Structured agent-driven development
+├── tp-fpf/                    # First principles reasoning
+├── tp-tdd/                    # Test-driven development
+├── tp-ddd/                    # Domain-driven design
+├── tp-force-multiplier/       # Hook-driven coaching
+├── tp-vps-governance/         # Config auditing and memory curation
+└── tp-meta/                   # Session meta-review and behavioral analysis
 
 .claude-plugin/
 └── marketplace.json            # Single source of truth

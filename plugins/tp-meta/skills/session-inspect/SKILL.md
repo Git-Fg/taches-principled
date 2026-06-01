@@ -10,6 +10,7 @@ argument-hint: "[latest|<session-id>] [--full|--summary] [--filter errors|tools|
 
 - FIRST when any meta-review or behavioral analysis needs raw session data.
 - Do NOT use for reviewing code (use code-review) or diagnosing bugs (use diagnose).
+- CONTRAST with meta-review: session-inspect parses JSONL into structured data (data extraction); meta-review interprets behavior and finds anti-patterns (behavioral analysis).
 
 ## What This Skill Changes
 

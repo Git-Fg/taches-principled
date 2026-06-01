@@ -15,7 +15,9 @@ argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-lo
 - When consolidating reflection or critique findings into durable project memory (MEMORIZE).
 - Do NOT use for architectural decisions or greenfield development — use `create-plans` instead.
 - CONTRAST with update-docs: that updates existing docs; this improves prose quality (POLISH).
-- CONTRAST with diagnose: refine improves quality of existing artifacts (present, corrective); diagnose investigates why something is broken (past, causal). Prefer refine when the issue is known and needs fixing; prefer diagnose when the root cause is unknown.
+- CONTRAST with ddd: refine improves quality of existing artifacts (present, corrective); ddd performs structural analysis (architecture, quality, transparency, API). Use refine when the issue is known and needs fixing; use ddd when a specific structural question surfaces.
+- CONTRAST with kaizen: refine is on-demand quality improvement; kaizen provides continuous guardrails. Use refine after completing work; use kaizen during every code decision.
+- CONTRAST with sadd JUDGE: refine provides severity-rated self-critique with single review; sadd JUDGE provides multi-judge competitive evaluation with debate rounds. Use refine for standard quality checks; use sadd for high-stakes decisions needing independent consensus.
 
 ## Decision Router
 

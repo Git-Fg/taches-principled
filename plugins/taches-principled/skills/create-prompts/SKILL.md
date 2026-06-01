@@ -9,7 +9,9 @@ argument-hint: [task description]
 
 - IMMEDIATELY when the user wants to create a reusable prompt artifact that another Claude Code session can execute.
 - Do NOT use for executing prompts directly, reviewing existing prompts, or one-off questions.
-- Do NOT use when the goal is to create a reusable Claude Code skill (use skill-authoring).
+- Do NOT use when the goal is to create a reusable Claude Code skill (use skill-authoring instead).
+- CONTRAST with create-plans: prompts create reusable artifacts for other sessions; plans create executable plans for the current session.
+- CONTRAST with skill-authoring: prompts create standalone prompt files; skill-authoring creates new Claude Code skills.
 
 ## Decision Router
 

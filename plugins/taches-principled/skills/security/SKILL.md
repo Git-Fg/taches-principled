@@ -10,6 +10,7 @@ argument-hint: "[mode] [target] [--severity critical|high|medium|low]"
 
 - IMMEDIATELY before production deployment, before merging security-related PRs, or when fixing vulnerabilities.
 - Do NOT use for architecture design (use ddd) or general code quality (use refine REVIEW).
+- CONTRAST with diagnose: security scans for vulnerabilities (proactive finding); diagnose investigates root causes of known problems (reactive investigation).
 
 | If you need to... | Use this mode |
 |-------------------|---------------|

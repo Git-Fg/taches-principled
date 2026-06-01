@@ -10,7 +10,7 @@ argument-hint: Applied automatically when implementing, refactoring, designing, 
 - IMMEDIATELY before writing code — these constraints apply to every decision.
 - FIRST when tempted to add abstractions, speculate about future needs, or fix everything in one pass.
 - DO NOT use when implementing trivial one-liners — use for architectural decisions, refactoring, and non-trivial implementation choices.
-- CONTRAST with brainstorm/ideation: those explore WHAT to build; kaizen shapes HOW to build it.
+- CONTRAST with ideation: that explores WHAT to build; kaizen shapes HOW to build it.
 - CONTRAST with plan-do-check-act: that tests changes; kaizen prevents bad patterns from entering the codebase.
 - CONTRAST with ddd: kaizen is a lightweight filter of 4 design-time constraints applied to every code change; ddd is a detailed analysis methodology with 4 modes (ARCHITECTURE, QUALITY, TRANSPARENCY, API) invoked when structural issues need a deep review. Run kaizen continuously; invoke ddd when a specific structural question surfaces.
 
@@ -53,7 +53,7 @@ The smallest change that improves quality, then verify, then repeat. Never try t
 
 **Red flag:** "I will refactor it later" without an immediate action. Either do it now or accept it as-is.
 
-### 2. Poka-Yoke — Error proofing at design time
+### 2. Poka-Yoke (error-proofing) — Error proofing at design time
 
 Design systems that make errors impossible or immediately visible, not systems that handle errors gracefully after they occur.
 
@@ -79,9 +79,9 @@ Consistency over cleverness. New patterns require team consensus. Documentation 
 
 **Red flag:** "I prefer to do it my way" without checking existing patterns.
 
-### 4. Just-In-Time (JIT) — Build only what is needed now
+### 4. Just-In-Time (JIT) (just-in-time) — Build only what is needed now
 
-YAGNI applied rigorously. No "just in case" features, no premature optimization, no speculative abstractions.
+YAGNI (you aren't gonna need it) applied rigorously. No "just in case" features, no premature optimization, no speculative abstractions.
 
 - Implement only current requirements — delete speculative code
 - Wait for the Rule of Three (three similar cases) before abstracting

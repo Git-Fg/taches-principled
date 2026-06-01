@@ -10,6 +10,10 @@ when_to_use: "Use when user wants to build a new skill, optimize skill descripti
 - WORKFLOW mode activates when user says "build a skill", "make a skill for X", "write a skill", "create a new skill", "add a skill", or "I need to author a skill".
 - METHODOLOGY mode activates when user asks to "optimize skill descriptions", "benchmark triggers", "improve routing", "fix trigger issues", "test if my skill fires", or "fix why my skill doesn't load".
 - Do NOT use for general code writing or project planning.
+- For creating standalone prompts (not skills), use the create-prompts skill instead.
+- Use `context: fork` when this skill orchestrates multiple steps, produces heavy parallel output, or builtin agent behavior matches the goal.
+- Do NOT use when the skill is simple (single tool call), you need intermediate results in main conversation, or builtin behavior contradicts this skill's purpose.
+- For creating standalone prompts (not skills), use the create-prompts skill instead.
 
 ## Decision Router
 

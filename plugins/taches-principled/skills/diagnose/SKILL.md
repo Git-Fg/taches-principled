@@ -3,7 +3,7 @@ name: diagnose
 description: "Find root causes of recurring problems, failed fixes, and complex bugs. Auto-selects the right investigation method."
 allowed-tools: Read, Write
 when_to_use: "Use when user wants to find the root cause of a bug, analyze a problem, or trace back a failure."
-argument-hint: "[problem description] [--mode A3|FIVE-WHYS|FISHBONE|STACK-TRACE|AUTO]"
+argument-hint: "[problem description]"
 ---
 
 ## Routing Guidance

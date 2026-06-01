@@ -2,7 +2,7 @@
 name: multi-agent-patterns
 description: "Design multi-agent systems: select coordination patterns, size contexts, choose consensus mechanisms. Use when scaling."
 allowed-tools: Read, Grep, Glob
-when_to_use: "Use when user asks to design multi-agent systems, select coordination patterns, or manage parallel agent teams."
+when_to_use: "Use when user asks to design multi-agent systems, select coordination patterns, or manage parallel agent teams. Do NOT use for spawning subagents or agent definition authoring — use `subagent-orchestration` for execution."
 argument-hint: "[architecture pattern or focus area]"
 ---
 

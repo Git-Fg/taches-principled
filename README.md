@@ -1,6 +1,6 @@
 # TACHES Principled
 
-**Version:** 0.10.0
+**Version:** 0.11.1
 
 A Claude Code plugin for building skills, subagents, hooks, and project plans.
 

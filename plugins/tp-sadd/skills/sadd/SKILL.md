@@ -10,7 +10,7 @@ when_to_use: "Use when user wants competitive generation, multi-judge evaluation
 - EXECUTE: 'spawn subagent', 'launch agent', 'delegate this', 'implement with verification', 'run in background'
 - JUDGE: 'evaluate', 'judge this', 'assess quality', 'verify', 'check my work', 'multi-judge debate'
 - EXPLORE: 'tree of thoughts', 'explore solution space', 'generate and prune', 'ideate then narrow'
-- For architecture design ('supervisor pattern', 'swarm', 'coordinate agents') → load the core `subagents` skill.
+- For architecture design ('supervisor pattern', 'swarm', 'coordinate agents') -> use the core `subagent-orchestration` skill.
 
 ## Decision Router
 
@@ -18,7 +18,7 @@ IF generating multiple competing solutions with meta-judge evaluation → COMPET
 IF spawning tasks via context-isolated subagents with optional verification → EXECUTE mode
 IF evaluating work with meta-judge + judge pipeline or multi-judge debate → JUDGE mode
 IF exploring solution space with systematic pruning (ToT) → EXPLORE mode
-IF designing multi-agent architecture (supervisor/swarm/hierarchical patterns) → load the core `subagents` skill (DESIGN mode).
+IF designing multi-agent architecture (supervisor/swarm/hierarchical patterns) -> use the core `subagent-orchestration` skill (DESIGN mode).
 
 # Mode: COMPETE
 
@@ -89,7 +89,7 @@ sadd-meta-judge runs once (shared spec grounds all evaluation). sadd-judge agent
 
 # Mode: DESIGN
 
-DESIGN mode lives in the `subagents` skill (core plugin). For multi-agent architecture design — supervisor/swarm/hierarchical pattern selection, context isolation, coordination protocols — load the core `subagents` skill, which references `multi-agent-patterns` for comprehensive coverage.
+DESIGN mode lives in the `subagent-orchestration` skill (core plugin). For multi-agent architecture design — supervisor/swarm/hierarchical pattern selection, context isolation, coordination protocols — use the core `subagent-orchestration` skill, which references `multi-agent-patterns` for comprehensive coverage.
 
 `sadd` does not duplicate that content. The four remaining sadd modes (COMPETE/EXECUTE/JUDGE/EXPLORE) provide the competitive evaluation and tree-of-thoughts execution that runs on top of an architecture designed elsewhere.
 
@@ -127,7 +127,7 @@ JUDGE: Evaluation report with scores, evidence, and verdict (single) or consensu
 
 EXPLORE: Final solution + proposals + pruning votes + evaluation reports
 
-DESIGN output: Produced by the core `subagents` skill — see that skill for format.
+DESIGN output: Produced by the core `subagent-orchestration` skill — see that skill for format.
 
 ---
 

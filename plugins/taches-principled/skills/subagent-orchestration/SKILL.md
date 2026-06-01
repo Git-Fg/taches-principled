@@ -1,7 +1,7 @@
 ---
-name: subagents
+name: subagent-orchestration
 description: "Design multi-agent architectures and orchestrate parallel execution. Hub skill combining agent definition and execution."
-when_to_use: "Use when user asks to spawn subagents, orchestrate parallel execution, or design agent definitions."
+when_to_use: "Use when user asks to spawn subagents, orchestrate parallel execution, or design agent definitions. Do NOT use for multi-agent architecture decision-making (supervisor vs swarm) — use `multi-agent-patterns` for pattern selection."
 ---
 
 ## Routing Guidance

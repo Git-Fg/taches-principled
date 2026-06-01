@@ -2,6 +2,7 @@
 name: git
 description: "Git operations: ship commits, post PR comments, load issues, manage branches. Modes: SHIP, REVIEW, ISSUES, ADVANCED."
 allowed-tools: Bash(git *), Bash(gh *)
+when_to_use: "Use when user wants to commit, create a PR, review code, load issues, or manage branches."
 ---
 
 ## Decision Router
