@@ -14,7 +14,7 @@ argument-hint: ".specs/tasks/draft/<file>.md [--fast] [--target-quality X.X] [--
 ## Decision Router
 
 IF user mentions a draft task file path (e.g., ".specs/tasks/draft/") → run refine-task
-IF user uses /plan alias → run refine-task
+IF user asks to outline the implementation steps → run refine-task
 IF user says "refine this task" → run refine-task
 IF user says "detail the steps" or "turn this into steps" AND a draft task exists → run refine-task
 IF user needs to refine a draft task into a detailed specification → run full multi-phase refinement workflow
@@ -99,7 +99,7 @@ Every phase subagent must receive:
 2. **Context**: relevant artifact paths from prior phases (scratchpad files, analysis files)
 3. **Artifact directive**: whether to write to scratchpad, update task file, or create a new document
 4. **Output format**: what to return (structured report with file paths and findings)
-5. **The value of `${CLAUDE_SKILL_DIR}`** if the subagent needs to reference skill-internal paths
+5. **Skill-internal path context** if the subagent needs to read files inside this skill folder — pass clean relative paths like `agents/<name>.md` (paths resolve within the spawning skill's directory).
 
 ### Phase Agent Prompt Structure
 
@@ -399,6 +399,8 @@ Update any references in research and analysis files if paths changed.
 
 ## Evaluation Pattern
 
+**Evaluation uses the shared judge protocol — see `../execute-plans/references/evaluation-protocol.md`** for the integrity rules, chain-of-thought requirement, scratchpad-first writing, MAX_ITERATIONS semantics, and threshold resolution. This section covers only the refine-task-specific mechanics.
+
 Every phase follows the same evaluation structure. The judge is an independent subagent with no connection to the phase implementation agent.
 
 ### Judge Prompt Structure
@@ -445,14 +447,6 @@ Phase Implementation Agent
 ```
 
 If phase is in HUMAN_IN_THE_LOOP_PHASES: trigger human checkpoint after re-implementation but before the next judge retry.
-
-### Evaluation Integrity Rules
-
-- Score 5.0/5.0 is a hallucination — reject and re-run the judge. Perfect scores are practically impossible in rigorous evaluation.
-- Missing numerical score — reject and re-run the judge.
-- Excessively long reports that do not follow the structured evaluation format — reject and re-run.
-- Do not proceed to next phase until judge passes, unless MAX_ITERATIONS reached or SKIP_JUDGES is true.
-- Use the configured THRESHOLD value (default 3.5) — never hardcode a threshold value.
 
 ## Human-in-the-Loop Checkpoints
 
@@ -559,7 +553,7 @@ After all executed phases, judges, and the promotion step are complete:
 
 ## Design Decisions
 
-**Stage-specific guidance is documented in {baseDir}/references/stages.md.**
+IF entering a refinement stage (research, analysis, decomposition, verification) → BEFORE acting read `references/stages.md`. Do not skip stage-specific guidance.
 
 ### Parallel analysis before synthesis
 Running research, codebase analysis, and business analysis in parallel is faster than sequential. This prevents the common failure mode of designing architecture without understanding business requirements or codebase constraints.

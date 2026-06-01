@@ -147,5 +147,5 @@ A prompt execution succeeds when:
 
 ## Reference Index
 
-**Workflows:** {baseDir}/workflows/execute-prompt.md
+IF executing a prompt → BEFORE running read `references/execute-prompt.md`. Do not bypass the workflow steps in this file.
 **Self-contained:** This skill does not reference other skills by name or invocation pattern.

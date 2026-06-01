@@ -3,7 +3,14 @@ name: debug-tracer
 description: Traces bugs backward through call stacks to find original triggers. Invokes automatically when debugging complex call chains or using diagnose STACK-TRACE mode.
 tools: Read, Write, Edit, Grep, Glob, Bash
 model: sonnet
-skills: [diagnose]
+skills:
+  - diagnose
+  - kaizen
+  - ddd
+  - tdd
+  - git
+  - refine
+  - plan-do-check-act
 maxTurns: 15
 memory: local
 ---

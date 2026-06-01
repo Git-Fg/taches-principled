@@ -3,7 +3,15 @@ name: prompt-engineer
 description: Expert prompt engineer for Claude Code. Use when creating, optimizing, or executing reusable prompts for task automation. Invoke when user asks to create a prompt, write a prompt, make a prompt executable, or run a prompt.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: sonnet
-skills: [create-prompts]
+skills:
+  - create-prompts
+  - kaizen
+  - ddd
+  - tdd
+  - git
+  - refine
+  - diagnose
+  - plan-do-check-act
 maxTurns: 15
 memory: local
 ---

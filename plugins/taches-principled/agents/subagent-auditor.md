@@ -3,7 +3,13 @@ name: subagent-auditor
 description: Expert subagent auditor for Claude Code. Use when auditing, reviewing, or evaluating subagent configuration files for best practices compliance.
 tools: Read, Grep, Glob
 model: sonnet
-skills: [subagents]
+skills:
+  - subagent-orchestration
+  - skill-authoring
+  - sadd
+  - fpf
+  - refine
+  - session-inspect
 maxTurns: 15
 memory: local
 ---

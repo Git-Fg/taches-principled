@@ -19,9 +19,9 @@ IF user says "plan this out" WITHOUT task file context → run create-plans
 IF user says "break down a project" or "sketch a roadmap" → run create-plans
 IF user says "make a plan" for new work → run create-plans
 IF user asks to "plan" → FIRST create brief before roadmap
-IF user asks to "plan a phase" → BEFORE creating tasks read {baseDir}/references/plan-format.md and {baseDir}/references/checkpoints.md
-IF scope is unclear or large → BEFORE decomposing read {baseDir}/references/scope-estimation.md
-IF automation CLI available → BEFORE running commands read {baseDir}/references/cli-automation.md
+IF user asks to "plan a phase" → BEFORE creating tasks read references/plan-format.md and references/checkpoints.md
+IF scope is unclear or large → BEFORE decomposing read references/scope-estimation.md
+IF automation CLI available → BEFORE running commands read references/cli-automation.md
 
 User phrase → Action routing:
 - "plan", "make plan", "create plan" → Create brief first (never roadmap first)
@@ -270,7 +270,7 @@ Always check for existing artifacts in `.principled/plans/` before starting — 
 
 Before creating a plan, understand the project thoroughly. Use parallel subagent exploration:
 
-**Fan-out spawn instructions:** For project exploration, spawn a plan-explorer subagent. For unfamiliar technologies, spawn a researcher subagent. For complex architectural decisions, spawn a plan-architect subagent. For plan review and challenge, spawn a critic subagent. For verification criteria, spawn a verifier subagent. For task execution, spawn a plan-implementer subagent. Read the relevant agent, fill in placeholders, and dispatch it as a subagent.
+**Fan-out spawn instructions:** For project exploration, spawn a plan-explorer subagent. For unfamiliar technologies, spawn a researcher subagent. For complex architectural decisions, spawn a plan-architect subagent. For plan review and challenge, spawn a critic subagent. For verification criteria, spawn a plan-verifier subagent. For task execution, spawn a plan-implementer subagent. Read the relevant agent, fill in placeholders, and dispatch it as a subagent.
 
 **Fan-out principles:**
 - Use 3-5 parallel plan-explorer agents for project structure (different areas: frontend, backend, config, tests)
@@ -311,7 +311,7 @@ When fanning out subagents for exploration, ALL findings MUST be written to a ce
 After the fan-out exploration, before writing the plan, spawn a critic subagent to challenge the emerging approach:
 
 ```
-Spawn a critic subagent (general-purpose with Write tool access):
+Spawn a critic subagent (general-purpose with write access):
 Focus: Challenge the proposed approach as devil's advocate
 - What assumptions does the approach make that might be wrong?
 - What could go wrong with this direction?
@@ -497,7 +497,7 @@ After completion, create `.principled/plans/phases/01-foundation/SUMMARY.md`
 
 ## Anti-Patterns
 
-**Full anti-pattern catalog is in {baseDir}/references/plan-format.md.**
+**Full anti-pattern catalog is in references/plan-format.md.**
 
 ### 500-line Mega-Plan
 Each plan: 2-3 tasks, ~15-60 min of work. Quality degradation is invisible until too late.
@@ -510,11 +510,11 @@ Each plan: 2-3 tasks, ~15-60 min of work. Quality degradation is invisible until
 ## Reference Index
 
 IF writing brief → FIRST read the brief template file
-IF writing phase plan → BEFORE tasks read `{baseDir}/references/plan-format.md` and `{baseDir}/references/checkpoints.md`
-IF scope is unclear → BEFORE decomposing read `{baseDir}/references/scope-estimation.md`
-IF automation available → BEFORE running commands read `{baseDir}/references/cli-automation.md`
-IF managing milestones → read `{baseDir}/references/milestone-management.md`
-IF spawning subagents → for project exploration spawn a plan-explorer; for research spawn a researcher; for trade-off evaluation spawn a plan-architect; for plan review spawn a critic; for verification criteria spawn a verifier; for task execution spawn a plan-implementer
+IF writing phase plan → BEFORE tasks read `references/plan-format.md` and `references/checkpoints.md`
+IF scope is unclear → BEFORE decomposing read `references/scope-estimation.md`
+IF automation available → BEFORE running commands read `references/cli-automation.md`
+IF managing milestones → read `references/milestone-management.md`
+IF spawning subagents → for project exploration spawn a plan-explorer; for research spawn a researcher; for trade-off evaluation spawn a plan-architect; for plan review spawn a critic; for verification criteria spawn a plan-verifier; for task execution spawn a plan-implementer
 
 ---
 

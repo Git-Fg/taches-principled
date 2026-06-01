@@ -90,16 +90,12 @@ Build a sequential task table:
 
 ## Deviation Rules
 
-Reference `{baseDir}/references/deviation-rules.md` for the full deviation handling policy.
-
 **Summary:**
 - **Rule 1** — Auto-fix within scope (bugs, broken behavior)
 - **Rule 2** — Log and continue (non-blocking, cannot auto-fix)
 - **Rule 3** — Block and report (blocks execution)
 - **Rule 4** — Heuristic architectural decisions (evaluate, choose simplest, log)
 - **Rule 5** — Log enhancement (non-critical, do not interrupt)
-
-When a deviation occurs, consult deviation-rules.md. Apply the rule; document in SUMMARY.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: kaizen
 description: "Four design-time constraints: incremental improvement, error-proofing, standardization, avoid over-engineering. Use when making code decisions."
-when_to_use: "Use when user wants to avoid over-engineering, apply YAGNI, or make architectural and code design decisions."
+when_to_use: "Use when user wants to avoid over-engineering, apply YAGNI, or make architectural and code design decisions. Background guardrails applied to every code change; pair with the ddd skill for deep structural analysis."
 argument-hint: Applied automatically when implementing, refactoring, designing, or handling errors
 ---
 
@@ -12,6 +12,7 @@ argument-hint: Applied automatically when implementing, refactoring, designing, 
 - DO NOT use when implementing trivial one-liners — use for architectural decisions, refactoring, and non-trivial implementation choices.
 - CONTRAST with brainstorm/ideation: those explore WHAT to build; kaizen shapes HOW to build it.
 - CONTRAST with plan-do-check-act: that tests changes; kaizen prevents bad patterns from entering the codebase.
+- CONTRAST with ddd: kaizen is a lightweight filter of 4 design-time constraints applied to every code change; ddd is a detailed analysis methodology with 4 modes (ARCHITECTURE, QUALITY, TRANSPARENCY, API) invoked when structural issues need a deep review. Run kaizen continuously; invoke ddd when a specific structural question surfaces.
 
 ## What This Skill Changes
 
@@ -89,6 +90,22 @@ YAGNI applied rigorously. No "just in case" features, no premature optimization,
 - Add complexity only when a current requirement demands it, not when you anticipate future needs
 
 **Red flag:** "We might need this someday" without a concrete, imminent requirement.
+
+## Relationship to ddd
+
+Kaizen and ddd are complementary, not redundant. They operate at different layers of the same concern (preventing bad code from entering the codebase).
+
+**Kaizen** is a lightweight 4-pillar filter applied to every code decision. It runs continuously in the background as guardrails — a developer does not "invoke" kaizen, they apply it as they write. No artifact, no analysis mode, no spawned subagent. The output is shaped code, not a written report.
+
+**ddd** is a detailed analysis methodology with 4 modes (ARCHITECTURE, QUALITY, TRANSPARENCY, API) invoked when a specific structural question surfaces. It produces a written analysis, may spawn subagents (codebase scanner, endpoint auditor), and is selected per mode based on the question at hand.
+
+**When to use which:**
+
+- Routine implementation, refactoring, or design decision → kaizen (apply the 4 pillars as guardrails)
+- "Where should this business logic live?", "function does too much", "is this side effect visible?", "design a REST endpoint" → ddd (select the matching mode for deep analysis)
+- Both at once → apply kaizen constraints while ddd analyzes structure; they do not conflict
+
+**Conceptual layering:** kaizen is the immune system (always on, lightweight, prevents infection); ddd is the specialist (called in for specific diagnoses, produces a treatment plan).
 
 ## Output
 

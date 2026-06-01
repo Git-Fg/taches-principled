@@ -109,4 +109,4 @@ Checkpoint: checkpoint:human-verify  # Self-verified by exec strategy B
 - `id`: Unique identifier for tracking (optional)
 - `criteria` / `options` / `action`: Type-specific payload
 
-For full checkpoint syntax details, refer to the plan-format reference documentation.
+IF designing checkpoint syntax → BEFORE writing checkpoints read the plan-format reference documentation for full checkpoint syntax details.

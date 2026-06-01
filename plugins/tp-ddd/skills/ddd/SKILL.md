@@ -1,7 +1,7 @@
 ---
 name: ddd
 description: "Clean code with clear structure: reduce nesting, fix domain logic leaks, minimize mocking. Use when code quality issues."
-when_to_use: "Use when user asks about code architecture, business logic placement, naming, transparency, or REST API design."
+when_to_use: "Use when user asks about code architecture, business logic placement, naming, transparency, or REST API design. Detailed analysis methodology with 4 modes; pair with the kaizen skill for continuous design-time guardrails."
 ---
 
 ## Routing Guidance
@@ -10,6 +10,22 @@ when_to_use: "Use when user asks about code architecture, business logic placeme
 - QUALITY: 'what should I name this', 'should I use a library', 'silent failure'
 - TRANSPARENCY: 'hidden side effect', 'does this return or mutate', 'is this a side effect', 'mutation disguised as query'
 - API: 'design REST API', 'API endpoint design', 'HTTP semantics', 'API versioning'
+
+## Relationship to kaizen
+
+ddd and kaizen are complementary, not redundant. They operate at different layers of the same concern (preventing bad code from entering the codebase).
+
+**ddd** is a detailed analysis methodology with 4 modes (ARCHITECTURE, QUALITY, TRANSPARENCY, API) invoked when a specific structural question surfaces. It produces a written analysis, may spawn subagents (codebase scanner, endpoint auditor), and is selected per mode based on the question at hand.
+
+**kaizen** is a lightweight 4-pillar filter applied to every code decision. It runs continuously in the background as guardrails — a developer does not "invoke" kaizen, they apply it as they write. No artifact, no analysis mode, no spawned subagent. The output is shaped code, not a written report.
+
+**When to use which:**
+
+- "Where should this business logic live?", "function does too much", "is this side effect visible?", "design a REST endpoint" → ddd (select the matching mode for deep analysis)
+- Routine implementation, refactoring, or design decision → kaizen (apply the 4 pillars as guardrails)
+- Both at once → apply kaizen constraints while ddd analyzes structure; they do not conflict
+
+**Conceptual layering:** kaizen is the immune system (always on, lightweight, prevents infection); ddd is the specialist (called in for specific diagnoses, produces a treatment plan).
 
 ## Decision Router
 

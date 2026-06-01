@@ -141,7 +141,7 @@ Checkpoint: checkpoint:human-verify  # Human confirms output
 | `checkpoint:decision` | Human chooses path | Architecture, library selection, API design |
 | `checkpoint:human-action` | Human performs action | Email verification, 2FA, account approval |
 
-**Note:** This is the canonical checkpoint syntax for PLAN.md files. The `type="checkpoint:..."` attribute syntax shown in the checkpoint protocols (documented in the checkpoint protocols reference) is an alternative representation — both are recognized by execute-plans, but prefer the `Checkpoint:` field syntax for consistency.
+**Note:** This is the canonical checkpoint syntax for PLAN.md files. The `type="checkpoint:..."` attribute syntax is an alternative representation — both are recognized by execute-plans, but prefer the `Checkpoint:` field syntax for consistency.
 
 **When to add checkpoints:**
 - One checkpoint per 5-10 tasks maximum
@@ -248,6 +248,4 @@ Reference files that Claude needs to understand before implementing.
 
 ## Summary Output
 
-See SKILL.md "What Good Looks Like" section for the authoritative SUMMARY.md template.
-
-**Maintenance note:** Only SKILL.md needs to be updated — this reference is kept in sync.
+The authoritative SUMMARY.md template is in the SKILL.md "What Good Looks Like" section.

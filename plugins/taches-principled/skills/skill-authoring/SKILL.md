@@ -246,7 +246,7 @@ effort: high
 **Why this matters:** Custom agent definitions require complex configuration and aren't portable. A simpler pattern:
 
 1. **Store** prompt templates as markdown files in `agents/*.md`
-2. **Read** them with the Read tool when needed
+2. **Read** them with your native tools when needed
 3. **Spawn** a `general-purpose` subagent with that content
 
 ```markdown
@@ -327,6 +327,45 @@ skill-name/
 - Explain the why behind requirements — agents reason better from principles
 - Lean: remove anything not pulling its weight
 
+### File Reference Conventions
+
+**Two canonical rules:**
+
+1. **Path resolution**: Any path within a skill that points to its own supporting content resolves within that skill's folder. Use clean relative paths like `references/file.md`, `agents/template.md`, `workflows/run.md`. Never use complex variables like `{baseDir}` or `${CLAUDE_SKILL_DIR}`.
+
+2. **Centralized routing**: ONLY SKILL.md cites supporting files. Reference files must never cross-cite other reference files. The SKILL.md is the sole router — all citations flow through it, never peer-to-peer between references.
+
+**Citation language — deterministic over passive:**
+- WRONG: "You can read references/format.md for formatting rules"
+- WRONG: "See reference at references/patterns.md"
+- RIGHT: "You MUST read `references/format.md` BEFORE writing any code. Do not proceed or make assumptions without reading this file."
+
+Passive citations are ignored by LLMs 99% of the time. Every reference must be a strict imperative with explicit dependency.
+
+### Native Tool Referencing
+
+**The brittle-tool-name problem:** Skills that say "Use the Agent tool" or "Use the Task tool" break when the underlying API migrates. The Task tool was renamed to Agent tool — a skill that hardcoded "Task tool" would fail silently or produce wrong behavior.
+
+**The solution:** Use semantic natural language that delegates to whatever is currently available.
+
+| Brittle (breaks on API rename) | Native (forward-compatible) |
+|-------------------------------|------------------------------|
+| `Use the Agent tool to spawn` | `Use your native tools to spawn a subagent` |
+| `Use the Task tool` | `delegate work via your native tools` |
+| `Use the Write tool` | `Use your native tools to write the file` |
+| `Use the Edit tool` | `Use your native tools to make the change` |
+| `Use the Read tool` | `Use your native tools to read the file` |
+| `Use the Bash tool` | `Use your native tools to run shell commands` |
+| `Spawn a subagent with Write tool access` | `Spawn a subagent with write access` |
+
+**Why "native tools" works:** The phrase "use your native tools" forces the model to actively consult its dynamically injected tool registry rather than blindly executing a hardcoded string. It acts as a cognitive anchor — the model must enumerate what tools it actually has available and select from that live list, not from a static string in the prompt.
+
+**Principles:**
+- Describe capability intent, not tool identity. "write access" beats "Write tool access."
+- Use "your native tools" as a generic redirect — it always resolves to the correct current tools.
+- Never hardcode tool names in orchestration directives. The names change; the capability intent does not.
+- Exceptions: MCP fully-qualified names (`BigQuery:bigquery_schema`) must stay exact — those are server-level identities, not model tools.
+
 ### Frontmatter Reference
 
 **Standard fields only** — no custom `metadata` blocks:
@@ -356,12 +395,13 @@ skill-name/
 | Guidelines-only `context:fork` | A forked skill without actionable tasks wastes the subagent dispatch. Use forks for executing workflows, not injecting reference knowledge. |
 | Vague description | "Deploy to production via bin/deploy.sh. Use when user says 'deploy' or 'ship'." |
 | Missing guard rail | Set `disable-model-invocation: true` for destructive skills |
-| Brittle path reference | Use `${CLAUDE_SKILL_DIR}` instead of hardcoded paths |
+| Brittle path reference | Use clean relative paths (e.g., `references/file.md`) — paths resolve within the skill's folder by default |
 | Relying on `allowed-tools` for security | `allowed-tools` only partially blocks; tools like `Edit` and `Agent` completely bypass it. Use `disallowed-tools` instead. |
 | Undeclared dependency | Document required MCP servers or external tools |
 | Global package installation | Install packages locally to avoid interfering with the user's computer environment |
 | Unsafe network calls | Audit external sources; external dependencies can change and become malicious |
 | Recursive trigger | Let descriptions route. No cross-references in bodies. |
+| Passive file citations | Never use "You can read" or "See reference" — write "You MUST read `references/X.md` BEFORE proceeding. Do not make assumptions without this file." |
 
 ### When Your Skill Isn't Working
 
@@ -384,14 +424,14 @@ skill-name/
 
 ## Reference Index
 
-Load a reference only when working on that specific aspect.
+You MUST read the relevant reference file BEFORE working on that aspect. Do not proceed or make assumptions without reading the applicable reference.
 
-| Reference | Purpose | When to Load |
-|-----------|---------|--------------|
-| `context-management.md` | Context window principles, SKILL.md vs references/ load strategy | If skill might exceed 500 lines or 7 tools |
-| `skill-self-testing.md` | YAML validation, threshold checks, trigger testing | Before committing a new skill |
-| `cross-skill-discovery.md` | Skill routing, description patterns, name conventions | If description triggers incorrectly |
-| `frontmatter-complete.md` | Full frontmatter field reference with examples | When writing complex frontmatter |
+| Reference | Purpose | When to Read (BEFORE this action) |
+|-----------|---------|-----------------------------------|
+| `references/context-management.md` | Context window principles, SKILL.md vs references/ load strategy | You MUST read this BEFORE deciding what belongs in body vs references/. Do NOT split, merge, or restructure a skill approaching 500 lines or 7 tools without first understanding the three-tier progressive disclosure pattern. |
+| `references/skill-self-testing.md` | YAML validation, threshold checks, trigger testing | You MUST read this BEFORE committing any new skill. Do NOT mark a skill complete without running all threshold checks, YAML validation, and trigger tests documented here. |
+| `references/cross-skill-discovery.md` | Skill routing, description patterns, name conventions | You MUST read this BEFORE writing or debugging a description that triggers incorrectly. Do NOT modify `description` or `when_to_use` without first understanding the routing patterns documented here. |
+| `references/frontmatter-complete.md` | Full frontmatter field reference with examples | You MUST read this BEFORE writing complex frontmatter. Do NOT guess at field types, defaults, or valid values — ALWAYS verify against this canonical reference first. |
 
 ---
 

@@ -1,9 +1,14 @@
 ---
-name: hypothesis-generator
+name: fpf-hypothesis-generator
 description: Generates competing hypotheses from first principles for the FPF PROPOSE cycle. Invokes automatically when exploring multiple explanations with explicit assumptions for a problem.
 model: sonnet
 skills:
   - fpf
+  - skill-authoring
+  - subagent-orchestration
+  - sadd
+  - refine
+  - session-inspect
 tools: Read, Write, Grep, Glob
 maxTurns: 15
 memory: local

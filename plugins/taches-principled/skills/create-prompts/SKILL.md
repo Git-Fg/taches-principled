@@ -13,12 +13,12 @@ argument-hint: [task description]
 
 ## Decision Router
 
-IF adaptive intake required → BEFORE gathering requirements read section below on intake workflow
-IF generating for coding task → Use XML-structured prompts with `<implementation>` and `<verification>` sections
-IF generating for analysis task → Use XML-structured prompts with `<analysis_framework>` and `<output_format>` sections
-IF generating for research task → Use XML-structured prompts with `<search_strategy>` and `<synthesis>` sections
+IF adaptive intake is required → you MUST read the Adaptive Intake section below BEFORE gathering requirements. NEVER proceed on assumptions.
+IF generating for a coding task → you MUST use XML-structured prompts with `<implementation>` and `<verification>` sections (Coding Task template in `references/prompt-patterns.md`).
+IF generating for an analysis task → you MUST use XML-structured prompts with `<analysis_framework>` and `<output_format>` sections (Analysis Task template in `references/prompt-patterns.md`).
+IF generating for a research task → you MUST use XML-structured prompts with `<search_strategy>` and `<synthesis>` sections (Research Task template in `references/prompt-patterns.md`).
 
-This skill is self-contained — no external skill references needed.
+This skill is self-contained — no external skill references needed. The internal `references/prompt-patterns.md` file is the sole source for XML templates.
 
 ---
 
@@ -127,7 +127,7 @@ Prompts are XML-structured artifacts that define the contract between the user a
 
 ### Prompt Patterns
 
-See {baseDir}/references/prompt-patterns.md for full XML templates for coding, analysis, and research tasks.
+ALWAYS BEFORE writing any XML structure, you MUST read `references/prompt-patterns.md` for full templates covering coding, analysis, research, multi-prompt chaining, and parallel prompt patterns. NEVER proceed on assumptions or invent your own template structure. The reference file is the single source of truth for all XML prompt schemas.
 
 ---
 

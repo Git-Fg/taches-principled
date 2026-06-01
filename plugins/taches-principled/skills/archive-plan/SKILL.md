@@ -12,6 +12,7 @@ argument-hint: "[plan-path or empty for latest completed]"
 - When cross-session learning accumulation is desired.
 - Do NOT use for ongoing plans — only completed or abandoned plans.
 - CONTRAST with refine MEMORIZE: MEMORIZE captures general insights from any session work; archive-plan bundles specific plan artifacts and extracts plan-specific learnings. Use archive-plan when the unit of work is a completed plan phase; use MEMORIZE for ad-hoc insights.
+- CONTRAST with rules-orchestration SYNC: archive-plan is one of two writers to `.principled/memory/learnings.md` (the other is refine MEMORIZE). rules-orchestration SYNC reads that file to bridge durable insights into committed rules. Run archive-plan (or MEMORIZE) before SYNC.
 
 ## Decision Router
 
@@ -39,13 +40,13 @@ Archive is the closure step in the plan lifecycle. It preserves artifacts for fu
 
 1. Create archive directory at `.principled/attic/{milestone}/{plan-id}/`
 2. Copy all discovered artifacts to archive directory
-3. Generate metadata using the template at `{baseDir}/templates/archive-bundle.md`
+3. Generate metadata using the template at `templates/archive-bundle.md`
 4. Verify all files copied successfully (compare file counts)
 
 ### Phase 3: Condense
 
 1. Read all archived artifacts (PLAN.md, SUMMARY.md, scratchpad files)
-2. Extract learnings per the taxonomy at `{baseDir}/references/learning-taxonomy.md`
+2. Extract learnings per the taxonomy at `references/learning-taxonomy.md`
 3. Classify each learning by type and confidence
 4. Append learnings to `.principled/memory/learnings.md` with date and plan reference
 5. Deduplicate against existing learnings — merge, don't append duplicates
@@ -58,12 +59,12 @@ Present summary:
 - Learnings extracted: {n} new, {n} reinforced
 - Knowledge base updated: yes/no
 
-After archival completes, consider starting a new planning cycle with `scope-work` to scope the next phase or feature. Archive preserves context; planning resumes momentum.
+After archival completes, consider starting a new planning cycle with `create-plans` to scope the next phase or feature. Archive preserves context; planning resumes momentum.
 
 ## File References
 
-- Archive bundle template: `{baseDir}/templates/archive-bundle.md`
-- Learning taxonomy: `{baseDir}/references/learning-taxonomy.md`
+- Archive bundle template: `templates/archive-bundle.md`
+- Learning taxonomy: `references/learning-taxonomy.md`
 - Archive location: `.principled/attic/` (follows existing attic convention)
 - Learnings location: `.principled/memory/learnings.md` (follows existing memory convention)
 

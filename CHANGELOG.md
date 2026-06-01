@@ -2,6 +2,19 @@
 
 All notable changes are documented here.
 
+## [0.11.1] — 2026-06-01
+
+### Changed
+- **Dissolved `scope-work` skill**: The hollow router (`add-task`/`refine-task`/`create-plans` routing) was removed — its three spoke files never existed and its triggers conflicted with `add-task`. Lifecycle skills now self-route via their existing CONTRAST frontmatter. References updated in `ideation`, `archive-plan`, `execute-plans`, and `refine`.
+- **`sadd` DESIGN mode merged into `subagent-orchestration`**: Architecture design capability consolidated into the core `subagents` hub. `sadd` now redirects DESIGN to `subagent-orchestration` and focuses on COMPETE/JUDGE/EXECUTE/EXPLORE competitive evaluation. `sadd-architect` agent deleted as orphaned.
+- **`kaizen` / `ddd` relationship clarified**: Both skills updated with explicit "Relationship" sections — `kaizen` as continuous design-time guardrails (the immune system), `ddd` as specialist structural analysis (called in for diagnosis). Mutual cross-references added.
+- **Shared evaluation protocol extracted**: `execute-plans`, `refine-task`, and `implement-task` now reference `execute-plans/references/evaluation-protocol.md` for the shared judge pattern (chain-of-thought, MAX_ITERATIONS, 5.0/5.0 hallucination guard, scratchpad-first, weighted rubrics). Prevents drift across the three skills.
+- **Memory/learnings handoff chain made explicit**: `archive-plan`, `refine` (MEMORIZE mode), and `rules-orchestration` (SYNC mode) now have explicit CONTRAST cross-references documenting the two-writers/one-reader chain feeding `.principled/memory/learnings.md`.
+
+### Removed
+- **`scope-work` skill** (4 files): `SKILL.md` + `references/{nano-spec,task-spec,roadmap}.md` — no spoke bodies, routing superseded by direct CONTRAST routing in lifecycle skills.
+- **`sadd-architect` agent**: Orphaned when DESIGN mode moved to `subagent-orchestration`.
+
 ## [0.11.0] — 2026-06-01
 
 ### Added
@@ -9,6 +22,10 @@ All notable changes are documented here.
 - **New official docs**: `docs/official/permissions.md` and `docs/official/plugins/plugins-reference.md` (refreshed from source).
 
 ### Changed
+- **Skills preloading philosophy — "Better too much than not enough"**: Retired the restrictive rule limiting skill preloading to evaluation/critique agents only. All potentially relevant skills MUST now be preloaded on all agent types (execution, research, explorer, etc.) for deterministic capability access. Properly authored skills use progressive disclosure — baseline context consumption is extremely low (~500 tokens frontmatter + body, references on-demand). AI retains full autonomy to lazy-load deeper reference files based on task requirements. Updated `docs/official/agent-skill-integration.md`, `plugins/taches-principled/skills/subagent-orchestration/SKILL.md`, and CLAUDE.md.
+
+- **Skill file path referencing standardized**: Eradicated `{baseDir}` and `${CLAUDE_SKILL_DIR}` variables from all skill bodies and references (12 files). Established two canonical rules: (1) paths resolve within the skill's folder by default, (2) only SKILL.md may cite supporting files — reference files must never cross-cite. Converted all passive citations ("You can read", "See reference") to deterministic IF→BEFORE imperatives. Documented in CLAUDE.md and skill-authoring SKILL.md.
+- **Native Tool Referencing standard**: Eradicated hardcoded tool names from orchestration directives across 11 files. `Write tool access` → `write access`, `"use the Read tool"` → `"use your native tools"`, etc. This ensures forward compatibility when the underlying API migrates (e.g., Task→Agent rename). Documented in CLAUDE.md and skill-authoring SKILL.md as a core best practice.
 - **CLAUDE.md Skill Discovery**: Rewrote section as "Skill Discovery & Routing Metadata" — explicitly names routing-participant fields (description, when_to_use only), defines the "Metadata-Only Gate" concept, elevates 200-char rule, and adds Anti-Pattern "No Method Leaking" with bad/good examples.
 - **Skill descriptions cleaned** (5 skills, jargon → user vocabulary):
   - `diagnose`: "A3, Five Whys, Fishbone, Stack Trace" → "Find root causes of recurring problems, failed fixes, and complex bugs"

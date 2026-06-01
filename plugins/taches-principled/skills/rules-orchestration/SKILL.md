@@ -36,20 +36,20 @@ After conversation or skill execution with discoverable conventions, anti-patter
 
 1. **Capture context** — Read from `.principled/scratch/` or conversation summary. Determine the source: recent skill execution output, session transcript, or explicit user request.
 
-2. **Extract insights** — Spawn a transcript-rules-analyzer subagent (read `{baseDir}/agents/transcript-rules-analyzer.md` first) to identify conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge. Pass the context path and instruct it to write findings to `.principled/scratch/rules-analysis-{timestamp}.md`.
+2. **Extract insights** — Spawn a transcript-rules-analyzer subagent (read `agents/transcript-rules-analyzer.md` first) to identify conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge. Pass the context path and instruct it to write findings to `.principled/scratch/rules-analysis-{timestamp}.md`.
 
 3. **Synthesize proposals** — Read the analysis output. Convert raw insights into structured proposals with:
    - **Category**: TECHNICAL | PROCESS | PATTERN | ANTI-PATTERN | DECISION
    - **Priority**: critical | important | nice-to-have
    - **Target**: CLAUDE.md (global) or `.claude/rules/<name>.md` (path-scoped)
    - **Rationale**: Why this rule belongs in the project
-   - **Rule text**: Draft rule content following `{baseDir}/references/rule-writing-guide.md`
+   - **Rule text**: Draft rule content following `references/rule-writing-guide.md`
 
 4. **Write proposal file** — Save to `.principled/scratch/rules-proposals-{timestamp}.md` with all proposals in the structured format from the template.
 
 5. **Present proposals** — Show user a numbered list of proposals with file targets and a one-line rationale. Ask: "Integrate these rules?"
 
-6. **On approval** — Spawn a transcript-rules-integrator subagent (read `{baseDir}/agents/transcript-rules-integrator.md`) with the proposal file path and target files. The integrator applies changes and commits.
+6. **On approval** — Spawn a transcript-rules-integrator subagent (read `agents/transcript-rules-integrator.md`) with the proposal file path and target files. The integrator applies changes and commits.
 
 ### Output
 - Analysis: `.principled/scratch/rules-analysis-{timestamp}.md`
@@ -69,7 +69,7 @@ CLAUDE.md exceeds 200 lines, `.claude/rules/` has more than 10 files, or rules f
 
 1. **Audit current state** — Read all files in `.claude/rules/` and `CLAUDE.md`. Map: total line count, file count, any obvious duplication visible without analysis.
 
-2. **Identify issues** — Spawn a transcript-rules-auditor subagent (read `{baseDir}/agents/transcript-rules-auditor.md` first) with full paths to all rules files. Instruct it to write findings to `.principled/scratch/rules-audit.md`.
+2. **Identify issues** — Spawn a transcript-rules-auditor subagent (read `agents/transcript-rules-auditor.md` first) with full paths to all rules files. Instruct it to write findings to `.principled/scratch/rules-audit.md`.
 
 3. **Design new structure** — Review the audit report. Design a reorganization:
    - Which files to split (target: under 200 lines each)
@@ -95,20 +95,20 @@ User explicitly wants to codify a specific convention.
 
 1. **Capture intent** — Confirm what the user wants to codify. If vague, ask one clarifying question. If clear, proceed.
 
-2. **Determine placement** — Apply the decision tree from `{baseDir}/references/rule-taxonomy.md`:
+2. **Determine placement** — Apply the decision tree from `references/rule-taxonomy.md`:
    - Universal across all files → CLAUDE.md
    - Specific to file types → `.claude/rules/<name>.md` with `paths:` frontmatter
    - Specific to a subsystem → `.claude/rules/<domain>/<name>.md`
    - Otherwise → `.claude/rules/<name>.md` (always-on)
 
-3. **Draft rule** — Write the rule following `{baseDir}/references/rule-writing-guide.md`. Include:
+3. **Draft rule** — Write the rule following `references/rule-writing-guide.md`. Include:
    - Frontmatter: `name`, `description` (one sentence), `paths:` if scoped
    - Body: clear directive, Bad/Good examples
    - Rationale: why this rule
 
 4. **Conflict check** — Grep existing rules for overlap or contradiction. If found, show the conflict and ask: "Merge with existing rule, replace it, or keep both with different scope?"
 
-5. **Integrate and commit** — Apply with Edit tool (append to existing file) or Write tool (new file). Run `git add <file>` and `git commit -m "feat(rules): add [rule name] to [target file]"`. Report the commit URL or hash.
+5. **Integrate and commit** — Apply with your native tools (append to existing file or create new file). Run `git add <file>` and `git commit -m "feat(rules): add [rule name] to [target file]"`. Report the commit URL or hash.
 
 ---
 
@@ -123,7 +123,7 @@ Pending proposals exist from ANALYZE or SYNC that need approval before being com
 
 1. **Load proposals** — Find proposal files: `ls .principled/scratch/rules-proposals-*.md`. If multiple exist, use the most recent. If none exist, report and exit.
 
-2. **Spawn review panel** — Dispatch 2-3 critic subagents in parallel (read `{baseDir}/agents/transcript-rules-auditor.md` for evaluation criteria). Give each critic the proposal file and this rubric:
+2. **Spawn review panel** — Dispatch 2-3 critic subagents in parallel (read `agents/transcript-rules-auditor.md` for evaluation criteria). Give each critic the proposal file and this rubric:
    - **Clarity**: Is the rule text actionable? Is the rationale clear?
    - **Conflict**: Does this contradict or duplicate an existing rule?
    - **Efficiency**: Would adding this reduce or increase context cost?
@@ -147,6 +147,8 @@ Pending proposals exist from ANALYZE or SYNC that need approval before being com
 ## SYNC Mode
 
 Bridges the gap between ephemeral memory captures and durable rules integration. The learn command stores to memory; SYNC promotes durable insights to rules.
+
+**CONTRAST — feeds from:** archive-plan and refine MEMORIZE, which both write to `.principled/memory/learnings.md`. SYNC is downstream of both — never the source.
 
 ### When
 After `learn` command captures insights, or after skill execution that established conventions not yet codified.

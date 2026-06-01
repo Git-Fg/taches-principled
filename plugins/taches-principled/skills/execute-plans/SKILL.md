@@ -10,7 +10,7 @@ argument-hint: [path to plan] [--phase N]
 
 - IMMEDIATELY when ready to progress from PLAN to SUMMARY.
 - CONTRAST with implement-task: That skill executes task files from .specs/tasks/; this skill executes PLAN.md files from .principled/plans/.
-- Do NOT use for creating plans — use `scope-work` instead.
+- Do NOT use for creating plans — use `create-plans` instead.
 - Do NOT use for planning without execution intent.
 - Do NOT use for executing prompt files — use execute-prompts instead.
 
@@ -21,7 +21,7 @@ IF plan has checkpoint:human-verify markers → Strategy B: Segmented Execution
 IF plan has checkpoint:decision or checkpoint:human-action → Strategy C: Sequential Execution
 IF spawning parallel workers → FIRST consult the orchestration patterns for parallel subagent work
 
-For detailed strategy mechanics → read {baseDir}/references/execution-strategies.md AFTER selecting strategy
+IF selecting an execution strategy → BEFORE choosing read `references/execution-strategies.md`. Do not commit to a strategy without reading the full mechanics first.
 
 ---
 
@@ -65,7 +65,7 @@ A skill conflating policy and mechanism produces execution that either skips cri
 
 ## Intake
 
-This skill can be invoked directly or after scope-work. If context was already captured (plan exists, execution preference set), skip intake and proceed to strategy selection.
+This skill can be invoked directly or after `create-plans`. If context was already captured (plan exists, execution preference set), skip intake and proceed to strategy selection.
 
 For direct invocation, ensure you have sufficient context to execute:
 
@@ -111,7 +111,7 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 **Milestone critique loop:**
 - Trigger: every 2-3 tasks completed, or at phase boundary
-- Spawn a critic subagent (haiku, with Write) to challenge the work
+- Spawn a critic subagent (haiku, with write access) to challenge the work
 - Loop until critic finds no HIGH findings
 - If critic finds HIGHS: executor fixes before continuing to next milestone
 - This is internal critique, not user interaction
@@ -131,7 +131,7 @@ When spawning subagents for investigation (exploring project structure, finding 
 **Before spawning:**
 1. Check centralized scratchpad at `.principled/scratch/{plan-id}.md`
 2. Write current execution context to scratchpad (what task, why spawning, expected output)
-3. Verify subagent has **Write tool access** — explorer needs to update scratchpad
+3. Verify subagent has **write access** — explorer needs to update scratchpad
 4. **NEVER** use "native" Explore subagents (Haiku, read-only) for investigation
 
 **Subagent tool requirements for investigation:**
@@ -150,7 +150,7 @@ When spawning subagents for investigation (exploring project structure, finding 
 
 **Pre-execution critique loop:**
 
-Before spawning workers, spawn a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Spawn the critic as a subagent (general-purpose with Write tool access) with the plan as context.
+Before spawning workers, spawn a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Spawn the critic as a subagent (general-purpose with write access) with the plan as context.
 
 Loop until no HIGH findings. If critic finds critical issues: fix the plan before spawning workers.
 If critic finds minor concerns: note them for milestone review.
@@ -186,6 +186,8 @@ When spawning global-implementer subagents (Strategy A parallel workers, Strateg
 ---
 
 ## Critic-Revise Execution Loop
+
+**Evaluation uses the shared judge protocol — see `references/evaluation-protocol.md`** for chain-of-thought, scratchpad-first writing, MAX_ITERATIONS, and integrity rules that apply across all three evaluation skills.
 
 The executor-critic relationship is a structured loop, not a one-shot check:
 
@@ -311,7 +313,7 @@ For tasks that are architecturally significant or touch 5+ files, integrate crit
 | human-verify | B: Segmented | ~15-20% |
 | decision, human-action | C: Sequential | ~25-30% |
 
-**Decision tree:** See {baseDir}/references/execution-strategies.md for full strategy selection flow.
+**Decision tree:** IF selecting execution strategy → BEFORE choosing read `references/execution-strategies.md` for the full strategy selection flow.
 
 **Target:** Reserve 70%+ context for workspace and implementation.
 
@@ -493,7 +495,7 @@ When Claude sees code blocks with `Thought:`, `Action:`, `Observation:` patterns
 **The Fix:**
 Replace all Thought/Action/Observation examples with imperative natural language:
 - Instead of: "Thought: I need to read the task file..."
-- Write: "First, use the Read tool to load the task file."
+- Write: "First, use your native tools to load the task file."
 
 **This affects ANY skill that shows tool calls in a demonstrated output format.**
 
@@ -501,7 +503,7 @@ Replace all Thought/Action/Observation examples with imperative natural language
 
 ## Anti-Patterns
 
-**Full anti-pattern catalog is in {baseDir}/references/anti-patterns.md.**
+**Full anti-pattern catalog is in references/anti-patterns.md.**
 
 ### Skipping verification
 Marking a task complete without running the verify command.
@@ -522,16 +524,17 @@ Loading all project files instead of only those referenced in the plan.
 
 ## Reference Index
 
-IF selecting execution strategy → BEFORE choosing read `{baseDir}/references/execution-strategies.md`
-IF checkpoint type is human-verify → BEFORE segment read `{baseDir}/references/checkpoint-protocols.md`
-IF checkpoint type is decision → BEFORE presenting read `{baseDir}/references/checkpoint-protocols.md`
-IF handling deviations → read `{baseDir}/references/deviation-rules.md`
+IF selecting execution strategy → BEFORE choosing read `references/execution-strategies.md`
+IF checkpoint type is human-verify → BEFORE segment read `references/checkpoint-protocols.md`
+IF checkpoint type is decision → BEFORE presenting read `references/checkpoint-protocols.md`
+IF handling deviations → read `references/deviation-rules.md`
+IF spawning critic or milestone reviewer → BEFORE spawning read `references/evaluation-protocol.md` for the shared judge/critic evaluation protocol
 IF spawning autonomous worker → read the autonomous-execution template
 IF spawning segment worker → read the segment-execution template
-IF spawning milestone critic → spawn a critic subagent (general-purpose with Write tool access)
+IF spawning milestone critic → spawn a critic subagent (general-purpose with write access)
 IF spawning parallel worker → spawn a global-implementer subagent
 IF spawning researcher → spawn an execute-researcher subagent (namespaced under execute-plans)
-IF spawning verifier → spawn a verifier subagent
+IF spawning verifier → spawn a plan-verifier subagent
 **Orchestration:** Five parallel patterns for subagent work
 
 ---

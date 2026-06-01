@@ -152,7 +152,7 @@ Every 2-3 tasks (whichever comes first):
 
 ### Critic Prompt Structure
 
-Spawn the critic as a subagent (general-purpose with Write tool access). Fill the critic's placeholders with the current execution state, files modified since the last milestone, the milestone number, and the review task.
+Spawn the critic as a subagent (general-purpose with write access). Fill the critic's placeholders with the current execution state, files modified since the last milestone, the milestone number, and the review task.
 
 **Why:** The critic agent template provides structured output with blocking/non-blocking classification. Using it instead of inline prose ensures consistent review format and easier maintenance.
 

@@ -138,10 +138,7 @@ Generate implementation summary with step status, verification results, and DoD 
 
 ## Evaluation Integrity Rules
 
-- **Score 5.0/5.0 is a hallucination** — reject and re-run the judge.
-- **Missing numerical score** — reject and re-run the judge.
-- **Chain-of-thought required**: judges must provide justification BEFORE the score.
-- **After MAX_ITERATIONS reached**: proceed to next step with warning.
+**Evaluation uses the shared judge protocol — see `../execute-plans/references/evaluation-protocol.md`** for chain-of-thought, scratchpad-first writing, MAX_ITERATIONS semantics, and the full integrity rules. This section covers only the implement-task-specific mechanics.
 
 ## Panel Voting Algorithm
 
@@ -162,7 +159,7 @@ If high variance detected: present both perspectives to user for resolution. If 
 
 ## Design Decisions
 
-**Implementation patterns are documented in {baseDir}/references/patterns.md.**
+IF implementing a verified step → BEFORE writing code read `references/patterns.md`. Do not assume implementation patterns without reading this file.
 
 ### Separate standard and critical thresholds
 Using a higher threshold for critical paths (4.5 vs 4.0) focuses quality effort where it matters most.

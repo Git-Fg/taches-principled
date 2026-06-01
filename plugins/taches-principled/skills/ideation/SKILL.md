@@ -13,8 +13,8 @@ argument-hint: "[feature concept, problem, or topic]"
 
 IF user wants to explore or refine an unformed idea → use brainstorm mode: collaborative questioning to refine
 IF user wants creative idea generation (not refinement) → use **create-ideas** mode
-IF user has simple task capture needs → use scope-work instead
-IF user needs formal planning with milestones → use scope-work instead
+IF user has simple task capture needs → use add-task instead
+IF user needs formal planning with milestones → use create-plans instead
 IF user already knows exactly what they want → skip to design capture directly
 IF combining with development workflow → produce `.specs/plans/<topic>.design.md` then create task file
 IF user needs structured evaluation rather than generation → use evaluation workflow instead
@@ -24,12 +24,13 @@ IF idea is fully formed and documented → no need for this skill
 
 ## DO NOT Boundaries
 
-- **DO NOT use for simple task capture** — use `scope-work` instead for task capture
-- **DO NOT use for formal planning** — use `scope-work` instead for project planning
+- **DO NOT use for simple task capture** — use `add-task` instead for task capture
+- **DO NOT use for formal planning** — use `create-plans` instead for project planning
 
 ## CONTRAST
 
-- CONTRAST with scope-work: ideation explores and refines ideas through dialogue; scope-work handles task capture, refinement, and planning. Use ideation when the idea is vague; use scope-work when intent is clear or when planning is needed.
+- CONTRAST with add-task: ideation explores and refines ideas through dialogue; add-task captures clear intent as a draft. Use ideation when the idea is vague; use add-task when intent is clear.
+- CONTRAST with create-plans: ideation explores ideas; create-plans decomposes a project into phases and tasks. Use ideation when the concept needs exploration; use create-plans when scope is clear and decomposition is needed.
 
 ---
 

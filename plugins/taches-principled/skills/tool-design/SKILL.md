@@ -66,7 +66,7 @@ Choose reduction when the data layer is well-documented and consistently structu
 **Build for Future Models**
 Design minimal architectures that benefit from model improvements rather than sophisticated architectures that lock in current limitations. Ask whether each tool enables new capabilities or constrains reasoning the model could handle on its own -- tools built as "guardrails" often become liabilities as models improve.
 
-See `{baseDir}/references/architectural_reduction.md` for production evidence.
+IF removing specialized tools in favor of primitives or evaluating whether a complex tool architecture is justified → BEFORE deciding read `references/architectural_reduction.md`. Do not proceed without the production evidence in this file.
 
 ### Tool Description Engineering
 
@@ -201,7 +201,7 @@ TOOL CLI - optimized for AI agent consumption.
 
 **TIPS:**
 - Use <verbose-flag> for <extra-info>
-- Read files using native Read tool for full contents (not cat)
+- Read files using your native tools for full contents (not cat)
 ```
 
 ### MCP Tool Naming Requirements
@@ -408,11 +408,11 @@ Paths must be relative to `process.cwd()` -- agents cannot prepend directories m
 ## References
 
 Internal references:
-- `{baseDir}/references/best_practices.md` - Read when: designing a new tool from scratch or auditing an existing tool collection for quality gaps
-- `{baseDir}/references/architectural_reduction.md` - Read when: considering removing specialized tools in favor of primitives, or evaluating whether a complex tool architecture is justified
+- IF designing a new tool from scratch or auditing an existing tool collection for quality gaps → BEFORE designing read `references/best_practices.md`
+- IF considering removing specialized tools in favor of primitives, or evaluating whether a complex tool architecture is justified → BEFORE deciding read `references/architectural_reduction.md`
 
 External resources:
-- MCP (Model Context Protocol) documentation - Read when: implementing tools for multi-server agent environments or debugging tool routing failures
-- Framework tool conventions - Read when: adopting a new agent framework and need to map tool design principles to framework-specific APIs
-- API design best practices for agents - Read when: translating existing human-facing APIs into agent-facing tool interfaces
-- Vercel d0 agent architecture case study - Read when: evaluating whether to consolidate tools or seeking production evidence for architectural reduction
+- IF implementing tools for multi-server agent environments or debugging tool routing failures → read MCP (Model Context Protocol) documentation
+- IF adopting a new agent framework and need to map tool design principles to framework-specific APIs → read Framework tool conventions
+- IF translating existing human-facing APIs into agent-facing tool interfaces → read API design best practices for agents
+- IF evaluating whether to consolidate tools or seeking production evidence for architectural reduction → read Vercel d0 agent architecture case study

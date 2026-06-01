@@ -69,7 +69,21 @@ Never set `model` or `effort` unless explicitly requested. Both default to `inhe
 
 ### Skills Preloading Principle
 
-Subagents do not inherit skills from the parent — list them explicitly. The `skills` field injects full SKILL.md content at startup. Missing or disabled skills are silently skipped.
+**"Better too much than not enough."**
+
+Subagents do not inherit skills from the parent — list them explicitly. The `skills` field injects full base SKILL.md content at startup. Missing or disabled skills are silently skipped.
+
+**Mandatory preload across all agent types.** All potentially relevant skills MUST be preloaded on all agents unconditionally. This is not a performance optimization — it is a deterministic capability access requirement. The cost of preloading an unused skill is tokens; the cost of missing a needed skill mid-task is capability failure.
+
+**Progressive disclosure keeps preloading efficient.** Properly authored skills use progressive disclosure: frontmatter metadata is lightweight, deeper reference files load only on demand. Baseline context consumption from preloading a skill is extremely low.
+
+**The AI retains lazy-loading autonomy.** While base skills are preloaded deterministically, the AI retains full autonomy to decide whether it needs to lazily load deeper reference files from those skills based on the specific task at hand. Preloading is not the same as processing all referenced content.
+
+Do not filter or conditionally load skills based on narrow task assumptions. Cast wide and let the agent's task requirements drive depth.
+
+### Cross-Plugin Skill Preloading
+
+**It is perfectly safe and highly recommended to preload skills from plugins that may not currently be installed on the user's machine.** Claude Code evaluates the `skills:` frontmatter array dynamically at startup; if a requested skill is unavailable or uninstalled, the system gracefully ignores it without throwing an error. Because properly authored skills rely on progressive disclosure, their baseline context consumption is extremely low. Aggressively preloading all potentially relevant methodology skills ensures maximum deterministic capability access with zero risk of breaking the agent. An agent can list `sadd`, `fpf`, `tdd`, and `ddd` in its `skills:` array even when the user has only the core plugin installed — unsupported skills are silently skipped.
 
 ### Memory Architecture Principle
 
@@ -87,11 +101,29 @@ The `description` field is the routing oracle — write it like a trigger rule w
 
 ### File Templates
 
-See {baseDir}/references/agent-templates.md for reusable agent templates (Researcher, Analyst, Monitor, Explorer).
+BEFORE writing spawn prompts, you MUST read `references/agent-templates.md` for reusable templates (Researcher, Analyst, Monitor, Explorer). Do not proceed or make assumptions without reading this file.
 
 ### Fork Mode Principle
 
 Fork mode creates a subagent that inherits the full conversation context and shares the parent's prompt cache. Use when the subagent needs to understand the full conversation or reference earlier decisions. Do not use for independent tasks or parallel workstreams.
+
+### Architecture Design (Multi-Agent Patterns)
+
+DESIGN mode also covers the *shape* of a multi-agent system: which pattern fits the task, how agents coordinate, and how context is partitioned across them. For exhaustive coverage (framework comparisons, consensus mechanisms, failure-mode deep dives), load the `multi-agent-patterns` reference. The three primary patterns:
+
+**Supervisor/Orchestrator** — Central agent decomposes, spawns, and synthesizes. Use when tasks have clear decomposition and human oversight matters. Trade-off: supervisor context becomes a bottleneck and failures cascade to all workers.
+
+**Peer-to-Peer/Swarm** — No central control; agents communicate via filesystem or explicit handoff protocols. Use for flexible exploration where rigid planning is counterproductive. Trade-off: coordination complexity and divergence risk rise with agent count.
+
+**Hierarchical** — Strategy → Planning → Execution layers. Use for large-scale projects with layered abstraction. Trade-off: coordination overhead between layers and strategy/execution misalignment risk.
+
+**Core principle:** Context isolation is the primary benefit — subagents exist to give each execution a clean context window, not to anthropomorphize role division. Reach for multi-agent only when a single agent's context window is the binding constraint.
+
+**Design guidelines:**
+- Default to filesystem-based inter-agent communication; reserve message-passing for state that one consumer needs faithfully
+- Use debate protocols for consensus, not simple voting — voting treats hallucinations as equal to reasoning
+- Set iteration limits on all agent execution
+- Start simple — add multi-agent complexity only when single-agent fails
 
 ---
 
@@ -140,6 +172,8 @@ Structure every spawn prompt with RACE:
 Key constraints: Positive framing (tell agents what to do), minimal high-signal context, explicit scope boundaries, coverage rule (comprehensive vs curated).
 
 **Failure signal:** Return structured JSON with status, reason, completed_portion, retry_possible.
+
+**MANDATORY:** You MUST read `references/agent-templates.md` BEFORE writing any RACE prompt. Do not proceed without reading this file. The reference contains the full RACE Component Details table, RACE Anti-Patterns table, and role-based agent templates (Researcher, Explorer, Implementer, Critic, Monitor, Architect) — all spawn prompts MUST conform to these templates.
 
 #### Spawn and Collect
 

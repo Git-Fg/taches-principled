@@ -1,10 +1,16 @@
 ---
-name: judge
+name: sadd-judge
 description: Evaluates candidate solutions against a meta-judge YAML specification. Invokes automatically when scoring solutions and producing comparative analysis in COMPETE/JUDGE/VERIFY modes.
 model: sonnet
 maxTurns: 15
 skills:
   - sadd
+  - kaizen
+  - ddd
+  - refine
+  - test
+  - diagnose
+  - fpf
 tools: Read, Write, Grep, Glob
 memory: local
 ---

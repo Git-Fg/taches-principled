@@ -1,5 +1,5 @@
 ---
-name: debug
+name: trace
 skill: diagnose
 description: Apply systematic debugging methodology to investigate issues
 argument-hint: [issue description]

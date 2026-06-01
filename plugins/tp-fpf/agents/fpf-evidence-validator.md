@@ -1,9 +1,14 @@
 ---
-name: evidence-validator
+name: fpf-evidence-validator
 description: Validates evidence supporting or refuting FPF hypotheses. Invokes automatically when cross-referencing with codebase and existing knowledge to promote L1 hypotheses to L2.
 model: sonnet
 skills:
   - fpf
+  - skill-authoring
+  - subagent-orchestration
+  - sadd
+  - refine
+  - session-inspect
 tools: Read, Write, Grep, Glob
 maxTurns: 15
 memory: local

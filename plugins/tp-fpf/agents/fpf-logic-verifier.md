@@ -1,9 +1,14 @@
 ---
-name: logic-verifier
+name: fpf-logic-verifier
 description: Verifies internal logical consistency of FPF hypotheses. Invokes automatically when checking for hidden assumptions, circular reasoning, and logical gaps during hypothesis validation.
 model: sonnet
 skills:
   - fpf
+  - skill-authoring
+  - subagent-orchestration
+  - sadd
+  - refine
+  - session-inspect
 tools: Read, Write, Grep, Glob
 maxTurns: 15
 memory: local

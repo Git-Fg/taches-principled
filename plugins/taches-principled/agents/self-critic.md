@@ -4,7 +4,14 @@ description: |
   Invokes automatically after any artifact is created — adversarial stress-test that finds flaws, edge cases, and unchecked assumptions. Questions everything, prioritizes edge cases over happy path. Pairs with self-review: where self-review checks "did we build it right?", self-critic asks "what could make it fail?".
 tools: Read, Grep, Glob
 model: sonnet
-skills: [refine]
+skills:
+  - kaizen
+  - ddd
+  - refine
+  - test
+  - diagnose
+  - fpf
+  - sadd
 maxTurns: 15
 memory: local
 ---

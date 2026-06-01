@@ -236,17 +236,17 @@ def handle_customer_request(request):
 
 This skill focuses on architecture design and pattern selection. For spawn execution, use subagent-orchestration which covers RACE framework, parallel patterns, and failure handling.
 
-See the frameworks.md file in this skill's references folder for implementation details on LangGraph supervisor patterns, AutoGen GroupChat, CrewAI hierarchy, and consensus mechanisms.
+IF implementing a LangGraph supervisor, AutoGen GroupChat, CrewAI hierarchy, or consensus mechanism → BEFORE writing any code read `references/frameworks.md`. Do not proceed or make assumptions without reading this file.
 
 ## References
 
 Internal reference:
-- [Frameworks Reference]({baseDir}/references/frameworks.md) - Read when: implementing a specific multi-agent pattern in LangGraph, AutoGen, or CrewAI and needing framework-specific code examples
+- IF implementing a multi-agent pattern in LangGraph, AutoGen, or CrewAI → BEFORE coding read `references/frameworks.md`. Do not proceed without framework-specific code examples.
 
 Related skills:
-- subagent-orchestration - Read when: spawning agents, writing spawn prompts, and orchestrating parallel execution (execution focus vs this skill's architecture focus)
-- memory-systems - Read when: agents need to share state across context boundaries or persist information between runs
-- tool-design - Read when: designing tool specialization per agent role
+- IF spawning agents, writing spawn prompts, or orchestrating parallel execution → use subagent-orchestration (execution focus vs this skill's architecture focus)
+- IF agents need to share state across context boundaries or persist information between runs → use memory-systems
+- IF designing tool specialization per agent role → use tool-design
 
 External resources:
 - [LangGraph Documentation](https://langchain-ai.github.io/langgraph/) - Read when: building graph-based multi-agent workflows with explicit state machines

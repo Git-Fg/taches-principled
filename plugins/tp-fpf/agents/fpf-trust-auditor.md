@@ -1,9 +1,14 @@
 ---
-name: trust-auditor
+name: fpf-trust-auditor
 description: Audits trust in FPF hypotheses by calculating R_eff (evidence reliability) and identifying weakest links. Invokes automatically when decision readiness needs quantification for validated hypotheses.
 model: sonnet
 skills:
   - fpf
+  - skill-authoring
+  - subagent-orchestration
+  - sadd
+  - refine
+  - session-inspect
 tools: Read, Write, Grep, Glob
 maxTurns: 15
 memory: local

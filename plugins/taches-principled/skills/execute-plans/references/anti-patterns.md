@@ -33,6 +33,6 @@ When Claude sees code blocks with `Thought:`, `Action:`, `Observation:` patterns
 **The Fix:**
 Replace all Thought/Action/Observation examples with imperative natural language:
 - Instead of: "Thought: I need to read the task file..."
-- Write: "First, use the Read tool to load the task file."
+- Write: "First, use your native tools to load the task file."
 
 **This affects ANY skill that shows tool calls in a demonstrated output format.**

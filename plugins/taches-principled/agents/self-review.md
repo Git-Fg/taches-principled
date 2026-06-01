@@ -4,7 +4,14 @@ description: |
   Invokes automatically after any artifact is created — verifies correctness, completeness, and clarity before delivery. A mandatory quality gate that surfaces blind spots the creator may miss. Pairs with self-critic for full quality coverage.
 tools: Read, Grep, Glob
 model: sonnet
-skills: [refine]
+skills:
+  - kaizen
+  - ddd
+  - refine
+  - test
+  - diagnose
+  - fpf
+  - sadd
 maxTurns: 15
 memory: local
 ---

@@ -125,7 +125,7 @@ Test 15-20 real queries, hold out 20%. Overfit = learned pattern-matching, not r
 
 ## Hub-Spoke Skill Architecture
 
-Skills can operate as **hubs** (orchestrate other skills via decision routing) or **spokes** (do one thing). See [Skills](docs/official/skills.md) for patterns.
+Skills can operate as **hubs** (orchestrate other skills via decision routing) or **spokes** (do one thing). Read [Skills](docs/official/skills.md) for hub-spoke patterns BEFORE adding or merging skills.
 
 ### Exempt Skills (Do Not Merge)
 
@@ -159,7 +159,7 @@ Hub-and-spoke consolidation target: 22-28 skills. Run `find plugins -name SKILL.
 
 ## Plugin Architecture
 
-**Monolithic marketplace-centric model** — `marketplace.json` is the sole authoritative catalog for all plugins. See [docs/official/plugins/marketplaces.md](docs/official/plugins/marketplaces.md).
+**Monolithic marketplace-centric model** — `marketplace.json` is the sole authoritative catalog for all plugins. Read [docs/official/plugins/marketplaces.md](docs/official/plugins/marketplaces.md) BEFORE modifying marketplace.json or adding plugins.
 
 **Directory structure:**
 ```
@@ -227,8 +227,39 @@ Four artifact types with distinct loading behaviors and token costs:
 
 - `{{CLAUDE_WORKING_DIR}}` for the current working directory
 - `$ARGUMENTS` for user-provided path parameters
-- `{baseDir}` for skill-internal file references (resolves at load time)
 - Bash environment variables (`$HOME`, `$PWD`) for shell operations
+
+### Skill-Internal File References
+
+**Two canonical rules govern skill file referencing:**
+
+1. **Default resolution**: Any path written within a skill that points to its own supporting content is, by default, resolved within that skill's folder. For example, a reference to `references/plan-format.md` from within the `create-plans` skill resolves to `plugins/taches-principled/skills/create-plans/references/plan-format.md`.
+
+2. **Centralized routing**: ONLY the main SKILL.md file is permitted to cite supporting files. Reference files (in `references/`, `agents/`, `workflows/`, `templates/`, `scripts/` folders) must never cross-cite other reference files. The SKILL.md is the sole, centralized router for all internal citations.
+
+**Strong language requirements:**
+- Use deterministic, imperative citations. Never use passive language like "You can read", "See reference", or "Optional guide available at".
+- Write: "You MUST read `references/X.md` BEFORE writing any code. Do not proceed or make assumptions without reading this file."
+- Passive citations are ignored by LLMs 99% of the time — every reference must be a strict imperative.
+
+### Native Tool Referencing
+
+**Principle:** Never hardcode tool names in orchestration directives. Use semantic natural language that delegates to the dynamically injected tool registry.
+
+| Brittle (breaks on rename) | Native (forward-compatible) |
+|----------------------------|-----------------------------|
+| `Use the Agent tool to spawn` | `Use your native tools to spawn a subagent` |
+| `Use the Task tool` | `delegate work via your native tools` |
+| `Use the Write tool` | `Use your native tools to write the file` |
+| `Use the Edit tool` | `Use your native tools to make the change` |
+| `Spawn with Write tool access` | `Spawn with write access` |
+
+**Why "native tools" works:** "Use your native tools" forces the model to actively consult its dynamically injected tool registry rather than blindly executing a hardcoded string. The Task→Agent rename is the canonical example: hardcoding "Task tool" would break silently, while "spawn a subagent with write access" remains correct regardless of what the underlying API calls the capability.
+
+**When to use exact tool names:**
+- MCP fully-qualified names (`BigQuery:bigquery_schema`) — server-level identities that never change
+- Documenting tool behavior in skill bodies ("The Read tool returns...") — describing behavior, not invoking
+- NEVER in orchestration directives: spawning, delegating, or directing workflow
 
 ### Artifact Hygiene — `.principled/` Directory
 
@@ -256,15 +287,36 @@ Skills define when to move content to `.attic/`. The attic preserves context for
 
 - "ALWAYS verify git availability before spawning git-dependent subagents"
 - "NEVER hardcode file paths in skill bodies"
-- "MUST use `{baseDir}` for skill-internal file references"
 - "Consider using parallel subagents for exploration"
 - "Prefer Haiku for execution, Sonnet for reasoning"
 
 **The test:** If removing the rule would produce visibly wrong output, use strong language. Anti-pattern: "should", "can", "may" in execution-critical contexts — these signal optionality where the skill actually requires the behavior.
 
+**Why mandatory language compensates for lazy reference loading.** Reference files (in `references/` directories) load lazily — they consume zero tokens until explicitly cited with a strict imperative in SKILL.md. This is efficient by design. However, LLMs tend to skip reference files that use passive citations ("You can read...") or soft language. Mandatory language (ALWAYS, NEVER, MUST) in citation directives counteracts this default laziness. When SKILL.md says "You MUST read `references/X.md` BEFORE proceeding", the LLM treats the reference as load-bearing rather than optional. This is why even conditional rules use mandatory language for activation — the "when/if" condition determines WHEN to apply the rule, but the language itself ensures the reference file is actually read.
+
+**Conditional rules are normal.** When a rule should only apply in specific situations, express that condition explicitly: "ALWAYS verify X **when** Y" or "NEVER do Z **if** W". The condition is part of the rule and determines activation scope. The mandatory language ensures deterministic behavior regardless of context load.
+
 ### Infrastructure Assumption
 
 **ALWAYS verify infrastructure prerequisites before executing dependent operations.** Skills that rely on external tools (git, gh, npm, python, etc.) must check availability before assuming the environment provides them.
+
+### Skills Preloading Principle
+
+**"Better too much than not enough."**
+
+All potentially relevant skills MUST be preloaded on all subagent types unconditionally. This applies to execution agents, research agents, and all other agent types — not just evaluation or critique agents.
+
+The outdated rule restricting skill preloading exclusively to evaluation/critique agents is retired. Capability access must be deterministic — an agent that might need a capability must have it preloaded before task execution begins.
+
+**Why this works:** Properly authored skills use progressive disclosure. Base skill content (frontmatter metadata + body) is lightweight — typically under 500 tokens. Deep reference files load only when the skill body explicitly references them and the agent's task requires them. Preloading delivers the base; the AI decides depth.
+
+**The AI retains lazy-loading autonomy.** While base skills are preloaded deterministically, the AI retains full autonomy to decide whether it needs to lazily load deeper reference files from those skills based on the specific task at hand. Preloading is not the same as processing all referenced content.
+
+Do not filter, conditionally load, or optimize skill preloads for narrow scope. Cast wide — deterministic capability access over narrow optimization.
+
+### Cross-Plugin Skill Preloading
+
+**It is perfectly safe and highly recommended to preload skills from plugins that may not currently be installed on the user's machine.** Claude Code evaluates the `skills:` frontmatter array dynamically at startup; if a requested skill is unavailable or uninstalled, the system gracefully ignores it without throwing an error. Because properly authored skills rely on progressive disclosure, their baseline context consumption is extremely low. Aggressively preloading all potentially relevant methodology skills ensures maximum deterministic capability access with zero risk of breaking the agent. An agent can list `sadd`, `fpf`, `tdd`, and `ddd` in its `skills:` array even when the user has only the core plugin installed — unsupported skills are silently skipped.
 
 ### Orchestration Topology Constraint
 
@@ -276,9 +328,9 @@ Subagents CAN invoke skills using the `Skill` tool (v2.1.133+). Subagent→Skill
 
 ## Skill Authoring
 
-For detailed guidance on skill categories, policy/mechanism pattern, progressive disclosure, frontmatter fields, cross-skill references, decision routers, description optimization, and command format, see the `skill-authoring` skill.
+You MUST consult the `skill-authoring` skill for detailed guidance on skill categories, policy/mechanism pattern, progressive disclosure, frontmatter fields, cross-skill references, decision routers, description optimization, and command format BEFORE authoring or modifying any skill.
 
-For frontmatter field reference, see [Skills](docs/official/skills.md).
+You MUST read [Skills](docs/official/skills.md) for frontmatter field reference BEFORE writing skill frontmatter.
 
 ---
 
@@ -430,7 +482,7 @@ This marketplace must synergize with any other marketplace or plugin the user ma
 
 ## Reference Tables
 
-**When to read these docs:** Claude Code documentation is authoritative. Read the relevant doc when working on related tasks. Don't memorize — know when to look.
+**When to read these docs:** Claude Code documentation is authoritative. You MUST read the relevant doc BEFORE working on the corresponding task — never proceed on assumptions. Don't memorize — know when to look.
 
 ### Official References
 

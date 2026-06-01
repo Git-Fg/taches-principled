@@ -13,7 +13,7 @@ argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-lo
 - IMMEDIATELY after completing significant work needing independent quality verification (CRITIQUE).
 - IMMEDIATELY when producing documentation, READMEs, or human-readable text (POLISH).
 - When consolidating reflection or critique findings into durable project memory (MEMORIZE).
-- Do NOT use for architectural decisions or greenfield development — use `scope-work` instead.
+- Do NOT use for architectural decisions or greenfield development — use `create-plans` instead.
 - CONTRAST with update-docs: that updates existing docs; this improves prose quality (POLISH).
 - CONTRAST with diagnose: refine improves quality of existing artifacts (present, corrective); diagnose investigates why something is broken (past, causal). Prefer refine when the issue is known and needs fixing; prefer diagnose when the root cause is unknown.
 
@@ -272,6 +272,8 @@ Ready to ship | Needs improvements | Requires significant rework
 ## MEMORIZE Mode
 
 Curate insights from reflection and critique into project memory so learnings persist across sessions.
+
+**CONTRAST — same memory, different scope:** archive-plan extracts plan-specific learnings to `.principled/memory/learnings.md`; MEMORIZE captures general session insights into the same file. Both archive-plan and MEMORIZE are writers; rules-orchestration SYNC is the reader that promotes their entries into committed rules.
 
 ### Process
 

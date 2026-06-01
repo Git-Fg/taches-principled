@@ -27,7 +27,7 @@ Execute complete First Principles Framework cycle with ADI (Abduction-Deduction-
 
 **Initialize:** Set up `.fpf/` structure and document context. Spawn subagent to capture scope.
 
-**Generate in parallel:** Spawn {n} hypothesis-generator subagents in parallel (one per hypothesis). Each generates independently with no cross-contamination. Each hypothesis starts at L0 (unverified).
+**Generate in parallel:** Spawn {n} fpf-hypothesis-generator subagents in parallel (one per hypothesis). Each generates independently with no cross-contamination. Each hypothesis starts at L0 (unverified).
 
 **Verify logic in layers:** Move hypotheses through L0 (raw) → L1 (internally consistent) → L2 (evidence-validated). Invalidate at any layer if checks fail.
 
