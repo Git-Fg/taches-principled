@@ -55,7 +55,7 @@ Read the complete prompt file, delegate to a general-purpose subagent, wait for 
 
 Read all prompt files, track each prompt's execution as a distinct unit, dispatch ALL subagents in one message for true parallelization. After completion, archive all prompts, commit all work, return consolidated results.
 
-**Critical constraint:** ALL subagent dispatches MUST occur in a SINGLE message. Sequential token emission creates sequential execution.
+**Critical constraint:** ALL subagent dispatches MUST occur in a SINGLE message. Sequential token emission creates sequential execution, not parallel.
 
 ### Sequential Execution
 
@@ -126,11 +126,11 @@ After execution completes, consider capturing insights from the results into pro
 
 | Metric | Limit | Why |
 |--------|-------|-----|
-| Parallel Task calls | Single message only | True concurrency requires single emission |
+| Parallel subagent calls | Single message only | True concurrency requires single emission |
 | Prompts per sequential chain | No hard limit | Stop on failure; user controls scope |
 | Commit message length | 72 chars max | Standard git convention |
 
-**Parallel execution is all-or-nothing:** If you cannot fit all parallel Task calls in one message, fall back to sequential.
+**Parallel execution is all-or-nothing:** If you cannot fit all parallel subagent calls in one message, fall back to sequential.
 
 ---
 

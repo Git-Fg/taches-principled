@@ -177,7 +177,7 @@ Key constraints: Positive framing (tell agents what to do), minimal high-signal 
 
 #### Spawn and Collect
 
-Spawn with appropriate model/tools/background. Use TaskGet for mid-flight inspection, TaskOutput for reading results, SendMessage to resume background agents.
+Spawn with appropriate model/tools/background. Read subagent results from the shared scratchpad files — for exploration use `.principled/scratch/{plan-id}.md`; for implementation use `.principled/scratch/{plan-id}-execution.md`. Inspect raw transcript files at `{{CLAUDE_WORKING_DIR}}/.claude/projects/{project-id}/` for detailed per-agent logs. Use SendMessage to resume background agents.
 
 #### Synthesize
 
