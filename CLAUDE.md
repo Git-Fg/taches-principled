@@ -152,13 +152,13 @@ Three fields control tool access, each with different semantics:
 
 | Field | Artifact | Effect | When Omitted |
 |-------|----------|--------|-------------|
-| `tools:` | Agent definitions | **Hard allowlist** — only listed tools accessible | Inherits all tools |
-| `allowed-tools:` | Skills, Commands | **Pre-approval** — removes permission prompts, does NOT restrict | Normal permission settings apply |
+| `tools:` | Agent definitions | **Hard allowlist** — only listed tools accessible (Strictly filtered from registry; C1) | Inherits all tools |
+| `allowed-tools:` | Skills, Commands | **Pre-approval** — partial enforcement (Write blocked in auto-mode, but Edit/Agent/Skill bypass; C8) | Normal permission settings apply |
 | `disallowed-tools:` | Skills | **Hard block** — removes specific tools from pool | No tools blocked |
 
 **Common mistake:** Treating `allowed-tools` as a security boundary. It only skips permission prompts — every tool remains callable. For true restriction, use agent `tools:` allowlists or skill `disallowed-tools:`.
 
-**SDK caveat:** `allowed-tools` only works in Claude Code CLI. The Agent SDK ignores it entirely — SDK consumers must use their own `allowedTools` parameter.
+**SDK & Bypass caveat:** `allowed-tools` only works in Claude Code CLI. Even there, empirical verification shows tools like `Edit`, `Agent`, and `Skill` routinely bypass the restriction while `Write` is caught. SDK consumers must use their own `allowedTools` parameter.
 
 ### Skill Discovery & Routing Metadata
 
@@ -168,6 +168,8 @@ Three fields control tool access, each with different semantics:
 - **Skills:** `description` + `when_to_use`
 - **Agents:** `description` (NOT the body prompt)
 - **Commands:** `description`
+
+**Nesting Limit:** The automatic skill discovery mechanism scans only **1 level deep** (`skills/<name>/SKILL.md`). Skills nested 2+ levels deep (`skills/<category>/<name>/SKILL.md`) will not be discovered by the `Skill` tool directly and require a manual `Glob` scan fallback.
 
 **Metadata vs. Body Strategy:**
 - **Metadata (The "Hook"):** Must use **User Vocabulary**. Speak how the user thinks (e.g., "Find the bug," "Clean up this code"). Avoid technical methodology (no "Fishbone," "ADI," or "Heuristics"). If the user doesn't say it, don't put it in the metadata.
@@ -215,6 +217,24 @@ Describe the role and outcome instead — agent definitions configure tools per 
 ### Orchestration Topology: Where Skills End and Agents Begin
 
 Skills teach WHAT to decide (routing triggers, delegation boundaries); agents teach HOW to execute (verification protocols, reporting formats, artifact delivery standards). See [Subagents](docs/official/subagents.md) for all default frontmatter fields.
+
+**Subagent Spawning Topology Constraint:**
+Agent definition files (`agents/*.md`) MUST NEVER contain spawn, fan-out, or delegation instructions. Because the `Agent` tool is strictly removed from the subagent tool registry at the implementation level (subagents cannot spawn other subagents), any nested spawning directives inside an agent definition will result in a runtime failure. Whenever nested orchestration or workflow delegation is required, the developer MUST instead create an orchestration skill utilizing the `context: fork` frontmatter to establish an isolated orchestration environment.
+
+*Note: While the `Agent` tool is blocked, subagents CAN invoke skills using the `Skill` tool (v2.1.133+). Subagent→Skill and Forked→Inline workflows are structurally supported.*
+
+### `skill:` vs `skills:` Field Distinction
+
+The two field names are **not interchangeable** — they have different schemas and live in different artifacts.
+
+| Field | Where it lives | Semantics | Source |
+|-------|---------------|-----------|--------|
+| `skills:` (plural, YAML list) | Subagent frontmatter (`agents/*.md`) | Preloads skill content into the subagent's context at startup. Subagents can still invoke unlisted skills via the `Skill` tool. | Official — [subagents.md](docs/official/subagents.md) lines 274, 426-447 |
+| `skill:` (singular, scalar) | Command frontmatter (`commands/*.md`) | Project extension: points the command at the canonical skill it dispatches into. Commands are merged into skills, so the `skill:` field is a navigation hint from a thin command shim to its underlying SKILL.md. | **Project extension — not in official docs.** Documented here for maintainer clarity. |
+
+**The `skill:` (singular) field in commands is a project convention, not an official field.** It is not present in either the skill frontmatter reference ([skills.md](docs/official/skills.md)) or the subagent frontmatter reference ([subagents.md](docs/official/subagents.md)). Audits flagging it as non-standard are technically correct; the project uses it intentionally as a dispatcher hint.
+
+**Verify before assuming:** When you see `skill:` or `skills:` in frontmatter, check which artifact (skill, subagent, command) it sits in. They are different fields with different purposes.
 
 ### Agent Description Pattern
 
@@ -451,7 +471,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] **Subagent spawn check**: Every skill that explores, implements, researches, or creates has explicit spawn instructions in its body — not optional tips, not conditional recommendations. The default execution mode is subagent delegation.
 - [ ] **Critique loop check**: Every skill that produces artifacts ends with "spawn self-review and self-critic subagents, loop until no HIGH findings" or equivalent
 - [ ] **Skill budget check**: Run `/context` and `/doctor` — verify no skills dropped or descriptions truncated
-- [ ] **Description length check**: All descriptions ≤150 chars, front-loaded triggers in first 50 chars
+- [ ] **Description length check**: Combined `description` + `when_to_use` ≤1,536 chars (the official skill metadata cap, raised April 2026); front-load trigger phrases in the first 200 chars to survive truncation in high-context sessions
 - [ ] **Tool field check**: Agent definitions use `tools:` (allowlist). Skills use `allowed-tools:` (pre-approval). Commands use `allowed-tools:` (pre-approval). Never confuse these semantics.
 
 ### Skill Quality Gate
@@ -459,6 +479,25 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] **Orchestration separation:** Skill body describes outcomes/roles; agent prompt describes execution only
 - [ ] **No hardcoded drift targets:** Replace specific counts/versions with references or filesystem queries
 - [ ] **Discovery over enumeration:** Use filesystem queries over reimplemented enumerations
+
+### README Hygiene
+
+The README uses **curated examples, not catalogs**. Tables show 3-5 representative
+items; full enumerations live in `marketplace.json` and the filesystem. Counts in
+headers (`### 23 Skills`) are forbidden — they go stale the moment a skill is
+added or removed.
+
+When you add, remove, or rename a skill, command, agent, or plugin:
+- [ ] The README still reads accurately *without counting items* — no header
+      claims a count that must be kept in sync. The 3-5 representative rows
+      are intentional; the rest is discoverable via `/skills`, `/help`, or
+      browsing `plugins/*/`.
+- [ ] The "Try These First" / "Quick Start" examples still exist (do not
+      delete a row that documents a user-facing workflow).
+- [ ] The "Manual (without marketplace)" install snippet still works
+      (paths: `plugins/taches-principled/{skills,commands,agents}/`).
+- [ ] `marketplace.json` plugin description, version, and keywords are
+      updated for the affected plugin(s).
 
 ---
 
@@ -609,7 +648,7 @@ The pattern: cite the skill or role by name, not the file inside it. Let the rou
 
 Every artifact in this ecosystem — skills, agents, commands — must default to maximum autonomy for the AI invoking them. **High freedom** means telling the AI what outcome to produce, not how to produce it. **High trust** means omitting constraints, steps, and boundaries that the AI can infer from context. When in doubt about whether an instruction is needed, omit it — the AI will ask or figure it out.
 
-**Skills** are triggers, not recipes — describe what to accomplish and when, not step-by-step procedure. **Agents** are system prompts, not scripts — one coherent paragraph, no numbered steps, no output format templates, no JSON schemas. **Commands** are lightweight pointers — no markdown body, no structural decomposition, 1-3 sentences of outcome, conditional hints for skills/subagents/web search when useful.
+**Skills** are triggers, not recipes — describe what to accomplish and when, not step-by-step procedure. **Agents** are system prompts, not scripts — they must be plain text with **NO markdown formatting** (no bold, no headers, no bullet lists). Write one coherent high freedom, high trust paragraph. **No precise output schema is expected** or enforced (no JSON templates, no exact markdown structures). Tell the agent its role and goal, and trust it to format its output naturally. **Commands** are lightweight pointers — no markdown body, no structural decomposition, 1-3 sentences of outcome, conditional hints for skills/subagents/web search when useful.
 
 ### Marketplace Synergy
 
@@ -644,25 +683,36 @@ This applies to all external plugins and marketplaces, not just within this proj
 
 **When to read these docs:** Claude Code documentation is authoritative. Read the relevant doc when working on related tasks. Don't memorize — know when to look.
 
+### Refreshing Official Docs
+
+Official docs in `docs/official/` are raw Anthropic markdown fetched directly from source. To refresh any doc:
+
+```bash
+curl -sL "https://code.claude.com/docs/en/<topic>.md" -o docs/official/<topic>.md
+```
+
+Where `<topic>` matches the URL slug from `code.claude.com/docs/llms.txt` (e.g., `hooks`, `skills`, `sub-agents`, `commands`, `permissions`, `plugins`, `plugin-marketplaces`, `plugins-reference`). Always verify the download starts with `> ## Documentation Index` and ends at a natural section boundary.
+
 ### Official References
 
 | Doc | Description | When to Read |
 |-----|-------------|--------------|
-| [subagents.md](docs/official/subagents.md) | Subagent frontmatter fields, spawn patterns, tool access | **Before creating agents** — know all frontmatter fields and spawn vocabulary |
-| [skills.md](docs/official/skills.md) | Skill frontmatter, trigger optimization, hub-and-spoke | **Before authoring skills** — understand routing, budget, progressive disclosure |
-| [agent-types.md](docs/official/agent-types.md) | Built-in agent types and tool access | **Before choosing agent type** — match task to correct type |
-| [agent-tool-params.md](docs/official/agent-tool-params.md) | Agent tool spawn parameters | **Before spawning subagents** — know all parameters |
-| [agent-skill-integration.md](docs/official/agent-skill-integration.md) | When to preload skills in agents | **Before adding skills: to agents** — follow preloading rules |
-| [hooks.md](docs/official/hooks.md) | Hook lifecycle events and patterns | **Before configuring hooks** — select correct events |
-| [commands.md](docs/official/commands.md) | Command creation and conventions | **Before creating commands** — follow format standards |
+| [subagents.md](docs/official/subagents.md) | Subagent frontmatter fields, spawn patterns, tool access | **Before creating agents** |
+| [skills.md](docs/official/skills.md) | Skill frontmatter, trigger optimization, hub-and-spoke | **Before authoring skills** |
+| [hooks.md](docs/official/hooks.md) | Hook events, configuration, JSON I/O, exit codes | **Before configuring hooks** |
+| [commands.md](docs/official/commands.md) | Command creation and conventions | **Before creating commands** |
+| [permissions.md](docs/official/permissions.md) | Permission modes, rules, managed policies | **Before configuring permissions** |
+| [agent-types.md](docs/official/agent-types.md) | Built-in agent types and tool access | **Before choosing agent type** |
+| [agent-tool-params.md](docs/official/agent-tool-params.md) | Agent tool spawn parameters | **Before spawning subagents** |
+| [agent-skill-integration.md](docs/official/agent-skill-integration.md) | When to preload skills in agents | **Before adding skills to agents** |
 
 ### Plugin References
 
 | Doc | Description | When to Read |
 |-----|-------------|--------------|
-| [plugins/creating.md](docs/official/plugins/creating.md) | Plugin structure and components | **Before creating plugins** — follow directory conventions |
-| [plugins/marketplaces.md](docs/official/plugins/marketplaces.md) | Marketplace configuration | **Before setting up marketplace** — understand distribution |
-| [plugins/plugin-submission.md](docs/official/plugins/plugin-submission.md) | Plugin submission process | **Before submitting plugins** — follow submission guide |
+| [plugins/creating.md](docs/official/plugins/creating.md) | Plugin structure and components | **Before creating plugins** |
+| [plugins/marketplaces.md](docs/official/plugins/marketplaces.md) | Marketplace configuration | **Before setting up marketplace** |
+| [plugins/plugins-reference.md](docs/official/plugins/plugins-reference.md) | Plugin system reference — schemas, CLI, specs | **Before advanced plugin work** |
 
 ---
 

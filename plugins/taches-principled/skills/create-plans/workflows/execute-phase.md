@@ -1,10 +1,3 @@
----
-name: execute-phase
-description: "Execute a PLAN.md phase and produce SUMMARY.md. Use when user says 'execute', 'run', 'do it', or 'build it'."
-when_to_use: |
-  Do NOT use for planning, reviewing, or modifying plans.
----
-
 # Workflow: Execute Phase
 
 ## Sections

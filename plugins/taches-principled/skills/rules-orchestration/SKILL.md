@@ -2,24 +2,17 @@
 name: rules-orchestration
 description: "Manage CLAUDE.md and rules — extract learnings, add rules, restructure, and review. Use when updating project conventions."
 allowed-tools: Read, Edit, Write, Bash, Grep
-when_to_use: |
-  Use when the user says:
-  - "update my rules"
-  - "refine CLAUDE.md"
-  - "codify this convention"
-  - "add this to my rules"
-  - "rules need updating"
-  - "my CLAUDE.md is bloated"
-  - "extract rules from this conversation"
-  - "standardize my project rules"
-  - "optimize my .claude/rules/"
-  IMMEDIATELY after significant skill execution (create-plans, execute-plans, refine) when conventions were established.
-  FIRST when CLAUDE.md exceeds 200 lines or .claude/rules/ has more than 10 files.
-  Do NOT use for one-off questions or temporary instructions.
-  Do NOT modify managed/enterprise rules at system paths.
-  CONTRAST with refine MEMORIZE: MEMORIZE captures to .principled/memory/learnings.md; rules-orchestration integrates into committed rules files.
+when_to_use: "Use when user wants to update rules, refine CLAUDE.md, codify conventions, or extract rules from conversation."
 argument-hint: "[ANALYZE|ADD|RESTRUCTURE|REVIEW|SYNC] [target]"
 ---
+
+## Routing Guidance
+
+- IMMEDIATELY after significant skill execution (create-plans, execute-plans, refine) when conventions were established.
+- FIRST when CLAUDE.md exceeds 200 lines or .claude/rules/ has more than 10 files.
+- Do NOT use for one-off questions or temporary instructions.
+- Do NOT modify managed/enterprise rules at system paths.
+- CONTRAST with refine MEMORIZE: MEMORIZE captures to .principled/memory/learnings.md; rules-orchestration integrates into committed rules files.
 
 ## Decision Router
 
@@ -43,7 +36,7 @@ After conversation or skill execution with discoverable conventions, anti-patter
 
 1. **Capture context** — Read from `.principled/scratch/` or conversation summary. Determine the source: recent skill execution output, session transcript, or explicit user request.
 
-2. **Extract insights** — Spawn a rules-analyzer subagent (read `{baseDir}/agents/rules-analyzer.md` first) to identify conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge. Pass the context path and instruct it to write findings to `.principled/scratch/rules-analysis-{timestamp}.md`.
+2. **Extract insights** — Spawn a transcript-rules-analyzer subagent (read `{baseDir}/agents/transcript-rules-analyzer.md` first) to identify conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge. Pass the context path and instruct it to write findings to `.principled/scratch/rules-analysis-{timestamp}.md`.
 
 3. **Synthesize proposals** — Read the analysis output. Convert raw insights into structured proposals with:
    - **Category**: TECHNICAL | PROCESS | PATTERN | ANTI-PATTERN | DECISION
@@ -56,7 +49,7 @@ After conversation or skill execution with discoverable conventions, anti-patter
 
 5. **Present proposals** — Show user a numbered list of proposals with file targets and a one-line rationale. Ask: "Integrate these rules?"
 
-6. **On approval** — Spawn a rules-integrator subagent (read `{baseDir}/agents/rules-integrator.md`) with the proposal file path and target files. The integrator applies changes and commits.
+6. **On approval** — Spawn a transcript-rules-integrator subagent (read `{baseDir}/agents/transcript-rules-integrator.md`) with the proposal file path and target files. The integrator applies changes and commits.
 
 ### Output
 - Analysis: `.principled/scratch/rules-analysis-{timestamp}.md`
@@ -76,7 +69,7 @@ CLAUDE.md exceeds 200 lines, `.claude/rules/` has more than 10 files, or rules f
 
 1. **Audit current state** — Read all files in `.claude/rules/` and `CLAUDE.md`. Map: total line count, file count, any obvious duplication visible without analysis.
 
-2. **Identify issues** — Spawn a rules-auditor subagent (read `{baseDir}/agents/rules-auditor.md` first) with full paths to all rules files. Instruct it to write findings to `.principled/scratch/rules-audit.md`.
+2. **Identify issues** — Spawn a transcript-rules-auditor subagent (read `{baseDir}/agents/transcript-rules-auditor.md` first) with full paths to all rules files. Instruct it to write findings to `.principled/scratch/rules-audit.md`.
 
 3. **Design new structure** — Review the audit report. Design a reorganization:
    - Which files to split (target: under 200 lines each)
@@ -130,7 +123,7 @@ Pending proposals exist from ANALYZE or SYNC that need approval before being com
 
 1. **Load proposals** — Find proposal files: `ls .principled/scratch/rules-proposals-*.md`. If multiple exist, use the most recent. If none exist, report and exit.
 
-2. **Spawn review panel** — Dispatch 2-3 critic subagents in parallel (read `{baseDir}/agents/rules-auditor.md` for evaluation criteria). Give each critic the proposal file and this rubric:
+2. **Spawn review panel** — Dispatch 2-3 critic subagents in parallel (read `{baseDir}/agents/transcript-rules-auditor.md` for evaluation criteria). Give each critic the proposal file and this rubric:
    - **Clarity**: Is the rule text actionable? Is the rationale clear?
    - **Conflict**: Does this contradict or duplicate an existing rule?
    - **Efficiency**: Would adding this reduce or increase context cost?
@@ -147,7 +140,7 @@ Pending proposals exist from ANALYZE or SYNC that need approval before being com
    ```
    For REVISE: include specific concerns. For REJECT: include reason.
 
-4. **Apply approved** — For APPROVE: spawn a rules-integrator subagent with approved proposals. For REVISE: present revision options to user. For REJECT: archive proposal with reason.
+4. **Apply approved** — For APPROVE: spawn a transcript-rules-integrator subagent with approved proposals. For REVISE: present revision options to user. For REJECT: archive proposal with reason.
 
 ---
 
@@ -170,7 +163,7 @@ After `learn` command captures insights, or after skill execution that establish
    - `auto`: critical/correctness — safe to integrate without approval
    - `review`: important/nice-to-have — needs human review
 
-5. **Auto-integrate low-risk** — For `auto` tagged candidates: spawn rules-integrator directly. Notify user of changes.
+5. **Auto-integrate low-risk** — For `auto` tagged candidates: spawn transcript-rules-integrator directly. Notify user of changes.
 
 6. **Queue for REVIEW** — For `review` tagged candidates: present to user and suggest REVIEW mode.
 

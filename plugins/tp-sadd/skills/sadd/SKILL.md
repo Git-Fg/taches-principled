@@ -1,15 +1,16 @@
 ---
 name: sadd
 description: "Multi-agent development: generate alternatives, verify quality, coordinate workers."
-when_to_use: |
-  COMPETE: 'best-of-N', 'competitive generation', 'generate multiple solutions', 'quality over speed'
-  EXECUTE: 'spawn subagent', 'launch agent', 'delegate this', 'implement with verification', 'run in background'
-  JUDGE: 'evaluate', 'judge this', 'assess quality', 'verify', 'check my work', 'multi-judge debate'
-  DESIGN: 'design architecture', 'multi-agent', 'supervisor pattern', 'swarm', 'coordinate agents'
-  EXPLORE: 'tree of thoughts', 'explore solution space', 'generate and prune', 'ideate then narrow'
-  IMMEDIATELY when user wants to delegate work with quality verification or design multi-agent systems.
-  FIRST when task requires model selection, independent verification, or parallel execution.
+when_to_use: "Use when user wants competitive generation, multi-judge evaluation, or tree-of-thoughts solution exploration."
 ---
+
+## Routing Guidance
+
+- COMPETE: 'best-of-N', 'competitive generation', 'generate multiple solutions', 'quality over speed'
+- EXECUTE: 'spawn subagent', 'launch agent', 'delegate this', 'implement with verification', 'run in background'
+- JUDGE: 'evaluate', 'judge this', 'assess quality', 'verify', 'check my work', 'multi-judge debate'
+- DESIGN: 'design architecture', 'multi-agent', 'supervisor pattern', 'swarm', 'coordinate agents'
+- EXPLORE: 'tree of thoughts', 'explore solution space', 'generate and prune', 'ideate then narrow'
 
 ## Decision Router
 
@@ -62,7 +63,7 @@ ALWAYS set maxTurns: 15 for this mode.
 ## Model Selection
 
 | Profile | Model |
-|---------|-------|
+|--------|-------|
 | Complex reasoning (architecture, design) | Opus |
 | Medium complexity | Sonnet |
 | Simple transformations | Haiku |
@@ -102,11 +103,11 @@ Context isolation is the primary benefit — subagents exist to give each execut
 
 ## Execution
 
-**Default: subagent delegation.** For DESIGN mode, spawn an architect subagent to recommend pattern based on complexity analysis. The main agent synthesizes findings; it never designs inline.
+**Default: subagent delegation.** For DESIGN mode, spawn a sadd-architect subagent to recommend pattern based on complexity analysis. The main agent synthesizes findings; it never designs inline.
 
 **Spawn pattern:**
 - Scope: Analyze task complexity (scope, dependencies, coordination needs)
-- Role: architect subagent
+- Role: sadd-architect subagent
 - Output: Pattern recommendation (supervisor/swarm/hierarchical) with rationale
 
 ## Design Guidelines
@@ -125,7 +126,7 @@ Tree of Thoughts: explore solution space with systematic pruning and expansion.
 ## Process
 
 **Phase 1: Exploration**
-ALWAYS spawn 3 exploration subagents for divergent coverage.
+ALWAYS spawn 3 sadd-explorer subagents for divergent coverage.
 ALWAYS set maxTurns: 15 for this mode to prevent runaway exploration loops.
 
 **Phase 2: Pruning** — Meta-judge generates spec, ALWAYS spawn 3 judge subagents to score and vote for top 3.

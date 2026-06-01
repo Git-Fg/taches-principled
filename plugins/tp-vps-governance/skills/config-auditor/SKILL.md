@@ -2,22 +2,17 @@
 name: config-auditor
 description: "Audit CLAUDE.md hierarchy for conflicts, duplications, and optimization opportunities on VPS instances."
 allowed-tools: Read, Glob, Grep, Edit
-when_to_use: |
-  Use when the user says:
-  - "audit config"
-  - "check CLAUDE.md"
-  - "review rules for conflicts"
-  - "configuration audit"
-  - "optimize rules"
-  - "my CLAUDE.md is bloated"
-  FIRST when preparing for VPS deployments or after major rule changes.
-  Do NOT use for syncing rules to agents (use rule-propagator) or memory cleanup (use memory-curator).
+when_to_use: "Use when user asks to audit config, check CLAUDE.md, review rules for conflicts, or optimize configuration."
 argument-hint: "[audit|conflicts|optimize] [--dry-run] [--yes]"
 ---
 
+## Routing Guidance
+
+- FIRST when preparing for VPS deployments or after major rule changes.
+- Do NOT use for memory cleanup (use memory-curator).
+
 ## CONTRAST with Other Skills
 
-- **rule-propagator**: syncs shared rules to subagent fleet
 - **memory-curator**: audits and deduplicates memory files
 - **THIS**: audits config hierarchy for conflicts and optimization
 

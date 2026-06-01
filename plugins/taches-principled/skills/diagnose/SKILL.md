@@ -2,22 +2,14 @@
 name: diagnose
 description: "Find root causes of recurring problems, failed fixes, and complex bugs. Auto-selects the right investigation method."
 allowed-tools: Read, Write
-when_to_use: |
-  Use when the user says:
-  - "analyze this problem"
-  - "find the root cause"
-  - "why did this happen"
-  - "trace this back"
-  - "what's causing this"
-  - "trace the root cause of X"
-  - "apply five whys"
-  - "fishbone analysis"
-  - "trace this bug"
-  - "what called this"
-  IMMEDIATELY when investigating incidents, recurring issues, systemic failures, or bugs with long call chains.
-  CONTRAST with fpf and refine: diagnose investigates why something is broken (past, causal, unknown type); fpf evaluates competing options to decide a path forward (future); refine improves known artifacts (present, corrective). Prefer diagnose when "problem" or "issue" appears without alternatives.
+when_to_use: "Use when user wants to find the root cause of a bug, analyze a problem, or trace back a failure."
 argument-hint: "[problem description] [--mode A3|FIVE-WHYS|FISHBONE|STACK-TRACE|AUTO]"
 ---
+
+## Routing Guidance
+
+- IMMEDIATELY when investigating incidents, recurring issues, systemic failures, or bugs with long call chains.
+- CONTRAST with fpf and refine: diagnose investigates why something is broken (past, causal, unknown type); fpf evaluates competing options to decide a path forward (future); refine improves known artifacts (present, corrective). Prefer diagnose when "problem" or "issue" appears without alternatives.
 
 ## What This Skill Changes
 

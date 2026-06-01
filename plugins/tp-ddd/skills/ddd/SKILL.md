@@ -1,12 +1,15 @@
 ---
 name: ddd
 description: "Clean code with clear structure: reduce nesting, fix domain logic leaks, minimize mocking. Use when code quality issues."
-when_to_use: |
-  ARCHITECTURE: 'where does business logic go', 'too much nesting', 'too many parameters', 'function does too much', 'business logic in controllers'
-  QUALITY: 'what should I name this', 'should I use a library', 'silent failure'
-  TRANSPARENCY: 'hidden side effect', 'does this return or mutate', 'is this a side effect', 'mutation disguised as query'
-  API: 'design REST API', 'API endpoint design', 'HTTP semantics', 'API versioning'
+when_to_use: "Use when user asks about code architecture, business logic placement, naming, transparency, or REST API design."
 ---
+
+## Routing Guidance
+
+- ARCHITECTURE: 'where does business logic go', 'too much nesting', 'too many parameters', 'function does too much', 'business logic in controllers'
+- QUALITY: 'what should I name this', 'should I use a library', 'silent failure'
+- TRANSPARENCY: 'hidden side effect', 'does this return or mutate', 'is this a side effect', 'mutation disguised as query'
+- API: 'design REST API', 'API endpoint design', 'HTTP semantics', 'API versioning'
 
 ## Decision Router
 

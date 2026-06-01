@@ -1,21 +1,13 @@
 ---
 name: update-docs
 description: "Update documentation after code changes — READMEs, guides, API docs. Preserves style and conventions."
-when_to_use: |
-  Use when the user says:
-  - "update the docs"
-  - "document this"
-  - "write documentation for this"
-  - "the docs need updating"
-  - "update documentation for these changes"
-  - "doc this code change"
-  - "add docs for the new feature"
-  - "write the README updates"
-  - "document the API changes"
-  - "refresh the documentation"
-  IMMEDIATELY after code changes affecting user-facing APIs or workflows, BEFORE committing.
+when_to_use: "Use when user asks to update documentation, write README updates, or document recent code changes."
 argument-hint: "Optional: documentation type or area (api, guides, readme, jsdoc)"
 ---
+
+## Routing Guidance
+
+- IMMEDIATELY after code changes affecting user-facing APIs or workflows, BEFORE committing.
 
 ## Decision Router
 

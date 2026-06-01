@@ -1,9 +1,3 @@
----
-name: phase-prompt
-description: Template for creating a phase PLAN.md that defines objectives, context, tasks, and output structure.
-when_to_use: When authoring a new PLAN.md for a phase or plan within a phase.
----
-
 # Phase Prompt Template
 
 Copy and fill this structure for `.principled/plans/phases/XX-name/{phase}-{plan}-PLAN.md`:

@@ -1,14 +1,7 @@
 ---
 name: git
 description: "Git operations: ship commits, post PR comments, load issues, manage branches. Modes: SHIP, REVIEW, ISSUES, ADVANCED."
-when_to_use: |
-  SHIP: 'commit', 'ship', 'commit and push', 'create PR', 'pull request', 'publish changes', 'conventional commit'
-  REVIEW: 'review PR', 'inline comment', 'add comment to PR', 'line-by-line feedback', 'post review comments'
-  ISSUES: 'load issues', 'fetch issues', 'get GitHub issues', 'analyze issue', 'technical specification', 'create spec'
-  ADVANCED: 'git notes', 'worktree', 'multiple branches', 'annotate commit', 'metadata', 'work on parallel branches'
-  IMMEDIATELY when user wants to ship changes, review PRs, or load GitHub issues.
-  FIRST when creating commits, PRs, or analyzing issues before implementation.
-allowed-tools: [Bash(git:*,gh:*)]
+allowed-tools: Bash(git *), Bash(gh *)
 ---
 
 ## Decision Router

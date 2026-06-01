@@ -1,14 +1,17 @@
 ---
 name: fpf
 description: "Generate and evaluate competing hypotheses. Use when deciding between alternatives or tracking decision rationale."
-when_to_use: |
-  PROPOSE: 'first principles', 'hypothesize', 'propose options', 'FPF', 'evaluate from first principles', 'reason from scratch', 'generate hypotheses', 'evaluate alternatives', 'compare solutions', 'make a decision'
-  MAINTAIN: 'reset FPF', 'soft reset', 'hard reset', 'archive FPF', 'clear FPF state', 'refresh FPF', 'reconcile FPF', 'sync FPF with code', 'detect drift', 'check evidence freshness', 'waive', 'deprecate'
-  QUERY: 'FPF status', 'search FPF', 'query FPF', 'knowledge base', 'what hypotheses do we have', 'show FPF state', 'check evidence freshness', 'look up hypothesis', 'find decisions', 'inspect FPF'
-  IMMEDIATELY when user asks to analyze a problem from first principles or make decisions with rationale.
-  BEFORE committing to major technical decisions, architectural choices, or complex problem solutions.
-  CONTRAST with diagnose: fpf evaluates hypotheses to make decisions; diagnose investigates why something broke. Prefer fpf when multiple alternatives are specified or when "decide", "choose", "compare" appears.
+when_to_use: "Use when user wants to analyze a problem from first principles, evaluate hypotheses, or manage FPF knowledge."
 ---
+
+## Routing Guidance
+
+- PROPOSE: 'first principles', 'hypothesize', 'propose options', 'FPF', 'evaluate from first principles', 'reason from scratch', 'generate hypotheses', 'evaluate alternatives', 'compare solutions', 'make a decision'
+- MAINTAIN: 'reset FPF', 'soft reset', 'hard reset', 'archive FPF', 'clear FPF state', 'refresh FPF', 'reconcile FPF', 'sync FPF with code', 'detect drift', 'check evidence freshness', 'waive', 'deprecate'
+- QUERY: 'FPF status', 'search FPF', 'query FPF', 'knowledge base', 'what hypotheses do we have', 'show FPF state', 'check evidence freshness', 'look up hypothesis', 'find decisions', 'inspect FPF'
+- IMMEDIATELY when user asks to analyze a problem from first principles or make decisions with rationale.
+- BEFORE committing to major technical decisions, architectural choices, or complex problem solutions.
+- CONTRAST with diagnose: fpf evaluates hypotheses to make decisions; diagnose investigates why something broke. Prefer fpf when multiple alternatives are specified or when "decide", "choose", "compare" appears.
 
 ## Decision Router
 

@@ -1,9 +1,3 @@
----
-name: roadmap
-description: Template for creating ROADMAP.md that defines phase structure, milestones, and tracking.
-when_to_use: When creating or updating a project roadmap from an existing BRIEF.md.
----
-
 # Roadmap Template
 
 Copy and fill this structure for `.principled/plans/ROADMAP.md`:

@@ -194,7 +194,7 @@ Segment subagent workspace (20,000 tokens):
 
 At segment midpoint (every 2-3 tasks), spawn a critic subagent and loop until no HIGH findings remain:
 
-Spawn the critic using `{baseDir}/agents/critic.md` as the spawn prompt. Fill the placeholders with the current segment state, files modified so far, milestone number, and review task.
+Spawn the critic as a subagent (general-purpose with Write tool access). Fill the critic's placeholders with the current segment state, files modified so far, milestone number, and review task.
 
 The critic returns structured output with blocking/non-blocking classification. Loop until no HIGH findings. If blocking issues are found, fix before proceeding to next task.
 

@@ -2,22 +2,18 @@
 name: memory-curator
 description: "Audit, deduplicate, and archive Claude Code memory files. Cleans auto-memory and agent-memory that accumulate on long-running VPS instances."
 allowed-tools: Read, Write, Glob, Bash
-when_to_use: |
-  Use when the user says:
-  - "audit memory"
-  - "clean up auto-memory"
-  - "curate agent memory"
-  - "memory hygiene"
-  - "deduplicate memory"
-  FIRST on VPS instances running for 30+ days.
-  Do NOT use for auditing rules (use config-auditor) or propagating rules (use rule-propagator).
+when_to_use: "Use when user asks to audit, deduplicate, clean up, or curate Claude Code memory and agent memory files."
 argument-hint: "[audit|dedup|archive|clean] [--dry-run] [--yes] [--days 30]"
 ---
+
+## Routing Guidance
+
+- FIRST on VPS instances running for 30+ days.
+- Do NOT use for auditing rules (use config-auditor).
 
 ## CONTRAST with Other Skills
 
 - **config-auditor**: analyzes config hierarchy for conflicts
-- **rule-propagator**: syncs shared rules to subagent fleet
 - **THIS**: maintains memory hygiene (auto-memory + agent-memory)
 
 ---

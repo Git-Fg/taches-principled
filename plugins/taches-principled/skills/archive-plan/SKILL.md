@@ -1,15 +1,17 @@
 ---
 name: archive-plan
 description: "Archive completed plans and extract learnings into project memory. Use when wrapping up or shipping a plan."
-when_to_use: |
-  Use when the user says "archive", "wrap up", "done with this plan", "ship it", "extract learnings", "archive this plan", or "close out this plan".
-  AFTER execute-plans completes and SUMMARY.md is created.
-  When the user wants to preserve plan artifacts before starting fresh.
-  When cross-session learning accumulation is desired.
-  Do NOT use for ongoing plans — only completed or abandoned plans.
-  CONTRAST with refine MEMORIZE: MEMORIZE captures general insights from any session work; archive-plan bundles specific plan artifacts and extracts plan-specific learnings. Use archive-plan when the unit of work is a completed plan phase; use MEMORIZE for ad-hoc insights.
+when_to_use: "Use when user wants to archive a completed plan, extract learnings, or wrap up a shipped feature."
 argument-hint: "[plan-path or empty for latest completed]"
 ---
+
+## Routing Guidance
+
+- AFTER execute-plans completes and SUMMARY.md is created.
+- When the user wants to preserve plan artifacts before starting fresh.
+- When cross-session learning accumulation is desired.
+- Do NOT use for ongoing plans — only completed or abandoned plans.
+- CONTRAST with refine MEMORIZE: MEMORIZE captures general insights from any session work; archive-plan bundles specific plan artifacts and extracts plan-specific learnings. Use archive-plan when the unit of work is a completed plan phase; use MEMORIZE for ad-hoc insights.
 
 ## Decision Router
 
@@ -56,7 +58,7 @@ Present summary:
 - Learnings extracted: {n} new, {n} reinforced
 - Knowledge base updated: yes/no
 
-After archival completes, consider starting a new planning cycle with `create-plans` to scope the next phase or feature. Archive preserves context; planning resumes momentum.
+After archival completes, consider starting a new planning cycle with `scope-work` to scope the next phase or feature. Archive preserves context; planning resumes momentum.
 
 ## File References
 

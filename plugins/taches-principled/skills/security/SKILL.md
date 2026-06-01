@@ -2,18 +2,14 @@
 name: security
 description: "Scan for security vulnerabilities, exposed secrets, and broken authentication patterns before production deployment."
 allowed-tools: Read, Grep, Glob, Bash, Edit
-when_to_use: |
-  SAST: 'security audit', 'XSS', 'SQL injection', 'auth review'
-  DEPENDENCY-AUDIT: 'scan dependencies', 'npm audit', 'vulnerable dependencies'
-  SECRETS-DETECTION: 'API key exposed', 'hardcoded secret', 'credentials in code'
-  COMPLIANCE: 'compliance check', 'GDPR', 'SOC2', 'OWASP'
-  IMMEDIATELY before production deployment, before merging security-related PRs, or when fixing vulnerabilities.
-  Do NOT use for architecture design (use ddd) or general code quality (use refine REVIEW).
-user-invocable: true
+when_to_use: "Use when user asks for a security audit, dependency scan, compliance check, or to find exposed secrets."
 argument-hint: "[mode] [target] [--severity critical|high|medium|low]"
 ---
 
 ## Routing Guidance
+
+- IMMEDIATELY before production deployment, before merging security-related PRs, or when fixing vulnerabilities.
+- Do NOT use for architecture design (use ddd) or general code quality (use refine REVIEW).
 
 | If you need to... | Use this mode |
 |-------------------|---------------|

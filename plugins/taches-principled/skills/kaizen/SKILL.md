@@ -1,15 +1,17 @@
 ---
 name: kaizen
 description: "Four design-time constraints: incremental improvement, error-proofing, standardization, avoid over-engineering. Use when making code decisions."
-when_to_use: |
-  Use when the user says "apply kaizen", "use the constraints", "design this properly", "check against principles", "apply YAGNI", "check for over-engineering", "what's the simplest approach", or "avoid speculation".
-  IMMEDIATELY before writing code — these constraints apply to every decision.
-  FIRST when tempted to add abstractions, speculate about future needs, or fix everything in one pass.
-  DO NOT use when implementing trivial one-liners — use for architectural decisions, refactoring, and non-trivial implementation choices.
-  CONTRAST with brainstorm/ideation: those explore WHAT to build; kaizen shapes HOW to build it.
-  CONTRAST with plan-do-check-act: that tests changes; kaizen prevents bad patterns from entering the codebase.
+when_to_use: "Use when user wants to avoid over-engineering, apply YAGNI, or make architectural and code design decisions."
 argument-hint: Applied automatically when implementing, refactoring, designing, or handling errors
 ---
+
+## Routing Guidance
+
+- IMMEDIATELY before writing code — these constraints apply to every decision.
+- FIRST when tempted to add abstractions, speculate about future needs, or fix everything in one pass.
+- DO NOT use when implementing trivial one-liners — use for architectural decisions, refactoring, and non-trivial implementation choices.
+- CONTRAST with brainstorm/ideation: those explore WHAT to build; kaizen shapes HOW to build it.
+- CONTRAST with plan-do-check-act: that tests changes; kaizen prevents bad patterns from entering the codebase.
 
 ## What This Skill Changes
 

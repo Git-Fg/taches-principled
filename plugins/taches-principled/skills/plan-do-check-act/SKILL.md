@@ -1,14 +1,16 @@
 ---
 name: plan-do-check-act
 description: "Plan a change, try it at small scale, measure results, then standardize or adjust based on evidence."
-when_to_use: |
-  Use when the user says "let's try an experiment", "test this hypothesis", "run a PDCA cycle", "try this and measure it", "design a test", "plan an experiment", "A/B test this", or "measure improvement".
-  IMMEDIATELY when solving problems where outcomes need measurement — BEFORE concluding, standardizing, or shipping.
-  FIRST after a failed fix — validate the root cause was correct before closing the issue.
-  DO NOT use for debugging (use diagnose instead), for code style decisions (use refine in POLISH mode), or for architectural design (use kaizen or ideation).
-  CONTRAST with kaizen: kaizen prevents bad patterns from entering the codebase (proactive constraint); PDCA tests whether a change actually improves things (evidence-based validation). Use kaizen when writing new code; use PDCA when deciding whether to standardize or generalize an existing change.
+when_to_use: "Use when user wants to run an experiment, test a hypothesis, or measure the results of a change."
 argument-hint: "[improvement goal or problem to address] [--cycle N]"
 ---
+
+## Routing Guidance
+
+- IMMEDIATELY when solving problems where outcomes need measurement — BEFORE concluding, standardizing, or shipping.
+- FIRST after a failed fix — validate the root cause was correct before closing the issue.
+- DO NOT use for debugging (use diagnose instead), for code style decisions (use refine in POLISH mode), or for architectural design (use kaizen or ideation).
+- CONTRAST with kaizen: kaizen prevents bad patterns from entering the codebase (proactive constraint); PDCA tests whether a change actually improves things (evidence-based validation). Use kaizen when writing new code; use PDCA when deciding whether to standardize or generalize an existing change.
 
 ## Decision Router
 

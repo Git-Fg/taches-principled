@@ -123,9 +123,17 @@
       "source": "./plugins/tp-force-multiplier",
       "version": "0.1.1",
       "displayName": "TP Force Multiplier",
-      "author": { "name": "Git-Fg", "email": "felix@example.com" },
+      "author": { "name": "Felix", "email": "felix@example.com" },
       "homepage": "https://github.com/Git-Fg/taches-principled",
-      "description": "Hook-driven coaching plugin that steers Claude to use subagents and skills more — observes behavior patterns and surfaces immediate coaching hints."
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "description": "Hook-driven coaching plugin that steers Claude to use subagents and skills more — observes behavior patterns and surfaces immediate coaching hints.",
+      "keywords": [
+        "claude-code",
+        "hooks",
+        "coaching",
+        "subagent-coaching"
+      ]
     },
     {
       "name": "tp-vps-governance",

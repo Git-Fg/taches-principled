@@ -1,9 +1,3 @@
----
-name: summary
-description: Template for creating a phase or plan SUMMARY.md documenting accomplishments, deviations, and next steps.
-when_to_use: When completing a plan or phase and documenting the outcome in SUMMARY.md.
----
-
 # Summary Template
 
 Standardize SUMMARY.md format for phase completion:

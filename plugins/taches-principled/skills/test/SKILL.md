@@ -2,10 +2,13 @@
 name: test
 description: "Decide what to test: coverage analysis, mock strategy, fixture design, property-based testing. Use when planning test suites."
 allowed-tools: Read, Grep, Glob, Bash
-when_to_use: "Use when deciding WHAT to test. Trigger phrases: 'what should I test', 'test coverage', 'coverage analysis', 'mock this', 'fake dependencies', 'test doubles', 'test fixtures', 'test data', 'setup teardown', 'property-based testing', 'generative testing', 'shrink wrapping'. CONTRAST with tdd: tdd teaches how to write tests (red-green-refactor); this skill teaches what decisions to make before writing tests. Use this skill for test strategy questions; use tdd for implementation execution."
+when_to_use: "Use when user asks what to test, test coverage strategy, mocking approaches, or property-based testing."
 argument-hint: "[mode] [target]"
-user-invocable: true
 ---
+
+## Routing Guidance
+
+- CONTRAST with tdd: tdd teaches how to write tests (red-green-refactor); this skill teaches what decisions to make before writing tests. Use this skill for test strategy questions; use tdd for implementation execution.
 
 ## Decision Router
 

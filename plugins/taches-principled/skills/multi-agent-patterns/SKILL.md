@@ -2,14 +2,15 @@
 name: multi-agent-patterns
 description: "Design multi-agent systems: select coordination patterns, size contexts, choose consensus mechanisms. Use when scaling."
 allowed-tools: Read, Grep, Glob
-when_to_use: |
-  Triggers: 'multiple agents', 'agent coordination', 'scale Claude', 'multi-agent', 'agent team', 'parallel workers', 'context isolation'
-  Use when designing a multi-agent system from scratch — selecting coordination patterns, sizing agent contexts, and choosing consensus mechanisms.
-  Use when evaluating trade-offs between supervisor bottlenecks, peer-to-peer complexity, and hierarchical overhead.
-  Do NOT use for subagent spawn execution (use subagent-orchestration instead) or tool design (use tool-design instead).
-  Do NOT use for single-agent tasks, simple scripts, or when context window limits are not the primary constraint.
+when_to_use: "Use when user asks to design multi-agent systems, select coordination patterns, or manage parallel agent teams."
 argument-hint: "[architecture pattern or focus area]"
 ---
+
+## Routing Guidance
+
+- Use when evaluating trade-offs between supervisor bottlenecks, peer-to-peer complexity, and hierarchical overhead.
+- Do NOT use for subagent spawn execution (use subagent-orchestration instead) or tool design (use tool-design instead).
+- Do NOT use for single-agent tasks, simple scripts, or when context window limits are not the primary constraint.
 
 # Multi-Agent Architecture Patterns
 

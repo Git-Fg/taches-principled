@@ -1,15 +1,18 @@
 ---
 name: meta-review
-description: "Review Claude Code session transcripts for behavioral anti-patterns, investigate root causes, and prepare structured findings for reporting. Modes: REVIEW, INVESTIGATE."
+description: "Review Claude Code session transcripts for behavioral anti-patterns and investigate root causes."
 allowed-tools: Read, Glob, Grep, Bash, Agent
-when_to_use: |
-  REVIEW: 'what went wrong', 'self-review', 'self-critic', 'review my session', 'analyze my behavior', 'meta-review', 'behavioral review', 'session review'
-  INVESTIGATE: 'investigate what happened', 'why did it fail', 'root cause of session', 'dig into the transcript', 'deep investigation'
-  IMMEDIATELY when user wants to understand behavioral issues in a Claude Code session.
-  FIRST when something went wrong and user wants structured analysis before filing a report.
-  CONTRAST with diagnose: meta-review analyzes session transcripts; diagnose analyzes code problems.
+when_to_use: "Use when user wants to review a session for anti-patterns or investigate the root cause of a session failure."
 argument-hint: "[review|investigate] [latest|<session-id>] [--concern <description>]"
 ---
+
+## Routing Guidance
+
+- REVIEW: 'what went wrong', 'self-review', 'self-critic', 'review my session', 'analyze my behavior', 'meta-review', 'behavioral review', 'session review'
+- INVESTIGATE: 'investigate what happened', 'why did it fail', 'root cause of session', 'dig into the transcript', 'deep investigation'
+- IMMEDIATELY when user wants to understand behavioral issues in a Claude Code session.
+- FIRST when something went wrong and user wants structured analysis before filing a report.
+- CONTRAST with diagnose: meta-review analyzes session transcripts; diagnose analyzes code problems.
 
 ## What This Skill Changes
 

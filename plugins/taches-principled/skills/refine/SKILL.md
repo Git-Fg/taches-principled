@@ -2,18 +2,20 @@
 name: refine
 description: "Improve code quality: simplify, critique with scoring, memorize learnings, polish prose."
 allowed-tools: Read, Edit, Write
-when_to_use: |
-  Use when the user says "simplify", "reduce complexity", "review", "PR", "check my changes", "critique", "what could be better", "reflect", "capture this learning", "make this clearer", "write more concisely", "clean up text", or "improve the writing".
-  IMMEDIATELY before merging or committing significant code changes (SIMPLIFY or REVIEW).
-  IMMEDIATELY when encountering functions over 40 lines, nesting beyond 3 levels, or duplicated code blocks (SIMPLIFY).
-  IMMEDIATELY after completing significant work needing independent quality verification (CRITIQUE).
-  IMMEDIATELY when producing documentation, READMEs, or human-readable text (POLISH).
-  When consolidating reflection or critique findings into durable project memory (MEMORIZE).
-  Do NOT use for architectural decisions (use create-plans) or greenfield development (use create-plans).
-  CONTRAST with update-docs: that updates existing docs; this improves prose quality (POLISH).
-  CONTRAST with diagnose: refine improves quality of existing artifacts (present, corrective); diagnose investigates why something is broken (past, causal). Prefer refine when the issue is known and needs fixing; prefer diagnose when the root cause is unknown.
+when_to_use: "Use when user wants to simplify code, review a PR, critique work, polish prose, or capture learnings."
 argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-low|low]"
 ---
+
+## Routing Guidance
+
+- IMMEDIATELY before merging or committing significant code changes (SIMPLIFY or REVIEW).
+- IMMEDIATELY when encountering functions over 40 lines, nesting beyond 3 levels, or duplicated code blocks (SIMPLIFY).
+- IMMEDIATELY after completing significant work needing independent quality verification (CRITIQUE).
+- IMMEDIATELY when producing documentation, READMEs, or human-readable text (POLISH).
+- When consolidating reflection or critique findings into durable project memory (MEMORIZE).
+- Do NOT use for architectural decisions or greenfield development — use `scope-work` instead.
+- CONTRAST with update-docs: that updates existing docs; this improves prose quality (POLISH).
+- CONTRAST with diagnose: refine improves quality of existing artifacts (present, corrective); diagnose investigates why something is broken (past, causal). Prefer refine when the issue is known and needs fixing; prefer diagnose when the root cause is unknown.
 
 ## Decision Router
 

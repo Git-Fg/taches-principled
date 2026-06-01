@@ -2,19 +2,14 @@
 name: session-inspect
 description: "Parse Claude Code session transcripts (JSONL) into structured data — tool calls, errors, cost, loaded plugins, and behavioral events."
 allowed-tools: Read, Glob, Grep, Bash
-when_to_use: |
-  Use when the user says:
-  - "inspect session"
-  - "parse transcript"
-  - "analyze session log"
-  - "what happened in this session"
-  - "session metrics"
-  - "parse jsonl"
-  - "read the session transcript"
-  FIRST when any meta-review or behavioral analysis needs raw session data.
-  Do NOT use for reviewing code (use code-review) or diagnosing bugs (use diagnose).
+when_to_use: "Use when user asks to parse a session transcript, analyze a session log, or inspect session metrics."
 argument-hint: "[latest|<session-id>] [--full|--summary] [--filter errors|tools|cost]"
 ---
+
+## Routing Guidance
+
+- FIRST when any meta-review or behavioral analysis needs raw session data.
+- Do NOT use for reviewing code (use code-review) or diagnosing bugs (use diagnose).
 
 ## What This Skill Changes
 

@@ -1,12 +1,14 @@
 ---
 name: execute-prompts
 description: "Execute prompts from .principled/prompts/ via delegated sub-tasks. Use when running prompt files."
-when_to_use: |
-  Use when the user says "run prompts", "execute prompts", "launch the prompts", or "run my prompt file".
-  Do NOT use for interactive debugging, single-file edits, or one-off questions that don't involve prompt files.
-  Do NOT use for executing plan files — use execute-plans instead.
+when_to_use: "Use when user asks to run, execute, or launch generated prompt files."
 argument-hint: [prompt-id or description]
 ---
+
+## Routing Guidance
+
+- Do NOT use for interactive debugging, single-file edits, or one-off questions that don't involve prompt files.
+- Do NOT use for executing plan files — use execute-plans instead.
 
 ## Decision Router
 

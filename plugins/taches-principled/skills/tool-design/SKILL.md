@@ -2,9 +2,12 @@
 name: tool-design
 description: "Design agent tools and MCP integrations. Use when creating tools, debugging tool failures, or optimizing tool sets."
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
-when_to_use: |
-  Do NOT use for general API design, backend services, or non-agent tooling.
+when_to_use: "Use when user wants to design agent tools, debug MCP integrations, or optimize tool interfaces for LLMs."
 ---
+
+## Routing Guidance
+
+- Do NOT use for general API design, backend services, or non-agent tooling.
 
 # Tool Design for Agents
 

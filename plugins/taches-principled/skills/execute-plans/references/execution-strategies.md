@@ -34,7 +34,7 @@ Three strategies for plan execution, differentiated by checkpoint structure and 
 - Aggregate and verify all outputs
 - Create SUMMARY
 
-**⚠️ HARD CAP: 3-5 parallel workers.** Supervisor context grows non-linearly with worker count. Beyond 5 workers, the supervisor spends more tokens processing summaries than workers spend on actual tasks. See the supervisor bottleneck explanation in the multi-agent gotchas reference.
+**⚠️ PRACTICAL CAP: 3-5 parallel workers.** While there is no hard system limit on concurrent subagents (tested successfully up to 12+), supervisor context grows non-linearly with worker count. Beyond 5 workers, the supervisor spends more tokens processing summaries, and outlier latency spikes (e.g., 20x median execution time) emerge due to system load. See the supervisor bottleneck explanation in the multi-agent gotchas reference.
 
 **Parallel execution rules:**
 - Parallel if: different files AND no output dependency

@@ -8,19 +8,17 @@ Observes behavior patterns in real-time and surfaces immediate coaching hints. N
 
 ## How It Works
 
-Three hook handlers:
+Two hook handlers:
 
 | Hook | When | What It Does |
 |------|------|--------------|
 | `SessionStart` | Session begins | Lightweight reminder to use subagents/skills |
-| `Stop` | Turn ends | Detects 5+ tools without subagent → coaches |
 | `PostCompact` | After compaction | Reminder before context pressure |
 
 ## Coaching Messages
 
 ```
 SessionStart: "Tip: Spawn subagents for parallel investigation. Use skills for method frameworks when workflows are complex."
-Stop (5+ tools): "5+ tools, no subagent — spawning parallel investigators would run concurrently."
 PostCompact: "Consider spawning subagents to offload work before context pressure increases."
 ```
 

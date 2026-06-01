@@ -1,22 +1,15 @@
 ---
 name: create-prompts
 description: "Create executable prompts for Claude Code. Use when writing prompts for other sessions or agents."
-when_to_use: |
-  Use when the user says:
-  - "write me a prompt"
-  - "generate a prompt"
-  - "create a prompt for this task"
-  - "write a prompt for another agent"
-  - "write a prompt for X" (where X is a specific task)
-  - "create a prompt that does X"
-  - "I need a prompt to [task]"
-  - "write an executable prompt for [task]"
-  - "craft a prompt for [goal]"
-  IMMEDIATELY when the user wants to create a reusable prompt artifact that another Claude Code session can execute.
-  Do NOT use for executing prompts directly, reviewing existing prompts, or one-off questions.
-  Do NOT use when the goal is to create a reusable Claude Code skill (use skill-authoring).
+when_to_use: "Use when user wants to generate, craft, or write a reusable executable prompt for another Claude session."
 argument-hint: [task description]
 ---
+
+## Routing Guidance
+
+- IMMEDIATELY when the user wants to create a reusable prompt artifact that another Claude Code session can execute.
+- Do NOT use for executing prompts directly, reviewing existing prompts, or one-off questions.
+- Do NOT use when the goal is to create a reusable Claude Code skill (use skill-authoring).
 
 ## Decision Router
 

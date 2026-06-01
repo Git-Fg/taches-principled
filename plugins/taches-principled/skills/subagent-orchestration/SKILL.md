@@ -1,9 +1,12 @@
 ---
 name: subagents
 description: "Design multi-agent architectures and orchestrate parallel execution. Hub skill combining agent definition and execution."
-when_to_use: |
-  Do NOT use for single-agent tasks, simple scripts, or non-agent workflows.
+when_to_use: "Use when user asks to spawn subagents, orchestrate parallel execution, or design agent definitions."
 ---
+
+## Routing Guidance
+
+- Do NOT use for single-agent tasks, simple scripts, or non-agent workflows.
 
 # Subagents
 
@@ -73,8 +76,10 @@ Subagents do not inherit skills from the parent — list them explicitly. The `s
 Enable memory on every subagent by default. `project` scope for team-shared knowledge; `user` scope for cross-project expertise; `local` scope for sensitive output (gitignored).
 
 ### Body Prompt Philosophy
-
 Keep the markdown body general and concise — a short role statement and behavioral guardrails. If writing more than ~30 lines, you're duplicating a skill. Reference it in the `skills` field instead.
+
+### Spawning Topology Constraint
+NEVER place spawn, fan-out, or delegation instructions inside agent definition markdown files. Because the `Agent` tool is strictly removed from the subagent tool registry at the implementation level, nested spawning directives will cause a fatal failure. *(Note: Subagents CAN invoke skills via the `Skill` tool)*. If nested orchestration or multi-agent coordination is required, you must instead create a skill with `context: fork` frontmatter to establish an isolated orchestration environment.
 
 ### Routing Principle
 

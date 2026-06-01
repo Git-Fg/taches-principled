@@ -26,7 +26,12 @@ The `Agent` tool (formerly `Task` in v2.1.63+) invokes subagents at spawn time. 
 | `model` | string | `inherit` | Model override: `haiku`, `sonnet`, `opus`, or full model ID |
 | `run_in_background` | boolean | `false` | Run concurrently without blocking main conversation |
 | `isolation` | string | — | `worktree` creates isolated git copy for destructive operations |
-| `max_turns` | number | — | Safety limit on agentic turns before auto-stop |
+| `maxTurns` | number | — | Safety limit on agentic turns before auto-stop |
+| `memory` | string | — | Memory scope: `user`, `project`, or `local` |
+| `skills` | string[] | — | Preload skill content into subagent at startup |
+| `mcpServers` | object | — | Inline MCP server definitions scoped to this subagent |
+| `hooks` | object | — | Lifecycle hooks that fire within the subagent |
+| `color` | string | — | Display color for the subagent in the task list |
 | `mode` | string | `default` | Permission mode: `default`, `acceptEdits`, `auto`, `dontAsk`, `bypassPermissions`, `plan` (corresponds to `permissionMode` in definition frontmatter) |
 | `initialPrompt` | string | — | Auto-submitted as first user turn for the subagent |
 
@@ -95,7 +100,7 @@ Return: JSON findings to .principled/scratch/skill-audit.json
 isolation: worktree  # For "git reset --hard" type operations
 ```
 
-### max_turns
+### maxTurns
 
 | Limit | When to Set | Rationale |
 |-------|-------------|-----------|
@@ -115,7 +120,7 @@ isolation: worktree  # For "git reset --hard" type operations
 | `subagent_type` | Override agent type | Set default agent |
 | `model` | Per-spawn override | Set baseline model |
 | `run_in_background` | One-shot toggle | Set default behavior |
-| `max_turns` | Per-spawn safety | Set global limit |
+| `maxTurns` | Per-spawn safety | Set global limit |
 | `mode` | Per-spawn permissions | Set default mode |
 | `description` | Task-specific summary | Agent role description |
 | `prompt` | Task instructions | — (definition uses `system`) |
@@ -178,7 +183,7 @@ Agent tool invocation:
 - description: Multi-file refactor with verification
 - model: sonnet
 - run_in_background: false
-- max_turns: 20
+- maxTurns: 20
 - isolation: worktree
 - prompt: |
   > Use a sonnet subagent to refactor the auth module
@@ -190,8 +195,8 @@ Agent tool invocation:
   Return: Summary of changes with test results
 
 Spawn-time overrides definition's defaults:
-- Definition: model=haiku, max_turns=10
-- Here: model=sonnet, max_turns=20
+- Definition: model=haiku, maxTurns=10
+- Here: model=sonnet, maxTurns=20
 ```
 
 ---
@@ -203,7 +208,7 @@ Spawn-time overrides definition's defaults:
 For plugin-level spawns, always include:
 
 ```markdown
-max_turns: 15    # Safety limit
+maxTurns: 15    # Safety limit
 ```
 
 ### Background Pattern
@@ -228,3 +233,342 @@ isolation: worktree
 ```
 
 The worktree is auto-cleaned on subagent exit.
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.
+
+---
+
+## Model Precedence
+
+Model is resolved in priority order (highest wins):
+
+1. `CLAUDE_CODE_SUBAGENT_MODEL` environment variable
+2. Per-invocation `model` parameter in Agent tool call
+3. `model` field in agent definition frontmatter
+4. Parent session model (inherited default)
+
+## Fork Mode
+
+Fork mode (`CLAUDE_CODE_FORK_SUBAGENT=1`, v2.1.117+) lets a subagent inherit the full conversation history from the parent session, rather than starting cold. This is distinct from normal subagent spawning where context starts fresh.
+
+Fork mode is experimental and should be used only when the subagent genuinely needs awareness of the full conversation state.

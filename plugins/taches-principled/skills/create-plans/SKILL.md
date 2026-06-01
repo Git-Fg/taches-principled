@@ -2,14 +2,16 @@
 name: create-plans
 description: "Create executable project plans. Use when planning features, roadmaps, or breaking down projects."
 allowed-tools: Read, Write, Bash
-when_to_use: |
-  Use when the user says "make a plan", "plan this out", "sketch a roadmap", or "break down this project".
-  IMMEDIATELY when starting new work that needs structured decomposition.
-  Do NOT use for code review, debugging existing code, or one-off questions.
-  Do NOT use when task is already refined and ready for execution (use execute-plans), when a single question needs answering (use diagnose instead), or when task is vague and needs capture first (use add-task).
-  CONTRAST with refine-task: create-plans creates project-level plans with milestones and phases; refine-task refines task-level specs with verification rubrics and implementation steps. Use create-plans for project scope; use refine-task for task spec refinement.
+when_to_use: "Use when user wants to make a project plan, sketch a roadmap, or break down a new project into phases."
 argument-hint: [project or feature to plan]
 ---
+
+## Routing Guidance
+
+- IMMEDIATELY when starting new work that needs structured decomposition.
+- Do NOT use for code review, debugging existing code, or one-off questions.
+- Do NOT use when task is already refined and ready for execution (use execute-plans), when a single question needs answering (use diagnose instead), or when task is vague and needs capture first (use add-task).
+- CONTRAST with refine-task: create-plans creates project-level plans with milestones and phases; refine-task refines task-level specs with verification rubrics and implementation steps. Use create-plans for project scope; use refine-task for task spec refinement.
 
 ## Decision Router
 
@@ -126,7 +128,7 @@ Claude automates everything that has a CLI or API. If a tool exists, use it.
 ### Bash Injection = 0 Context Cost
 
 Bash commands embedded in plan verification use `!<command>` syntax — the command CODE
-never enters context, only its OUTPUT counts. This means complex validation scripts cost nothing.
+never enters context, only its OUTPUT counts. This means complex validation scripts cost nothing. This mirrors the Level 3 progressive disclosure pattern where executable scripts run via bash without polluting the context window.
 
 Example:
 - Verbose: "Run `npm test` to verify" (test output goes in context)
@@ -234,7 +236,7 @@ Each level gives context to the level below.
 
 ## Context Scan
 
-On every invocation, spawn an explorer subagent (can read source, write findings, search project structure, and run commands) to scan the project context:
+On every invocation, spawn a plan-explorer subagent (can read source, write findings, search project structure, and run commands) to scan the project context:
 
 - Check git status — detect if git is initialized
 - List planning structure (`.principled/plans/`, `.principled/plans/phases/`)
@@ -268,20 +270,12 @@ Always check for existing artifacts in `.principled/plans/` before starting — 
 
 Before creating a plan, understand the project thoroughly. Use parallel subagent exploration:
 
-**Read the agents folder** — each markdown file is a subagent prompt template:
-- `{baseDir}/agents/explorer.md` — project structure mapping
-- `{baseDir}/agents/researcher.md` — technology research
-- `{baseDir}/agents/architect.md` — trade-off evaluation
-- `{baseDir}/agents/critic.md` — plan review and challenge
-- `{baseDir}/agents/verifier.md` — verification criteria
-- `{baseDir}/agents/implementer.md` — task execution
-
-Read the relevant agent, fill in placeholders like `{{context}}`, `{{task}}`, `{{scope}}`, and dispatch it as a subagent.
+**Fan-out spawn instructions:** For project exploration, spawn a plan-explorer subagent. For unfamiliar technologies, spawn a researcher subagent. For complex architectural decisions, spawn a plan-architect subagent. For plan review and challenge, spawn a critic subagent. For verification criteria, spawn a verifier subagent. For task execution, spawn a plan-implementer subagent. Read the relevant agent, fill in placeholders, and dispatch it as a subagent.
 
 **Fan-out principles:**
-- Use 3-5 parallel explorer agents for project structure (different areas: frontend, backend, config, tests)
+- Use 3-5 parallel plan-explorer agents for project structure (different areas: frontend, backend, config, tests)
 - Use researcher agents for unfamiliar technologies — find current best practices
-- Use architect agents for complex decisions (auth strategy, state management, API design)
+- Use plan-architect agents for complex decisions (auth strategy, state management, API design)
 - All parallel subagent dispatches MUST occur in a single message
 - Each subagent has disjoint scope (different files/areas)
 - Cap at 5 concurrent subagents to avoid coordination overhead
@@ -314,7 +308,7 @@ When fanning out subagents for exploration, ALL findings MUST be written to a ce
 
 **Using critic agents during planning:**
 
-After the fan-out exploration, before writing the plan, spawn a critic subagent (read `{baseDir}/agents/critic.md`) to challenge the emerging approach:
+After the fan-out exploration, before writing the plan, spawn a critic subagent to challenge the emerging approach:
 
 ```
 Spawn a critic subagent (general-purpose with Write tool access):
@@ -335,9 +329,9 @@ Each subagent role uses a model matched to its cognitive load:
 
 | Role | Model | Rationale |
 |------|-------|----------|
-| Explorer subagent | Haiku | Structural I/O — file discovery, pattern detection |
+| plan-explorer subagent | Haiku | Structural I/O — file discovery, pattern detection |
 | Researcher subagent | Haiku | Documentation reading — lightweight comprehension |
-| Architect subagent | Sonnet | Trade-off evaluation — requires deeper reasoning |
+| plan-architect subagent | Sonnet | Trade-off evaluation — requires deeper reasoning |
 | Pre-plan critic subagent | Haiku | Assumption challenge — lightweight pattern recognition |
 | Post-plan critic subagent | Sonnet | Dependency verification — requires full plan comprehension |
 
@@ -520,13 +514,7 @@ IF writing phase plan → BEFORE tasks read `{baseDir}/references/plan-format.md
 IF scope is unclear → BEFORE decomposing read `{baseDir}/references/scope-estimation.md`
 IF automation available → BEFORE running commands read `{baseDir}/references/cli-automation.md`
 IF managing milestones → read `{baseDir}/references/milestone-management.md`
-IF spawning subagents → read the agent templates for spawning:
-- `{baseDir}/agents/explorer.md` — for project exploration
-- `{baseDir}/agents/researcher.md` — for technology research
-- `{baseDir}/agents/architect.md` — for trade-off evaluation
-- `{baseDir}/agents/critic.md` — for plan review and challenge
-- `{baseDir}/agents/verifier.md` — for verification criteria
-- `{baseDir}/agents/implementer.md` — for task execution
+IF spawning subagents → for project exploration spawn a plan-explorer; for research spawn a researcher; for trade-off evaluation spawn a plan-architect; for plan review spawn a critic; for verification criteria spawn a verifier; for task execution spawn a plan-implementer
 
 ---
 

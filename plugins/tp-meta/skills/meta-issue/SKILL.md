@@ -1,19 +1,15 @@
 ---
 name: meta-issue
-description: "Convert meta-review findings into a public GitHub issue — handles privacy sanitization and filters out user-config findings automatically. Replaces manual gh issue create for behavioral reports."
+description: "Create GitHub issue from meta-review findings. Replaces manual gh issue create for behavioral reports."
 allowed-tools: Read, Bash
-when_to_use: |
-  Use when the user says:
-  - "create issue from review"
-  - "file a bug report"
-  - "open github issue"
-  - "report to repo"
-  - "create meta-issue"
-  - "file findings"
-  FIRST after meta-review produces actionable findings.
-  Do NOT use for general issue creation (use gh directly) or code bugs (use code-review).
+when_to_use: "Use when user wants to create a GitHub issue or bug report from meta-review findings."
 argument-hint: "[<review-file-path>] [--dry-run]"
 ---
+
+## Routing Guidance
+
+- FIRST after meta-review produces actionable findings.
+- Do NOT use for general issue creation (use gh directly) or code bugs (use code-review).
 
 ## Decision Router
 

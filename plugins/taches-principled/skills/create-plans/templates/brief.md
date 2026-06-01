@@ -1,9 +1,3 @@
----
-name: brief
-description: Template for creating a project BRIEF.md that captures vision, problem, success criteria, and constraints.
-when_to_use: When starting a new project or updating BRIEF.md after shipping a version.
----
-
 # Brief Template
 
 ## Greenfield Brief (v1.0)

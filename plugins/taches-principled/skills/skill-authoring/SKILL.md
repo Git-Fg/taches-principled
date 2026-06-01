@@ -2,16 +2,14 @@
 name: skill-authoring
 description: "Create and optimize Claude Code skills. Use when building new skills or improving existing descriptions."
 allowed-tools: Read, Edit, Write, Grep, Glob
-when_to_use: |
-  WORKFLOW mode activates when user types /skill-authoring, /create-skills, or /skill-creator.
-  WORKFLOW mode also activates when user says "build a skill", "make a skill for X", "write a skill",
-  "create a new skill", "add a skill", or "I need to author a skill".
-
-  METHODOLOGY mode activates when user asks to "optimize skill descriptions", "benchmark triggers",
-  "improve routing", "fix trigger issues", "test if my skill fires", or "fix why my skill doesn't load".
-
-  Do NOT use for general code writing or project planning.
+when_to_use: "Use when user wants to build a new skill, optimize skill descriptions, or fix skill routing issues."
 ---
+
+## Routing Guidance
+
+- WORKFLOW mode activates when user says "build a skill", "make a skill for X", "write a skill", "create a new skill", "add a skill", or "I need to author a skill".
+- METHODOLOGY mode activates when user asks to "optimize skill descriptions", "benchmark triggers", "improve routing", "fix trigger issues", "test if my skill fires", or "fix why my skill doesn't load".
+- Do NOT use for general code writing or project planning.
 
 ## Decision Router
 
@@ -37,9 +35,10 @@ Before committing a skill, verify:
 - [ ] when_to_use ≤ 200 chars
 - [ ] Body ≤ 500 lines
 - [ ] No invalid frontmatter fields (metadata, related_skills, tags)
-- [ ] Skill name is kebab-case
+- [ ] Skill name is kebab-case, max 64 chars, no XML tags, no "anthropic" or "claude"
 - [ ] Numeric thresholds present if applicable
 - [ ] Anti-Patterns section with concrete wrong/right pairs
+- [ ] Security audit: bundled scripts reviewed for unexpected network calls or unauthorized system access
 
 ### Skill Categories
 
@@ -82,11 +81,13 @@ Good skill design separates:
 
 ### The Core Insight
 
-**Skills share the context window with everything else.** Every token competes with the user's request, conversation history, and other loaded content.
+**Skills share the context window with everything else.** Every token competes with the user's request, conversation history, and other loaded content. Skills use progressive disclosure across three levels:
+
+- **Level 1 (Metadata):** Always loaded at startup. Put routing signals here.
+- **Level 2 (Instructions):** Loaded when triggered via bash. Put essential principles in SKILL.md.
+- **Level 3 (Resources & Code):** Loaded as needed via bash. Put details, schemas, and executable scripts here to consume zero tokens until accessed.
 
 - Assume Claude is smart. Don't explain obvious things.
-- Put essential principles in SKILL.md—it's always loaded.
-- Put details in references—they load only when needed.
 - If a line doesn't earn its keep, delete it.
 
 ### What Good Looks Like
@@ -126,6 +127,8 @@ skill-name/
 ├── templates/        # Output structures
 └── scripts/          # Executable code
 ```
+
+**WARNING - Discovery Depth Limit:** Automatic skill discovery only scans 1 level deep. Do not nest skills inside category folders (e.g., `skills/category/skill-name/SKILL.md`), or they will not be found by the Skill tool and will require manual Glob scanning to locate.
 
 **When to use agents/ vs inline:**
 - Use `agents/` when: reused by multiple skills, needs independent versioning, or must be portable
@@ -314,7 +317,7 @@ Template for new agent files:
 skill-name/
 ├── SKILL.md              # YAML frontmatter + body (<500 lines)
 ├── agents/               # Prompt templates for portable delegation
-├── scripts/              # Only for deterministic/fragile operations
+├── scripts/              # Only for deterministic/fragile operations. Code never enters context, only output does. Install dependencies locally.
 ├── references/           # One level deep — schemas, cheatsheets
 └── assets/               # Templates, JSON schemas
 ```
@@ -330,8 +333,8 @@ skill-name/
 
 | Field | Purpose |
 |-------|---------|
-| `name` | Display name. Max 64 chars, lowercase/hyphens only |
-| `description` | Primary routing signal. Semantic intent, not keywords. ≤150 chars |
+| `name` | Display name. Max 64 chars, lowercase/hyphens only, no XML, no "claude"/"anthropic" |
+| `description` | Primary routing signal. Semantic intent, not keywords. ≤150 chars (max 1024), no XML |
 | `when_to_use` | Additional trigger contexts. ≤200 chars |
 | `argument-hint` | Autocomplete hint after `/skill-name` |
 | `arguments` | Named positional args → `$name` substitution in order |
@@ -350,11 +353,14 @@ skill-name/
 
 | Pitfall | Fix |
 |---------|-----|
+| Guidelines-only `context:fork` | A forked skill without actionable tasks wastes the subagent dispatch. Use forks for executing workflows, not injecting reference knowledge. |
 | Vague description | "Deploy to production via bin/deploy.sh. Use when user says 'deploy' or 'ship'." |
 | Missing guard rail | Set `disable-model-invocation: true` for destructive skills |
 | Brittle path reference | Use `${CLAUDE_SKILL_DIR}` instead of hardcoded paths |
-| Overly-broad permission | Scope `allowed-tools` to exactly what's needed |
+| Relying on `allowed-tools` for security | `allowed-tools` only partially blocks; tools like `Edit` and `Agent` completely bypass it. Use `disallowed-tools` instead. |
 | Undeclared dependency | Document required MCP servers or external tools |
+| Global package installation | Install packages locally to avoid interfering with the user's computer environment |
+| Unsafe network calls | Audit external sources; external dependencies can change and become malicious |
 | Recursive trigger | Let descriptions route. No cross-references in bodies. |
 
 ### When Your Skill Isn't Working

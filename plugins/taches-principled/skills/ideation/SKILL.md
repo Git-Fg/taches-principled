@@ -1,18 +1,20 @@
 ---
 name: ideation
 description: "Refine rough ideas or generate creative options with probability sampling. Two modes: refinement and divergent generation."
-when_to_use: |
-  Use when the user says "I have an idea", "help me figure out", "design this", "what are my options", "let's brainstorm", "help me think through this", or "let's think about".
-  IMMEDIATELY when a concept is vague or unformed — BEFORE sketching architecture or writing code.
+when_to_use: "Use when user wants to brainstorm, explore vague ideas, or generate creative options and alternatives."
 argument-hint: "[feature concept, problem, or topic]"
 ---
+
+## Routing Guidance
+
+- IMMEDIATELY when a concept is vague or unformed — BEFORE sketching architecture or writing code.
 
 ## Decision Router
 
 IF user wants to explore or refine an unformed idea → use brainstorm mode: collaborative questioning to refine
 IF user wants creative idea generation (not refinement) → use **create-ideas** mode
-IF user has simple task capture needs → use add-task instead
-IF user needs formal planning with milestones → use create-plans instead
+IF user has simple task capture needs → use scope-work instead
+IF user needs formal planning with milestones → use scope-work instead
 IF user already knows exactly what they want → skip to design capture directly
 IF combining with development workflow → produce `.specs/plans/<topic>.design.md` then create task file
 IF user needs structured evaluation rather than generation → use evaluation workflow instead
@@ -22,13 +24,12 @@ IF idea is fully formed and documented → no need for this skill
 
 ## DO NOT Boundaries
 
-- **DO NOT use for simple task capture** — use `add-task` instead for straightforward task creation
-- **DO NOT use for formal planning** — use `create-plans` instead for structured planning with milestones and phases
+- **DO NOT use for simple task capture** — use `scope-work` instead for task capture
+- **DO NOT use for formal planning** — use `scope-work` instead for project planning
 
 ## CONTRAST
 
-- CONTRAST with add-task: ideation explores and refines ideas through dialogue; add-task captures task intent for later refinement. Use ideation when the idea is vague; use add-task when intent is clear.
-- CONTRAST with create-plans: ideation explores what to build and why; create-plans decomposes what to build into executable tasks. Use ideation at concept stage; use create-plans at decision stage.
+- CONTRAST with scope-work: ideation explores and refines ideas through dialogue; scope-work handles task capture, refinement, and planning. Use ideation when the idea is vague; use scope-work when intent is clear or when planning is needed.
 
 ---
 

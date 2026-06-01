@@ -2,22 +2,14 @@
 name: implement-task
 description: "Execute refined tasks with verification gates. Spawn developer, then judge agent. Iterate until quality threshold."
 allowed-tools: Read, Edit, Write, Bash
-when_to_use: |
-  Use when the user says:
-  - "implement this task"
-  - "build this"
-  - "start working on the task"
-  - "/implement"
-  - "execute the implementation"
-  - "run the implementation for X"
-  - "start implementing this feature"
-  - "begin building this"
-  - "carry out the implementation steps"
-  - "put this plan into action"
-  IMMEDIATELY after a task has been refined and is ready for implementation — verification gates are mandatory.
-  CONTRAST with execute-plans: That skill executes PLAN.md files from .principled/plans/; this skill executes refined task files from .specs/tasks/ (todo/, in-progress/, done/).
+when_to_use: "Use when user asks to implement a refined task specification, execute implementation steps, or build a feature."
 argument-hint: "[task file] [--continue] [--refine] [--human-in-the-loop] [--target-quality X.X] [--skip-judges]"
 ---
+
+## Routing Guidance
+
+- IMMEDIATELY after a task has been refined and is ready for implementation — verification gates are mandatory.
+- CONTRAST with execute-plans: That skill executes PLAN.md files from .principled/plans/; this skill executes refined task files from .specs/tasks/ (todo/, in-progress/, done/).
 
 ## Decision Router
 

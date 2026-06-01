@@ -25,37 +25,21 @@ Most skills load automatically when their description matches your task. Only `/
 
 ## What You Get
 
-### 23 Skills
+### Skills
 
 Skills load on demand and give Claude domain expertise without bloating every conversation.
 
 | Skill | When to Use |
 |-------|-------------|
-| **skill-authoring** | Building new skills or improving existing ones |
 | **create-plans** | Planning projects, phases, or features for Claude to build |
-| **create-prompts** | Creating executable prompts for Claude Code sessions |
-| **execute-prompts** | Executing prompts via delegated sub-tasks |
-| **execute-plans** | Executing PLAN.md files via parallel subagent orchestration |
-| **subagent-orchestration** | Designing and orchestrating multi-agent systems |
 | **diagnose** | Systematic problem investigation |
-| **refine** | Quality improvement (simplify, review, critique, memorize, polish) |
-| **ideation** | Generating and refining ideas systematically |
-| **add-task** | Capturing a task idea for structured development |
-| **implement-task** | Implementing refined task specs with verification |
-| **refine-task** | Refining draft specs into implementation-ready tasks |
-| **update-docs** | Maintaining project documentation |
-| **skill-authoring** | Editing and optimizing existing skills |
-| **claude-headless** | Batch and headless Claude Code workflows |
-| **tool-design** | Designing agent tools and MCP integrations |
-| **security** | Security-first code review and threat modeling |
-| **test** | Test strategy and automation patterns |
-| **multi-agent-patterns** | Designing multi-agent system architectures |
-| **kaizen** | Continuous improvement with multiple methods |
-| **plan-do-check-act** | Iterative experimentation cycles |
-| **archive-plan** | Archiving completed plan artifacts |
-| **rules-orchestration** | Managing CLAUDE.md and rules lifecycle |
+| **refine** | Quality improvement hub (simplify, review, critique, polish) |
+| **subagent-orchestration** | Designing and orchestrating multi-agent systems |
+| **add-task** | Capturing structured task ideas |
 
-### 14 Commands
+Run `/skills` in Claude Code to see the full list, or browse `plugins/taches-principled/skills/`.
+
+### Commands
 
 Slash commands for quick, focused workflows.
 
@@ -63,39 +47,29 @@ Slash commands for quick, focused workflows.
 |---------|-------------|
 | `/debug` | Apply systematic debugging methodology |
 | `/simplify` | Simplify and refine recently modified code |
-| `/implement` | Execute task implementation with verification |
 | `/critique` | Get independent multi-perspective critique |
-| `/learn` | Capture insights into durable project memory |
-| `/polish` | Improve prose clarity and conciseness |
 | `/orchestrate` | Orchestrate parallel subagent execution |
 | `/whats-next` | Create a handoff for the next session |
-| `/design-subagents` | Design multi-agent architectures |
-| `/ideate` | Enter divergent creative thinking mode |
-| `/next-tasks-orchestration` | Implement changes with quality gates |
-| `/rules` | Manage CLAUDE.md and rules lifecycle |
-| `/archive` | Archive completed plan artifacts |
-| `/improve` | Improve the quality of any artifact |
 
-### 13 Agents
+Run `/help` to see all commands, or browse `plugins/taches-principled/commands/`.
+
+### Agents
 
 Specialized agents for quality, review, and evaluation work.
 
 | Agent | Purpose |
 |-------|---------|
-| **analyzer** | Synthesizes evaluation results into improvement plans |
 | **code-reviewer** | Reviews code for issues that matter |
 | **grader** | Evaluates skill teaching effectiveness |
-| **implementer** | Quality-gated task implementation |
-| **researcher** | Multi-source investigation and synthesis |
-| **critic**, **self-critic**, **self-review** | Independent critique and quality verification |
-| **skill-auditor**, **subagent-auditor** | Reviews skills and subagents for effectiveness |
-| **comparator** | Compares skill versions for delta analysis |
-| **prompt-engineer** | Reviews prompts for clarity and effectiveness |
-| **debug-tracer** | Systematic debugging and root cause tracing |
+| **critic** | Independent multi-perspective critique |
+| **global-implementer** | Quality-gated task implementation |
+| **skill-auditor** | Reviews skills for clarity and effectiveness |
 
-### 8 Marketplace Plugins
+Browse `plugins/taches-principled/agents/` for the full roster.
 
-Eight standalone plugins, each independently installable. Each extends the core with specialized capabilities.
+### Marketplace Plugins
+
+Each plugin below is independently installable and extends the core with specialized capabilities.
 
 | Plugin | Focus |
 |--------|-------|
@@ -133,6 +107,7 @@ claude plugin install tp-tdd
 claude plugin install tp-force-multiplier
 claude plugin install tp-vps-governance
 claude plugin install tp-meta
+```
 
 Install only the plugins you need:
 

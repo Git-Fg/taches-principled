@@ -1,10 +1,3 @@
----
-name: issues
-description: "Track deferred enhancements, logged issues, and non-critical deviations from plan execution."
-when_to_use: |
-  When a deviation is logged as non-blocking (Rule 5) or when enhancements are deferred to a future phase.
----
-
 # Project Issues
 
 ## Deferred Enhancements

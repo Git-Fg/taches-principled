@@ -2,15 +2,17 @@
 name: execute-plans
 description: "Executes PLAN.md files using intelligent strategies based on checkpoint types. Use when user says 'run plan', 'build it', or 'do it'."
 allowed-tools: Read, Write, Bash, Grep
-when_to_use: |
-  Use when the user says "run plan", "do it", or "build it".
-  IMMEDIATELY when ready to progress from PLAN to SUMMARY.
-  CONTRAST with implement-task: That skill executes task files from .specs/tasks/; this skill executes PLAN.md files from .principled/plans/.
-  Do NOT use for creating plans — use the planning skill instead.
-  Do NOT use for planning without execution intent.
-  Do NOT use for executing prompt files — use execute-prompts instead.
+when_to_use: "Use when user wants to run a plan, execute PLAN.md, or build out an already planned phase."
 argument-hint: [path to plan] [--phase N]
 ---
+
+## Routing Guidance
+
+- IMMEDIATELY when ready to progress from PLAN to SUMMARY.
+- CONTRAST with implement-task: That skill executes task files from .specs/tasks/; this skill executes PLAN.md files from .principled/plans/.
+- Do NOT use for creating plans — use `scope-work` instead.
+- Do NOT use for planning without execution intent.
+- Do NOT use for executing prompt files — use execute-prompts instead.
 
 ## Decision Router
 
@@ -63,7 +65,7 @@ A skill conflating policy and mechanism produces execution that either skips cri
 
 ## Intake
 
-This skill can be invoked directly or after create-plans. If context was already captured (plan exists, execution preference set), skip intake and proceed to strategy selection.
+This skill can be invoked directly or after scope-work. If context was already captured (plan exists, execution preference set), skip intake and proceed to strategy selection.
 
 For direct invocation, ensure you have sufficient context to execute:
 
@@ -148,7 +150,7 @@ When spawning subagents for investigation (exploring project structure, finding 
 
 **Pre-execution critique loop:**
 
-Before spawning workers, spawn a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Read `{baseDir}/agents/critic.md` and spawn the critic with the plan as context.
+Before spawning workers, spawn a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Spawn the critic as a subagent (general-purpose with Write tool access) with the plan as context.
 
 Loop until no HIGH findings. If critic finds critical issues: fix the plan before spawning workers.
 If critic finds minor concerns: note them for milestone review.
@@ -159,7 +161,7 @@ If critic finds minor concerns: note them for milestone review.
 
 ## Implementer Scratchpad Protocol
 
-When spawning implementer subagents (Strategy A parallel workers, Strategy B segment workers), use a shared scratchpad for all execution output:
+When spawning global-implementer subagents (Strategy A parallel workers, Strategy B segment workers), use a shared scratchpad for all execution output:
 
 **Location:** `.principled/scratch/{plan-id}-execution.md`
 
@@ -199,7 +201,7 @@ The executor-critic relationship is a structured loop, not a one-shot check:
 3. Orchestrator reads critic findings from scratchpad
 4. IF findings have issues:
    - Create fix tasks (1-2 small, targeted)
-   - Spawn implementer subagent for each fix
+   - Spawn global-implementer subagent for each fix
    - Re-verify
    - Re-spawn critic if fix was non-trivial
    - Repeat until critic passes or 2 fix cycles exhausted
@@ -524,12 +526,12 @@ IF selecting execution strategy → BEFORE choosing read `{baseDir}/references/e
 IF checkpoint type is human-verify → BEFORE segment read `{baseDir}/references/checkpoint-protocols.md`
 IF checkpoint type is decision → BEFORE presenting read `{baseDir}/references/checkpoint-protocols.md`
 IF handling deviations → read `{baseDir}/references/deviation-rules.md`
-IF spawning autonomous worker → read `{baseDir}/templates/autonomous-execution.md`
-IF spawning segment worker → read `{baseDir}/templates/segment-execution.md`
-IF spawning milestone critic → read `{baseDir}/agents/critic.md`
-IF spawning parallel worker → read `{baseDir}/agents/implementer.md`
-IF spawning researcher → read `{baseDir}/agents/researcher.md`
-IF spawning verifier → read `{baseDir}/agents/verifier.md`
+IF spawning autonomous worker → read the autonomous-execution template
+IF spawning segment worker → read the segment-execution template
+IF spawning milestone critic → spawn a critic subagent (general-purpose with Write tool access)
+IF spawning parallel worker → spawn a global-implementer subagent
+IF spawning researcher → spawn an execute-researcher subagent (namespaced under execute-plans)
+IF spawning verifier → spawn a verifier subagent
 **Orchestration:** Five parallel patterns for subagent work
 
 ---
