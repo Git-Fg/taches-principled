@@ -14,15 +14,42 @@ Design multi-agent architectures and orchestrate parallel execution. Hub skill c
 
 ## Decision Router
 
-IF user passes --solo or --lightweight flag → use Solo Mode (no subagents, no critic loop)
-IF task description is < 1 sentence AND touches ≤ 3 files → suggest Solo Mode to user
-IF context usage > 70% → auto-degrade to Solo Mode for remaining work
+Pick the execution mode by task scale and shape — not by which mechanic is most familiar. The runtime exposes more than one primitive now; the orchestrator's first job is selecting the right one.
+
+### Execution-mode selection
+
+| Task scale | Right primitive | When to choose it |
+|---|---|---|
+| Trivial — 1 file, <10 lines, or a single search/read | Inline in the main context | Quick edit, single lookup, glance-check |
+| Non-trivial single-context — 3–10 files, single methodology, side task | Subagents | Result returns and is synthesized in this conversation; orchestration shape is one-off |
+| Multi-stage with fan-out → verify → synthesize | Orchestration script | Repeatable shape worth codifying; structured-output schemas; adversarial verification across N independent agents |
+| Codebase-wide or many-file or multi-methodology | Orchestration script with explicit phase structure | Coordination outgrows a handful of subagent spawns per turn |
+| Long-running with external triggers | Orchestration script + recurring checks + push channels | Reacts to CI, alerts, scheduled events; survives idle time |
+
+Implicit signals that demote the mode: `--solo` or `--lightweight` flag → inline; sub-sentence ask touching ≤3 files → inline; context usage > 70% → inline for the remainder.
+
+### Runtime-API mapping
+
+The orchestration runtime composes subagent spawns — every script step is a subagent. Patterns we name semantically map onto the runtime's API like this:
+
+| Coordination pattern | Inline mechanic | Script mechanic | Use when |
+|---|---|---|---|
+| Fan-out then synthesize all | Spawn subagents in parallel, await all | Fan-out with a barrier (script-level `parallel`) | All prior-stage results genuinely needed before the next stage |
+| Fan-out without barrier | (no native inline equivalent) | Pipeline stages without a barrier (script-level `pipeline`) | Each item can flow through stages independently |
+| Structured-output return | Embed return-format requirements in the spawn prompt | Pass a schema with the spawn; the runtime forces a structured-output tool call and retries on mismatch | Downstream consumer needs validated data |
+| Dispatch to a named role | Spawn an agent definition by name (`tp-critic`, `tp-judge`, etc.) | Pass `agentType` with the spawn; the script dispatches to the same role registry | Reusing a canonical role across many calls |
+| Isolated branch mutation | Spawn a subagent in a worktree | Mark the script-level spawn as worktree-isolated | Parallel agents would otherwise conflict on the same files |
+| Fast lightweight delegation | Spawn with a Haiku-class model | Pass a model override on the spawn | Bounded, simple worker step |
+
+The agent definitions under each plugin's `agents/` directory are the durable role library. Both inline subagent spawns and orchestration-script spawns dispatch to them by name.
+
+### Mode selection — narrative form
 
 **DESIGN mode** — Agent definition authoring:
-When user wants to create, define, or configure a new subagent definition — write its scope, tools/models/memory settings, or generate an agent template.
+When the user wants to create, define, or configure a new subagent definition — write its scope, tools/models/memory settings, or generate an agent template.
 
-**ORCHESTRATE mode** — Subagent execution:
-When user wants to delegate work, spawn workers, run in parallel, fan out tasks, or manage background agents — load ORCHESTRATE mode.
+**ORCHESTRATE mode** — Execution dispatch:
+When the user wants to delegate work, spawn workers, run in parallel, fan out tasks, or manage background agents — load ORCHESTRATE mode and pick the right execution-mode tier from the table above. The mode covers both inline subagent spawning and writing an orchestration script when the task scale warrants it.
 
 ---
 
@@ -133,7 +160,9 @@ DESIGN mode also covers the *shape* of a multi-agent system: which pattern fits 
 
 ## ORCHESTRATE Mode
 
-Orchestrate multiple subagents in parallel, loop tp-critic subagent until no HIGH findings, iterate with feedback loops, and manage background workers.
+Orchestrate multiple subagents in parallel, loop a critic-role subagent until no HIGH findings remain, iterate with feedback loops, and manage background workers.
+
+When the task scale is at the *multi-stage* tier or higher (per the execution-mode selection table above), prefer composing the orchestration as a script: the script holds the loop, the branching, and the intermediate results; the conversation only holds the final answer. The mode covers both inline fan-out and script-based composition — pick the tier and the runtime resolves the underlying mechanic.
 
 ### Core Mental Model
 
@@ -215,13 +244,14 @@ After 2 retries on the same failure: stop, report back with findings. Never loop
 
 ### Three Automation Layers
 
-| Tool | Best for |
+| Layer | Best for |
 |------|----------|
 | Hooks | Validate subagent outputs, enforce guardrails |
-| ScheduleWakeup / CronCreate | Recurring orchestration, long-poll retries |
+| Recurring schedule (cron-style or self-paced loop) | Long-running orchestration, long-poll retries |
 | Monitor | CI/log watching, real-time reaction |
+| Orchestration script | Repeatable multi-stage fan-out with adversarial verification at scale |
 
-Never poll when you can watch. Monitor fires only on matching output (free while silent). ScheduleWakeup fires every N seconds regardless of state.
+Never poll when you can watch. A monitor fires only on matching output (free while silent). A recurring schedule fires every N seconds regardless of state. An orchestration script absorbs the loop, branching, and intermediate results so the conversation only holds the final answer.
 
 ### Anti-Patterns
 

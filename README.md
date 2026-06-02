@@ -37,7 +37,7 @@ Skills load on demand and give Claude domain expertise without bloating every co
 | **subagent-orchestration** | Designing and orchestrating multi-agent systems |
 | **add-task** | Capturing structured task ideas |
 
-Run `/skills` in Claude Code to see the full list, or browse `plugins/taches-principled/skills/`.
+Run `/skills` in Claude Code to see the full list, or browse `plugins/core-principled/skills/`.
 
 ### Commands
 
@@ -46,12 +46,11 @@ Slash commands for quick, focused workflows.
 | Command | What It Does |
 |---------|-------------|
 | `/debug` | Apply systematic debugging methodology |
-| `/simplify` | Simplify and refine recently modified code |
 | `/critique` | Get independent multi-perspective critique |
 | `/orchestrate` | Orchestrate parallel subagent execution |
 | `/whats-next` | Create a handoff for the next session |
 
-Run `/help` to see all commands, or browse `plugins/taches-principled/commands/`.
+Run `/help` to see all commands, or browse `plugins/core-principled/commands/`.
 
 ### Agents
 
@@ -65,7 +64,7 @@ Specialized agents for quality, review, and evaluation work.
 | **global-implementer** | Quality-gated task implementation |
 | **skill-auditor** | Reviews skills for clarity and effectiveness |
 
-Browse `plugins/taches-principled/agents/` for the full roster.
+Browse `plugins/core-principled/agents/` for the full roster.
 
 ### Marketplace Plugins
 
@@ -79,7 +78,7 @@ Each plugin below is independently installable and extends the core with special
 | **tp-tdd** | Test-driven development with red-green-refactor |
 | **tp-ddd** | Domain-driven design guardrails |
 | **tp-force-multiplier** | Hooks-only (SessionStart) — ambient coaching, no skills/agents/commands |
-| **tp-meta** | Session meta-review, behavioral analysis, and GitHub issue reporting |
+| **tp-session-audit** | Session meta-review, behavioral analysis, and GitHub issue reporting |
 
 ## Installation
 
@@ -120,7 +119,7 @@ claude plugin install tp-git             # Git workflow automation
 claude plugin install tp-sadd            # Structured agent-driven development
 claude plugin install tp-tdd             # Test-driven development
 claude plugin install tp-force-multiplier # Hook-driven coaching
-claude plugin install tp-meta             # Session meta-review
+claude plugin install tp-session-audit  # Session meta-review
 ```
 
 ### Reinstall / Reset
@@ -151,9 +150,9 @@ claude plugin prune                   # Clean up unused dependencies
 ### Manual (without marketplace)
 
 ```bash
-cp -r plugins/taches-principled/skills/* ~/.claude/skills/
-cp -r plugins/taches-principled/commands/* ~/.claude/commands/
-cp -r plugins/taches-principled/agents/* ~/.claude/agents/
+cp -r plugins/core-principled/skills/* ~/.claude/skills/
+cp -r plugins/core-principled/commands/* ~/.claude/commands/
+cp -r plugins/core-principled/agents/* ~/.claude/agents/
 ```
 
 Run from repo root after clone, or from extracted release directory.

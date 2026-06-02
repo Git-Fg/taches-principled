@@ -22,6 +22,30 @@ argument-hint: "[mode] [target] [--severity critical|high|medium|low]"
 **Quick routing:** Scan code patterns = SAST. Scan packages = DEPENDENCY-AUDIT. Scan for secrets = SECRETS-DETECTION. Audit compliance = COMPLIANCE.
 ---
 
+## Orchestration Shape
+
+This skill runs as **an orchestration script** — a multi-modal sweep with adversarial reproducibility verification across specialized security dimensions.
+
+**Pattern:** Multi-modal sweep + adversarial reproducibility verify
+
+The work decomposes across three phases:
+
+1. **Sweep** — Dimension-specialist scanners fan out across distinct attack surfaces in parallel. Each returns structured findings with evidence:
+   - Authentication flow scanner
+   - Input validation scanner
+   - Secrets exposure scanner
+   - Race condition scanner
+   - Sandbox escape scanner
+   - Dependency CVE scanner
+
+2. **Verify** — For each finding, reproducer agents independently attempt to reproduce the vulnerability. A finding survives only when reproducer agents confirm it.
+
+3. **Triage** — A severity classifier synthesizer consolidates verified findings into a prioritized list with remediation guidance.
+
+**Execution tier:** Orchestration script
+
+---
+
 ## Decision Router
 
 IF scanning for injection, auth, or access control patterns in code → **SAST** mode

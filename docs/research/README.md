@@ -34,6 +34,8 @@ Anthropic shipped a coordinated wave of dynamic execution primitives in spring 2
 
 [`synthesis.md`](synthesis.md) — implications for taches-principled. The short version: **most of what taches-principled invents — fan-out, critique loops, adversarial verification, plan/judge/execute — is now a first-class primitive in Claude Code, available against any endpoint.** Our value moves from "providing the orchestration plumbing" to "providing the *quality patterns* that go into the workflow scripts Claude writes."
 
+[`brainstorm-marketplace-fit.md`](brainstorm-marketplace-fit.md) — per-skill classification: which skills KEEP, which WRAP into orchestration scripts, which COLLAPSE; the orchestration shapes for each WRAP candidate; and the semantic-language guide for replacing brittle tool-name citations with verbs and role nouns.
+
 ## How this research was conducted
 
 1. **Discovery pass** (Google search through kimi-webbridge): surfaced the official `/docs/en/workflows` page and the announcement blog within seconds.

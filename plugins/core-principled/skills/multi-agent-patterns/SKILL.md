@@ -38,6 +38,24 @@ Choose among three dominant patterns based on coordination needs, not organizati
 
 Design every multi-agent system around explicit coordination protocols, consensus mechanisms that resist sycophancy, and failure handling that prevents error propagation cascades.
 
+## Modern Execution Surface
+
+The patterns named here predate Claude Code's orchestration-script runtime. They still apply — the runtime composes subagent spawns, so every pattern survives — but the *mechanic* you reach for differs by task scale.
+
+| Pattern | Inline mechanic | Script mechanic | When to use which |
+|---|---|---|---|
+| Fan-out then synthesize all | Spawn subagents in parallel; await all | Fan-out with a barrier (script-level `parallel`) | Inline for one-off; script when the shape repeats |
+| Pipeline without barrier | (no native inline equivalent) | Pipeline stages without a barrier (script-level `pipeline`) | Always script — the runtime is the only way to express item-by-item progress through stages |
+| Adversarial verify (N skeptics per finding) | Spawn N reviewer subagents per finding | Same fan-out shape inside the script | Script when verification is the load-bearing quality gate |
+| Judge panel | Spawn judges in parallel, aggregate scores | Same shape with `schema:` enforcing the score format | Script when scores must be structured for downstream use |
+| Loop-until-dry discovery | Hand-rolled loop with subagent spawns | Native script idiom: `while (dryRounds < K) { spawn finders; if no new findings, dryRounds++ }` | Script — inline loops break the orchestrator's flow |
+| Multi-modal sweep | Spawn one subagent per modality, aggregate | Same fan-out in a script | Either; script when modalities are stable across runs |
+| Worktree isolation | Subagent spawn with worktree flag | Spawn step marked worktree-isolated | Either, depending on parallelism count |
+
+**The mode selector:** the patterns are the same; the mechanic depends on whether the orchestration repeats. One-off → inline subagents. Repeatable shape or codebase-wide scale → orchestration script.
+
+Agent definitions under each plugin's `agents/` directory remain the durable role library — both inline spawns and script spawns dispatch to the same role names.
+
 ## Detailed Topics
 
 ### Why Multi-Agent Architectures
@@ -262,4 +280,4 @@ External resources:
 **Last Updated**: 2026-05-25
 **Author**: Agent Skills for Context Engineering Contributors
 **Version**: 2.1.0
-**Integrated into**: taches-principled marketplace
+**Integrated into**: core-principled plugin

@@ -22,7 +22,7 @@ SessionStart: "Tip: Spawn subagents for parallel investigation. Use skills for m
 
 ## Installation
 
-This plugin is part of the taches-principled marketplace. Install via Claude Code plugin marketplace.
+This plugin is part of the principled-tools marketplace. Install via Claude Code plugin marketplace.
 
 ## Principles
 

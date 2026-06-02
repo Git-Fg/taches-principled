@@ -187,11 +187,11 @@ The user can override with explicit confirmation.
 1. **Detect artifact paths** from the capture session:
    - If user provides a capture UUID → construct paths from `~/.claude/captures/<UUID>*` and `~/.claude/projects/<encoded-cwd>/<UUID>.jsonl`
    - If user provides paths directly → use those paths
-   - If no capture found → error with `{"status": "failed", "reason": "no-capture", "remediation": "Run /tp-meta:capture first"}`
+   - If no capture found → error with `{"status": "failed", "reason": "no-capture", "remediation": "Run /tp-session-audit:capture first"}`
 
 2. **Fan out three parallel specialists** (spawn all three concurrently with background=true):
    - **forensic-analyst** (built-in Explore agent, read-only) ← stream-json output → structured event list
-   - **tp-meta:meta-reviewer** (custom subagent) ← persisted JSONL → anti-pattern list
+   - **tp-session-audit:meta-reviewer** (custom subagent) ← persisted JSONL → anti-pattern list
    - **taches-principled:debug-tracer** (custom subagent, if available) ← debug log → root-cause traces
    - If debug-tracer is not available, use the built-in general-purpose agent on the debug log instead
 

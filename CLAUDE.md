@@ -1,8 +1,27 @@
 # Taches Principled — Development Guide
 
-**For maintainers only.** This file is development practices and internal conventions. It is NOT loaded by Claude Code when this plugin is installed — a marketplace-installed instance sees only skill descriptions, agent definitions, and commands.
+**For maintainers only.** This file is development practices and internal conventions for the human and the AI maintaining *this marketplace*. A Claude Code session that installs taches-principled as a marketplace plugin never reads it — that session only loads what ships under `plugins/`.
 
-Treat every section as knowledge transfer from a human who worked on this codebase to future human maintainers.
+Treat every section as knowledge transfer from a human who worked on this codebase to future human maintainers (and to the AI assisting them).
+
+## Maintainer-only vs end-user-visible
+
+The single most important framing for every change in this repo:
+
+| Path | Audience | When loaded |
+|------|----------|-------------|
+| `plugins/<plugin>/skills/<skill>/SKILL.md` (description) | **End-user Claude** | Pre-injected at startup |
+| `plugins/<plugin>/skills/<skill>/SKILL.md` (body) | **End-user Claude** | On trigger |
+| `plugins/<plugin>/skills/<skill>/references/*` | **End-user Claude** | When SKILL.md cites it imperatively |
+| `plugins/<plugin>/agents/*.md` | **End-user Claude** | At spawn |
+| `plugins/<plugin>/commands/*.md` | **End-user Claude** | On invocation |
+| `plugins/<plugin>/hooks/*` | **End-user Claude** | At lifecycle events |
+| `.claude-plugin/marketplace.json` | **Marketplace installer** | At plugin install |
+| `CLAUDE.md` (this file) | **Maintainer only** (human + AI in this repo) | Only when working *in this repo* |
+| `docs/` | **Maintainer only** | Read by us when authoring; invisible to anyone installing the marketplace |
+| `README.md`, `CHANGELOG.md` | **Human readers** on GitHub | Never loaded into a Claude session |
+
+The implication for every recommendation, reasoning artifact, or research note: **if it lives outside `plugins/`, end-user Claude never sees it.** Reasoning kept only in `docs/` or in this file is scaffolding for the maintainer. To change end-user behavior, the change has to materialize as edits inside `plugins/` (a skill body, an agent definition, a command body, a reference file cited by an SKILL.md, or a hook script).
 
 When generic agents and specialized inline versions cover the same capability, prefer the generic agent. A generic agent's body becomes the canonical version; domain-specific knowledge lives in the skill that invokes it, not in the agent definition itself. An agent is only orphaned when no skill describes a capability it would resolve.
 
@@ -26,6 +45,10 @@ High trust means: write descriptions that route correctly, then stop. Don't add 
 
 **Default to subagents. Inline execution is the exception, not the norm.** Claude's default mode is inline — it requires less cognitive effort and activates automatically. Override this default by making subagent spawning the path of least resistance.
 
+The contract has two axes: **what kind of work** is being done (work-type table) and **what scale** the work is at (task-scale table). Pick the answer from both tables; the stricter of the two wins.
+
+#### Work-type axis
+
 | Work Type | Default Mode | Exception (inline allowed) |
 |-----------|-------------|---------------------------|
 | Exploration | Spawn explorer subagent(s) | Directory listing of <5 files |
@@ -37,7 +60,19 @@ High trust means: write descriptions that route correctly, then stop. Don't add 
 | Debate/Compare | Spawn competing subagent(s) | Never — always parallel |
 | Reflection | Spawn critic subagent(s) | Never — always after artifact |
 
-**The rule: If the skill loaded, the work is non-trivial by definition — spawn subagents.** The skill exists precisely because the task exceeds trivial inline execution. Trust the skill's own existence as the signal.
+#### Task-scale axis
+
+| Task scale | Right primitive | Why |
+|---|---|---|
+| Trivial — 1 file, <10 lines, or single search | Inline | Setup overhead exceeds task complexity |
+| Non-trivial single-context — 3–10 files, single methodology, side task | Subagents | Result returns and is synthesized in this conversation; orchestration shape is one-off |
+| Multi-stage with fan-out → verify → synthesize | Orchestration script | Repeatable shape worth codifying; structured-output schemas; adversarial verification across N independent agents |
+| Codebase-wide, many-file, multi-methodology | Orchestration script with explicit phase structure | Coordination outgrows what a handful of subagent spawns per turn can manage |
+| Long-running with external triggers | Orchestration script + recurring checks + push channels | Reacts to CI, alerts, scheduled events; survives idle time |
+
+**The rule: If the skill loaded, the work is non-trivial by definition — pick the mode from the task-scale table.** The skill exists precisely because the task exceeds trivial inline execution. Trust the skill's own existence as the signal.
+
+Agent definitions under each plugin's `agents/` directory are the durable role library. Both inline subagent spawns and orchestration-script spawns dispatch to them by name.
 
 **Spawn pattern for skill bodies:**
 ```
@@ -169,7 +204,7 @@ plugins/
 ├── tp-tdd/                    # Test-driven development
 ├── tp-ddd/                    # Domain-driven design
 ├── tp-force-multiplier/       # Hook-driven coaching
-└── tp-meta/                   # Session meta-review and behavioral analysis
+└── tp-session-audit/          # Session meta-review and behavioral analysis
 
 .claude-plugin/
 └── marketplace.json            # Single source of truth
@@ -217,11 +252,17 @@ The pattern: cite the skill or role by name, not the file inside it.
 
 ### Artifact Taxonomy
 
-Four artifact types with distinct loading behaviors and token costs:
-- **Commands** — user-invoked, zero context until used
-- **Skills** — auto-loaded, always present in context
-- **Agents** — per-spawn, loaded at spawn time
-- **Workflow Commands** — per-spawn with coordination overhead
+Five artifact types with distinct loading behaviors, token costs, and **audiences**:
+
+| Artifact | Audience | Loading behavior |
+|---|---|---|
+| **Skill description** (frontmatter) | End-user Claude | Pre-injected at startup, always present |
+| **Skill body** (SKILL.md content) | End-user Claude | Loaded on trigger; reference files load lazily on imperative citation |
+| **Agent definition** | End-user Claude | Per-spawn, loaded at spawn time |
+| **Command body** | End-user Claude | User-invoked, zero context until used |
+| **CLAUDE.md / `docs/`** | **Maintainer only** | Loaded only when working in this repo as a contributor; **end-user Claude never sees it** |
+
+The first four ship under `plugins/` and `.claude-plugin/`. The fifth lives at the repo root and under `docs/` — it is scaffolding for the human and AI maintaining the marketplace, not for the marketplace's users. Every reasoning artifact written to `docs/research/`, every brainstorm, every synthesis: invisible to end users unless its conclusions materialize as edits inside `plugins/`.
 
 ### Path Configuration
 
@@ -235,7 +276,7 @@ Four artifact types with distinct loading behaviors and token costs:
 
 **Two canonical rules govern skill file referencing:**
 
-1. **Default resolution**: Any path written within a skill that points to its own supporting content is, by default, resolved within that skill's folder. For example, a reference to `references/plan-format.md` from within the `create-plans` skill resolves to `plugins/taches-principled/skills/create-plans/references/plan-format.md`.
+1. **Default resolution**: Any path written within a skill that points to its own supporting content is, by default, resolved within that skill's folder. For example, a reference to `references/plan-format.md` from within the `create-plans` skill resolves to `plugins/core-principled/skills/create-plans/references/plan-format.md`.
 
 2. **Centralized routing**: ONLY the main SKILL.md file is permitted to cite supporting files. Reference files (in `references/`, `agents/`, `templates/`, `scripts/` folders) must never cross-cite other reference files. The SKILL.md is the sole, centralized router for all internal citations.
 
@@ -521,6 +562,8 @@ Where `<topic>` matches the URL slug from `code.claude.com/docs/llms.txt`. Alway
 
 | Term | Definition |
 |------|------------|
+| **Maintainer-only artifact** | Anything at the repo root (`CLAUDE.md`, `README.md`, `CHANGELOG.md`) or under `docs/` — invisible to end-user Claude; visible only to the human and AI maintaining this marketplace |
+| **End-user-visible artifact** | Anything under `plugins/` or `.claude-plugin/` — loaded by Claude Code sessions that install this marketplace |
 | **Semantic routing** | AI matches task intent to agent/skill capabilities based on description meaning, not file names |
 | **Hub skill** | Skill using decision routing to dispatch to internal modes (contrast with spoke) |
 | **Spoke skill** | Single-purpose skill doing one thing (contrast with hub) |

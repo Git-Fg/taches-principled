@@ -20,6 +20,19 @@ IF an experiment succeeded → standardize the change in the Act phase and close
 IF an experiment partially succeeded → standardize what worked and start a new cycle for what did not
 IF stuck after three cycles on the same problem → revisit the root cause analysis before continuing
 
+## Orchestration Shape
+
+This methodology is a 4-phase pipeline that maps naturally to an orchestration script. Each phase delegates work to a single role, with parallelism available inside the Do and Check phases.
+
+| Phase | Role | Output |
+|-------|------|--------|
+| **Plan** | planner agent | hypothesis, change list, success criteria |
+| **Do** | implementer agents (one per change, parallel) | executed change with execution log |
+| **Check** | verification fleet (independent evaluators, parallel) | structured pass/fail results against criteria |
+| **Act** | synthesizer agent | standardize, adjust, or revert decision |
+
+**Execution tier:** an orchestration script composing a 4-phase pipeline. Plan and Act run as single roles; Do and Check fan out work in parallel. Structured objects pass between phases so each role receives a complete handoff.
+
 # Plan-Do-Check-Act
 
 Four-phase iterative cycle for systematic experimentation and continuous improvement. Each cycle tests one hypothesis with measurable success criteria.
@@ -39,7 +52,7 @@ Never implement a change without knowing how you will measure success. Never con
 
 ### Phase 2: Do
 
-**ALWAYS spawn an executor subagent to implement the change.** The executor should:
+**ALWAYS spawn an implementer agent to execute the change.** The implementer should:
 - Implement the change at small scale first
 - Document what was actually done and any deviations from plan
 - Collect data throughout — include unexpected observations
@@ -52,7 +65,7 @@ Never implement a change without knowing how you will measure success. Never con
 
 ### Phase 3: Check
 
-**ALWAYS spawn a tp-grader subagent to evaluate results against success criteria.** The grader should:
+**ALWAYS spawn a verification agent to evaluate results against success criteria.** The verification agent should:
 - Measure results numerically against the hypothesis metrics
 - Compare before vs. after with specific data points
 - Determine whether the hypothesis held with objective evidence
@@ -67,7 +80,7 @@ Never implement a change without knowing how you will measure success. Never con
 
 ### Phase 4: Act
 
-**ALWAYS spawn a writer subagent to document the cycle outcome and next steps.** The writer should:
+**ALWAYS spawn a synthesizer agent to document the cycle outcome and next steps.** The synthesizer should:
 - If successful: Document the standardized change, update relevant documentation, create monitoring/automation notes
 - If unsuccessful: Document the refined hypothesis and planned adjustments for cycle N+1
 - If partially successful: Document what was standardized and what remains for next cycle
