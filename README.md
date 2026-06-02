@@ -1,6 +1,6 @@
 # TACHES Principled
 
-**Version:** 0.11.1
+**Version:** 0.12.0
 
 A Claude Code plugin for building skills, subagents, hooks, and project plans.
 
@@ -76,8 +76,6 @@ Each plugin below is independently installable and extends the core with special
 | **tp-fpf** | First Principles Framework for hypothesis-driven decisions |
 | **tp-git** | Git workflow automation |
 | **tp-tdd** | Test-driven development with red-green-refactor |
-| **tp-ddd** | Domain-driven design guardrails |
-| **tp-force-multiplier** | Hooks-only (SessionStart) — ambient coaching, no skills/agents/commands |
 | **tp-session-audit** | Session meta-review, behavioral analysis, and GitHub issue reporting |
 
 ## Installation
@@ -97,13 +95,11 @@ claude plugin marketplace add Git-Fg/taches-principled
 
 # Install all plugins
 claude plugin install taches-principled
-claude plugin install tp-ddd
 claude plugin install tp-fpf
 claude plugin install tp-git
 claude plugin install tp-sadd
 claude plugin install tp-tdd
-claude plugin install tp-force-multiplier
-claude plugin install tp-meta
+claude plugin install tp-session-audit
 ```
 
 Install only the plugins you need:
@@ -113,12 +109,10 @@ Install only the plugins you need:
 claude plugin install taches-principled
 
 # Optional plugins
-claude plugin install tp-ddd              # Domain-driven design
 claude plugin install tp-fpf              # First principles reasoning
 claude plugin install tp-git             # Git workflow automation
 claude plugin install tp-sadd            # Structured agent-driven development
 claude plugin install tp-tdd             # Test-driven development
-claude plugin install tp-force-multiplier # Hook-driven coaching
 claude plugin install tp-session-audit  # Session meta-review
 ```
 
@@ -128,7 +122,7 @@ To fully reinstall from scratch:
 
 ```bash
 # Uninstall all plugins
-claude plugin uninstall taches-principled tp-ddd tp-fpf tp-git tp-sadd tp-tdd tp-force-multiplier tp-meta
+claude plugin uninstall taches-principled tp-fpf tp-git tp-sadd tp-tdd tp-session-audit
 
 # Remove marketplace
 claude plugin marketplace remove taches-principled

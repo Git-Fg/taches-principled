@@ -202,8 +202,6 @@ plugins/
 ├── tp-sadd/                   # Structured agent-driven development
 ├── tp-fpf/                    # First principles reasoning
 ├── tp-tdd/                    # Test-driven development
-├── tp-ddd/                    # Domain-driven design
-├── tp-force-multiplier/       # Hook-driven coaching
 └── tp-session-audit/          # Session meta-review and behavioral analysis
 
 .claude-plugin/

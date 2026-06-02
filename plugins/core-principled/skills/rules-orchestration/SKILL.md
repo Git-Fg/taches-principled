@@ -149,7 +149,7 @@ Pending proposals exist from ANALYZE or SYNC that need approval before being com
 
 Bridges the gap between ephemeral memory captures and durable rules integration. The learn command stores to memory; SYNC promotes durable insights to rules.
 
-**CONTRAST — feeds from:** archive-plan and refine MEMORIZE, which both write to `.principled/memory/learnings.md`. SYNC is downstream of both — never the source.
+**CONTRAST — feeds from:** project-maintenance PLAN-ARCHIVE and refine MEMORIZE, which both write to `.principled/memory/learnings.md`. SYNC is downstream of both — never the source.
 
 ### When
 After `learn` command captures insights, or after skill execution that established conventions not yet codified.

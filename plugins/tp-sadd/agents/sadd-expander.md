@@ -1,5 +1,5 @@
 ---
-name: expander
+name: sadd-expander
 description: |
   Expands proposals into detailed implementation paths with verification steps. Invokes automatically during EXPLORE mode phase 3 when developing selected proposals. Examples: "expand this proposal", "flesh out this approach", "make this concrete", "add implementation steps", "add verification to this plan", "decompose into steps", "detail the implementation path", "spec out this solution". Decomposes a selected proposal into specific ordered steps, identifies dependencies, specifies what success looks like at each milestone, includes verification steps, and flags edge cases and known risks. Self-contained without leaving critical decisions unresolved.
 model: inherit

@@ -2,6 +2,38 @@
 
 All notable changes are documented here.
 
+## [1.4.0] — 2026-06-02
+
+### Added
+- **tp-tdd plugin**: New plugin for test-driven development. Contains `tp-test-strategist` agent for test planning and coverage analysis.
+
+### Changed
+- **tp-test-strategist agent**: Moved from `core-principled/agents/` to `tp-tdd/agents/` to follow colocalization rule (only invoked by test-orchestration skill).
+- **tp-sadd agents**: Renamed with `sadd-` prefix in both filename and frontmatter `name` field to match spawn directives in `sadd` skill. Agents affected: `explorer` → `sadd-explorer`, `judge` → `sadd-judge`, `meta-judge` → `sadd-meta-judge`, `generator` → `sadd-generator`, `synthesizer` → `sadd-synthesizer`, `expander` → `sadd-expander`.
+- **tp-fpf agents**: Renamed with `fpf-` prefix in both filename and frontmatter `name` field to match spawn directives in `fpf` skill. Agents affected: `hypothesis-generator` → `fpf-hypothesis-generator`, `evidence-validator` → `fpf-evidence-validator`, `logic-verifier` → `fpf-logic-verifier`, `trust-auditor` → `fpf-trust-auditor`.
+- **session-analytics CROSS-ANALYZE**: Fixed cross-plugin reference from `taches-principled:debug-tracer` to `core-principled:tp-debug-tracer`.
+- **session-analytics ADJUDICATE**: Fixed agent references: `tp-sadd:judge` → `tp-sadd:sadd-judge`, fallback updated to `core-principled:tp-critic`.
+- **marketplace.json**: Bumped to 0.12.0. Added `tp-tdd` plugin entry.
+- **core-principled plugin.json**: Bumped to 0.10.1.
+- **README.md**: Updated version to 0.12.0.
+
+## [1.3.0] — 2026-06-02
+
+### Changed
+- **core-principled project-maintenance skill**: Merged `archive-plan` (plan archival + learnings extraction) and `memory-curator` (memory audit/dedup/archive/clean) into a single hub skill with five modes — `PLAN-ARCHIVE`, `MEMORY-AUDIT`, `MEMORY-DEDUP`, `MEMORY-ARCHIVE`, `MEMORY-CLEAN`. The /archive command now routes to the unified skill. Removed the two old skills; bumped `core-principled` to 0.10.0.
+- **/archive command**: Now a thin router into the unified skill (no body duplication). Argument-hint exposes all five modes plus `--abandoned` (PLAN-ARCHIVE override) and `--days` (memory age threshold).
+- **refine MEMORIZE + rules-orchestration SYNC**: Updated CONTRAST references from `archive-plan` to `project-maintenance PLAN-ARCHIVE`. The writer/reader topology is unchanged.
+- **MEMORY-DEDUP / MEMORY-CLEAN accuracy**: Replaced the false `--directory` and `--yes` flag claims (which `dedup.py` does not implement) with the script's actual CLI (`directory` positional, `--threshold`, `--format`) and clarified that the script is read-only — resolution is performed by the agent via MEMORY-ARCHIVE. The safety boundary is now explicit user confirmation in conversation, not a `--yes` flag. SKILL.md `argument-hint` and body are now consistent (no `--yes`/`--dry-run` claim).
+- **MEMORY-ARCHIVE archive location**: Aligned all mode examples on `~/.claude/archive/memory/{category}/{date}/` (the manifest format). The MEMORY-DEDUP example previously showed `~/.claude/archive/memory/2025-05/` (missing the `{category}/` segment) — now correct.
+- **marketplace.json**: Bumped to 0.11.2 (was 0.11.1). `tp-force-multiplier` removed (no longer in this marketplace); `tp-session-audit` retained.
+
+### Added
+- **project-maintenance references/memory-locations.md**: New tiny reference extracting the memory-location list that was previously inlined in both AUDIT and CLEAN modes.
+
+### Removed
+- `core-principled/skills/archive-plan/` (moved into `project-maintenance`)
+- `core-principled/skills/memory-curator/` (moved into `project-maintenance`)
+
 ## [1.2.0] — 2026-06-02
 
 ### Added

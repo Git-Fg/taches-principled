@@ -13,7 +13,7 @@ skills:
   - sadd
   - kaizen
   - ddd
-  - tdd
+  - test-orchestration
   - claude-headless
   - ideation
 ---

@@ -275,7 +275,7 @@ Ready to ship | Needs improvements | Requires significant rework
 
 Curate insights from reflection and critique into project memory so learnings persist across sessions.
 
-**CONTRAST — same memory, different scope:** archive-plan extracts plan-specific learnings to `.principled/memory/learnings.md`; MEMORIZE captures general session insights into the same file. Both archive-plan and MEMORIZE are writers; rules-orchestration SYNC is the reader that promotes their entries into committed rules.
+**CONTRAST — same memory, different scope:** project-maintenance PLAN-ARCHIVE extracts plan-specific learnings to `.principled/memory/learnings.md`; MEMORIZE captures general session insights into the same file. Both project-maintenance PLAN-ARCHIVE and MEMORIZE are writers; rules-orchestration SYNC is the reader that promotes their entries into committed rules.
 
 ### Process
 

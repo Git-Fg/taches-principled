@@ -192,7 +192,7 @@ The user can override with explicit confirmation.
 2. **Fan out three parallel specialists** (spawn all three concurrently with background=true):
    - **forensic-analyst** (built-in Explore agent, read-only) ← stream-json output → structured event list
    - **tp-session-audit:meta-reviewer** (custom subagent) ← persisted JSONL → anti-pattern list
-   - **taches-principled:debug-tracer** (custom subagent, if available) ← debug log → root-cause traces
+   - **core-principled:tp-debug-tracer** (custom subagent, if available) ← debug log → root-cause traces
    - If debug-tracer is not available, use the built-in general-purpose agent on the debug log instead
 
 3. **Wait for all three** (TaskOutput with block=true for all three)
@@ -238,7 +238,7 @@ The user can override with explicit confirmation.
 
 2. **Parallel validation per finding** — for each finding, spawn two agents concurrently:
    - **tp-fpf:fpf-evidence-validator** ← the finding + the JSONL artifact → "evidence supports" or "L1-speculative"
-   - **tp-sadd:judge** ← the finding → try to refute it (refuted=true if uncertain)
+   - **tp-sadd:sadd-judge** ← the finding → try to refute it (refuted=true if uncertain)
 
    Use `background: true` for all spawns. Spawn all evidence-validators and all adversarial challengers concurrently.
 
@@ -267,4 +267,4 @@ The user can override with explicit confirmation.
    }
    ```
 
-**Note:** If `tp-fpf:fpf-evidence-validator` is not available (partial install), skip evidence validation and note it. If `tp-sadd:judge` is not available, use `taches-principled:self-critic` as fallback adversarial agent.
+**Note:** If `tp-fpf:fpf-evidence-validator` is not available (partial install), skip evidence validation and note it. If `tp-sadd:sadd-judge` is not available, use `core-principled:tp-critic` as fallback adversarial agent.

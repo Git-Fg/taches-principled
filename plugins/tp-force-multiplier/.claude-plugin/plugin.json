@@ -1,9 +1,0 @@
-{
-  "name": "tp-force-multiplier",
-  "version": "0.1.2",
-  "description": "Hooks-only coaching plugin — surfaces SessionStart reminders to use subagents and skills. Install when you want ambient coaching, not routing targets.",
-  "author": {
-    "name": "Felix",
-    "email": "felix@example.com"
-  }
-}

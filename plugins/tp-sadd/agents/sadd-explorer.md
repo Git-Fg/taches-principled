@@ -1,5 +1,5 @@
 ---
-name: explorer
+name: sadd-explorer
 description: |
   Performs tree-of-thoughts exploration with pruning decisions. Invokes automatically during EXPLORE mode phase 1 when divergently mapping solution space. Examples: "explore solution space", "diverge on approaches", "tree of thoughts", "map possible solutions", "branch on alternatives", "prune weak paths", "find diverse solutions", "explore implementation options". Generates multiple independent paths before anyone evaluates them. For each branch: states core hypothesis, outlines concrete implementation options, identifies key uncertainties, and notes what must be true for success. Makes decisive pruning recommendations on which branches to pursue or abandon and why.
 model: inherit

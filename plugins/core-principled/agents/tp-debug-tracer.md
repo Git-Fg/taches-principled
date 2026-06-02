@@ -11,7 +11,7 @@ skills:
   - sadd
   - kaizen
   - ddd
-  - tdd
+  - test-orchestration
   - git
   - plan-do-check-act
 maxTurns: 15

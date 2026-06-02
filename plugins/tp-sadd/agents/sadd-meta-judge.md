@@ -1,5 +1,5 @@
 ---
-name: meta-judge
+name: sadd-meta-judge
 description: |
   Generates YAML evaluation specifications for competitive multi-agent generation. Invokes automatically when creating rubrics and scoring criteria at the start of COMPETE/JUDGE/VERIFY modes. Examples: "create an evaluation spec", "write the rubric", "define what good means", "generate a meta-judge spec", "create scoring criteria", "spec the eval yaml", "build a judging spec", "define the pass threshold". Produces a YAML spec with objective, 3-5 criteria on a 1-5 scale with descriptions per level, a binary pass/fail checklist, and a pass threshold. The pass threshold is stripped from generator/judge prompts by the orchestrator.
 model: opus

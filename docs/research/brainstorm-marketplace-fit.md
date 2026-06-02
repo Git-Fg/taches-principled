@@ -20,14 +20,14 @@ Verdicts:
 
 | Skill | Plugin | Verdict | Rationale |
 |---|---|---|---|
-| `archive-plan` | taches-principled | KEEP | File management lifecycle, not orchestration. |
+| `project-maintenance` | taches-principled | KEEP | File management lifecycle, not orchestration. (Merged from `archive-plan` + `memory-curator`; the rationale below applies to both — they were thin, single-purpose, and served the same closure step from different angles.) |
 | `claude-headless` | taches-principled | KEEP | Documents non-interactive CLI usage; touch up to note orchestration scripts run from headless too. |
 | `create-plans` | taches-principled | KEEP | Strategic planning sits *above* execution. A plan phase may *contain* an orchestration script as its execution mode, not the reverse. |
 | `diagnose` | taches-principled | **WRAP** | Pure multi-modal sweep + adversarial-verify shape — exactly the pattern the runtime documents. |
 | `execute-plans` | taches-principled | KEEP (with tweak) | Stays as the consumer of PLAN.md, but per-phase execution now picks between inline / subagent / orchestration-script per task scale. |
 | `ideation` | taches-principled | **WRAP** | Generator fleet → judge panel → synthesizer is the canonical judge-panel pattern named in the runtime docs. |
 | `kaizen` | taches-principled | KEEP | Posture/philosophy skill, not orchestration. |
-| `memory-curator` | taches-principled | KEEP | File curation. |
+| `project-maintenance` (memory modes) | taches-principled | KEEP | File curation. (Was `memory-curator`; merged into `project-maintenance` because both plan archival and memory hygiene serve the same project-closure step. Plan archival is a wrapper around the `.principled/attic/` lifecycle; memory hygiene is a wrapper around the `~/.claude/.../memory/` and `.principled/memory/` lifecycle. Both feed into `rules-orchestration` SYNC.) |
 | `multi-agent-patterns` | taches-principled | **REFRAME** | Coordination-pattern selection is methodology the platform docs do not provide. Stays as the authority on which pattern fits which problem shape; adds a mapping table from our patterns to the runtime's API where the runtime can express the pattern directly. |
 | `plan-do-check-act` | taches-principled | **WRAP** | The four-stage cycle maps cleanly to a four-phase pipeline. |
 | `refine` | taches-principled | **WRAP** | Multi-pass refinement is judge-panel-and-synthesize. |
