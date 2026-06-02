@@ -10,14 +10,14 @@ All fields are optional. Only `description` is recommended so Claude knows when 
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `description` | string | What the skill does and when to use it. Used for routing. Recommended ≤150 chars (max 1,024). |
+| `description` | string | What the skill does and when to use it. Primary routing signal. Recommended ≤150 chars (max 1,024). Combined with `when_to_use` (total cap 1,536). |
 
 ### Optional Fields
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `name` | string | directory name | Display name in skill listings. Does not affect command name. |
-| `when_to_use` | string | — | Additional trigger contexts. ≤200 chars. |
+| `when_to_use` | string | — | Additional trigger contexts, scenarios, and exclusions. **Appended to `description` at runtime.** Total cap 1,536 characters. |
 | `argument-hint` | string | — | Hint shown during autocomplete after `/skill-name`. |
 | `arguments` | list[string] | — | Named positional arguments mapping to `$name` substitution. |
 | `disable-model-invocation` | boolean | `false` | Set `true` to prevent Claude from auto-triggering. Only user invocation. |
@@ -40,11 +40,13 @@ All fields are optional. Only `description` is recommended so Claude knows when 
 
 **Purpose:** Primary routing signal. Tells Claude when to load this skill.
 
+**Runtime Behavior:** Appended with `when_to_use` at runtime. The combined string is truncated at **1,536 characters** (configurable via `maxSkillDescriptionChars`).
+
 **Best practices:**
-- Put trigger phrases in first 200 characters (survives truncation)
-- Use user vocabulary, not internal jargon
-- Include explicit trigger phrases: "Use when user says X, Y, or Z"
-- Add exclusions via `when_to_use` to prevent false triggers
+- **Front-load critical info:** Put the one-liner summary and the 3–5 most important trigger phrases in the first 150–400 characters ("reliable activation band").
+- **Formula:** `"[WHAT it does]. Use when [primary trigger phrases]."`
+- **Avoid keyword stuffing:** Claude uses semantic matching; 3–5 strong synonyms are better than 10+ redundant ones.
+- **Truncation risk:** Put content that MUST survive truncation here, as `when_to_use` (the tail) is truncated first.
 
 **Example:**
 ```yaml
@@ -64,12 +66,21 @@ name: security-audit  # Shows in listings; command is /security-audit
 
 ### `when_to_use`
 
-**Purpose:** Additional trigger contexts and exclusions.
+**Purpose:** Complementary extension to `description` for extended catalogs and exclusions.
+
+**Runtime Behavior:** Appended to `description` at runtime. Part of the 1,536 character combined limit.
+
+**Best practices:**
+- **Use as a "trigger catalog":** Include bullet lists of specific scenarios or synonyms beyond the primary verbs.
+- **Negative triggers:** Include explicit exclusions ("Do NOT use for...") to reduce false positives.
+- **Contextual cues:** Mention file types, path rules, or example requests.
 
 **Example:**
 ```yaml
 when_to_use: |
-  Do NOT use for formatting, linting, or running tests.
+  - User asks to review code, check for bugs, or audit a file
+  - User opens a PR and asks for feedback
+  - Do NOT use for: formatting, linting, or style-only checks
 ```
 
 ### `argument-hint`

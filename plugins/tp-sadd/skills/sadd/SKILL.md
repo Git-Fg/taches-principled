@@ -1,7 +1,10 @@
 ---
 name: sadd
-description: "Multi-agent development: generate alternatives, verify quality, coordinate workers."
-when_to_use: "Use when user wants competitive generation, multi-judge evaluation, or tree-of-thoughts solution exploration."
+description: "Solve complex problems by generating multiple solutions and picking the best one. Use when user says 'pick the best approach', 'compare options', or 'deep dive into a solution'."
+when_to_use: |
+  - User wants to see several alternative solutions and have them evaluated against each other.
+  - User needs a thorough exploration of a problem space where a single path might fail.
+  - User wants to delegate a task to a background worker with automated verification.
 ---
 
 ## Routing Guidance

@@ -4,10 +4,11 @@ Skill routing, description patterns, name conventions, and how Claude Code match
 
 ## How Skill Discovery Works
 
-**Discovery is metadata-only.** Claude decides which skill to load based exclusively on the text pre-injected into its system prompt. At the moment of routing, the skill body is invisible.
+**Discovery is metadata-only.** Claude decides which skill to load based exclusively on the combined text of `description` and `when_to_use` pre-injected into its system prompt. At runtime, Claude Code appends `when_to_use` to `description`.
 
-**Routing participants — fields only:**
-- `description` + `when_to_use` from SKILL.md frontmatter
+**Routing participants — combined signal:**
+- `description` (Primary signal) + `when_to_use` (Extended catalog)
+- **Combined Truncation:** The concatenated string is truncated at **1,536 characters** (configurable via `maxSkillDescriptionChars`).
 - Agent `description` (NOT the body prompt)
 - Command `description`
 
@@ -15,29 +16,41 @@ Skill routing, description patterns, name conventions, and how Claude Code match
 
 ## Description Writing
 
-### The Description is a Routing Prompt
+### The Combined Metadata is a Routing Prompt
 
-Write for the model's linguistic reasoning — a good description triggers for "generate a presentation" even without the word "pptx".
+The `description` and `when_to_use` fields are merged at runtime into a single semantic signal.
 
-### Optimal Description Template
+| Field | Runtime Role | Character Budget |
+|-------|-------------|------------------|
+| `description` | Primary trigger signal. "What the skill does and when to use it." | Combined with `when_to_use` |
+| `when_to_use` | Extended trigger catalog (phrases, scenarios, exclusions). | **Appended to `description`** |
+| **Combined cap** | Concatenated string is truncated at the cap | **1,536 characters** |
 
+### Optimal Description Pattern
+
+**Order matters.** Front-load critical trigger phrases in `description` because if the combined text exceeds the cap, the tail (often the `when_to_use` block) is truncated first.
+
+**Formula:**
 ```yaml
-description: "[Verb] [artifact] for [domain]. Use when user [trigger1], [trigger2], or [trigger3]."
+description: "[Verb] [artifact] for [domain]. Use when [primary trigger phrases]."
 when_to_use: |
-  Do NOT use for [exclusion1], [exclusion2].
+  - Use when [synonym expansion]
+  - Do NOT use for [exclusion1], [exclusion2]
+  - Example: "[example request]"
 ```
 
 ### Character Limits
 
 | Field | Limit | Why |
 |-------|-------|-----|
-| description | ≤1,024 chars (max) | Official limit; use the full space |
-| description | ≤150 chars (recommended) | Survives truncation in high-context sessions |
-| when_to_use | ≤200 chars | Longer = context bloat, not better routing |
+| description | ≤1,024 chars (max) | Official limit; survivors of truncation |
+| description | ≤150 chars (recommended) | Ensures core signal survives high-context sessions |
+| when_to_use | ≤1,000 chars (approx) | Part of the combined 1,536 cap |
+| Combined | **1,536 chars** | Hard truncation limit in skill listing |
 
 ### Front-Loading Triggers
 
-**Critical:** Put trigger keywords in the first 200 characters. Descriptions are truncated from the end when context budget is tight.
+**Critical:** Put the most important keywords and the "Use when..." sentence in the first 150–400 characters of `description`. This is the "reliable activation band."
 
 | Good (trigger at start) | Bad (trigger at end) |
 |------------------------|---------------------|
@@ -115,13 +128,27 @@ The name (directory name) sets the command. The `name` frontmatter field sets th
 
 | Anti-Pattern | Why It Fails | Fix |
 |--------------|--------------|-----|
-| Technical jargon in description | User won't say "CQRS" | Use user vocabulary |
-| Single ambiguous words | Matches everything | Be specific |
-| No negative cases | Triggers on similar-but-wrong | Add CONTRAST |
-| Missing trigger phrases | Model can't guess | Add explicit phrases |
-| Structured syntax ("ACTIVATES:") | Breaks fuzzy semantic matching | Plain text only |
-| Overly broad triggers | False positives | Narrow the action verb |
-| Description >200 chars | Truncated mid-signal | Front-load triggers |
+| Everything in `description` | Bloats primary signal, wastes budget | Move extended catalogs to `when_to_use` |
+| Vague description, no `when_to_use` | No semantic signal to match against | Add "Use when..." phrases |
+| Redundant keyword stuffing | Wastes character budget | Use 3-5 high-signal synonyms |
+| Critical triggers at the end | Truncated by the 1,536-character cap | Front-load in `description` |
+| Technical jargon | User won't use it in prompts | Use user vocabulary |
+| No negative cases | False positives | Add exclusions in `when_to_use` |
+
+---
+
+## Decision Matrix: `description` vs `when_to_use`
+
+| Situation | Use `description` | Use `when_to_use` |
+|-----------|-------------------|-------------------|
+| One-liner summary of capability | ✅ Yes | ❌ No |
+| Primary "Use when..." trigger sentence | ✅ Yes | ❌ No |
+| 3–5 core high-signal synonym verbs | ✅ Yes | ⚠️ Optional |
+| Extended bullet list of scenarios | ❌ No | ✅ Yes |
+| Negative triggers / exclusions | ❌ No | ✅ Yes |
+| File-type or path-specific rules | ❌ No | ✅ Yes |
+| Example user requests | ❌ No | ✅ Yes |
+| Content that MUST survive truncation | ✅ Yes | ❌ No (tail risk) |
 
 ---
 

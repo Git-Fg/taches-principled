@@ -1,7 +1,7 @@
 ---
 name: plan-do-check-act
-description: "Plan a change, try it at small scale, measure results, then standardize or adjust based on evidence."
-when_to_use: "Use when user wants to run an experiment, test a hypothesis, or measure the results of a change."
+description: "Execute evidence-based experimentation cycles to test hypotheses and measure the results of a change."
+when_to_use: "Use for proof-of-concepts, A/B tests, and validating improvements before standardization. Do NOT use for debugging (use diagnose) or code style (use refine)."
 argument-hint: "[improvement goal or problem to address] [--cycle N]"
 ---
 

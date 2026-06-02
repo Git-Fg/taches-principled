@@ -1,8 +1,8 @@
 ---
 name: session-analytics
-description: "Session transcript analysis — extract structured data, diagnose behavioral anti-patterns, or generate GitHub issues from review findings. Examples: \"parse debug log\", \"parse stream json\", \"parse stream-json\", \"inspect debug log\", \"analyze hook events\", \"extract hook fires\". **CONTRAST:** Does NOT analyze code, review PRs, or assess quality — use `refine` or `code-review` for those. Does NOT create issues — use `meta-issue` for that."
+description: "Analyze session transcripts to extract data, diagnose anti-patterns, and generate GitHub issues from findings."
 allowed-tools: Read, Glob, Grep, Bash, Agent
-when_to_use: "Use when you need to inspect a session for metrics, review a session for anti-patterns, or create a GitHub issue from review findings."
+when_to_use: "Use for session metrics, anti-pattern review, or creating issues from findings. Examples: \"parse debug log\", \"analyze hooks\". CONTRAST: No code analysis (use refine); no general project bugs (use meta-issue)."
 argument-hint: "<inspect|review|issue> [session-id|--dry-run] [--filter errors|tools|cost|skills] [--full|--summary]"
 ---
 

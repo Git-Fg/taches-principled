@@ -1,8 +1,8 @@
 ---
 name: refine
-description: "Improve code quality: simplify, critique with scoring, memorize learnings, polish prose."
+description: "Improve artifact quality through code simplification, structured critique, prose polishing, and memory consolidation."
 allowed-tools: Read, Edit, Write
-when_to_use: "Use when user wants to simplify code, review a PR, critique work, polish prose, or capture learnings."
+when_to_use: "Use for PR reviews, simplifying complex logic, or capturing project learnings. Do NOT use for bug diagnosis (use diagnose) or creating new features (use task-lifecycle)."
 argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-low|low]"
 ---
 

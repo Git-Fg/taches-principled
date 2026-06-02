@@ -1,7 +1,7 @@
 ---
 name: ddd
-description: "Clean code with clear structure: reduce nesting, fix domain logic leaks, minimize mocking. Use when code quality issues."
-when_to_use: "Use when user asks about code architecture, business logic placement, naming, transparency, or REST API design. Detailed analysis methodology with 4 modes; pair with the kaizen skill for continuous design-time guardrails."
+description: "Analyze code structure, domain logic placement, and REST API design. Use when code quality or architectural nesting issues occur."
+when_to_use: "Use when user asks about business logic placement, naming, transparency, function complexity, or REST endpoint modeling."
 ---
 
 ## Routing Guidance

@@ -1,8 +1,8 @@
 ---
 name: skill-authoring
-description: "Create and optimize Claude Code skills. Use when building new skills or improving existing descriptions."
+description: "Create, optimize, and test Claude Code skills, including metadata refinement and trigger benchmarking."
 allowed-tools: Read, Edit, Write, Grep, Glob
-when_to_use: "Use when user wants to build a new skill, optimize skill descriptions, or fix skill routing issues."
+when_to_use: "Use when building new capabilities, fixing skill routing, or optimizing trigger signals. Do NOT use for general code authoring or project planning."
 ---
 
 ## Routing Guidance

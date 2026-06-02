@@ -1,7 +1,11 @@
 ---
 name: task-lifecycle
-description: "Manage complete task lifecycle — CAPTURE raw intent as drafts, REFINE into implementation-ready specs, IMPLEMENT with verification gates."
-when_to_use: "Use when capturing tasks, refining drafts, or implementing features. Triggers on: 'add task', 'capture', 'refine task', 'implement task', 'build this', 'execute steps'."
+description: "Track and build features from initial idea to implementation. Use when user says 'add task', 'refine this', or 'build it'."
+when_to_use: |
+  - User wants to capture a new requirement or feature idea as a draft.
+  - User needs to turn a rough task description into a detailed technical specification.
+  - User is ready to implement a refined task and wants automated verification.
+  - User wants to update documentation to reflect completed work.
 argument-hint: "[subcommand] [task-title-or-path] [--flags]"
 ---
 

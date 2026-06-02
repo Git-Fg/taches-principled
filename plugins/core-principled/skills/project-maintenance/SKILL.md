@@ -1,8 +1,8 @@
 ---
 name: project-maintenance
-description: "Maintain project hygiene: archive completed plans, dedup stale memory, clean auto-memory. Use when wrapping up a plan, deduplicating memory, archiving stale context, or refreshing long-running memory."
+description: "Maintain project hygiene: archive completed plans, deduplicate stale memory, and clean auto-memory."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
-when_to_use: "Use when user wants to archive a completed plan, extract plan learnings, deduplicate memory files, archive stale memory, or run full memory cleanup. CONTRAST with refine MEMORIZE (general session insights into memory); with rules-orchestration SYNC (reads this skill's writers to codify rules); with rules-orchestration AUDIT (audits rules files, not memory)."
+when_to_use: "Use when wrapping up plans, deduplicating files, or running memory cleanup. CONTRAST: refine MEMORIZE (general insights); rules-orchestration SYNC (codify rules); rules-orchestration AUDIT (audit rules)."
 argument-hint: "[plan-archive|memory-audit|memory-dedup|memory-archive|memory-clean] [path] [--abandoned] [--days 30]"
 ---
 

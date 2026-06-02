@@ -1,16 +1,16 @@
 ---
 name: subagent-orchestration
-description: "Design multi-agent architectures and orchestrate parallel execution. Hub skill combining agent definition and execution."
-when_to_use: "Use when user asks to spawn subagents, orchestrate parallel execution, or design agent definitions. Do NOT use for multi-agent architecture decision-making (supervisor vs swarm) — read `references/patterns-reference.md` for pattern selection."
+description: "Design multi-agent architectures, author agent definitions, or orchestrate parallel execution. Use when delegating tasks to subagents."
+when_to_use: "Use when user asks to spawn subagents, run tasks in parallel, define custom agents, or manage background workers."
 ---
 
 ## Routing Guidance
 
+- **Hub Skill:** Combines agent definition authoring (DESIGN) and subagent execution (ORCHESTRATE).
+- **Exclusion:** Do NOT use for multi-agent architecture decision-making (supervisor vs swarm) — read `references/patterns-reference.md` for pattern selection.
 - Do NOT use for single-agent tasks, simple scripts, or non-agent workflows.
 
 # Subagents
-
-Design multi-agent architectures and orchestrate parallel execution. Hub skill combining agent definition authoring (DESIGN) and subagent execution (ORCHESTRATE).
 
 ## Decision Router
 

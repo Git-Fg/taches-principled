@@ -1,8 +1,11 @@
 ---
 name: diagnose
-description: "Find root causes of recurring problems, failed fixes, and complex bugs. Auto-selects the right investigation method."
+description: "Investigate and find the root cause of complex bugs, recurring failures, or unexpected behavior. Use when user says 'why is this happening', 'find the bug', or 'analyze the failure'."
 allowed-tools: Read, Write
-when_to_use: "Use when user wants to find the root cause of a bug, analyze a problem, or trace back a failure."
+when_to_use: |
+  - User is dealing with a bug that has a long call chain or is hard to reproduce.
+  - User wants to understand why a previous fix failed or why an incident occurred.
+  - Use when a problem is "causal" (investigating the past) rather than "decisional" (evaluating the future).
 argument-hint: "[problem description]"
 ---
 

@@ -1,7 +1,10 @@
 ---
 name: ideation
-description: "Refine rough ideas or generate creative options with probability sampling. Two modes: refinement and divergent generation."
-when_to_use: "Use when user wants to brainstorm, explore vague ideas, or generate creative options and alternatives."
+description: "Brainstorm and explore unformed concepts or generate diverse creative options. Use when user wants to 'think through', 'explore possibilities', or 'generate ideas'."
+when_to_use: |
+  - User wants to refine a vague idea through collaborative dialogue.
+  - User needs a list of creative alternatives or diverse approaches to a problem.
+  - Use for early-stage conceptualization before architecture or implementation begins.
 argument-hint: "[feature concept, problem, or topic]"
 ---
 

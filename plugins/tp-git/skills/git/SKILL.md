@@ -1,8 +1,12 @@
 ---
 name: git
-description: "Git operations: ship commits, post PR comments, load issues, manage branches. Modes: SHIP, REVIEW, ISSUES, ADVANCED."
+description: "Handle version control tasks: commit changes, review pull requests, and manage issues or branches. Use when user says 'commit', 'PR', 'issue', or 'branch'."
 allowed-tools: Bash(git *), Bash(gh *)
-when_to_use: "Use when user wants to commit, create a PR, review code, load issues, or manage branches."
+when_to_use: |
+  - User wants to commit code with conventional messages or publish a PR.
+  - User needs to post line-specific comments on a pull request.
+  - User wants to load GitHub issues or create technical specs from them.
+  - User needs to manage git worktrees or notes.
 ---
 
 ## Decision Router

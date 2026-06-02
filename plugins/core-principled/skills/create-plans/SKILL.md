@@ -1,8 +1,8 @@
 ---
 name: create-plans
-description: "Create executable project plans. Use when planning features, roadmaps, or breaking down projects."
+description: "Create executable project plans and roadmaps with structured task decomposition."
 allowed-tools: Read, Write, Bash
-when_to_use: "Use when user wants to make a project plan, sketch a roadmap, or break down a new project into phases."
+when_to_use: "Use for multi-phase projects, feature breakdowns, and milestone planning. Do NOT use for task-level implementation (use task-lifecycle) or execution (use execute-plans)."
 argument-hint: [project or feature to plan]
 ---
 
