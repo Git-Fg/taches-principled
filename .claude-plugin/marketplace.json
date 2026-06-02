@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "taches-principled",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, and development skills.",
   "owner": {
     "name": "Felix",
@@ -11,7 +11,7 @@
     {
       "name": "core-principled",
       "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, and test strategy.",
-      "version": "0.8.2",
+      "version": "0.8.3",
       "author": {
         "name": "Felix",
         "email": "felix@example.com"
@@ -45,7 +45,7 @@
     {
       "name": "tp-sadd",
       "description": "Structured agent-driven development with multi-pattern evaluation — judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
-      "version": "0.3.2",
+      "version": "0.3.3",
       "author": {
         "name": "Felix",
         "email": "felix@example.com"
@@ -66,7 +66,7 @@
     {
       "name": "tp-fpf",
       "description": "First Principles Framework — structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "author": {
         "name": "Felix",
         "email": "felix@example.com"
@@ -87,7 +87,7 @@
     {
       "name": "tp-git",
       "description": "Git workflow automation — conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "author": {
         "name": "Felix",
         "email": "felix@example.com"
@@ -107,7 +107,7 @@
     {
       "name": "tp-tdd",
       "description": "Test strategy and execution — plan what to test (coverage, mocks, fixtures, property-based) and execute cycles (red-green-refactor, post-hoc coverage, broken test repair).",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "author": {
         "name": "Felix",
         "email": "felix@example.com"
@@ -131,7 +131,7 @@
     {
       "name": "tp-ddd",
       "description": "DDD development practices — code-transparency (visible behavior), code-architecture (layered structure), and code-quality (domain naming, typed errors). 3 discoverable skills answering: what does it do, how to structure, is it idiomatic.",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "author": {
         "name": "Felix",
         "email": "felix@example.com"
@@ -151,7 +151,7 @@
     {
       "name": "tp-force-multiplier",
       "description": "Hooks-only coaching plugin (no skills, no agents, no commands). Surfaces SessionStart reminders to use subagents and skills. Install only when you want ambient coaching — not a routing target.",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "author": {
         "name": "Felix",
         "email": "felix@example.com"
@@ -171,7 +171,7 @@
     {
       "name": "tp-session-audit",
       "description": "Session analytics — INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue reporting). One hub skill, three modes.",
-      "version": "0.3.0",
+      "version": "0.2.1",
       "author": {
         "name": "Felix",
         "email": "felix@example.com"

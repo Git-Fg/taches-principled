@@ -1,6 +1,6 @@
 {
   "name": "tp-tdd",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Test strategy and execution — plan what to test (coverage, mocks, fixtures, property-based) and execute cycles (red-green-refactor, post-hoc coverage, broken test repair).",
   "author": {
     "name": "Felix",
