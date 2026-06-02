@@ -2,6 +2,38 @@
 
 All notable changes are documented here.
 
+## [1.5.0] — 2026-06-03
+
+### Changed
+- **tp-session-audit plugin**: Merged standalone `capture` skill into `session-analytics` hub as CAPTURE mode. The skill now has four modes: CAPTURE, INSPECT, REVIEW, ISSUE. Added trigger phrases for "capture session", "collect artifacts", "headless capture", "run verification capture", "profile a skill invocation", "audit skill routing", "measure hook in vivo". Removed standalone `plugins/tp-session-audit/skills/capture/` directory.
+- **tp-session-audit commands**: Added `commands/capture.md` as thin router to `session-analytics` CAPTURE mode. All four commands now route through the unified hub skill.
+- **marketplace.json**: tp-session-audit version bumped to 0.3.0. Description updated to reflect four modes.
+
+### Changed
+- **Structural demotion: multi-agent-patterns, tool-design, claude-headless** — These three skills have been demoted from standalone top-level skills to markdown reference files within hub skill `references/` directories:
+  - `multi-agent-patterns` → `plugins/core-principled/skills/subagent-orchestration/references/patterns-reference.md`
+  - `tool-design` → `plugins/core-principled/skills/subagent-orchestration/references/tool-design.md`
+  - `claude-headless` → `plugins/tp-session-audit/skills/session-analytics/references/claude-headless.md`
+- **subagent-orchestration SKILL.md**: Updated to imperatively cite both new reference files. `when_to_use` updated to reference `references/patterns-reference.md`. `references/patterns-reference.md` (Architecture Design section) updated to reference `references/frameworks.md` for LangGraph/AutoGen/CrewAI implementations.
+- **core-principled plugin.json**: Removed references to deleted skills. Bumped version.
+- **Deleted skill directories**: `plugins/core-principled/skills/multi-agent-patterns/`, `plugins/core-principled/skills/tool-design/`, `plugins/core-principled/skills/claude-headless/`.
+
+### Changed
+- **task-lifecycle skill**: Added DOCUMENT mode absorbing `update-docs` workflow. New mode handles documentation after IMPLEMENT completes: multi-agent tech-writer flow with analysis + tech-writer + review agents. Task-lifecycle now has four modes: CAPTURE, REFINE, IMPLEMENT, DOCUMENT. IMPLEMENT mode routes to DOCUMENT after Phase 3 (DoD verification) before moving task to done.
+- **task-lifecycle/references/documentation.md**: New reference file with README templates, JSDoc patterns, index document checklist, and quality gates migrated from `update-docs`.
+- **Deleted skill**: `plugins/core-principled/skills/update-docs/` — capabilities merged into task-lifecycle DOCUMENT mode.
+
+### Changed
+- **Agent color standardization**: Assigned semantic `color:` fields to all 27 agent definitions across the marketplace per the Agent Color Convention table in CLAUDE.md:
+  - `red` (judges/critics/security): tp-critic, sadd-judge, fpf-logic-verifier, tp-code-reviewer
+  - `blue` (architecture/generation/analysis): tp-analyzer, sadd-generator, fpf-hypothesis-generator, tp-plan-architect
+  - `green` (implementation/integration): sadd-synthesizer, fpf-evidence-validator, tp-global-implementer, tp-transcript-rules-integrator
+  - `yellow` (caution/validation/audit): tp-skill-auditor, fpf-trust-auditor, tp-plan-verifier
+  - `purple` (complex reasoning/scoring): tp-comparator, sadd-expander, tp-grader
+  - `orange` (meta-evaluator/diagnostic): tp-subagent-auditor, sadd-meta-judge, meta-reviewer, tp-transcript-rules-analyzer
+  - `pink` (distinctive specialist): tp-transcript-rules-auditor
+  - `cyan` (investigation/research/tracing): sadd-explorer, tp-test-strategist, tp-explorer, tp-researcher, tp-debug-tracer
+
 ## [1.4.0] — 2026-06-02
 
 ### Added

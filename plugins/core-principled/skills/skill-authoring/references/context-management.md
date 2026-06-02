@@ -117,6 +117,28 @@ When a skill is invoked:
 
 ---
 
+## The Chicken-and-Egg Reference Anti-Pattern
+
+**The Paradox:** Placing loading triggers or "When to read" instructions inside a reference file is a logical impossibility. The AI agent must consume the context tokens to read the file before it ever sees the instruction on whether it should have read it. If the agent reads the file because the trigger was satisfied, the trigger's condition is already fulfilled — making the condition self-referential and meaningless.
+
+**Why it fails:**
+1. The agent must load the reference file to see the "When to read" instruction
+2. Loading the file consumes the very tokens the instruction is trying to govern
+3. The instruction cannot prevent the agent from reading the file — by the time the agent sees the instruction, it has already read the file
+4. Any conditional logic inside the reference file creates a circular dependency
+
+**The strict rule:** Reference files must be pure content — no frontmatter, no loading triggers, no "When to read" sections, no conditional loading paragraphs. All conditional loading logic must reside exclusively in the parent SKILL.md router. The SKILL.md cites references imperatively; reference files never cite themselves or contain routing logic.
+
+**Correct pattern:**
+- SKILL.md body: "You MUST read `references/patterns.md` BEFORE writing code."
+- references/patterns.md: Pure content, no loading instructions
+
+**Wrong pattern (chicken-and-egg):**
+- references/patterns.md: "When to read this file: before writing code" — LOGICAL IMPOSSIBILITY
+- The agent reads the file to see the instruction; the instruction cannot prevent reading
+
+---
+
 ## Common Mistakes
 
 | Mistake | Result | Fix |

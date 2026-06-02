@@ -1,14 +1,3 @@
----
-name: tool-design
-description: "Design agent tools and MCP integrations. Use when creating tools, debugging tool failures, or optimizing tool sets."
-allowed-tools: Read, Edit, Write, Grep, Glob, Bash
-when_to_use: "Use when user wants to design agent tools, debug MCP integrations, or optimize tool interfaces for LLMs."
----
-
-## Routing Guidance
-
-- Do NOT use for general API design, backend services, or non-agent tooling.
-
 # Tool Design for Agents
 
 Design every tool as a contract between a deterministic system and a non-deterministic agent. Unlike human-facing APIs, agent-facing tools must make the contract unambiguous through the description alone -- agents infer intent from descriptions and generate calls that must match expected formats. Every ambiguity becomes a potential failure mode that no amount of prompt engineering can fix.
@@ -29,9 +18,7 @@ Design tools around the consolidation principle: if a human engineer cannot defi
 
 Treat every tool description as prompt engineering that shapes agent behavior. The description is not documentation for humans -- it is injected into the agent's context and directly steers reasoning. Write descriptions that answer what the tool does, when to use it, and what it returns, because these three questions are exactly what agents evaluate during tool selection.
 
-## Detailed Topics
-
-### The Tool-Agent Interface
+## The Tool-Agent Interface
 
 **Tools as Contracts**
 Design each tool as a self-contained contract. When humans call APIs, they read docs, understand conventions, and make appropriate requests. Agents must infer the entire contract from a single description block. Make the contract unambiguous by including format examples, expected patterns, and explicit constraints. Omit nothing that a caller needs to know, because agents cannot ask clarifying questions before making a call.
@@ -42,7 +29,7 @@ Write tool descriptions knowing they load directly into agent context and collec
 **Namespacing and Organization**
 Namespace tools under common prefixes as the collection grows, because agents benefit from hierarchical grouping. When an agent needs database operations, it routes to the `db_*` namespace; when it needs web interactions, it routes to `web_*`. Without namespacing, agents must evaluate every tool in a flat list, which degrades selection accuracy as the count grows.
 
-### The Consolidation Principle
+## The Consolidation Principle
 
 **Single Comprehensive Tools**
 Build single comprehensive tools instead of multiple narrow tools that overlap. Rather than implementing `list_users`, `list_events`, and `create_event` separately, implement `schedule_event` that finds availability and schedules in one call. The comprehensive tool handles the full workflow internally, removing the agent's burden of chaining calls in the correct order.
@@ -53,7 +40,7 @@ Apply consolidation because agents have limited context and attention. Each tool
 **When Not to Consolidate**
 Keep tools separate when they have fundamentally different behaviors, serve different contexts, or must be callable independently. Over-consolidation creates a different problem: a single tool with too many parameters and modes becomes hard for agents to parameterize correctly.
 
-### Architectural Reduction
+## Architectural Reduction
 
 Push the consolidation principle to its logical extreme by removing most specialized tools in favor of primitive, general-purpose capabilities. Production evidence shows this approach can outperform sophisticated multi-tool architectures.
 
@@ -68,7 +55,7 @@ Design minimal architectures that benefit from model improvements rather than so
 
 IF removing specialized tools in favor of primitives or evaluating whether a complex tool architecture is justified → BEFORE deciding read `references/architectural_reduction.md`. Do not proceed without the production evidence in this file.
 
-### Tool Description Engineering
+## Tool Description Engineering
 
 **Description Structure**
 Structure every tool description to answer four questions:
@@ -81,7 +68,7 @@ Structure every tool description to answer four questions:
 **Default Parameter Selection**
 Set defaults to reflect common use cases. Defaults reduce agent burden by eliminating unnecessary parameter specification and prevent errors from omitted parameters. Choose defaults that produce useful results without requiring the agent to understand every option.
 
-### Response Format Optimization
+## Response Format Optimization
 
 Offer response format options (concise vs. detailed) because tool response size significantly impacts context usage. Concise format returns essential fields only, suitable for confirmations. Detailed format returns complete objects, suitable when full context drives decisions. Document when to use each format in the tool description so agents learn to select appropriately.
 
@@ -101,31 +88,10 @@ Agents consume output directly in context. Every transformation step adds cognit
 | Data | Encoded needing parse | Natural language or immediately usable |
 | Progress | Every 1% (100+ updates) | Every 10% (~10 updates max) |
 
-Example zero-transformation output:
-```
-file.md
-Summary: How to get started
-ReadWhen: You are new to the project
-```
-Compare to JSON that adds parsing overhead:
-```json
-{"path": "file.md", "score": 0.15, "summary": "How to get started"}
-```
-
 **Semantic Density:**
 Natural language text outperforms JSON for agent consumption because LLMs are trained on text. JSON adds structural overhead without semantic value. Prefer text format unless the agent specifically requests structured data.
 
-Fixed-label format with parsing anchors:
-```
-Path:     getting-started.md
-Score:    0.15
-Summary:  How to get started
-ReadWhen: You are new to the project
-```
-
-The labels serve as explicit anchors for extraction while text provides semantic understanding.
-
-### Error Message Design
+## Error Message Design
 
 Design error messages for two audiences: developers debugging issues and agents recovering from failures. For agents, every error message must be actionable -- it must state what went wrong and how to correct it. Include retry guidance for retryable errors, corrected format examples for input errors, and specific missing fields for incomplete requests. An error that says only "failed" provides zero recovery signal.
 
@@ -140,26 +106,15 @@ Error messages teach the next step, not just "error occurred." Each failure mode
 | Ambiguous input | Show top matches, ask to clarify |
 | Invalid format | Show expected format, provide example |
 
-Examples:
-```text
-# BAD - dead end
-Error: No results found
-
-# GOOD - forward momentum
-No results for: "multi word query"
-Try splitting: "multi" OR "word" OR "query"
-Or use: --threshold 0.5 for looser matching
-```
-
-### Tool Definition Schema
+## Tool Definition Schema
 
 Establish a consistent schema across all tools. Use verb-noun pattern for tool names (`get_customer`, `create_order`), consistent parameter names across tools (always `customer_id`, never sometimes `id` and sometimes `identifier`), and consistent return field names. Consistency reduces the cognitive load on agents and improves cross-tool generalization.
 
-### Tool Collection Design
+## Tool Collection Design
 
 Limit tool collections to 10-20 tools for most applications, because research shows description overlap causes model confusion and more tools do not always lead to better outcomes. When more tools are genuinely needed, use namespacing to create logical groupings. Implement selection mechanisms: tool grouping by domain, example-based selection hints, and umbrella tools that route to specialized sub-tools.
 
-### CLI Tool Design
+## CLI Tool Design
 
 **The Command Sweet Spot:**
 Research shows accuracy degrades at scale: ~85% at 5 commands vs ~60% at 10 commands. Both humans and AI agents suffer from decision paralysis when evaluating large command sets. Design for 5-10 top-level commands, then use subcommands for additional depth.
@@ -178,33 +133,7 @@ Required sections at EACH level:
 - **BEHAVIOR**: What default shows and how flags change it
 - **EXAMPLES**: 2-4 concrete usage patterns
 
-Level structure:
-```
-Level 1 (tool --help): High-level families/primitives
-Level 2 (tool subcommand --help): Domain-specific tasks
-Level 3 (tool subcommand action --help): Detailed execution patterns
-```
-
-**Documentation for Agents:**
-Include proactive teaching for agents, not just humans. Readmes must teach before the agent forms its approach -- footer reminders come too late.
-
-The AGENTS.md pattern for tool documentation:
-```markdown
-## For AI Agents
-
-TOOL CLI - optimized for AI agent consumption.
-
-**First step:** Run `<tool> --help` to learn capabilities.
-
-**Usage:** Execute the simple, full CLI (no & or pipe syntax)
-- Example: `<tool> "query"` → shows <default output>
-
-**TIPS:**
-- Use <verbose-flag> for <extra-info>
-- Read files using your native tools for full contents (not cat)
-```
-
-### MCP Tool Naming Requirements
+## MCP Tool Naming Requirements
 
 Always use fully qualified tool names with MCP (Model Context Protocol) to avoid "tool not found" errors.
 
@@ -219,131 +148,9 @@ Format: `ServerName:tool_name`
 "Use the bigquery_schema tool..."  # May fail with multiple servers
 ```
 
-Without the server prefix, agents may fail to locate tools when multiple MCP servers are available. Establish naming conventions that include server context in all tool references.
-
-### Using Agents to Optimize Tools
-
-Feed observed tool failures back to an agent to diagnose issues and improve descriptions. Production testing shows this approach achieves 40% reduction in task completion time by helping future agents avoid mistakes.
-
-**The Tool-Testing Agent Pattern**:
-
-```python
-def optimize_tool_description(tool_spec, failure_examples):
-    """
-    Use an agent to analyze tool failures and improve descriptions.
-
-    Process:
-    1. Agent attempts to use tool across diverse tasks
-    2. Collect failure modes and friction points
-    3. Agent analyzes failures and proposes improvements
-    4. Test improved descriptions against same tasks
-    """
-    prompt = f"""
-    Analyze this tool specification and the observed failures.
-
-    Tool: {tool_spec}
-
-    Failures observed:
-    {failure_examples}
-
-    Identify:
-    1. Why agents are failing with this tool
-    2. What information is missing from the description
-    3. What ambiguities cause incorrect usage
-
-    Propose an improved tool description that addresses these issues.
-    """
-
-    return get_agent_response(prompt)
-```
-
-This creates a feedback loop: agents using tools generate failure data, which agents then use to improve tool descriptions, which reduces future failures.
-
-### Testing Tool Design
+## Testing Tool Design
 
 ALWAYS spawn a tool-tester subagent to validate tool designs against five criteria: unambiguity, completeness, recoverability, efficiency, and consistency. The subagent evaluates representative agent requests against expected behavior.
-
-## Practical Guidance
-
-### Tool Selection Framework
-
-When designing tool collections:
-1. Identify distinct workflows agents must accomplish
-2. Group related actions into comprehensive tools
-3. Ensure each tool has a clear, unambiguous purpose
-4. Document error cases and recovery paths
-5. Test with actual agent interactions
-
-## Examples
-
-**Example 1: Well-Designed Tool**
-```python
-def get_customer(customer_id: str, format: str = "concise"):
-    """
-    Retrieve customer information by ID.
-
-    Use when:
-    - User asks about specific customer details
-    - Need customer context for decision-making
-    - Verifying customer identity
-
-    Args:
-        customer_id: Format "CUST-######" (e.g., "CUST-000001")
-        format: "concise" for key fields, "detailed" for complete record
-
-    Returns:
-        Customer object with requested fields
-
-    Errors:
-        NOT_FOUND: Customer ID not found
-        INVALID_FORMAT: ID must match CUST-###### pattern
-    """
-```
-
-**Example 2: Poor Tool Design**
-
-This example demonstrates several tool design anti-patterns:
-
-```python
-def search(query):
-    """Search the database."""
-    pass
-```
-
-**Problems with this design:**
-
-1. **Vague name**: "search" is ambiguous - search what, for what purpose?
-2. **Missing parameters**: What database? What format should query take?
-3. **No return description**: What does this function return? A list? A string? Error handling?
-4. **No usage context**: When should an agent use this versus other tools?
-5. **No error handling**: What happens if the database is unavailable?
-
-**Failure modes:**
-- Agents may call this tool when they should use a more specific tool
-- Agents cannot determine correct query format
-- Agents cannot interpret results
-- Agents cannot recover from failures
-
-## Guidelines
-
-1. Write descriptions that answer what, when, and what returns
-2. Use consolidation to reduce ambiguity
-3. Implement response format options for token efficiency
-4. Design error messages for agent recovery
-5. Establish and follow consistent naming conventions
-6. Limit tool collections to 5-10 commands to maintain ~85% accuracy (avoid 10+ where accuracy drops to ~60%)
-7. Use subcommands for depth instead of additional top-level tools
-8. Design CLI help as self-contained manual at each level (usage, options, behavior, examples)
-9. Default to text format (~40% fewer tokens than JSON)
-10. Include AGENTS.md sections for proactive tool teaching
-11. Test tool designs with actual agent interactions
-12. Iterate based on observed failure modes
-13. Question whether each tool enables or constrains the model
-14. Prefer primitive, general-purpose tools over specialized wrappers
-15. Invest in documentation quality over tooling sophistication
-16. Build minimal architectures that benefit from model improvements
-17. Design zero-transformation outputs: paths relative to cwd, actionable references, immediately usable data
-18. Provide complete error recovery guidance in every failure message
 
 ## Common Mistakes
 
@@ -405,14 +212,27 @@ GOOD: docs/gateway/auth.md
 ```
 Paths must be relative to `process.cwd()` -- agents cannot prepend directories mentally.
 
-## References
+## Best Practices Reference
 
-Internal references:
-- IF designing a new tool from scratch or auditing an existing tool collection for quality gaps → BEFORE designing read `references/best_practices.md`
-- IF considering removing specialized tools in favor of primitives, or evaluating whether a complex tool architecture is justified → BEFORE deciding read `references/architectural_reduction.md`
+IF designing a new tool from scratch or auditing an existing tool collection for quality gaps → BEFORE designing read `references/best_practices.md`.
 
-External resources:
-- IF implementing tools for multi-server agent environments or debugging tool routing failures → read MCP (Model Context Protocol) documentation
-- IF adopting a new agent framework and need to map tool design principles to framework-specific APIs → read Framework tool conventions
-- IF translating existing human-facing APIs into agent-facing tool interfaces → read API design best practices for agents
-- IF evaluating whether to consolidate tools or seeking production evidence for architectural reduction → read Vercel d0 agent architecture case study
+## Guidelines
+
+1. Write descriptions that answer what, when, and what returns
+2. Use consolidation to reduce ambiguity
+3. Implement response format options for token efficiency
+4. Design error messages for agent recovery
+5. Establish and follow consistent naming conventions
+6. Limit tool collections to 5-10 commands to maintain ~85% accuracy (avoid 10+ where accuracy drops to ~60%)
+7. Use subcommands for depth instead of additional top-level tools
+8. Design CLI help as self-contained manual at each level (usage, options, behavior, examples)
+9. Default to text format (~40% fewer tokens than JSON)
+10. Include AGENTS.md sections for proactive tool teaching
+11. Test tool designs with actual agent interactions
+12. Iterate based on observed failure modes
+13. Question whether each tool enables or constrains the model
+14. Prefer primitive, general-purpose tools over specialized wrappers
+15. Invest in documentation quality over tooling sophistication
+16. Build minimal architectures that benefit from model improvements
+17. Design zero-transformation outputs: paths relative to cwd, actionable references, immediately usable data
+18. Provide complete error recovery guidance in every failure message

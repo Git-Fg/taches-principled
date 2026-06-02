@@ -75,7 +75,6 @@ Each plugin below is independently installable and extends the core with special
 | **tp-sadd** | Structured agent-driven development with meta-judge |
 | **tp-fpf** | First Principles Framework for hypothesis-driven decisions |
 | **tp-git** | Git workflow automation |
-| **tp-tdd** | Test-driven development with red-green-refactor |
 | **tp-session-audit** | Session meta-review, behavioral analysis, and GitHub issue reporting |
 
 ## Installation
@@ -98,7 +97,6 @@ claude plugin install taches-principled
 claude plugin install tp-fpf
 claude plugin install tp-git
 claude plugin install tp-sadd
-claude plugin install tp-tdd
 claude plugin install tp-session-audit
 ```
 

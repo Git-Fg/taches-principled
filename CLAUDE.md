@@ -154,6 +154,15 @@ claude -p "<test-query>" --output-format stream-json 2>&1 | grep Skill
 ```
 Test 15-20 real queries, hold out 20%. Overfit = learned pattern-matching, not routing.
 
+**Mandatory description uniqueness check:** If two skill descriptions can be paraphrased to mean the same thing, they will misroute. Before shipping, verify each description's trigger set is mutually exclusive from all others. The diagnostic: ask "Could a user naturally phrase this request so it matches either skill?" If yes, split or reword.
+
+**CONTRAST section required for overlapping domains.** When two skills operate in adjacent domains, explicitly state what each does NOT cover. Example:
+```
+CONTRAST:
+- NOT for: CSS styling, HTML templates, frontend framework questions
+- NOT for: database schema design, SQL query optimization, ORM usage
+```
+
 **Hook limitations:** No hook event directly loads a skill. Skill activation is description-matching only.
 
 ---
@@ -161,6 +170,32 @@ Test 15-20 real queries, hold out 20%. Overfit = learned pattern-matching, not r
 ## Hub-Spoke Skill Architecture
 
 Skills can operate as **hubs** (orchestrate other skills via decision routing) or **spokes** (do one thing). Read [Skills](docs/official/skills.md) for hub-spoke patterns BEFORE adding or merging skills.
+
+### Hub Skills — The `Modes:` Directive
+
+For hub skills with distinct invocation contexts (audit, coding, review, etc.), use the **top-of-body `Modes:` directive**. This keeps the hub under 50 lines and defers all domain depth to `references/`.
+
+```
+--- name: taches-hub
+description: Routes tasks to domain specialists. Use for any pharmacology, diagnostic imagery, or Anki automation request.
+---
+**Persona:** You are the taches-principled orchestrator. You do not execute tasks yourself; you delegate to domain specialists.
+
+**Modes:**
+- **coding**: Delegate to the `rust-dev` agent. Focus: async patterns, Cargo workspaces.
+- **review**: Delegate to the `audit` agent. Focus: security review, dependency checks.
+- **medical**: Delegate to the `pharma` agent. Focus: CGRP drug comparisons, prescription logic.
+- **anki**: Delegate to the `anki` agent. Focus: card generation, occlusion workflows.
+
+## Shared Workflow
+1. Identify the user's domain from their request.
+2. Load the appropriate domain skill via `SkillTool`.
+3. Pass all relevant context explicitly; do not assume the sub-skill retains state.
+```
+
+**Token math:** Hub <500 tokens + each domain <2,000 tokens + `references/` unlimited = safe active budget even with 3 domains loaded.
+
+**Anti-pattern:** Fat hub with inlined domain logic. If the hub exceeds 500 tokens, it is doing too much — move the domain procedures to `references/` and keep the hub as a pure router.
 
 ### Exempt Skills (Do Not Merge)
 
@@ -238,6 +273,21 @@ The pattern: cite the skill or role by name, not the file inside it.
 
 **An agent's declared tools MUST match its stated capabilities.** When an agent claims to write findings to disk, it needs the Write tool. If the capability exists in the description but the tools field is missing, the agent cannot fulfill its contract.
 
+### Agent Color Convention
+
+**Use `color` in agent frontmatter to signal role archetype.** This helps maintainers and auditors quickly identify agent purpose at a glance.
+
+| Color    | Typical Use                                  |
+| -------- | -------------------------------------------- |
+| `red`    | Critical, security, "red team" tasks         |
+| `blue`   | Analysis, review, architecture               |
+| `green`  | Success-oriented, implementation, "go" tasks |
+| `yellow` | Caution, validation, code review             |
+| `purple` | Creative, complex reasoning                  |
+| `orange` | General purpose, documentation               |
+| `pink`   | Distinctive/specialist roles                 |
+| `cyan`   | Research, exploration, debugging             |
+
 ### Tool Scoping Fields
 
 | Field | Artifact | Effect | When Omitted |
@@ -301,6 +351,26 @@ The first four ship under `plugins/` and `.claude-plugin/`. The fifth lives at t
 - MCP fully-qualified names (`BigQuery:bigquery_schema`) — server-level identities that never change
 - Documenting tool behavior in skill bodies ("The Read tool returns...") — describing behavior, not invoking
 - NEVER in orchestration directives: spawning, delegating, or directing workflow
+
+### The Chicken-and-Egg Reference Anti-Pattern
+
+**The Paradox:** Placing loading triggers or "When to read" instructions inside a reference file is a logical impossibility. The AI agent must consume the context tokens to read the file before it ever sees the instruction on whether it should have read it. If the agent reads the file because the trigger was satisfied, the trigger's condition is already fulfilled — making the condition self-referential and meaningless.
+
+**Why it fails:**
+1. The agent must load the reference file to see the "When to read" instruction
+2. Loading the file consumes the very tokens the instruction is trying to govern
+3. The instruction cannot prevent the agent from reading the file — by the time the agent sees the instruction, it has already read the file
+4. Any conditional logic inside the reference file creates a circular dependency
+
+**The strict rule:** Reference files must be pure content — no frontmatter, no loading triggers, no "When to read" sections, no conditional loading paragraphs. All conditional loading logic must reside exclusively in the parent SKILL.md router. The SKILL.md cites references imperatively; reference files never cite themselves or contain routing logic.
+
+**Correct pattern:**
+- SKILL.md body: "You MUST read `references/patterns.md` BEFORE writing code."
+- references/patterns.md: Pure content, no loading instructions
+
+**Wrong pattern (chicken-and-egg):**
+- references/patterns.md: "When to read this file: before writing code" — LOGICAL IMPOSSIBILITY
+- The agent reads the file to see the instruction; the instruction cannot prevent reading
 
 ### Artifact Hygiene — `.principled/` Directory
 
@@ -367,6 +437,99 @@ Subagents CAN invoke skills using the `Skill` tool (v2.1.133+). Subagent→Skill
 
 ---
 
+## Security Boundaries
+
+### The Two-Layer Model
+
+Claude Code's tool control operates at two independent layers:
+
+| Layer | Mechanism | Effect |
+|-------|-----------|--------|
+| **Availability** | `tools:` list, bare `disallowedTools:` | Controls whether the tool appears in Claude's context at all. If omitted, Claude never attempts it. |
+| **Permission** | `allowedTools:`, scoped `disallowedTools:` | Controls whether a tool call is approved once Claude attempts it. |
+
+A bare `"Bash"` in `disallowedTools` removes Bash from the model's context entirely (availability). A scoped `"Bash(rm *)"` leaves Bash visible but blocks matching calls at execution time (permission).
+
+### The `.mcp.json` Bug — Do Not Rely On It
+
+**Confirmed bug:** `allowedTools` and `disallowedTools` fields inside `.mcp.json` are **completely ignored**. The MCP server exposes all tools regardless of user-defined restrictions. This is a genuine security boundary violation — the config file provides false confidence.
+
+**What actually works today:**
+- **CLI flags:** `--disallowedTools "Bash(rm *)"` and `--allowedTools "Read,Write"` are strictly enforced
+- **PreToolUse hooks:** Fire even in `bypassPermissions` mode — the only layer that survives it
+- **`settings.json` permissions:** Evaluated at runtime but primarily advisory, not strictly enforced
+
+### The Precedence Cascade
+
+Rules are evaluated in order: **deny → ask → allow**. The first match wins. Critically, deny rules from **any scope** block allow rules from **any other scope**. If managed settings deny a tool, no CLI flag can override it.
+
+```
+Managed settings (unoverridable)
+  ↓ CLI arguments (--disallowedTools, --allowedTools)
+  ↓ Local project settings (.claude/settings.local.json)
+  ↓ Shared project settings (.claude/settings.json)
+  ↓ User settings (~/.claude/settings.json)
+```
+
+### Defense-in-Depth for Plugins
+
+For plugins exposing MCP servers, implement this stack:
+
+1. **PreToolUse hooks** for deterministic blocks (e.g., block `rm -rf`, block `mcp__*__delete_*`). Hooks survive `bypassPermissions` — they are the only reliable enforcement layer.
+2. **CLI flags** in automation scripts: `--disallowedTools "Bash(rm *),mcp__*__delete_*"` for headless execution.
+3. **`settings.json`** for team-wide defaults (auto-allow Read/Grep, ask for Bash, deny destructive MCP patterns).
+4. **Sandboxing** (`sandbox.filesystem`, `sandbox.allowedDomains`) as the OS-level backstop.
+
+### The Tool Pool Assembly Pipeline
+
+Claude Code assembles the tool pool in this order:
+
+1. Base tool enumeration (54 tools max)
+2. Mode filtering (e.g., `CLAUDE_CODE_SIMPLE` drops most tools)
+3. **Deny rule pre-filtering** — strips blanket-denied tools before MCP tools are merged
+4. MCP tool integration (merges `.mcp.json` servers)
+5. **Deduplication by name** — built-ins win over MCP tools
+
+Deny rules are applied **before** MCP tools are merged. But the `.mcp.json` bug means step 4 ignores per-server `allowedTools`/`disallowedTools` — the server dumps all tools into the pool, and only step 5 deduplicates them.
+
+---
+
+## MCP Server Naming
+
+### The Convention Is Claude Code's Internal Implementation
+
+The `mcp__{server_name}__{tool_name}` format is **Claude Code's internal convention**, not the MCP protocol standard. It is enforced at tool discovery time in `McpToolBuilder` (or equivalent). The double-underscore serves two purposes:
+
+- **Collision prevention:** A built-in `search` tool and an MCP `search` tool become distinct names (`search` vs `mcp__github__search`)
+- **Provenance visibility:** In logs and transcripts, `mcp__github__create_issue` immediately shows the GitHub MCP server as the source
+
+### Where Collisions Actually Happen
+
+**Two collision surfaces:**
+
+1. **Server name collisions:** Claude Desktop includes built-in MCP extensions (Filesystem, Google Drive, etc.). If you name a custom MCP server `filesystem` in `.mcp.json`, it collides with the built-in — the built-in typically wins or crashes, and your config is ignored.
+
+2. **Tool name collisions across servers:** If two MCP servers both expose `search`, they become `mcp__serverA__search` and `mcp__serverB__search` — no direct collision. But if you have two servers with the **same server name** in different scopes (user vs project settings), deduplication applies and **built-ins take precedence over MCP**.
+
+**Security risk:** A malicious MCP server can register tools with names similar to legitimate ones. If the host deduplicates naively or the user approves based on name familiarity, the malicious tool hijacks the execution path.
+
+### Naming Rules for This Marketplace
+
+| Anti-pattern | Recommended |
+|---|---|
+| `mcp__filesystem__read_file` (generic server name) | `mcp__taches-anki__read_apkg` |
+| `mcp__taches-rust__search` (generic verb) | `mcp__taches-rust__grep_cargo_toml` |
+| 30 tools per server | 5–15 outcome-oriented tools per server |
+| `allowedTools` in `.mcp.json` | `--disallowedTools` CLI flag + PreToolUse hooks |
+
+**Namespace your servers as `taches-{domain}`** (e.g., `taches-rust`, `taches-pharma`, `taches-anki`). This makes tool names unambiguous and grep-friendly. Avoid generic names like `search`, `db`, or `filesystem`.
+
+**Avoid overlapping tool names across domains.** Even with server namespacing, if `taches-rust` and `taches-pharma` both expose `validate`, the model may confuse them in its planning phase. Use domain-specific verbs: `rust_check_workspace` vs `pharma_validate_prescription`.
+
+**Curate ruthlessly to 5–15 tools per server.** One server, one job. This reduces collision surface and improves model routing accuracy.
+
+---
+
 ## Skill Authoring
 
 You MUST consult the `skill-authoring` skill for detailed guidance on skill categories, policy/mechanism pattern, progressive disclosure, frontmatter fields, cross-skill references, decision routers, description optimization, and command format BEFORE authoring or modifying any skill.
@@ -430,12 +593,15 @@ Create feature branches, commit with conventional messages, push, and create PRs
 
 - [ ] **Subagent spawn check**: Every skill that explores, implements, researches, or creates has explicit spawn instructions in its body — not optional tips, not conditional recommendations
 - [ ] **Critique loop check**: Every skill that produces artifacts ends with "spawn critic subagent, loop until no HIGH findings" or equivalent
-- [ ] **Skill budget check**: Run `/context` and `/doctor` — verify no skills dropped or descriptions truncated
+- [ ] **Skill budget check**: Run `/context` and `/doctor` — verify no skills dropped or descriptions truncated. Calculate: hub (<500 tokens) + active domains (<2,000 each) + references/ (unlimited). If total loaded SKILL.md content approaches 10k, truncate or move to references/.
 - [ ] **Description length check**: Combined `description` + `when_to_use` ≤1,536 chars; front-load trigger phrases in the first 200 chars
-- [ ] **Tool field check**: Agent definitions use `tools:` (allowlist). Skills use `allowed-tools:` (pre-approval). Commands use `allowed-tools:` (pre-approval). Never confuse these semantics.
+- [ ] **Tool field check**: Agent definitions use `tools:` (allowlist). Skills use `allowed-tools:` (pre-approval). Commands use `allowed-tools:` (pre-approval). Never confuse these semantics. Remember: `allowed-tools` in `.mcp.json` is IGNORED (confirmed bug) — use CLI flags or PreToolUse hooks for real restriction.
+- [ ] **Routing mutual exclusivity check**: Each skill's description trigger set is mutually exclusive from all others. If two descriptions can be paraphrased to mean the same thing, they will misroute.
+- [ ] **CONTRAST section check**: For any skill with adjacent-domain overlap, a CONTRAST section explicitly states what the skill does NOT cover.
 - [ ] **Orchestration separation**: Skill body describes outcomes/roles; agent prompt describes execution only
 - [ ] **No hardcoded drift targets**: Replace specific counts/versions with references or filesystem queries
 - [ ] **Discovery over enumeration**: Use filesystem queries over reimplemented enumerations
+- [ ] **MCP naming check**: If plugin exposes MCP servers, verify server names are namespaced as `taches-{domain}`, tool names are domain-specific verbs, and tool count per server is 5–15.
 
 ### README Hygiene
 
@@ -501,7 +667,41 @@ When you need user input, ask clearly. Present options as clickable choices, not
 - **Commands over skills for on-demand loading** — skills consume context always; commands load when invoked
 - **Tool outputs dominate context** — typically 80-90% of total usage; apply progressive disclosure to avoid lost-in-middle effect
 - **Specialized agents with narrow context** — broad-context agents hallucinate more
-- **500-line guideline** — official stance is under 500 lines for optimal performance; split via progressive disclosure if content exceeds this. Hub skills may legitimately exceed this limit — the guideline applies to individual modes, not the total hub file.
+
+### Skill Token Budgets — Hard Limits
+
+Exceeding these limits causes **silent truncation** — the model loses the tail of skill instructions and invents its own behavior, no error is raised. This is the primary quality failure mode for fat skills.
+
+| Budget | Limit | What happens when exceeded |
+|--------|-------|----------------------------|
+| Per-skill (spec ceiling) | <5,000 tokens | Response quality degrades; later instructions ignored |
+| Per-skill (project ceiling) | <2,500 tokens | Empirically the safe operating limit |
+| Total loaded SKILL.md content | ~10,000 tokens | Context pressure; earlier loaded skills truncated or ignored |
+| Background task output | 30,000 chars | Output truncated, full log path returned |
+
+In a typical session, **2–4 skills are loaded simultaneously**. With hub + 3 domain skills each at 3,000 tokens, you hit the 10k ceiling and silent truncation begins.
+
+**Safe budget formula:**
+```
+hub SKILL.md:       <500 tokens  (pure router, no domain logic)
+each domain SKILL.md: <2,000 tokens (core workflow + 2-3 examples)
+domain references/:   unlimited    (loaded only when cited)
+```
+
+**The failure mode in practice:** Hub (4k) + Rust (3k) + Pharma (3k) = 10k. Claude loads all three. The Pharma skill's last 500 tokens are silently dropped. The model follows the Pharma skill's opening instructions but improvises the closing procedure — because the closing procedure was truncated, not because the model chose to ignore it.
+
+**Dynamic grounding prevents hallucination.** Use ``!`command` `` injection at skill invocation time:
+```
+!`git diff HEAD`
+!`cat config.json`
+```
+This grounds the skill in actual state rather than stale context.
+
+### 500-Line Guideline — Budget, Not Hard Wall
+
+The 500-line / 2,500-token recommendation is a **quality budget**, not a compiler error. The spec allows up to 5,000 tokens. The community consensus: beyond ~2,500 tokens, instruction-following drops measurably — the model remembers the opening persona and closing examples, but invents its own rules for the middle.
+
+For hub skills with multiple modes, use the `Modes:` directive (see Hub-Spoke Architecture). The guideline applies to **individual modes**, not the total hub file. A hub with 5 modes at 80 lines each = 400 lines total, well within budget.
 
 ---
 
@@ -575,6 +775,10 @@ Where `<topic>` matches the URL slug from `code.claude.com/docs/llms.txt`. Alway
 | **Front-load** | Placing trigger keywords at the start of descriptions so they survive truncation from the end |
 | **CONTRAST section** | Explicit negative cases in descriptions to prevent false positive routing |
 | **Under-triggering** | Claude's tendency to not invoke skills without explicit trigger phrases — primary routing failure mode |
+| **Silent truncation** | Failure mode where skill content past the token budget is dropped without error; model invents behavior |
+| **Modes: directive** | Top-of-body directive in hub skills listing distinct invocation contexts and their delegation targets |
+| **Two-layer tool model** | Claude Code's Availability layer (tools: allowlist, bare disallowedTools) vs Permission layer (allowedTools, scoped disallowedTools) |
+| **MCP naming convention** | `mcp__{server}__{tool}` format — Claude Code's internal implementation, not MCP protocol standard |
 
 ---
 

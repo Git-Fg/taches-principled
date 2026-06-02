@@ -1,7 +1,7 @@
 ---
 name: subagent-orchestration
 description: "Design multi-agent architectures and orchestrate parallel execution. Hub skill combining agent definition and execution."
-when_to_use: "Use when user asks to spawn subagents, orchestrate parallel execution, or design agent definitions. Do NOT use for multi-agent architecture decision-making (supervisor vs swarm) — use `multi-agent-patterns` for pattern selection."
+when_to_use: "Use when user asks to spawn subagents, orchestrate parallel execution, or design agent definitions. Do NOT use for multi-agent architecture decision-making (supervisor vs swarm) — read `references/patterns-reference.md` for pattern selection."
 ---
 
 ## Routing Guidance
@@ -68,6 +68,8 @@ Agents exist at five scopes with priority: Managed (org-wide, highest), Session 
 3. Configure skills, memory, isolation (omit tools/model/effort by default)
 4. Generate the agent file
 5. Validate structure and field values
+
+**Architecture design:** IF designing multi-agent architectures (supervisor vs swarm vs hierarchical), IF selecting coordination patterns, or IF sizing contexts for parallel agents → BEFORE designing read `references/patterns-reference.md`. Do not proceed or make assumptions without reading this file.
 
 ### Frontmatter Fields
 
@@ -140,7 +142,7 @@ Fork mode creates a subagent that inherits the full conversation context and sha
 
 ### Architecture Design (Multi-Agent Patterns)
 
-DESIGN mode also covers the *shape* of a multi-agent system: which pattern fits the task, how agents coordinate, and how context is partitioned across them. For exhaustive coverage (framework comparisons, consensus mechanisms, failure-mode deep dives), load the `multi-agent-patterns` reference. The three primary patterns:
+DESIGN mode also covers the *shape* of a multi-agent system: which pattern fits the task, how agents coordinate, and how context is partitioned across them. For exhaustive coverage (framework comparisons, consensus mechanisms, failure-mode deep dives), read `references/patterns-reference.md`. The three primary patterns:
 
 **Supervisor/Orchestrator** — Central agent decomposes, spawns, and synthesizes. Use when tasks have clear decomposition and human oversight matters. Trade-off: supervisor context becomes a bottleneck and failures cascade to all workers.
 

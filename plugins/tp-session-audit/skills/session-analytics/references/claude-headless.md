@@ -1,14 +1,3 @@
----
-name: claude-headless
-description: "Execute claude -p for batch workflows. Use when running pipe mode, non-interactive CLI, or testing in pipelines."
-allowed-tools: Bash, Read, Write
-when_to_use: "Use when user asks about batch processing, running Claude in CLI headless mode, or pipelined execution."
----
-
-## Routing Guidance
-
-- Do NOT use for general MCP questions, subagent log analysis without headless intent, or API streaming.
-
 # Claude Headless — Pattern Library
 
 `claude -p` is just Claude Code running in a terminal without a UI. It executes a prompt, does its work, and exits. No agents are spawned internally — it's the same Claude you talk to interactively, in batch mode with a prompt you supply.
@@ -36,7 +25,7 @@ Invoke this skill when the user wants to:
 ```
 One-shot       →  discrete task, exits, no persistence
 Stateful       →  multi-turn conversation, same session ID across runs
-Ephemeral     →  in-memory only, nothing written to disk (--no-session-persistence)
+Ephemeral      →  in-memory only, nothing written to disk (--no-session-persistence)
 Fork           →  branch from an existing session without modifying it
 ```
 
@@ -169,6 +158,7 @@ claude -p "search for 'MCP protocol specification' and tell me the top 3 results
   --strict-mcp-config \
   --output-format stream-json --verbose \
   --dangerously-skip-permissions \
+  --session-id "$(uuidgen)" \
   2>&1 | tee /tmp/discover_test.jsonl
 ```
 

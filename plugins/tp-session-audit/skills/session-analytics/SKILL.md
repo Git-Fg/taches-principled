@@ -8,6 +8,7 @@ argument-hint: "<inspect|review|issue> [session-id|--dry-run] [--filter errors|t
 
 ## Routing Guidance
 
+- **CAPTURE**: 'capture session', 'collect artifacts', 'headless capture', 'run verification capture', 'profile a skill invocation', 'audit skill routing', 'measure hook in vivo', 'behavioral capture'
 - **INSPECT**: 'parse session', 'session metrics', 'session data', 'inspect transcript', 'session cost', 'what tools did I use', 'how long was this session', 'extract session data'
 - **REVIEW**: 'review session', 'what went wrong', 'behavioral review', 'anti-pattern', 'meta-review', 'session critique', 'why did it fail', 'investigate session'
 - **ISSUE**: 'create issue from review', 'file report', 'meta-issue', 'generate GitHub issue', 'make a bug report from session'
@@ -24,11 +25,82 @@ argument-hint: "<inspect|review|issue> [session-id|--dry-run] [--filter errors|t
 
 ## Decision Router
 
+IF user wants to collect behavioral artifacts (capture session, headless capture, run verification) → **CAPTURE** mode
 IF user wants structured session data (metrics, tool calls, cost) → **INSPECT** mode
 IF user wants behavioral anti-pattern diagnosis → **REVIEW** mode
 IF user wants to create a GitHub issue from review findings → **ISSUE** mode
 IF user passes `--mode cross-analyze` → **CROSS-ANALYZE** mode
 IF user passes `--mode adjudicate` → **ADJUDICATE** mode
+
+---
+
+## CAPTURE Mode
+
+Collects behavioral artifacts by running a headless Claude Code session with canonical capture flags. Use before INSPECT, REVIEW, or meta-issue when you need fresh artifacts.
+
+### When to Use
+
+Before behavioral verification, trigger collision testing, hook validation, or plugin A/B testing — whenever you need a fresh capture of Claude Code's actual behavior rather than analyzing an existing transcript.
+
+### CAPTURE Protocol
+
+Generate a capture UUID, then run the canonical capture incantation:
+
+1. **Generate identifiers:**
+   ```bash
+   UUID=$(uuidgen 2>/dev/null || python3 -c "import uuid; print(uuid.uuid4())")
+   SESSION_ID="$UUID"
+   ```
+
+2. **Create capture directory:**
+   ```bash
+   mkdir -p ~/.claude/captures
+   ```
+
+3. **Run the capture:**
+   ```bash
+   claude -p "$ARGUMENTS" \
+     --session-id "$UUID" \
+     --debug "hooks,api,plugins,skills" \
+     --debug-file ~/.claude/captures/${UUID}.debug.log \
+     --output-format stream-json \
+     --include-hook-events \
+     --include-partial-messages \
+     --max-budget-usd 0.50 \
+     --verbose 2>&1 | tee ~/.claude/captures/${UUID}.stream.jsonl
+   ```
+
+4. **Wait for completion** (the command blocks until the capture finishes).
+
+5. **Report artifact paths:**
+   Return the three artifact paths:
+   - Debug log: `~/.claude/captures/<UUID>.debug.log`
+   - Stream-json: `~/.claude/captures/<UUID>.stream.jsonl`
+   - Persisted JSONL: `~/.claude/projects/<encoded-cwd>/<UUID>.jsonl`
+
+6. **Store the session ID** for downstream skills:
+   ```bash
+   echo "$UUID" > ~/.claude/captures/.last-capture-id
+   ```
+
+### Artifact Provenance
+
+| Artifact | Path | Best for |
+|---|---|---|
+| Debug log | `~/.claude/captures/<UUID>.debug.log` | Hook fires, permission gates, plugin sync, MCP errors |
+| Stream-json | `~/.claude/captures/<UUID>.stream.jsonl` | Streaming behavior, partial chunks, early termination |
+| Persisted JSONL | `~/.claude/projects/<encoded-cwd>/<UUID>.jsonl` | Tool calls, results, usage, errors |
+
+### Execution
+
+**Default: subagent delegation.** For CAPTURE, spawn a Bash subagent to execute the headless capture command.
+
+**Spawn pattern:**
+- Scope: `~/.claude/captures/` directory for artifact output
+- Role: general-purpose (headless execution)
+- Output: Three artifact paths reported to main agent
+
+After CAPTURE, route to **INSPECT** mode for artifact parsing, then to **REVIEW** mode for analysis.
 
 ---
 

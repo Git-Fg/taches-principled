@@ -1,17 +1,3 @@
----
-name: multi-agent-patterns
-description: "Design multi-agent systems: select coordination patterns, size contexts, choose consensus mechanisms. Use when scaling."
-allowed-tools: Read, Grep, Glob
-when_to_use: "Use when user asks to design multi-agent systems, select coordination patterns, or manage parallel agent teams. Do NOT use for spawning subagents or agent definition authoring — use `subagent-orchestration` for execution."
-argument-hint: "[architecture pattern or focus area]"
----
-
-## Routing Guidance
-
-- Use when evaluating trade-offs between supervisor bottlenecks, peer-to-peer complexity, and hierarchical overhead.
-- Do NOT use for subagent spawn execution (use subagent-orchestration instead) or tool design (use tool-design instead).
-- Do NOT use for single-agent tasks, simple scripts, or when context window limits are not the primary constraint.
-
 # Multi-Agent Architecture Patterns
 
 Multi-agent architectures distribute work across multiple language model instances, each with its own context window. When designed well, this distribution enables capabilities beyond single-agent limits. When designed poorly, it introduces coordination overhead that negates benefits. The critical insight is that sub-agents exist primarily to isolate context, not to anthropomorphize role division.
@@ -250,34 +236,6 @@ def handle_customer_request(request):
 7. **Over-decomposition** — Splitting tasks too finely creates more coordination overhead than the task itself. A 10-step pipeline with 10 agents spends more tokens on handoffs than on actual work. Decompose only when subtasks genuinely benefit from separate contexts.
 8. **Missing shared state** — Agents operating without a shared filesystem or state store duplicate work, produce inconsistent outputs, and lose track of what has already been accomplished. Establish shared persistent storage before building multi-agent workflows.
 
-## Integration
-
-This skill focuses on architecture design and pattern selection. For spawn execution, use subagent-orchestration which covers RACE framework, parallel patterns, and failure handling.
+## Framework Reference
 
 IF implementing a LangGraph supervisor, AutoGen GroupChat, CrewAI hierarchy, or consensus mechanism → BEFORE writing any code read `references/frameworks.md`. Do not proceed or make assumptions without reading this file.
-
-## References
-
-Internal reference:
-- IF implementing a multi-agent pattern in LangGraph, AutoGen, or CrewAI → BEFORE coding read `references/frameworks.md`. Do not proceed without framework-specific code examples.
-
-Related skills:
-- IF spawning agents, writing spawn prompts, or orchestrating parallel execution → use subagent-orchestration (execution focus vs this skill's architecture focus)
-- IF agents need to share state across context boundaries or persist information between runs → use memory-systems
-- IF designing tool specialization per agent role → use tool-design
-
-External resources:
-- [LangGraph Documentation](https://langchain-ai.github.io/langgraph/) - Read when: building graph-based multi-agent workflows with explicit state machines
-- [AutoGen Framework](https://microsoft.github.io/autogen/) - Read when: implementing conversational GroupChat patterns or event-driven agent coordination
-- [CrewAI Documentation](https://docs.crewai.com/) - Read when: designing role-based hierarchical agent processes
-- [Research on Multi-Agent Coordination](https://arxiv.org/abs/2308.00352) - Read when: needing academic grounding on multi-agent system theory and evaluation
-
----
-
-## Skill Metadata
-
-**Created**: 2025-12-20
-**Last Updated**: 2026-05-25
-**Author**: Agent Skills for Context Engineering Contributors
-**Version**: 2.1.0
-**Integrated into**: core-principled plugin

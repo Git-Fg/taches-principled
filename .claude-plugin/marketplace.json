@@ -11,7 +11,7 @@
     {
       "name": "core-principled",
       "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, test strategy, project maintenance (plan archival and memory hygiene), and code structure (architecture, transparency, API design, idiomatic naming).",
-      "version": "0.10.0",
+      "version": "0.11.0",
       "author": {
         "name": "Felix",
         "email": "felix@example.com"
@@ -109,8 +109,8 @@
     },
     {
       "name": "tp-session-audit",
-      "description": "Session analytics — INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue reporting). One hub skill, three modes.",
-      "version": "0.2.1",
+      "description": "Session analytics — CAPTURE (headless behavioral artifact collection), INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue reporting). One hub skill, four modes.",
+      "version": "0.3.0",
       "author": {
         "name": "Felix",
         "email": "felix@example.com"
@@ -133,27 +133,5 @@
         "adjudicate"
       ]
     },
-    {
-      "name": "tp-tdd",
-      "description": "Test-driven development — red-green-refactor workflow with test strategy planning, coverage analysis, and test repair guidance.",
-      "version": "0.1.0",
-      "author": {
-        "name": "Felix",
-        "email": "felix@example.com"
-      },
-      "homepage": "https://github.com/Git-Fg/taches-principled",
-      "repository": "https://github.com/Git-Fg/taches-principled",
-      "license": "MIT",
-      "source": "./plugins/tp-tdd",
-      "category": "development",
-      "keywords": [
-        "taches-principled",
-        "claude-code",
-        "tdd",
-        "test-driven",
-        "red-green-refactor",
-        "test-orchestration"
-      ]
-    }
-  ]
+    ]
 }

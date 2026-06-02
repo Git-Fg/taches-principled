@@ -1,9 +1,0 @@
-{
-  "name": "tp-tdd",
-  "version": "0.1.0",
-  "description": "Test-driven development — red-green-refactor workflow orchestration, test writing guidance, and test strategy planning.",
-  "author": {
-    "name": "Felix",
-    "email": "felix@example.com"
-  }
-}

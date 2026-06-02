@@ -3,6 +3,7 @@ name: tp-debug-tracer
 description: Traces bugs backward through call stacks to find original triggers. Invokes automatically when debugging complex call chains or using diagnose STACK-TRACE mode.
 tools: Read, Write, Edit, Grep, Glob, Bash
 model: sonnet
+color: cyan
 skills:
   - subagent-orchestration
   - refine
@@ -14,6 +15,14 @@ skills:
   - test-orchestration
   - git
   - plan-do-check-act
+  - claude-headless
+  - multi-agent-patterns
+  - tool-design
+  - security
+  - update-docs
+  - project-maintenance
+  - session-analytics
+  - skill-authoring
 maxTurns: 15
 memory: local
 ---
