@@ -101,4 +101,12 @@ Either: (1) a standardized improvement with documentation, monitoring, and team 
 Phase 2 always begins at small scale. Full rollout only after the Check phase confirms success. This prevents wasting effort on changes that do not produce results.
 
 ### Failed experiments are learning, not failure
-The Act phase for an unsuccessful outcome does not trigger rollback — it triggers refinement. The learning from a failed hypothesis is as valuable as the learning from a successful one. The only true failure is not documenting why.
+---
+
+## Reference Index
+
+IF designing PDCA experiment (Plan) → spawn **`tp-plan-architect`**
+IF executing PDCA change (Do) → spawn **`tp-global-implementer`**
+IF evaluating PDCA results (Check) → spawn **`tp-plan-verifier`**
+IF synthesizing PDCA outcome (Act) → spawn **`tp-pdca-synthesizer`**
+ting why.

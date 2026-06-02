@@ -97,28 +97,14 @@ The user can override with explicit confirmation. If they confirm, proceed with 
 
 ## Subagent Pattern
 
-For privacy audit and body construction, spawn a general-purpose subagent:
+For privacy audit and body construction, spawn an **`issue-generator`** subagent:
 
 ```
-You are a report preparation agent. Your job is to sanitize a meta-review
-finding for public GitHub issue creation.
+Spawn issue-generator:
+Sanitize meta-review finding for public GitHub issue creation.
 
 Input: {meta_review_path}
 Output: {issue_body_path}
-
-Tasks:
-1. Read the meta-review file at {meta_review_path}
-2. Apply privacy audit — redact all sensitive content (file paths, user prompts,
-   tokens, credentials, environment variable values)
-3. Build issue body using the template in references/issue-reference.md
-4. Write sanitized body to {issue_body_path}
-5. Report what was redacted and where
-
-Redaction rules:
-- Absolute paths → replace with {workspace}
-- User prompts → paraphrase intent, never quote verbatim
-- Tokens/credentials → remove entirely
-- File contents → summarize without including
 ```
 
 The main agent then uses Bash to invoke `gh issue create` with the sanitized body.

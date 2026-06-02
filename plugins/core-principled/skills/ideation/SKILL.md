@@ -49,15 +49,15 @@ IF idea is fully formed and documented → no need for this skill
 **Default: subagent delegation.** For creative idea generation, spawn parallel subagents. The main agent synthesizes results — it never generates ideas inline.
 
 **Spawn pattern for create-ideas mode:**
-- ALWAYS spawn 3 **high-probability anchor** subagents for convergent exploration (>0.80 probability)
-- ALWAYS spawn 3 **diverse tail** subagents for divergent exploration (<0.10 probability)
+- ALWAYS spawn 3 **`tp-ideation-anchor`** subagents for convergent exploration (high-probability)
+- ALWAYS spawn 3 **`tp-ideation-tail`** subagents for divergent exploration (low-probability)
 - ALWAYS aggregate findings inline after all 6 complete
 - Scope: the topic, the generative brief, constraints from brainstorm mode (if any)
 - Output: `.principled/specs/plans/<topic>.design.md`
 
 **Spawn pattern for brainstorm mode:**
 - Main agent runs collaborative dialogue directly
-- Spawn tp-explorer subagent only when codebase research is needed to validate constraints
+- Spawn **`tp-explorer`** subagent only when codebase research is needed to validate constraints
 
 # Brainstorm Mode
 
@@ -69,7 +69,7 @@ Designs emerge through exploration, not dictation. Single questions answered one
 
 ### Brainstorm Process Principle
 
-Explore the idea with single questions focusing on purpose, constraints, and success criteria. Generate 6 approaches with trade-offs (3 high-probability anchors, 3 diverse tail explorations). Present the design section by section, confirming each before proceeding.
+Explore the idea with single questions focusing on purpose, constraints, and success criteria. Generate 6 approaches with trade-offs (using 3 **`tp-ideation-anchor`** and 3 **`tp-ideation-tail`** agents). Present the design section by section, confirming each before proceeding.
 
 Output: Validated design written to `.principled/specs/plans/<topic>.design.md`, committed to git.
 
@@ -86,10 +86,18 @@ Incremental validation catches misunderstandings early.
 
 # Create Ideas Mode
 
-Generate 6 distinct responses for a given topic: 3 high-probability anchors (>0.80) representing central solutions, and 3 diverse tail explorations (<0.10) exploring different solution regions. Responses must be genuinely distinct.
+Generate 6 distinct responses for a given topic: 3 **`tp-ideation-anchor`** agents representing central solutions, and 3 **`tp-ideation-tail`** agents exploring different solution regions. Responses must be genuinely distinct.
 
 ## Failure Signal
 
 ```json
 {"status": "failed", "reason": "no-viable-options|user-abandoned|scope-too-broad", "completed_portion": "...", "retry_possible": true|false}
 ```
+
+---
+
+## Reference Index
+
+IF performing convergent ideation (high-probability) → spawn **`tp-ideation-anchor`**
+IF performing divergent ideation (low-probability) → spawn **`tp-ideation-tail`**
+IF performing codebase research for constraints → spawn **`tp-explorer`**

@@ -85,7 +85,7 @@ Write your findings to {output_path} in this format:
 For deep investigation of structural or recurring failures:
 
 1. **Discover session** — same as REVIEW
-2. **Spawn 3 parallel subagents**:
+2. **Spawn 2 parallel subagents**:
 
    **Diagnostic agent** (meta-reviewer):
    ```
@@ -93,18 +93,10 @@ For deep investigation of structural or recurring failures:
    Write to {output_dir}/diagnostic.md
    ```
 
-   **Context agent** (general-purpose):
+   **Context & Outcome agent** (transcript-context-analyzer):
    ```
-   Check git state: git log --oneline -5, git diff --stat, branch name.
-   Also check: plugins loaded, rules active, skills available at session start.
-   Write to {output_dir}/context.md
-   ```
-
-   **Good/Bad agent** (general-purpose):
-   ```
-   Read {transcript_path}, extract: what worked well vs what broke, with specific event evidence.
-   Focus on: successful tool use patterns, effective skill routing, good error recovery.
-   Write to {output_dir}/good-bad.md
+   Analyze git state, environment, and behavioral outcomes (what worked vs what broke).
+   Write to {output_dir}/context-outcome.md
    ```
 
 3. **Synthesize** — after all subagents return:

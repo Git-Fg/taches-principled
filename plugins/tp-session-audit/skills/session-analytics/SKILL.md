@@ -151,11 +151,11 @@ If no session ID provided and latest session is empty or still running, try the 
 
 ### Execution
 
-**Default: subagent delegation.** For structured extraction, spawn a general-purpose subagent with the session path and requested mode. The subagent reads the JSONL, applies the privacy scrub, and writes structured output to `.principled/scratch/session-inspect-{uuid}.{json|md}`.
+**Default: subagent delegation.** For structured extraction, spawn a **`session-inspector`** subagent with the session path and requested mode. The subagent reads the JSONL, applies the privacy scrub, and writes structured output to `.principled/scratch/session-inspect-{uuid}.{json|md}`.
 
 **Spawn pattern:**
 - Scope: session transcript at `~/.claude/sessions/{uuid}/raw-transcript.jsonl`
-- Role: general-purpose (data extraction)
+- Role: **`session-inspector`** (data extraction)
 - Output: `.principled/scratch/session-inspect-{uuid}.json` (FULL) or `.principled/scratch/session-inspect-{uuid}.md` (SUMMARY)
 - Mode: SUMMARY / FULL / FILTER as specified by user flags
 
@@ -169,37 +169,36 @@ Reviews Claude Code session transcripts for behavioral anti-patterns and investi
 
 **Default: REVIEW** — quick diagnostic of the most recent or specified session using a single diagnostic subagent.
 
-**investigate argument: INVESTIGATE** — deep investigation with parallel subagent fan-out (3 subagents simultaneously) for structural or recurring failures.
+**investigate argument: INVESTIGATE** — deep investigation with parallel subagent fan-out (2 subagents simultaneously) for structural or recurring failures.
 
 ### Process (REVIEW mode)
 
 1. **Discover session** — find the target transcript
-2. **Spawn meta-reviewer subagent** — reads full JSONL, produces behavioral analysis
+2. **Spawn `meta-reviewer` subagent** — reads full JSONL, produces behavioral analysis
 3. **Present findings** — anti-patterns (PLUGIN scope only), what went well, scope verdict
 4. **Next step suggestion** — if actionable findings exist, suggest running ISSUE mode
 
 ### Process (INVESTIGATE mode)
 
 1. **Discover session** — same as REVIEW
-2. **Spawn 3 parallel subagents**:
-   - **Diagnostic subagent** (meta-reviewer agent): reads transcript, identifies anti-patterns and root cause scope
-   - **Context subagent** (general-purpose): checks git state — `git log --oneline -5`, `git diff --stat`, branch name
-   - **Good/Bad subagent** (general-purpose): reads transcript, extracts what worked well vs what broke
+2. **Spawn 2 parallel subagents**:
+   - **Diagnostic subagent** (**`meta-reviewer`**): reads transcript, identifies anti-patterns and root cause scope
+   - **Context & Outcome subagent** (**`transcript-context-analyzer`**): analyzes git state, environment, and behavioral outcomes (what worked vs what broke)
 3. **Synthesize** — merge findings, cross-reference with git state, deduplicate, assign severity
 4. **Scope gate** — check if findings are PLUGIN scope (reportable) or USER-FILE/ENVIRONMENT scope (excluded)
 5. **Write unified report** to `.principled/scratch/meta-review-{session_id}.md`
 
 ### Privacy
 
-The meta-reviewer agent strips: file contents from workspace, user prompts verbatim (paraphrases intent only), project directory paths, environment variables, tokens, credentials.
+The **`meta-reviewer`** agent strips: file contents from workspace, user prompts verbatim (paraphrases intent only), project directory paths, environment variables, tokens, credentials.
 
 ### Execution
 
-**Default: subagent delegation.** For REVIEW, spawn one meta-reviewer subagent. For INVESTIGATE, spawn 3 parallel subagents. The main agent synthesizes results; it never performs transcript analysis inline.
+**Default: subagent delegation.** For REVIEW, spawn one **`meta-reviewer`** subagent. For INVESTIGATE, spawn 2 parallel subagents. The main agent synthesizes results; it never performs transcript analysis inline.
 
 **Spawn pattern:**
 - Scope: session transcript at `~/.claude/sessions/{uuid}/raw-transcript.jsonl`
-- Role: meta-reviewer (diagnostic), general-purpose (context, good/bad analysis)
+- Role: **`meta-reviewer`** (diagnostic), **`transcript-context-analyzer`** (context & outcome analysis)
 - Output: `.principled/scratch/meta-review-{session_id}.md`
 
 ---
@@ -241,11 +240,11 @@ The user can override with explicit confirmation.
 
 ### Execution
 
-**Default: subagent delegation.** For privacy audit and body construction, spawn a general-purpose subagent. For issue creation, use the Bash tool directly with `gh issue create`.
+**Default: subagent delegation.** For privacy audit and body construction, spawn an **`issue-generator`** subagent. For issue creation, use the Bash tool directly with `gh issue create`.
 
 **Spawn pattern:**
 - Scope: `.principled/scratch/meta-review-{session_id}.md`
-- Role: general-purpose (privacy audit, body construction)
+- Role: **`issue-generator`** (privacy audit, body construction)
 - Output: issue body file → `gh issue create`
 
 ---
@@ -262,10 +261,10 @@ The user can override with explicit confirmation.
    - If no capture found → error with `{"status": "failed", "reason": "no-capture", "remediation": "Run /tp-session-audit:capture first"}`
 
 2. **Fan out three parallel specialists** (spawn all three concurrently with background=true):
-   - **forensic-analyst** (built-in Explore agent, read-only) ← stream-json output → structured event list
-   - **tp-session-audit:meta-reviewer** (custom subagent) ← persisted JSONL → anti-pattern list
-   - **core-principled:tp-debug-tracer** (custom subagent, if available) ← debug log → root-cause traces
-   - If debug-tracer is not available, use the built-in general-purpose agent on the debug log instead
+   - **`session-inspector`** (**`--full`** mode) ← stream-json output → structured event list
+   - **`meta-reviewer`** (custom subagent) ← persisted JSONL → anti-pattern list
+   - **`tp-debug-tracer`** (custom subagent, if available) ← debug log → root-cause traces
+   - If **`tp-debug-tracer`** is not available, use the **`session-inspector`** on the debug log instead
 
 3. **Wait for all three** (TaskOutput with block=true for all three)
 
@@ -340,3 +339,14 @@ The user can override with explicit confirmation.
    ```
 
 **Note:** If `tp-fpf:fpf-evidence-validator` is not available (partial install), skip evidence validation and note it. If `tp-sadd:sadd-judge` is not available, use `core-principled:tp-critic` as fallback adversarial agent.
+
+---
+
+## Reference Index
+
+IF performing structured data extraction (INSPECT) → spawn **`session-inspector`**
+IF performing behavioral diagnosis (REVIEW) → spawn **`meta-reviewer`**
+IF performing deep investigation (INVESTIGATE) → spawn **`meta-reviewer`** and **`transcript-context-analyzer`**
+IF performing context and outcome analysis → spawn **`transcript-context-analyzer`**
+IF performing privacy audit and issue body construction (ISSUE) → spawn **`issue-generator`**
+IF performing forensic log analysis (CROSS-ANALYZE) → spawn **`session-inspector`**

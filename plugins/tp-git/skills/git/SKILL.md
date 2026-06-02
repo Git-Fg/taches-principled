@@ -44,7 +44,7 @@ Create well-formatted commits with conventional messages and publish pull reques
 4. **Create:** Draft PR by default, convert to ready when complete
 
 **Spawn Directives:**
-- **ALWAYS spawn a subagent to run pre-flight checks (lint, type-check) in parallel while main agent prepares commit message**
+- **ALWAYS spawn `git-preflight-checker` to run pre-flight checks (lint, type-check) in parallel while the main agent prepares the commit message**
 
 ---
 
@@ -65,7 +65,7 @@ Post line-specific comments on PR diffs. Supports single comments and batched mu
 Group related comments into one review to reduce notification noise. Review events: COMMENT, APPROVE, REQUEST_CHANGES.
 
 **Spawn Directives:**
-- **ALWAYS fan out subagents to review each changed file in parallel — main agent synthesizes findings**
+- **ALWAYS fan out `git-pr-reviewer` agents to review each changed file in parallel — spawn one `git-pr-reviewer` per changed file, main agent synthesizes findings**
 
 ---
 
@@ -92,7 +92,7 @@ mkdir -p ./specs/issues
 Bug fixes: emphasize test plan and reproduction. Features: emphasize technical approach.
 
 **Spawn Directives:**
-- **ALWAYS spawn parallel subagents when loading multiple issues — one subagent per issue**
+- **ALWAYS spawn parallel `git-issue-analyzer` agents when loading multiple issues — one `git-issue-analyzer` per issue**
 
 ---
 
@@ -125,7 +125,7 @@ git worktree remove <path>                    # remove
 Use worktrees instead of stashing when switching contexts. One worktree per active branch.
 
 **Spawn Directives:**
-- **ALWAYS spawn subagents for parallel worktree setup or multi-worktree operations**
+- **ALWAYS spawn `git-worktree-manager` for parallel worktree setup or multi-worktree operations**
 
 ---
 

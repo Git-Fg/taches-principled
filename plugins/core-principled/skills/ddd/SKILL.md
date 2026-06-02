@@ -29,16 +29,22 @@ ddd and kaizen are complementary, not redundant. They operate at different layer
 
 ## Decision Router
 
-IF code structure or layering issue → ARCHITECTURE mode — ALWAYS spawn a codebase scanner subagent to map structure
+IF code structure or layering issue → ARCHITECTURE mode — ALWAYS spawn a **`tp-explorer`** subagent to map structure
 IF naming or error handling issue → QUALITY mode
 IF behavior visibility or data flow issue → TRANSPARENCY mode
-IF REST API contract design, resource modeling, or versioning issue → API mode — ALWAYS spawn an endpoint auditor subagent to review contracts
+IF REST API contract design, resource modeling, or versioning issue → API mode — ALWAYS spawn a **`tp-endpoint-auditor`** subagent to review contracts
 
 ---
 
 # Mode: ARCHITECTURE
 
 Structure code for maintainability with four principles: layered architecture, functional core, early returns, function size limits.
+
+**ALWAYS spawn a `tp-explorer` subagent to map structure and identify layering violations.** The explorer should:
+- Map current module dependencies and layering
+- Identify business logic leaks into framework/infrastructure adapters
+- Detect deep nesting (>3 levels) and oversized functions (>80 lines)
+- Report on file size distribution (>200 lines)
 
 ## Layered Architecture
 
@@ -154,6 +160,13 @@ if (!isValid(result))
 # Mode: API
 
 Design REST API contracts with proper resource modeling, HTTP semantics, and versioning strategies.
+
+**ALWAYS spawn a `tp-endpoint-auditor` subagent to review contracts.** The auditor should:
+- Validate URL noun/verb usage and hierarchy
+- Verify HTTP method semantics (GET=safe, PUT=idempotent, etc.)
+- Check status code mappings for success and error paths
+- Detect potential breaking changes and recommend versioning strategies
+- Ensure consistent error response shapes
 
 ## When to Use
 
@@ -324,3 +337,10 @@ await paymentGateway.charge(order.customerId, discounted)
 - [ ] Consistent error format across all endpoints
 - [ ] Breaking changes planned for versioning
 - [ ] Pagination uses consistent pattern
+
+---
+
+## Reference Index
+
+IF mapping code structure or layering → spawn **`tp-explorer`**
+IF auditing REST API contracts or resource modeling → spawn **`tp-endpoint-auditor`**

@@ -86,21 +86,15 @@ Write filtered output to `.principled/scratch/session-inspect-{uuid}-{filter}.js
 
 ## Tool Invocation Pattern
 
-For INSPECT, spawn a general-purpose subagent:
+For INSPECT, spawn a **`session-inspector`** subagent:
 
 ```
-You are a data extraction agent. Read the session transcript at {path}
-and produce structured output according to the INSPECT mode reference.
+Spawn session-inspector:
+Read the session transcript at {path} and produce structured output.
 
 Mode: {SUMMARY|FULL|FILTER}
 Filter: {errors|tools|cost|skills}|none
 Output path: {output_path}
-
-Apply privacy scrub to all output. Replace absolute paths with {session} tokens.
-Do not retain user prompts verbatim — paraphrase intent only.
-Redact environment variable values and tokens.
-
-Write the output to {output_path} and return the file path.
 ```
 
 ## Error Handling

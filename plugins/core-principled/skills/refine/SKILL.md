@@ -147,18 +147,16 @@ Do NOT simplify:
 
 Multi-agent code review that scans for bugs, security vulnerabilities, code quality issues, contract violations, and test coverage gaps. Uses 6 specialized review agents running in parallel.
 
-### Capability Routing
+### Agent Spawning
 
-Six specialized agents run in parallel. Each focuses on a distinct dimension:
+Spawn all six reviewers in parallel. Each agent focuses on a distinct dimension:
 
-| Agent | Focus Area | Key Questions |
-|-------|------------|---------------|
-| **Bug Hunter** | Logic errors, edge cases, race conditions | Where did the invalid data originate? How would this fail under load? |
-| **Security Auditor** | OWASP Top 10, auth, injection, secrets | Can this be exploited? Does this fail closed or open? |
-| **Code Quality Reviewer** | Readability, complexity, naming, duplication | Does this follow established patterns? Is the solution simple enough? |
-| **Contracts Reviewer** | API contracts, data models, type design | Can illegal states be represented? Will this break existing consumers? |
-| **Historical Context Reviewer** | Git history, past PRs, recurring patterns | What problems occurred before in these files? |
-| **Test Coverage Reviewer** | Missing tests, untested edge cases | What error paths are untested? Would this test catch the bug we found? |
+1. **Spawn `tp-bug-hunter`** (red) — Logic errors, edge cases, race conditions, null pointer risks, state corruption. Key question: "Where did invalid data originate? How would this fail under load?"
+2. **Spawn `tp-security-reviewer`** (red) — OWASP Top 10, injection, auth, exposed secrets, insecure crypto. Key question: "Can this be exploited? Does this fail closed or open?"
+3. **Spawn `tp-code-quality-reviewer`** (yellow) — Readability, complexity, naming, duplication, pattern adherence. Key question: "Does this follow established patterns? Is the solution simple enough?"
+4. **Spawn `tp-contracts-reviewer`** (yellow) — API contracts, data models, type design, illegal state representability. Key question: "Can illegal states be represented? Will this break existing consumers?"
+5. **Spawn `tp-historical-reviewer`** (yellow) — Git history, past PRs, recurring bug patterns. Key question: "What problems occurred before in these files?"
+6. **Spawn `tp-test-coverage-reviewer`** (yellow) — Missing tests, untested edge cases, coverage gaps. Key question: "Would this test catch the bug we found? What error paths are untested?"
 
 ### Process
 

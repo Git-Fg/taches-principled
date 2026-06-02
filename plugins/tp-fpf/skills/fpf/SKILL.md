@@ -25,27 +25,31 @@ Execute complete First Principles Framework cycle with ADI (Abduction-Deduction-
 
 ## Process
 
-**Initialize:** Set up `.fpf/` structure and document context. Spawn subagent to capture scope.
-
-**Generate in parallel:** Spawn {n} fpf-hypothesis-generator subagents in parallel (one per hypothesis). Each generates independently with no cross-contamination. Each hypothesis starts at L0 (unverified).
-
-**Verify logic in layers:** Move hypotheses through L0 (raw) → L1 (internally consistent) → L2 (evidence-validated). Invalidate at any layer if checks fail.
-
-**Audit trust:** For L2 hypotheses, calculate R_eff (evidence reliability) and identify WLNK (weakest link). Higher trust = more confident decision basis.
-
-**Decide and document:** Review all L2 hypotheses, create Design Rationale Record (DRR) with recommendation, present to user.
+1. **Initialize:** Set up `.principled/fpf/` structure and document context.
+2. **Capture Scope:** Spawn a subagent (e.g., `tp-researcher`) to capture scope and goals in `.principled/fpf/context.md`.
+3. **Generate Hypotheses:** Spawn **`fpf-hypothesis-generator`** agents in parallel (one per competing theory). Each generates independently at L0 and writes to `.principled/fpf/knowledge/L0/`.
+4. **L1 Logic Verification:** Dispatch the **`fpf-logic-verifier`** subagent for each L0 hypothesis.
+   - **Check:** Internal consistency, hidden assumptions, circular reasoning, and falsifiability.
+   - **Outcome:** Valid logic promotes to `.principled/fpf/knowledge/L1/`. Invalid logic moves to `.principled/fpf/knowledge/invalid/`.
+5. **L2 Evidence Validation:** Dispatch the **`fpf-evidence-validator`** subagent for each L1 hypothesis.
+   - **Check:** Cross-reference with codebase and knowledge base for supporting/refuting evidence.
+   - **Outcome:** Confirmed evidence promotes to `.principled/fpf/knowledge/L2/`. Gaps or refutations stay at L1 or move to invalid.
+6. **Trust Audit:** Dispatch the **`fpf-trust-auditor`** subagent for all L2 hypotheses to quantify confidence.
+   - **Check:** Calculate **R_eff** (effective reliability) and identify the **WLNK** (weakest link).
+   - **Outcome:** Audit results and confidence scores recorded in `.principled/fpf/evidence/`.
+7. **Decide and Document:** Review all L2 outcomes, create a Design Rationale Record (DRR) in `.principled/fpf/decisions/`, and present the final recommendation to the user.
 
 ## Artifacts Created
 
 | Path | Contents |
 |------|----------|
-| `.fpf/context.md` | Problem context and scope |
-| `.fpf/knowledge/L0/*.md` | Initial hypotheses |
-| `.fpf/knowledge/L1/*.md` | Verified hypotheses |
-| `.fpf/knowledge/L2/*.md` | Validated hypotheses |
-| `.fpf/knowledge/invalid/*.md` | Rejected hypotheses |
-| `.fpf/evidence/*.md` | Evidence and audit files |
-| `.fpf/decisions/*.md` | Design Rationale Record |
+| `.principled/fpf/context.md` | Problem context and scope |
+| `.principled/fpf/knowledge/L0/*.md` | Initial hypotheses |
+| `.principled/fpf/knowledge/L1/*.md` | Verified hypotheses |
+| `.principled/fpf/knowledge/L2/*.md` | Validated hypotheses |
+| `.principled/fpf/knowledge/invalid/*.md` | Rejected hypotheses |
+| `.principled/fpf/evidence/*.md` | Evidence and audit files |
+| `.principled/fpf/decisions/*.md` | Design Rationale Record |
 
 ---
 
@@ -57,11 +61,11 @@ FPF lifecycle operations — reset reasoning cycles, reconcile with code changes
 
 **Soft Reset:** Archive current session state with what was completed and key decisions. Clear active work areas.
 
-**Hard Reset:** Archive entire `.fpf/` directory, create fresh structure, start new hypothesis cycle.
+**Hard Reset:** Archive entire `.principled/fpf/` directory, create fresh structure, start new hypothesis cycle.
 
 ## 2. Reconcile with Code
 
-**ALWAYS spawn a subagent to scan git diff and cross-reference affected files.** The subagent should:
+**ALWAYS spawn `fpf-evidence-validator` to scan git diff and cross-reference affected files.** The agent should:
 - Run `git diff --name-only <baseline_commit> HEAD` to identify changed files
 - Cross-reference each changed file against evidence `carrier_ref` fields
 - Flag evidence with carrier_ref pointing to stale or modified files
@@ -73,7 +77,7 @@ git diff --name-only <baseline_commit> HEAD
 ```
 Cross-reference evidence `carrier_ref` fields with changed files. Flag stale evidence and outdated decisions.
 
-Update `.fpf/.baseline` with current timestamp and commit SHA.
+Update `.principled/fpf/.baseline` with current timestamp and commit SHA.
 
 ## 3. Evidence Freshness
 
@@ -88,7 +92,7 @@ Update `.fpf/.baseline` with current timestamp and commit SHA.
 
 ## 4. Audit Trail
 
-All actions recorded in `.fpf/evidence/`:
+All actions recorded in `.principled/fpf/evidence/`:
 - `deprecate-{hypothesis}-{date}.md`
 - `waiver-{evidence}-{date}.md`
 
@@ -104,13 +108,13 @@ Search all hypothesis layers (L0, L1, L2, invalid) and decisions. For each match
 
 ## Status Process
 
-**ALWAYS spawn a subagent to verify .fpf/ structure and scan evidence freshness.** The subagent should:
+**ALWAYS spawn `fpf-evidence-validator` to verify .principled/fpf/ structure and scan evidence freshness.** The agent should:
 - Verify all required directories exist (context/, knowledge/L0-L2/, invalid/, evidence/, decisions/)
 - Scan all evidence files for `valid_until` timestamps
 - Flag expired and stale evidence with dates and reasons
 - Report directory structure state and freshness summary
 
-Verify `.fpf/` structure exists. Count hypotheses per layer. Check evidence freshness (scan for expired). Count decisions. Report to user.
+Verify `.principled/fpf/` structure exists. Count hypotheses per layer. Check evidence freshness (scan for expired). Count decisions. Report to user.
 
 ## Output
 
@@ -126,7 +130,7 @@ Verify `.fpf/` structure exists. Count hypotheses per layer. Check evidence fres
 ## FPF Status
 
 ### Directory Structure
-- [x] .fpf/ exists
+- [x] .principled/fpf/ exists
 - [x] knowledge/L0/ ({n} hypotheses)
 - [x] knowledge/L1/ ({n} verified)
 - [x] knowledge/L2/ ({n} validated)
@@ -148,8 +152,19 @@ Before presenting DRR to user: spawn tp-critic subagent. Loop until no HIGH find
 
 ## Completion Checklist
 
-- [ ] `.fpf/` directory structure exists
-- [ ] Context recorded in `.fpf/context.md`
+- [ ] `.principled/fpf/` directory structure exists
+- [ ] Context recorded in `.principled/fpf/context.md`
 - [ ] Hypotheses generated, verified, validated, audited
-- [ ] DRR created in `.fpf/decisions/`
+- [ ] DRR created in `.principled/fpf/decisions/`
 - [ ] Final summary presented to user
+
+---
+
+## Reference Index
+
+IF generating competing hypotheses → spawn **`fpf-hypothesis-generator`**
+IF performing logic verification (L0 → L1) → spawn **`fpf-logic-verifier`**
+IF performing evidence validation (L1 → L2) → spawn **`fpf-evidence-validator`**
+IF performing trust audit (L2) → spawn **`fpf-trust-auditor`**
+IF performing scope capture or research → spawn **`tp-researcher`**
+IF performing final critique → spawn **`tp-critic`** (general-purpose with write access)
