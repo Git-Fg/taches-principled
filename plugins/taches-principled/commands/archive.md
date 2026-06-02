@@ -1,10 +1,13 @@
 ---
 name: archive
-skill: archive-plan
 description: Archive completed plan artifacts and extract learnings into project memory
 argument-hint: [plan-path or empty for latest]
 ---
 
-$ARGUMENTS
+## Context
 
-Spawn an analyzer subagent to extract key learnings from the completed work, then copy artifacts to .principled/attic/. Use the skill archive-plan if you have access to it.
+- Plan path: $ARGUMENTS
+
+## Your task
+
+Archive the plan above. Extract key learnings, then move the artifacts to the project attic and persist distilled insights to project memory.

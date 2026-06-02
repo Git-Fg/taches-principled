@@ -5,10 +5,11 @@ import sys
 
 payload = json.load(sys.stdin)
 
-# Comprehensive coaching - all native capabilities mandate
+# Coaching - three gates before subagent fan-out
 print(json.dumps({
     "hookSpecificOutput": {
-        "additionalContext": "Essential: For any task involving exploration, implementation, self-review, self-critic, or similar work, spawn subagents immediately and run them in parallel. Do not wait until you are stuck. If a task has independent parts, fan out subagents without hesitation. If a workflow matches a skill, tool, or subagent pattern, invoke it immediately and use it aggressively. Do not wait for complexity to build. If a capability exists and context matches, deploy it without hesitation. All capabilities are mandatory — heavy use is correct behavior."
+        "hookEventName": "SessionStart",
+        "additionalContext": "Before spawning subagents, verify three gates: (1) Is this task non-trivial? (2) Are parts independent and parallelizable? (3) Will delegation save total work, or just shift it? Skip delegation if any answer is no. Subagent fan-out is a cost-bearing decision, not a default."
     }
 }))
 sys.exit(0)

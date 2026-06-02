@@ -52,7 +52,7 @@ Never implement a change without knowing how you will measure success. Never con
 
 ### Phase 3: Check
 
-**ALWAYS spawn a grader subagent to evaluate results against success criteria.** The grader should:
+**ALWAYS spawn a tp-grader subagent to evaluate results against success criteria.** The grader should:
 - Measure results numerically against the hypothesis metrics
 - Compare before vs. after with specific data points
 - Determine whether the hypothesis held with objective evidence

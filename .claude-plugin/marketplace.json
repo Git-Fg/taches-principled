@@ -1,20 +1,26 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "taches-principled",
   "version": "0.11.0",
-  "owner": { "name": "Felix" },
   "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, and development skills.",
+  "owner": {
+    "name": "Felix",
+    "email": "felix@example.com"
+  },
   "plugins": [
     {
       "name": "taches-principled",
-      "source": "./plugins/taches-principled",
-      "strict": false,
+      "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, and test strategy.",
       "version": "0.8.2",
-      "displayName": "Taches Principled",
-      "author": { "name": "Felix", "email": "felix@example.com" },
+      "author": {
+        "name": "Felix",
+        "email": "felix@example.com"
+      },
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
       "license": "MIT",
-      "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, and test strategy.",
+      "source": "./plugins/taches-principled",
+      "category": "development",
       "keywords": [
         "claude-code",
         "skills",
@@ -38,15 +44,17 @@
     },
     {
       "name": "tp-sadd",
-      "source": "./plugins/tp-sadd",
-      "strict": false,
+      "description": "Structured agent-driven development with multi-pattern evaluation — judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
       "version": "0.3.2",
-      "displayName": "TP Structured Agent-Driven Development",
-      "author": { "name": "Felix", "email": "felix@example.com" },
+      "author": {
+        "name": "Felix",
+        "email": "felix@example.com"
+      },
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
       "license": "MIT",
-      "description": "Structured agent-driven development with multi-pattern evaluation — judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
+      "source": "./plugins/tp-sadd",
+      "category": "development",
       "keywords": [
         "taches-principled",
         "claude-code",
@@ -57,15 +65,17 @@
     },
     {
       "name": "tp-fpf",
-      "source": "./plugins/tp-fpf",
-      "strict": false,
+      "description": "First Principles Framework — structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
       "version": "0.3.1",
-      "displayName": "TP First Principles Framework",
-      "author": { "name": "Felix", "email": "felix@example.com" },
+      "author": {
+        "name": "Felix",
+        "email": "felix@example.com"
+      },
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
       "license": "MIT",
-      "description": "First Principles Framework — structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
+      "source": "./plugins/tp-fpf",
+      "category": "development",
       "keywords": [
         "taches-principled",
         "claude-code",
@@ -76,15 +86,17 @@
     },
     {
       "name": "tp-git",
-      "source": "./plugins/tp-git",
-      "strict": false,
+      "description": "Git workflow automation — conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
       "version": "0.3.1",
-      "displayName": "TP Git",
-      "author": { "name": "Felix", "email": "felix@example.com" },
+      "author": {
+        "name": "Felix",
+        "email": "felix@example.com"
+      },
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
       "license": "MIT",
-      "description": "Git workflow automation — conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
+      "source": "./plugins/tp-git",
+      "category": "productivity",
       "keywords": [
         "taches-principled",
         "claude-code",
@@ -94,15 +106,17 @@
     },
     {
       "name": "tp-tdd",
-      "source": "./plugins/tp-tdd",
-      "strict": false,
-      "version": "0.4.0",
-      "displayName": "TP Test-Driven Development & Strategy",
-      "author": { "name": "Felix", "email": "felix@example.com" },
+      "description": "Test strategy and execution — plan what to test (coverage, mocks, fixtures, property-based) and execute cycles (red-green-refactor, post-hoc coverage, broken test repair).",
+      "version": "0.5.0",
+      "author": {
+        "name": "Felix",
+        "email": "felix@example.com"
+      },
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
       "license": "MIT",
-      "description": "Test-driven development and test strategy — write tests first (red-green-refactor), add post-hoc coverage for existing code, fix broken tests after refactoring, and decide what to test (coverage analysis, mock strategy, fixture design, property-based testing).",
+      "source": "./plugins/tp-tdd",
+      "category": "development",
       "keywords": [
         "taches-principled",
         "claude-code",
@@ -110,33 +124,43 @@
         "testing",
         "test-strategy",
         "coverage",
-        "property-based"
+        "property-based",
+        "test-orchestration"
       ]
     },
     {
       "name": "tp-ddd",
-      "source": "./plugins/tp-ddd",
-      "strict": false,
+      "description": "DDD development practices — code-transparency (visible behavior), code-architecture (layered structure), and code-quality (domain naming, typed errors). 3 discoverable skills answering: what does it do, how to structure, is it idiomatic.",
       "version": "0.3.0",
-      "displayName": "TP Domain-Driven Design",
-      "author": { "name": "Felix", "email": "felix@example.com" },
+      "author": {
+        "name": "Felix",
+        "email": "felix@example.com"
+      },
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
       "license": "MIT",
-      "description": "DDD development practices — code-transparency (visible behavior), code-architecture (layered structure), and code-quality (domain naming, typed errors). 3 discoverable skills answering: what does it do, how to structure, is it idiomatic.",
-      "keywords": ["taches-principled", "claude-code", "ddd", "architecture"]
+      "source": "./plugins/tp-ddd",
+      "category": "development",
+      "keywords": [
+        "taches-principled",
+        "claude-code",
+        "ddd",
+        "architecture"
+      ]
     },
     {
       "name": "tp-force-multiplier",
-      "source": "./plugins/tp-force-multiplier",
-      "strict": false,
+      "description": "Hooks-only coaching plugin (no skills, no agents, no commands). Surfaces SessionStart reminders to use subagents and skills. Install only when you want ambient coaching — not a routing target.",
       "version": "0.1.1",
-      "displayName": "TP Force Multiplier",
-      "author": { "name": "Felix", "email": "felix@example.com" },
+      "author": {
+        "name": "Felix",
+        "email": "felix@example.com"
+      },
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
       "license": "MIT",
-      "description": "Hooks-only coaching plugin (no skills, no agents, no commands). Surfaces SessionStart and PostCompact reminders to use subagents and skills. Install only when you want ambient coaching — not a routing target.",
+      "source": "./plugins/tp-force-multiplier",
+      "category": "productivity",
       "keywords": [
         "claude-code",
         "hooks",
@@ -145,44 +169,29 @@
       ]
     },
     {
-      "name": "tp-vps-governance",
-      "source": "./plugins/tp-vps-governance",
-      "strict": false,
-      "version": "0.1.1",
-      "displayName": "TP VPS Governance",
-      "author": { "name": "Felix", "email": "felix@example.com" },
-      "homepage": "https://github.com/Git-Fg/taches-principled",
-      "repository": "https://github.com/Git-Fg/taches-principled",
-      "license": "MIT",
-      "description": "VPS governance for Claude Code — config auditing and memory curation.",
-      "keywords": [
-        "taches-principled",
-        "claude-code",
-        "vps",
-        "headless",
-        "governance",
-        "config-audit",
-        "memory"
-      ]
-    },
-    {
       "name": "tp-meta",
-      "source": "./plugins/tp-meta",
-      "strict": false,
-      "version": "0.1.0",
-      "displayName": "TP Meta Review",
-      "author": { "name": "Felix", "email": "felix@example.com" },
+      "description": "Session analytics — INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue generation). One hub skill, three modes.",
+      "version": "0.3.0",
+      "author": {
+        "name": "Felix",
+        "email": "felix@example.com"
+      },
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
       "license": "MIT",
-      "description": "Session meta-review and behavioral analysis — parse transcripts, diagnose anti-patterns, investigate root causes, and create GitHub issues from findings.",
+      "source": "./plugins/tp-meta",
+      "category": "productivity",
       "keywords": [
         "taches-principled",
         "claude-code",
+        "session-analytics",
         "meta-review",
         "session-analysis",
         "behavioral-review",
-        "self-critic"
+        "capture",
+        "behavioral-verification",
+        "cross-analyze",
+        "adjudicate"
       ]
     }
   ]

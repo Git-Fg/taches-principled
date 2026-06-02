@@ -1,10 +1,13 @@
 ---
 name: rules
-skill: rules-orchestration
 description: Manages CLAUDE.md and .claude/rules/ lifecycle — extract, add, restructure, review, or sync rules
 argument-hint: "[ANALYZE|ADD|RESTRUCTURE|REVIEW|SYNC] [target]"
 ---
 
-$ARGUMENTS
+## Context
 
-Analyze conversations for rule-worthy insights, fan out code-reviewer subagents to analyze conversations in parallel, aggregate findings, then add conventions to rules or restructure bloated rules. Use the rules-orchestration skill if you have access to it.
+- Action and target: $ARGUMENTS
+
+## Your task
+
+Manage the CLAUDE.md and rules lifecycle for the target above. Route to ANALYZE, ADD, RESTRUCTURE, REVIEW, or SYNC based on the action and operate on the rules repository accordingly.

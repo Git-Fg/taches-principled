@@ -1,10 +1,13 @@
 ---
 name: whats-next
-skill: refine-task
 description: Create a handoff document for continuing work in a fresh session
-argument-hint: [topic or area]
+argument-hint: "[topic or area]"
 ---
 
-$ARGUMENTS
+## Context
 
-Capture a handoff document covering: scope, changes made, key decisions, remaining steps with file paths, blockers, and critical context. Prioritize zero information loss for a cold-start reader. Fan out subagents to capture scope, changes, decisions, and blockers in parallel, then use an analyzer subagent to compose the handoff document.
+- Topic or area: $ARGUMENTS
+
+## Your task
+
+Capture the current state for the topic above as a handoff document. Document scope, changes made, key decisions, remaining steps with file paths, blockers, and critical context — prioritizing zero information loss for a cold-start reader.

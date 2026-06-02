@@ -13,10 +13,10 @@ argument-hint: "[feature concept, problem, or topic]"
 
 IF user wants to explore or refine an unformed idea → use brainstorm mode: collaborative questioning to refine
 IF user wants creative idea generation (not refinement) → use **create-ideas** mode
-IF user has simple task capture needs → use add-task instead
+IF user has simple task capture needs → use task-lifecycle CAPTURE mode instead
 IF user needs formal planning with milestones → use create-plans instead
 IF user already knows exactly what they want → skip to design capture directly
-IF combining with development workflow → produce `.specs/plans/<topic>.design.md` then create task file
+IF combining with development workflow → produce `.principled/specs/plans/<topic>.design.md` then create task file
 IF user needs structured evaluation rather than generation → use evaluation workflow instead
 IF idea is fully formed and documented → no need for this skill
 
@@ -24,12 +24,12 @@ IF idea is fully formed and documented → no need for this skill
 
 ## DO NOT Boundaries
 
-- **DO NOT use for simple task capture** — use `add-task` instead for task capture
+- **DO NOT use for simple task capture** — use `task-lifecycle` CAPTURE mode instead for task capture
 - **DO NOT use for formal planning** — use `create-plans` instead for project planning
 
 ## CONTRAST
 
-- CONTRAST with add-task: ideation explores and refines ideas through dialogue; add-task captures clear intent as a draft. Use ideation when the idea is vague; use add-task when intent is clear.
+- CONTRAST with task-lifecycle CAPTURE: ideation explores and refines ideas through dialogue; task-lifecycle CAPTURE mode captures clear intent as a draft. Use ideation when the idea is vague; use task-lifecycle CAPTURE when intent is clear.
 - CONTRAST with create-plans: ideation explores ideas; create-plans decomposes a project into phases and tasks. Use ideation when the concept needs exploration; use create-plans when scope is clear and decomposition is needed.
 
 ---
@@ -53,11 +53,11 @@ IF idea is fully formed and documented → no need for this skill
 - ALWAYS spawn 3 **diverse tail** subagents for divergent exploration (<0.10 probability)
 - ALWAYS aggregate findings inline after all 6 complete
 - Scope: the topic, the generative brief, constraints from brainstorm mode (if any)
-- Output: `.specs/plans/<topic>.design.md`
+- Output: `.principled/specs/plans/<topic>.design.md`
 
 **Spawn pattern for brainstorm mode:**
 - Main agent runs collaborative dialogue directly
-- Spawn explorer subagent only when codebase research is needed to validate constraints
+- Spawn tp-explorer subagent only when codebase research is needed to validate constraints
 
 # Brainstorm Mode
 
@@ -71,7 +71,7 @@ Designs emerge through exploration, not dictation. Single questions answered one
 
 Explore the idea with single questions focusing on purpose, constraints, and success criteria. Generate 6 approaches with trade-offs (3 high-probability anchors, 3 diverse tail explorations). Present the design section by section, confirming each before proceeding.
 
-Output: Validated design written to `.specs/plans/<topic>.design.md`, committed to git.
+Output: Validated design written to `.principled/specs/plans/<topic>.design.md`, committed to git.
 
 ## Design Decisions
 

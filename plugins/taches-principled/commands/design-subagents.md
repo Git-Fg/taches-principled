@@ -1,10 +1,13 @@
 ---
 name: design-subagents
-skill: subagents
 description: Design multi-agent architectures — supervisor, swarm, or hierarchical patterns
 argument-hint: [system to design]
 ---
 
-$ARGUMENTS
+## Context
 
-Analyze the problem domain and design the optimal agent architecture. Choose between supervisor, swarm, hierarchical, or hub-and-spoke patterns based on task independence and coordination needs. Fan out analysis subagents onto each design dimension, then use an analyzer subagent to resolve conflicts and rank patterns.
+- System to design: $ARGUMENTS
+
+## Your task
+
+Design the optimal multi-agent architecture for the system above. Choose between supervisor, swarm, hierarchical, or hub-and-spoke based on task independence and coordination needs, then return a ranked recommendation with rationale.

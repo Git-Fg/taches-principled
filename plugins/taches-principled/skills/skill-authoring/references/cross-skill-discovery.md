@@ -171,8 +171,7 @@ Pairs that create then execute should be clearly named:
 | Create | Execute |
 |--------|---------|
 | `create-plans` | `execute-plans` |
-| `create-prompts` | `execute-prompts` |
-| `refine-task` | `implement-task` |
+| `task-lifecycle` (REFINE mode) | `task-lifecycle` (IMPLEMENT mode) |
 
 ### Cross-Skill References
 
@@ -180,8 +179,7 @@ When referencing other skills in body text, use the skill name (not the file pat
 
 | Wrong | Right |
 |-------|-------|
-| "see the patterns in skill-authoring/references/x.md" | "use the skill-authoring skill for guidance" |
-| "read ../../create-prompts/SKILL.md" | "invoke the create-prompts skill" |
+| "use the skill-authoring skill for guidance" | "use the skill-authoring skill for guidance" |
 
 ---
 

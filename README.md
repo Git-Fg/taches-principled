@@ -78,8 +78,7 @@ Each plugin below is independently installable and extends the core with special
 | **tp-git** | Git workflow automation |
 | **tp-tdd** | Test-driven development with red-green-refactor |
 | **tp-ddd** | Domain-driven design guardrails |
-| **tp-force-multiplier** | Hooks-only (SessionStart, PostCompact) — ambient coaching, no skills/agents/commands |
-| **tp-vps-governance** | Config auditing and memory curation for VPS |
+| **tp-force-multiplier** | Hooks-only (SessionStart) — ambient coaching, no skills/agents/commands |
 | **tp-meta** | Session meta-review, behavioral analysis, and GitHub issue reporting |
 
 ## Installation
@@ -105,7 +104,6 @@ claude plugin install tp-git
 claude plugin install tp-sadd
 claude plugin install tp-tdd
 claude plugin install tp-force-multiplier
-claude plugin install tp-vps-governance
 claude plugin install tp-meta
 ```
 
@@ -122,7 +120,6 @@ claude plugin install tp-git             # Git workflow automation
 claude plugin install tp-sadd            # Structured agent-driven development
 claude plugin install tp-tdd             # Test-driven development
 claude plugin install tp-force-multiplier # Hook-driven coaching
-claude plugin install tp-vps-governance  # VPS governance
 claude plugin install tp-meta             # Session meta-review
 ```
 
@@ -132,7 +129,7 @@ To fully reinstall from scratch:
 
 ```bash
 # Uninstall all plugins
-claude plugin uninstall taches-principled tp-ddd tp-fpf tp-git tp-sadd tp-tdd tp-force-multiplier tp-vps-governance tp-meta
+claude plugin uninstall taches-principled tp-ddd tp-fpf tp-git tp-sadd tp-tdd tp-force-multiplier tp-meta
 
 # Remove marketplace
 claude plugin marketplace remove taches-principled

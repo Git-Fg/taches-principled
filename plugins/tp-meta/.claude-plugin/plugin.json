@@ -1,0 +1,9 @@
+{
+  "name": "tp-meta",
+  "version": "0.2.0",
+  "description": "Session analytics — INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue generation).",
+  "author": {
+    "name": "Felix",
+    "email": "felix@example.com"
+  }
+}

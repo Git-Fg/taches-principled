@@ -14,6 +14,10 @@ Design multi-agent architectures and orchestrate parallel execution. Hub skill c
 
 ## Decision Router
 
+IF user passes --solo or --lightweight flag → use Solo Mode (no subagents, no critic loop)
+IF task description is < 1 sentence AND touches ≤ 3 files → suggest Solo Mode to user
+IF context usage > 70% → auto-degrade to Solo Mode for remaining work
+
 **DESIGN mode** — Agent definition authoring:
 When user wants to create, define, or configure a new subagent definition — write its scope, tools/models/memory settings, or generate an agent template.
 
@@ -129,7 +133,7 @@ DESIGN mode also covers the *shape* of a multi-agent system: which pattern fits 
 
 ## ORCHESTRATE Mode
 
-Orchestrate multiple subagents in parallel, loop critic subagent until no HIGH findings, iterate with feedback loops, and manage background workers.
+Orchestrate multiple subagents in parallel, loop tp-critic subagent until no HIGH findings, iterate with feedback loops, and manage background workers.
 
 ### Core Mental Model
 
@@ -173,7 +177,7 @@ Key constraints: Positive framing (tell agents what to do), minimal high-signal 
 
 **Failure signal:** Return structured JSON with status, reason, completed_portion, retry_possible.
 
-**MANDATORY:** You MUST read `references/agent-templates.md` BEFORE writing any RACE prompt. Do not proceed without reading this file. The reference contains the full RACE Component Details table, RACE Anti-Patterns table, and role-based agent templates (Researcher, Explorer, Implementer, Critic, Monitor, Architect) — all spawn prompts MUST conform to these templates.
+**MANDATORY:** You MUST read `references/agent-templates.md` BEFORE writing any RACE prompt. Do not proceed without reading this file. The reference contains the full RACE Component Details table, RACE Anti-Patterns table, and role-based agent templates (Researcher, Explorer, Implementer, tp-critic, Monitor, Architect) — all spawn prompts MUST conform to these templates.
 
 #### Spawn and Collect
 

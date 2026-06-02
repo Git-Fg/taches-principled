@@ -1,0 +1,9 @@
+{
+  "name": "tp-git",
+  "version": "0.3.1",
+  "description": "Git workflow automation — conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
+  "author": {
+    "name": "Felix",
+    "email": "felix@example.com"
+  }
+}

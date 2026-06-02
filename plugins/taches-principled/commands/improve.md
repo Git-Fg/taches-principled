@@ -1,10 +1,13 @@
 ---
 name: improve
-skill: refine
 description: Improve the quality of any artifact — code, prose, or decisions
 argument-hint: [artifact or file to improve]
 ---
 
-$ARGUMENTS
+## Context
 
-Fan out code-reviewer subagents to scan code in parallel, aggregate findings, spawn a critic subagent for quality gate before delivery.
+- Target: $ARGUMENTS
+
+## Your task
+
+Improve the quality of the target above. Fan out reviewer subagents to scan it in parallel, aggregate findings, and run a quality gate before returning the refined artifact.

@@ -144,7 +144,7 @@ Verify `.fpf/` structure exists. Count hypotheses per layer. Check evidence fres
 
 ## Critique Loop
 
-Before presenting DRR to user: spawn self-review and self-critic subagents. Loop until no HIGH findings remain before delivery.
+Before presenting DRR to user: spawn tp-critic subagent. Loop until no HIGH findings remain before delivery.
 
 ## Completion Checklist
 

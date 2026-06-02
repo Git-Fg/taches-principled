@@ -8,7 +8,7 @@ when_to_use: "Use when user wants competitive generation, multi-judge evaluation
 
 - COMPETE: 'best-of-N', 'competitive generation', 'generate multiple solutions', 'quality over speed'
 - EXECUTE: 'spawn subagent', 'launch agent', 'delegate this', 'implement with verification', 'run in background'
-- JUDGE: 'evaluate', 'judge this', 'assess quality', 'verify', 'check my work', 'multi-judge debate'
+- JUDGE: 'multi-judge debate', 'score against rubric', 'compare candidate solutions', 'judge panel evaluation', 'consensus scoring', 'meta-judge pipeline'
 - EXPLORE: 'tree of thoughts', 'explore solution space', 'generate and prune', 'ideate then narrow'
 - For architecture design ('supervisor pattern', 'swarm', 'coordinate agents') -> use the core `subagent-orchestration` skill.
 

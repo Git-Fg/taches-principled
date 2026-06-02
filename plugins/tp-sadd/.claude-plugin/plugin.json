@@ -1,0 +1,9 @@
+{
+  "name": "tp-sadd",
+  "version": "0.3.2",
+  "description": "Structured agent-driven development with multi-pattern evaluation — judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
+  "author": {
+    "name": "Felix",
+    "email": "felix@example.com"
+  }
+}

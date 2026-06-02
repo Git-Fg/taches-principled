@@ -1,0 +1,9 @@
+{
+  "name": "tp-ddd",
+  "version": "0.3.0",
+  "description": "DDD development practices — code-transparency (visible behavior), code-architecture (layered structure), and code-quality (domain naming, typed errors).",
+  "author": {
+    "name": "Felix",
+    "email": "felix@example.com"
+  }
+}

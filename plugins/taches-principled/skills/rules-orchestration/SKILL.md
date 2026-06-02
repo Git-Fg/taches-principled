@@ -21,7 +21,8 @@ IF user wants to restructure or audit existing rules → **RESTRUCTURE** mode
 IF user wants to add a specific convention to rules → **ADD** mode
 IF user wants to review and approve pending proposals → **REVIEW** mode
 IF user wants to sync with recent skill execution or learn output → **SYNC** mode
-IF target is ambiguous → ask: "Analyze current conversation, restructure existing rules, add a specific convention, review pending proposals, or sync with recent work?"
+IF user wants to find rule conflicts across hierarchy → **AUDIT** mode
+IF target is ambiguous → ask: "Analyze current conversation, restructure existing rules, add a specific convention, review pending proposals, sync with recent work, or audit for conflicts?"
 
 ---
 
@@ -36,7 +37,7 @@ After conversation or skill execution with discoverable conventions, anti-patter
 
 1. **Capture context** — Read from `.principled/scratch/` or conversation summary. Determine the source: recent skill execution output, session transcript, or explicit user request.
 
-2. **Extract insights** — Spawn a `transcript-rules-analyzer` subagent to identify conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge. Pass the context path and instruct it to write findings to `.principled/scratch/rules-analysis-{timestamp}.md`.
+2. **Extract insights** — Spawn a `tp-transcript-rules-analyzer` subagent to identify conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge. Pass the context path and instruct it to write findings to `.principled/scratch/rules-analysis-{timestamp}.md`.
 
 3. **Synthesize proposals** — Read the analysis output. Convert raw insights into structured proposals with:
    - **Category**: TECHNICAL | PROCESS | PATTERN | ANTI-PATTERN | DECISION
@@ -49,7 +50,7 @@ After conversation or skill execution with discoverable conventions, anti-patter
 
 5. **Present proposals** — Show user a numbered list of proposals with file targets and a one-line rationale. Ask: "Integrate these rules?"
 
-6. **On approval** — Spawn a `transcript-rules-integrator` subagent with the proposal file path and target files. The integrator applies changes and commits.
+6. **On approval** — Spawn a `tp-transcript-rules-integrator` subagent with the proposal file path and target files. The integrator applies changes and commits.
 
 ### Output
 - Analysis: `.principled/scratch/rules-analysis-{timestamp}.md`
@@ -69,7 +70,7 @@ CLAUDE.md exceeds 200 lines, `.claude/rules/` has more than 10 files, or rules f
 
 1. **Audit current state** — Read all files in `.claude/rules/` and `CLAUDE.md`. Map: total line count, file count, any obvious duplication visible without analysis.
 
-2. **Identify issues** — Spawn a `transcript-rules-auditor` subagent with full paths to all rules files. Instruct it to write findings to `.principled/scratch/rules-audit.md`.
+2. **Identify issues** — Spawn a `tp-transcript-rules-auditor` subagent with full paths to all rules files. Instruct it to write findings to `.principled/scratch/rules-audit.md`.
 
 3. **Design new structure** — Review the audit report. Design a reorganization:
    - Which files to split (target: under 200 lines each)
@@ -123,7 +124,7 @@ Pending proposals exist from ANALYZE or SYNC that need approval before being com
 
 1. **Load proposals** — Find proposal files: `ls .principled/scratch/rules-proposals-*.md`. If multiple exist, use the most recent. If none exist, report and exit.
 
-2. **Spawn review panel** — Dispatch 2-3 `transcript-rules-auditor` subagents in parallel. Give each critic the proposal file and this rubric:
+2. **Spawn review panel** — Dispatch 2-3 `tp-transcript-rules-auditor` subagents in parallel. Give each critic the proposal file and this rubric:
    - **Clarity**: Is the rule text actionable? Is the rationale clear?
    - **Conflict**: Does this contradict or duplicate an existing rule?
    - **Efficiency**: Would adding this reduce or increase context cost?
@@ -140,7 +141,7 @@ Pending proposals exist from ANALYZE or SYNC that need approval before being com
    ```
    For REVISE: include specific concerns. For REJECT: include reason.
 
-4. **Apply approved** — For APPROVE: spawn a transcript-rules-integrator subagent with approved proposals. For REVISE: present revision options to user. For REJECT: archive proposal with reason.
+4. **Apply approved** — For APPROVE: spawn a tp-transcript-rules-integrator subagent with approved proposals. For REVISE: present revision options to user. For REJECT: archive proposal with reason.
 
 ---
 
@@ -165,9 +166,54 @@ After `learn` command captures insights, or after skill execution that establish
    - `auto`: critical/correctness — safe to integrate without approval
    - `review`: important/nice-to-have — needs human review
 
-5. **Auto-integrate low-risk** — For `auto` tagged candidates: spawn transcript-rules-integrator directly. Notify user of changes.
+5. **Auto-integrate low-risk** — For `auto` tagged candidates: spawn tp-transcript-rules-integrator directly. Notify user of changes.
 
 6. **Queue for REVIEW** — For `review` tagged candidates: present to user and suggest REVIEW mode.
+
+---
+
+## AUDIT Mode
+
+Analyzes CLAUDE.md hierarchy for conflicts, duplications, and cross-file contradictions. Extracted from config-auditor.
+
+### When
+First when preparing for VPS deployments, after major rule changes, or when diagnosing unexpected behavior between rules.
+
+### Process
+
+1. **Discover configs** — Recursive scan from CWD upward:
+   - `CLAUDE.md` at each directory level
+   - `.claude/rules/**/*.md` at each project level
+   - `~/.claude/CLAUDE.md` (global)
+   - `~/.claude/rules/**/*.md` (global rules)
+
+2. **Map hierarchy** — Build tree showing file structure and line counts.
+
+3. **Detect conflicts** — Compare rules pairwise across hierarchy levels. Flag:
+   - **Critical**: opposite directives (tabs vs spaces, required vs forbidden)
+   - **Warning**: inconsistent preferences (different naming conventions)
+   - **Info**: redundant rules appearing in multiple files
+
+4. **Detect duplicates** — Hash comparison to find same rule text in multiple files.
+
+5. **Score health** per location:
+   - Green: 0-1 issues
+   - Yellow: 2-3 issues
+   - Red: 4+ issues
+
+6. **Output conflict pairs**:
+   ```
+   ### Conflict: Indentation Style
+   - Global (line 12): "Use tabs for indentation"
+   - Project (line 8): "Use 2 spaces for indentation"
+   - Resolution: Project-level wins (more specific scope)
+   ```
+
+7. **Save report** — Write to `.principled/scratch/rules-audit-{timestamp}.md`
+
+### Safety
+- Default: `--dry-run` (read-only, no writes)
+- Never modifies files without explicit confirmation
 
 ---
 
@@ -175,7 +221,7 @@ After `learn` command captures insights, or after skill execution that establish
 
 **Files as source of truth.** Rules are files on disk, not conversation state. All coordination via filesystem, not message passing.
 
-**Propose-then-approve.** Never auto-apply without presenting proposals. Loop a critic subagent until no HIGH findings before applying.
+**Propose-then-approve.** Never auto-apply without presenting proposals. Loop a tp-critic subagent until no HIGH findings before applying.
 
 **No managed rules.** Explicit check: do not modify files under `/etc/claude-code/` or other system-managed paths.
 

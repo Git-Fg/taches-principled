@@ -10,15 +10,15 @@ argument-hint: [project or feature to plan]
 
 - IMMEDIATELY when starting new work that needs structured decomposition.
 - Do NOT use for code review, debugging existing code, or one-off questions.
-- Do NOT use when task is already refined and ready for execution (use execute-plans), when a single question needs answering (use diagnose instead), or when task is vague and needs capture first (use add-task).
-- CONTRAST with refine-task: create-plans creates project-level plans with milestones and phases; refine-task refines task-level specs with verification rubrics and implementation steps. Use create-plans for project scope; use refine-task for task spec refinement.
+- Do NOT use when task is already refined and ready for execution (use execute-plans), when a single question needs answering (use diagnose instead), or when task is vague and needs capture first (use task-lifecycle CAPTURE mode).
+- CONTRAST with task-lifecycle REFINE: create-plans creates project-level plans with milestones and phases; task-lifecycle REFINE mode refines task-level specs with verification rubrics and implementation steps. Use create-plans for project scope; use task-lifecycle REFINE for task spec refinement.
 
 ## Decision Router
 
 IF user says "plan this out" WITHOUT task file context → run create-plans
 IF user says "break down a project" or "sketch a roadmap" → run create-plans
 IF user says "make a plan" for new work → run create-plans
-IF user asks to "plan" → FIRST create brief before roadmap
+IF user asks to "plan" → FIRST create brief from `templates/brief.md` before roadmap
 IF user asks to "plan a phase" → BEFORE creating tasks read references/plan-format.md and references/checkpoints.md
 IF scope is unclear or large → BEFORE decomposing read references/scope-estimation.md
 IF automation CLI available → BEFORE running commands read references/cli-automation.md
@@ -236,7 +236,7 @@ Each level gives context to the level below.
 
 ## Context Scan
 
-On every invocation, spawn a plan-explorer subagent (can read source, write findings, search project structure, and run commands) to scan the project context:
+On every invocation, spawn a tp-explorer subagent (can read source, write findings, search project structure, and run commands) to scan the project context:
 
 - Check git status — detect if git is initialized
 - List planning structure (`.principled/plans/`, `.principled/plans/phases/`)
@@ -270,12 +270,12 @@ Always check for existing artifacts in `.principled/plans/` before starting — 
 
 Before creating a plan, understand the project thoroughly. Use parallel subagent exploration:
 
-**Fan-out spawn instructions:** For project exploration, spawn a plan-explorer subagent. For unfamiliar technologies, spawn a researcher subagent. For complex architectural decisions, spawn a plan-architect subagent. For plan review and challenge, spawn a critic subagent. For verification criteria, spawn a plan-verifier subagent. For task execution, spawn a global-implementer subagent. Read the relevant agent, fill in placeholders, and dispatch it as a subagent.
+**Fan-out spawn instructions:** For project exploration, spawn a tp-explorer subagent. For unfamiliar technologies, spawn a tp-researcher subagent. For complex architectural decisions, spawn a tp-plan-architect subagent. For plan review and challenge, spawn a tp-critic subagent. For verification criteria, spawn a tp-plan-verifier subagent. For task execution, spawn a tp-global-implementer subagent. Read the relevant agent, fill in placeholders, and dispatch it as a subagent.
 
 **Fan-out principles:**
-- Use 3-5 parallel plan-explorer agents for project structure (different areas: frontend, backend, config, tests)
-- Use researcher agents for unfamiliar technologies — find current best practices
-- Use plan-architect agents for complex decisions (auth strategy, state management, API design)
+- Use 3-5 parallel tp-explorer agents for project structure (different areas: frontend, backend, config, tests)
+- Use tp-researcher agents for unfamiliar technologies — find current best practices
+- Use tp-plan-architect agents for complex decisions (auth strategy, state management, API design)
 - All parallel subagent dispatches MUST occur in a single message
 - Each subagent has disjoint scope (different files/areas)
 - Cap at 5 concurrent subagents to avoid coordination overhead
@@ -306,12 +306,12 @@ When fanning out subagents for exploration, ALL findings MUST be written to a ce
 
 **Why:** Prevents telephone-game degradation. Direct scratchpad access eliminates paraphrase drift that occurs when orchestrators synthesize without source access.
 
-**Using critic agents during planning:**
+**Using tp-critic agents during planning:**
 
-After the fan-out exploration, before writing the plan, spawn a critic subagent to challenge the emerging approach:
+After the fan-out exploration, before writing the plan, spawn a tp-critic subagent to challenge the emerging approach:
 
 ```
-Spawn a critic subagent (general-purpose with write access):
+Spawn a tp-critic subagent (general-purpose with write access):
 Focus: Challenge the proposed approach as devil's advocate
 - What assumptions does the approach make that might be wrong?
 - What could go wrong with this direction?
@@ -329,19 +329,19 @@ Each subagent role uses a model matched to its cognitive load:
 
 | Role | Model | Rationale |
 |------|-------|----------|
-| plan-explorer subagent | Haiku | Structural I/O — file discovery, pattern detection |
-| Researcher subagent | Haiku | Documentation reading — lightweight comprehension |
-| plan-architect subagent | Sonnet | Trade-off evaluation — requires deeper reasoning |
-| Pre-plan critic subagent | Haiku | Assumption challenge — lightweight pattern recognition |
-| Post-plan critic subagent | Sonnet | Dependency verification — requires full plan comprehension |
+| tp-explorer subagent | Haiku | Structural I/O — file discovery, pattern detection |
+| tp-researcher subagent | Haiku | Documentation reading — lightweight comprehension |
+| tp-plan-architect subagent | Sonnet | Trade-off evaluation — requires deeper reasoning |
+| Pre-plan tp-critic subagent | Haiku | Assumption challenge — lightweight pattern recognition |
+| Post-plan tp-critic subagent | Sonnet | Dependency verification — requires full plan comprehension |
 
 ---
 
 ## Plan Creation Loop
 
-After exploration, create plans in a structured loop: one phase at a time, looping a critic subagent until no HIGH findings between phases.
+After exploration, create plans in a structured loop: one phase at a time, looping a tp-critic subagent with **MAX_ITERATIONS = 3** critic cycles per phase (per `references/evaluation-protocol.md`). If HIGH findings remain after cycle 3, log them in the phase PLAN.md under "Open Critic Findings" and proceed to the next phase.
 
-Synthesize exploration findings into phase scope. Write phase PLAN.md (2-3 tasks, verification per task). Spawn critic subagent to review the plan. Read scratchpad, revise based on critic feedback. Loop until critic finds no HIGH findings. Check context usage — if approaching 50%, create handoff document. Repeat for next phase.
+Synthesize exploration findings into phase scope. Write phase PLAN.md (2-3 tasks, verification per task). Spawn tp-critic subagent to review the plan. Read scratchpad, revise based on critic feedback. **Cap at MAX_ITERATIONS = 3 critic cycles per phase** (see `references/evaluation-protocol.md`). After cycle 3, log residual findings in PLAN.md and move on. Check context usage — if approaching 50%, create handoff document. Repeat for next phase.
 
 ### Context Management Across Phases
 
@@ -352,7 +352,7 @@ Each phase loop iteration consumes context. Monitor token usage:
 
 ### Critic Integration
 
-Spawn one critic subagent per phase plan (general-purpose, Write access), loop until no HIGH findings:
+Spawn one tp-critic subagent per phase plan (general-purpose, Write access), **bounded by MAX_ITERATIONS = 3** (per `references/evaluation-protocol.md`):
 
 ```
 Focus: Review the phase plan as a cold-start executor
@@ -363,11 +363,11 @@ Focus: Review the phase plan as a cold-start executor
 - Would I be blocked on any task by prerequisites?
 ```
 
-The critic reads the new PLAN.md from the scratchpad path, writes findings back. Orchestrator reads findings, applies revisions, then loops critic until no HIGH findings remain.
+The critic reads the new PLAN.md from the scratchpad path, writes findings back. Orchestrator reads findings, applies revisions, then re-spawns critic. **Stop after 3 cycles** — log residual findings in PLAN.md and proceed to the next phase.
 
 **Why per-phase:** Phase plans are independent — critic feedback on phase 2 does not invalidate phase 1. A single end-to-end critic review creates a bottleneck and encourages the critic to comment on irrelevant phases.
 
-**Exception — one end-to-end review:** After ALL phases are created, spawn a Sonnet critic subagent for a cross-phase consistency audit of the full roadmap: do the phases fit together? Are there missing dependencies between phases? Is the completion order correct?
+**Exception — one end-to-end review:** After ALL phases are created, spawn a Sonnet tp-critic subagent for a cross-phase consistency audit of the full roadmap: do the phases fit together? Are there missing dependencies between phases? Is the completion order correct?
 
 ---
 
@@ -381,7 +381,7 @@ The critic reads the new PLAN.md from the scratchpad path, writes findings back.
 | "chunk", "next tasks" | Plan chunk |
 | "execute", "run", "do it" | Load execution skill |
 | "research", "investigate" | Create research prompt |
-| "handoff", "pack up", "stopping" | Create handoff |
+| "handoff", "pack up", "stopping", "what's next", "continue later", "session end", "continue here" | Create handoff |
 | "resume", "continue" | Load handoff |
 | "transition", "complete", "done" | Mark phase complete |
 | "milestone", "ship", "release" | Complete milestone |
@@ -400,9 +400,65 @@ Single question:
 - Execute autonomously — loads execution skill, status updates only
 - Let me review first — show the plan, then re-present
 
-**If user selects execute:** Route to `execute-plans`. The execution skill autonomously analyzes checkpoint structure, selects strategy, spawns parallel workers, loops critic subagent until no HIGH findings, and commits. Status updates only — no questions.
+**If user selects execute:** Route to `execute-plans`. The execution skill autonomously analyzes checkpoint structure, selects strategy, spawns parallel workers, runs the critic-revise loop with MAX_ITERATIONS = 3 (per `references/evaluation-protocol.md`), and commits. Status updates only — no questions.
 
 Do NOT re-invoke create-plans. Do NOT ask for guidance. Execute autonomously via the execution skill.
+
+---
+
+## HANDOFF Mode
+
+**Trigger phrases:** "what's next", "continue later", "session end", "continue here", "handoff", "pack up", "stopping"
+
+**When triggered:** Create a session continuation document that captures uncommitted work and architectural context for a cold-start reader.
+
+**HANDOFF mode is subagent-free.** All work is performed inline by the main agent. Do NOT spawn subagents for handoff creation.
+
+### Handoff Creation Protocol
+
+1. **Run context capture inline** — capture git status, file changes, and architectural context directly (no subagents)
+2. **Read existing handoff files** — check for prior handoffs at `.principled/plans/phases/*/.continue-here.md` or `.principled/memory/`
+3. **Synthesize handoff document** — compose a structured continuation document covering:
+   - **Scope**: What was being worked on
+   - **Changes made**: File modifications with paths
+   - **Key decisions**: Architectural choices and rationale
+   - **Remaining steps**: Pending tasks with file paths
+   - **Blockers**: Known impediments
+   - **Critical context**: Information a cold-start reader needs
+4. **Write to canonical location** — `.principled/memory/continue-here.md`
+5. **Link from phase** — if in an active phase, create/update `.principled/plans/phases/XX/.continue-here.md` pointing to the canonical handoff
+
+### Handoff Document Structure
+
+```markdown
+# Session Handoff — {timestamp}
+
+## What Was Being Worked On
+{brief description of current task/phase}
+
+## Changes Made
+- {file}: {what changed}
+- {file}: {what changed}
+
+## Key Decisions
+- {decision}: {rationale}
+- {decision}: {rationale}
+
+## Remaining Steps
+1. {task} — files: {paths}
+2. {task} — files: {paths}
+
+## Blockers
+- {blocker description}
+- {blocker description}
+
+## Critical Context
+{information a cold-start reader needs to resume effectively}
+```
+
+**Zero information loss mandate:** The handoff must be complete enough that a cold-start reader can resume without asking questions. If something matters, document it.
+
+**No subagents for handoff.** Inline execution ensures the main agent has full context awareness and produces a coherent document rather than stitched-together subagent outputs.
 
 ---
 
@@ -509,12 +565,12 @@ Each plan: 2-3 tasks, ~15-60 min of work. Quality degradation is invisible until
 
 ## Reference Index
 
-IF writing brief → FIRST read the brief template file
+IF writing brief → FIRST read `templates/brief.md`
 IF writing phase plan → BEFORE tasks read `references/plan-format.md` and `references/checkpoints.md`
 IF scope is unclear → BEFORE decomposing read `references/scope-estimation.md`
 IF automation available → BEFORE running commands read `references/cli-automation.md`
 IF managing milestones → read `references/milestone-management.md`
-IF spawning subagents → for project exploration spawn a plan-explorer; for research spawn a researcher; for trade-off evaluation spawn a plan-architect; for plan review spawn a critic; for verification criteria spawn a plan-verifier; for task execution spawn a global-implementer
+IF spawning subagents → for project exploration spawn a tp-explorer; for research spawn a tp-researcher; for trade-off evaluation spawn a tp-plan-architect; for plan review spawn a tp-critic; for verification criteria spawn a tp-plan-verifier; for task execution spawn a tp-global-implementer
 
 ---
 

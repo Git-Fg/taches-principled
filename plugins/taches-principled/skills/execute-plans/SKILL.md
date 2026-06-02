@@ -9,10 +9,9 @@ argument-hint: [path to plan] [--phase N]
 ## Routing Guidance
 
 - IMMEDIATELY when ready to progress from PLAN to SUMMARY.
-- CONTRAST with implement-task: That skill executes task files from .specs/tasks/; this skill executes PLAN.md files from .principled/plans/.
+- CONTRAST with task-lifecycle IMPLEMENT: That skill executes task files from .principled/specs/tasks/; this skill executes PLAN.md files from .principled/plans/.
 - Do NOT use for creating plans — use `create-plans` instead.
 - Do NOT use for planning without execution intent.
-- Do NOT use for executing prompt files — use execute-prompts instead.
 
 ## Decision Router
 
@@ -91,17 +90,21 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 **Use when:** Plan has zero checkpoints or only `checkpoint:human-verify` markers between autonomous segments.
 
-**Policy:** Executor is an intelligent orchestrator that decomposes the plan, executes independent tasks in parallel, and loops a critic subagent at milestones until no HIGH findings remain. No user interaction.
+**Policy:** Executor is an intelligent orchestrator that decomposes the plan, executes independent tasks in parallel, and runs a tp-critic subagent at milestones. **The critic-revise loop is bounded by MAX_ITERATIONS = 3** (per `references/evaluation-protocol.md`). After 3 cycles with remaining HIGH findings, log the residual issues in SUMMARY.md and proceed to the next milestone. No user interaction.
 
 **Core Concept:** Analyze dependencies. Execute parallel workers. Review at milestones. Commit results.
 
 **Executor responsibilities:**
 1. Analyze plan structure, build dependency graph
-2. Pre-execution: spawn critic to challenge the plan (devil's advocate)
+2. Pre-execution: spawn tp-critic to challenge the plan (devil's advocate)
 3. Identify conflict-free groups (tasks touching different files)
 4. Spawn parallel workers for independent groups (max 3-5), sequential workers for dependent chains
-5. At milestones (every 2-3 tasks): spawn critic subagent to review intermediate output
-6. Loop until no HIGH findings, then aggregate and create SUMMARY.md
+5. At milestones (every 2-3 tasks): spawn tp-critic subagent to review intermediate output
+6. Run the critic-revise loop with MAX_ITERATIONS = 3 (per `references/evaluation-protocol.md`):
+   - Iteration 1: spawn `tp-critic`, read findings from scratchpad, apply fixes, re-verify.
+   - Iteration 2: re-spawn `tp-critic` if any fix was non-trivial; otherwise skip.
+   - Iteration 3: final pass. If HIGH findings remain after iteration 3, log them in SUMMARY.md under "Known Limitations" and proceed.
+7. After the loop completes (PASS or MAX_ITERATIONS), aggregate and create SUMMARY.md.
 
 **Parallel execution rules:**
 - Two tasks are parallelizable if: they touch different files AND neither depends on output of the other
@@ -111,8 +114,8 @@ grep -E 'checkpoint:|type="checkpoint:' {plan_path}
 
 **Milestone critique loop:**
 - Trigger: every 2-3 tasks completed, or at phase boundary
-- Spawn a critic subagent (haiku, with write access) to challenge the work
-- Loop until critic finds no HIGH findings
+- Spawn a tp-critic subagent (haiku, with write access) to challenge the work
+- Loop with MAX_ITERATIONS = 3 critic cycles per milestone (see `references/evaluation-protocol.md`). If critic finds HIGHS on cycle 3: log remaining issues in SUMMARY.md, proceed to next milestone
 - If critic finds HIGHS: executor fixes before continuing to next milestone
 - This is internal critique, not user interaction
 
@@ -131,7 +134,7 @@ When spawning subagents for investigation (exploring project structure, finding 
 **Before spawning:**
 1. Check centralized scratchpad at `.principled/scratch/{plan-id}.md`
 2. Write current execution context to scratchpad (what task, why spawning, expected output)
-3. Verify subagent has **write access** — explorer needs to update scratchpad
+3. Verify subagent has **write access** — tp-explorer needs to update scratchpad
 4. **NEVER** use "native" Explore subagents (Haiku, read-only) for investigation
 
 **Subagent tool requirements for investigation:**
@@ -150,9 +153,9 @@ When spawning subagents for investigation (exploring project structure, finding 
 
 **Pre-execution critique loop:**
 
-Before spawning workers, spawn a critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Spawn the critic as a subagent (general-purpose with write access) with the plan as context.
+Before spawning workers, spawn a tp-critic subagent to challenge the plan ITSELF — not the workers' output, but the plan's assumptions and structure. Spawn the critic as a subagent (general-purpose with write access) with the plan as context.
 
-Loop until no HIGH findings. If critic finds critical issues: fix the plan before spawning workers.
+Loop with MAX_ITERATIONS = 2 critic cycles (pre-execution is cheap; cap tighter than milestone review). If critic finds critical issues on cycle 2: fix the plan, log "pre-execute critique capped" note in SUMMARY.md, spawn workers anyway. Minor concerns are noted for milestone review.
 If critic finds minor concerns: note them for milestone review.
 
 **Why:** Milestone critique catches bad execution. Pre-execution critique catches bad plans. Catching a flawed plan before wasting parallel workers is cheaper than fixing after they complete.
@@ -161,7 +164,7 @@ If critic finds minor concerns: note them for milestone review.
 
 ## Implementer Scratchpad Protocol
 
-When spawning global-implementer subagents (Strategy A parallel workers, Strategy B segment workers), use a shared scratchpad for all execution output:
+When spawning tp-global-implementer subagents (Strategy A parallel workers, Strategy B segment workers), use a shared scratchpad for all execution output:
 
 **Location:** `.principled/scratch/{plan-id}-execution.md`
 
@@ -178,7 +181,7 @@ When spawning global-implementer subagents (Strategy A parallel workers, Strateg
 **Orchestrator after workers return:**
 1. Read scratchpad — do NOT rely on subagent output text alone
 2. Verify no file conflicts between parallel workers (did two workers touch the same file?)
-3. If file conflict detected: spawn critic to resolve merge, fix conflicts, test
+3. If file conflict detected: spawn tp-critic to resolve merge, fix conflicts, test
 4. Aggregate results from scratchpad into milestone review
 
 **Why:** Same telephone-game prevention as the explorer protocol. Implementation details are too easy to paraphrase incorrectly. Reading the scratchpad directly gives the orchestrator ground truth.
@@ -195,7 +198,7 @@ The executor-critic relationship is a structured loop, not a one-shot check:
 
 ```
 1. N tasks complete → milestone threshold reached
-2. Spawn critic subagent:
+2. Spawn tp-critic subagent:
    - Reads scratchpad for all worker output
    - Reads PLAN.md for expected outcomes
    - Evaluates: correctness, edge cases, regressions, deviation handling
@@ -203,7 +206,7 @@ The executor-critic relationship is a structured loop, not a one-shot check:
 3. Orchestrator reads critic findings from scratchpad
 4. IF findings have issues:
    - Create fix tasks (1-2 small, targeted)
-   - Spawn global-implementer subagent for each fix
+   - Spawn tp-global-implementer subagent for each fix
    - Re-verify
    - Re-spawn critic if fix was non-trivial
    - Repeat until critic passes or 2 fix cycles exhausted
@@ -220,9 +223,9 @@ For tasks that are architecturally significant or touch 5+ files, integrate crit
 
 ```
 1. Worker completes task
-2. Orchestrator critique: does output match task spec? Spawn critic if needed.
-3. Loop until no HIGH findings
-4. Fix issues → re-verify → continue
+2. Orchestrator critique: does output match task spec? Spawn tp-critic if needed.
+3. **MAX_ITERATIONS = 2** for per-task micro-loops (tighter than milestone, since tasks are smaller and a stuck task should escalate to a milestone-level fix).
+4. Fix issues → re-verify → continue. If cycle 2 still has HIGH findings, escalate to a new fix task at the milestone level rather than looping the same task.
 ```
 
 **Why a loop, not a gate:** A single critic review creates false confidence — the critic might miss issues in the first pass, or the fix might introduce new problems. The loop structure issues diminishing returns naturally: most issues are caught in round 1, edge cases in round 2, and round 3+ catches are noise. Cap at 2 fix cycles for throughput.
@@ -256,7 +259,7 @@ For tasks that are architecturally significant or touch 5+ files, integrate crit
 **Self-verification rules:**
 - Run all verify commands from the plan's task definitions
 - If verify commands don't exist, use automated checks: file existence, test pass rate, lint status, build success
-- If self-verification fails, spawn a critic subagent to diagnose, then fix and re-verify
+- If self-verification fails, spawn a tp-critic subagent to diagnose, then fix and re-verify
 - If self-verification fails after 2 fix attempts: log remaining issues in SUMMARY.md, proceed to next segment or milestone. Status update: "Segment [N]: 2/2 fix cycles exhausted — [issue] logged in SUMMARY.md"
 
 **Why:** Every verification check that can be automated should be. "Human verify" in practice means "someone should glance at it" — but for CI-able checks, the orchestrator does the glancing. Overhead: ~15-20% main context.
@@ -529,13 +532,14 @@ IF checkpoint type is human-verify → BEFORE segment read `references/checkpoin
 IF checkpoint type is decision → BEFORE presenting read `references/checkpoint-protocols.md`
 IF handling deviations → read `references/deviation-rules.md`
 IF spawning critic or milestone reviewer → BEFORE spawning read `references/evaluation-protocol.md` for the shared judge/critic evaluation protocol
-IF spawning autonomous worker → read the autonomous-execution template
-IF spawning segment worker → read the segment-execution template
-IF spawning milestone critic → spawn a critic subagent (general-purpose with write access)
-IF spawning parallel worker → spawn a global-implementer subagent
-IF spawning researcher → spawn a researcher subagent
-IF spawning verifier → spawn a plan-verifier subagent
-**Orchestration:** Five parallel patterns for subagent work
+IF spawning autonomous worker → read `templates/autonomous-execution.md`
+IF spawning segment worker → read `templates/segment-execution.md`
+IF spawning sequential worker → read `templates/sequential-execution.md`
+IF spawning milestone critic → spawn a tp-critic subagent (general-purpose with write access)
+IF spawning parallel worker → spawn a tp-global-implementer subagent
+IF spawning researcher → spawn a tp-researcher subagent
+IF spawning verifier → spawn a tp-plan-verifier subagent
+**Orchestration patterns:** See `../../subagent-orchestration/SKILL.md` for the five parallel subagent patterns
 
 ---
 

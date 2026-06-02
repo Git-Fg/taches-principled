@@ -23,14 +23,14 @@ Three strategies for plan execution, differentiated by checkpoint structure and 
 2. Decomposes into parallelizable vs sequential groups
 3. Spawns multiple parallel workers for independent tasks
 4. Spawns sequential workers for dependency chains
-5. Loops critic subagent at milestones until no HIGH findings remain
+5. Loops tp-critic subagent at milestones until no HIGH findings remain
 6. Aggregates results
 
 **Executor responsibilities:**
 - Build dependency graph (task to files)
 - Identify conflict-free groups (different files, no data dependencies)
 - Coordinate parallel workers (max 3-5 concurrent)
-- Spawn milestone critic subagents (haiku, read-only)
+- Spawn milestone tp-critic subagents (haiku, read-only)
 - Aggregate and verify all outputs
 - Create SUMMARY
 
@@ -43,7 +43,7 @@ Three strategies for plan execution, differentiated by checkpoint structure and 
 
 **Milestone critique loop:**
 - Every 2-3 tasks or phase boundary
-- Spawn haiku critic subagent
+- Spawn haiku tp-critic subagent
 - Loop until no HIGH findings
 - Executor fixes issues before continuing
 

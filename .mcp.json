@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "mcp-searxng": {
+      "type": "http",
+      "url": "http://100.80.231.128:8002/mcp"
+    },
+    "mcp-coderepo": {
+      "type": "http",
+      "url": "http://100.80.231.128:8003/mcp"
+    },
+    "MiniMax": {
+      "command": "uvx",
+      "args": ["minimax-coding-plan-mcp", "-y"],
+      "env": {
+        "MINIMAX_API_KEY": "MINIMAX_API_KEY",
+        "MINIMAX_API_HOST": "https://api.minimax.io"
+      }
+    },
+    "streamable-mcp-server": {
+      "type": "streamable-http",
+      "url": "http://127.0.0.1:12306/mcp"
+    }
+  }
+}

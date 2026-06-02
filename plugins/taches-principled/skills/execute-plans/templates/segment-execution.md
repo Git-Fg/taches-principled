@@ -192,7 +192,7 @@ Segment subagent workspace (20,000 tokens):
 
 ## Milestone Critique Loop (within segment)
 
-At segment midpoint (every 2-3 tasks), spawn a critic subagent and loop until no HIGH findings remain:
+At segment midpoint (every 2-3 tasks), spawn a tp-critic subagent and loop until no HIGH findings remain:
 
 Spawn the critic as a subagent (general-purpose with write access). Fill the critic's placeholders with the current segment state, files modified so far, milestone number, and review task.
 

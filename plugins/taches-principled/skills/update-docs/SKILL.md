@@ -359,4 +359,4 @@ Not all docs are equal. The CRITICAL/IMPORTANT/NICE_TO_HAVE triage ensures effor
 - Complements code review by ensuring documentation quality
 - Produces documentation updates ready for commit alongside code
 
-After drafting documentation updates, spawn a reviewer subagent to verify completeness, accuracy, and coverage of all doc targets. Loop until no HIGH findings. For critical documentation (public API docs, migration guides), also spawn a critic subagent to stress-test for blind spots and unstated assumptions.
+After drafting documentation updates, spawn a reviewer subagent to verify completeness, accuracy, and coverage of all doc targets. Loop until no HIGH findings. For critical documentation (public API docs, migration guides), also spawn a tp-critic subagent to stress-test for blind spots and unstated assumptions.

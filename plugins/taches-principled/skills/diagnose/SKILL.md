@@ -23,10 +23,10 @@ argument-hint: "[problem description]"
 
 ## Decision Router
 
-IF investigating a specific incident, recurring issue, or major problem needing structured documentation → use **A3** mode — ALWAYS spawn an explorer subagent to investigate before analysis
+IF investigating a specific incident, recurring issue, or major problem needing structured documentation → use **A3** mode — ALWAYS spawn a tp-explorer subagent to investigate before analysis
 IF problem has a clear single causal chain from symptom to root → use **FIVE-WHYS** mode
-IF problem has multiple potential contributing factors across domains → use **FISHBONE** mode — ALWAYS spawn category-specific explorer subagents in parallel for each factor
-IF an error surfaces deep in execution with a long call chain → use **STACK-TRACE** mode — ALWAYS spawn a debug-tracer subagent to instrument code before failure points and trace backward through the call chain
+IF problem has multiple potential contributing factors across domains → use **FISHBONE** mode — ALWAYS spawn category-specific tp-explorer subagents in parallel for each factor
+IF an error surfaces deep in execution with a long call chain → use **STACK-TRACE** mode — ALWAYS spawn a tp-debug-tracer subagent to instrument code before failure points and trace backward through the call chain
 IF the problem type is unclear or the user wants auto-selection → use **AUTO** mode
 IF user specifies a mode explicitly → apply that mode directly
 

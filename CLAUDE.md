@@ -35,7 +35,7 @@ High trust means: write descriptions that route correctly, then stop. Don't add 
 | Critique/Review | Spawn critic subagent(s) | Glance-check of trivial output |
 | Brainstorm/Ideate | Spawn ideation subagent(s) | Never — always parallel |
 | Debate/Compare | Spawn competing subagent(s) | Never — always parallel |
-| Reflection | Spawn self-review + self-critic subagents | Never — always after artifact |
+| Reflection | Spawn critic subagent(s) | Never — always after artifact |
 
 **The rule: If the skill loaded, the work is non-trivial by definition — spawn subagents.** The skill exists precisely because the task exceeds trivial inline execution. Trust the skill's own existence as the signal.
 
@@ -130,7 +130,6 @@ Skills can operate as **hubs** (orchestrate other skills via decision routing) o
 ### Exempt Skills (Do Not Merge)
 
 - `create-plans` + `execute-plans` — project planning lifecycle
-- `create-prompts` + `execute-prompts` — prompt creation lifecycle
 - `refine-task` + `implement-task` — task lifecycle (refine produces specs, implement executes)
 - `ideation` + `add-task` — capture lifecycle (ideation explores, add-task persists)
 - Marketplace hub skills — plugins with multi-mode routing
@@ -170,7 +169,6 @@ plugins/
 ├── tp-tdd/                    # Test-driven development
 ├── tp-ddd/                    # Domain-driven design
 ├── tp-force-multiplier/       # Hook-driven coaching
-├── tp-vps-governance/         # Config auditing and memory curation
 └── tp-meta/                   # Session meta-review and behavioral analysis
 
 .claude-plugin/
@@ -392,7 +390,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 ### Skill Quality Checks
 
 - [ ] **Subagent spawn check**: Every skill that explores, implements, researches, or creates has explicit spawn instructions in its body — not optional tips, not conditional recommendations
-- [ ] **Critique loop check**: Every skill that produces artifacts ends with "spawn self-review and self-critic subagents, loop until no HIGH findings" or equivalent
+- [ ] **Critique loop check**: Every skill that produces artifacts ends with "spawn critic subagent, loop until no HIGH findings" or equivalent
 - [ ] **Skill budget check**: Run `/context` and `/doctor` — verify no skills dropped or descriptions truncated
 - [ ] **Description length check**: Combined `description` + `when_to_use` ≤1,536 chars; front-load trigger phrases in the first 200 chars
 - [ ] **Tool field check**: Agent definitions use `tools:` (allowlist). Skills use `allowed-tools:` (pre-approval). Commands use `allowed-tools:` (pre-approval). Never confuse these semantics.

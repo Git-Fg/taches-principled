@@ -33,8 +33,13 @@ Archive is the closure step in the plan lifecycle. It preserves artifacts for fu
 
 1. Locate the target plan artifacts: PLAN.md, SUMMARY.md, related scratchpad files
 2. Identify the milestone/phase from the plan's context (ROADMAP.md or directory structure)
-3. Verify plan is completed (SUMMARY.md exists) or abandoned
-4. List all artifacts to include in the archive bundle
+3. **HARD PRECONDITION CHECK — ABORT if not satisfied:**
+   - **A. Plan completed:** `SUMMARY.md` MUST exist at the same path as `PLAN.md`. If missing → emit `{"status": "failed", "reason": "no-summary", "retry_possible": false, "completed_portion": "discovery", "remediation": "Run execute-plans to produce SUMMARY.md, or run /archive with --abandoned flag if the plan was intentionally abandoned."}` and STOP. Do NOT proceed to Phase 2.
+   - **B. Plan abandoned (explicit override):** If user passes `--abandoned` or `--force`, accept the plan as abandoned. In this case the archive bundle includes a `STATUS.md` placeholder noting the abandonment and the reason (sourced from the user); learnings extraction is limited to whatever PLAN.md captured.
+4. **If both A and B fail** (no SUMMARY and no `--abandoned` flag): halt with the `no-summary` failure signal above.
+5. List all artifacts to include in the archive bundle (PLAN.md, SUMMARY.md, scratchpad files, ROADMAP.md excerpt).
+
+**Enforcement rule:** Phases 2 (Archive) and 3 (Condense) MUST NOT execute until Phase 1's precondition check passes. This is a hard gate, not a warning.
 
 ### Phase 2: Archive
 
@@ -84,6 +89,7 @@ Do NOT archive:
 | status | reason | retry_possible |
 |--------|--------|----------------|
 | `failed` | `no-completed-plans` | `false` |
+| `failed` | `no-summary` | `false` |
 | `failed` | `archive-write-failed` | `true` |
 | `failed` | `learnings-conflict` | `true` |
 | `failed` | `plan-not-found` | `true` |

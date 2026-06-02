@@ -1,6 +1,6 @@
 # Evaluation Protocol
 
-Shared judge/critic evaluation protocol used by `execute-plans`, `refine-task`, and `implement-task`. Any skill that runs independent quality evaluation MUST follow these rules. The skill that invokes the judge defines its own scoring scale, threshold, and trigger conditions — this document covers the rules common to all three.
+Shared judge/critic evaluation protocol used by `execute-plans` and `task-lifecycle`. Any skill that runs independent quality evaluation MUST follow these rules. The skill that invokes the judge defines its own scoring scale, threshold, and trigger conditions — this document covers the rules common to all.
 
 ## Independent Judge Subagent
 
@@ -22,7 +22,7 @@ When scoring, the judge must provide written justification BEFORE the numerical 
 
 ## Scoring Scale (Numeric Variant)
 
-When the skill uses numeric scoring (refine-task, implement-task):
+When the skill uses numeric scoring (task-lifecycle REFINE and IMPLEMENT modes):
 
 | Score | Label | Meaning |
 |-------|-------|---------|
@@ -69,8 +69,8 @@ Use the configured THRESHOLD value. Never hardcode a threshold. The configuratio
 
 | Skill | Default | Critical Override |
 |-------|---------|-------------------|
-| refine-task | 3.5/5.0 | n/a |
-| implement-task | 4.0/5.0 | 4.5/5.0 for critical steps |
+| task-lifecycle REFINE mode | 3.5/5.0 | n/a |
+| task-lifecycle IMPLEMENT mode | 4.0/5.0 | 4.5/5.0 for critical steps |
 | execute-plans | n/a (qualitative HIGH-finding critic) | n/a |
 
 ## Retry Flow
@@ -105,7 +105,7 @@ Excessively long output that buries these four sections in prose is itself a rej
 Skills that consume this protocol MAY specialize the trigger conditions, scoring scale, and aggregation:
 
 - **execute-plans** — qualitative critic. Looks for HIGH findings (correctness, edge cases, regressions, deviation handling). Loop ends when no HIGH findings remain. No numeric scoring, no weighted rubric, but integrity rules (chain-of-thought, scratchpad-first, MAX_ITERATIONS) still apply.
-- **refine-task** — single judge per phase, 1-5 weighted rubric, threshold 3.5. Phase-specific evaluation dimensions defined inline.
-- **implement-task** — single judge or panel of 2 judges per step. Panel uses median voting with high-variance check (|score1 - score2| > 2.0 → flag for user resolution). 1-5 weighted rubric, threshold 4.0 (standard) or 4.5 (critical).
+- **task-lifecycle REFINE mode** — single judge per phase, 1-5 weighted rubric, threshold 3.5.
+- **task-lifecycle IMPLEMENT mode** — single judge or panel of 2 judges per step. Panel uses median voting with high-variance check (|score1 - score2| > 2.0 → flag for user resolution). 1-5 weighted rubric, threshold 4.0 (standard) or 4.5 (critical).
 
 When a skill uses this protocol, the skill body defines the variant; this document covers the invariant rules.

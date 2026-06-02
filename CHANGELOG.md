@@ -2,6 +2,57 @@
 
 All notable changes are documented here.
 
+## [1.2.0] — 2026-06-02
+
+### Added
+- **tp-meta capture skill**: New skill that runs `claude -p` headless capture with canonical behavioral-verification flags. Produces three artifacts: debug log, stream-json output, persisted JSONL. Triggers on "capture session", "profile a skill invocation", "run verification capture".
+- **tp-meta session-inspect multi-artifact routing**: Extended INSPECT mode to route by artifact type — `.jsonl` → JSONL parser, `.debug.log` → debug-log parser (extracts [HOOK]/[API]/[PERMISSION]/[ERROR] events), `.stream.jsonl` → stream-json parser (per-turn delta events).
+- **tp-meta meta-review CROSS-ANALYZE mode**: New mode fans out three parallel specialists (forensic-analyst on stream-json, meta-reviewer on JSONL, debug-tracer on debug log), detects convergence across analysts. High-convergence findings (≥2 analysts) are the highest-signal outputs.
+- **tp-meta meta-review ADJUDICATE mode**: New mode validates each cross-analyze finding with parallel evidence-validator + adversarial challenge. Classifies findings as validated/speculative/rejected. Uses `background: true` for concurrent per-finding validation.
+
+### Changed
+- **session-inspect description**: Added trigger phrases for parsing debug logs and stream-json ("parse debug log", "analyze hook events", "extract hook fires")
+
+## [1.1.0] — 2026-06-02
+
+### Fixed
+- **meta-issue skill**: Fixed label creation order for non-admin users — issue now creates cleanly without label when gh label create fails due to insufficient permissions
+- **tp-force-multiplier hook**: Rewrote SessionStart hook with conditional three-gate coaching instead of "all capabilities are mandatory" anti-pattern
+- **tp-critic agent**: Commented out cross-plugin dead skill references (fpf, sadd, ddd, tdd, kaizen) for partial-install safety
+
+### Changed
+- **10 agent renames**: Dropped `fpf-` and `sadd-` filename prefixes across tp-fpf (4 agents) and tp-sadd (6 agents)
+- **sadd JUDGE triggers**: Replaced bare-verb triggers with phrase-level specific ones to resolve routing collisions
+- **create-plans skill**: All critic-loop sites now reference MAX_ITERATIONS=3 (per evaluation-protocol.md); vague template paths replaced with explicit `templates/brief.md`
+- **execute-plans skill**: All critic-loop sites now bounded by MAX_ITERATIONS (3 for milestone, 2 for pre-execution/per-task); template paths now explicit
+- **orchestrate command**: Expanded from 3-line stub to 8-step protocol referencing scratchpad, evaluation-protocol, and subagent-orchestration skill
+
+### Added
+- **orchestrate-solo command**: New first-class lightweight mode command — no subagents, no scratchpad, no critic loop; sequential in-context execution for small tasks
+- **archive-plan hard precondition**: Phase 1 now enforces SUMMARY.md existence with structured JSON failure signal and --abandoned override path
+- **subagent-orchestration routing**: Added --solo/--lightweight decision rules to skill Decision Router
+
+### Removed
+- **sadd JUDGE**: 5 bare-verb trigger phrases that caused routing collisions with refine/diagnose/git/create-plans
+
+## [0.12.1] — 2026-06-02
+
+### Added
+- **`memory-curator` skill** (moved from `tp-vps-governance`): Audits, deduplicates, and archives Claude Code memory files. Modes: AUDIT, DEDUP, ARCHIVE, CLEAN. Includes `scripts/dedup.py` for semantic deduplication via Jaccard similarity.
+- **`rules-orchestration` AUDIT mode**: Analyzes CLAUDE.md hierarchy for conflicts, duplications, and cross-file contradictions. Extracted from `config-auditor`.
+- **`plan-verifier` agent tools**: Added `Write` and `Edit` to the allowlist for scratchpad-first evaluation protocol compliance.
+
+### Removed
+- **`tp-vps-governance` plugin**: Deleted after capability migration to core plugin. `config-auditor` absorbed into `rules-orchestration` AUDIT mode; `memory-curator` moved to `plugins/taches-principled/skills/memory-curator/`.
+
+## [0.12.0] — 2026-06-01
+
+### Changed
+- **`tp-meta` consolidated into single hub skill `session-analytics`**: Merged `meta-issue`, `meta-review`, and `session-inspect` into one skill with INSPECT / REVIEW / ISSUE decision router. Each mode has its own reference file (`references/inspect-reference.md`, `references/review-reference.md`, `references/issue-reference.md`). Commands updated to target the new hub skill. Plugin version bumped to 0.2.0.
+
+### Removed
+- **`meta-issue`, `meta-review`, `session-inspect` skills** (3 directories): Superseded by `session-analytics` hub.
+
 ## [0.11.1] — 2026-06-01
 
 ### Changed

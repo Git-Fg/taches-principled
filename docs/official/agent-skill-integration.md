@@ -76,7 +76,7 @@ skills: [implement-task, tool-design, rules-orchestration]
 ---
 name: researcher
 description: Researches topics via web search and documentation
-skills: [diagnose, improve, create-prompts]
+skills: [diagnose, improve]
 ---
 # Research path unpredictable — preloads for any methodology needed
 ```
@@ -155,7 +155,7 @@ skills: [skill-authoring, subagent-orchestration, diagnose, improve]
 skills: [implement-task, tool-design]
 
 # Research agent — with research and discovery skills
-skills: [diagnose, create-prompts, ideation]
+skills: [diagnose, ideation]
 
 # Evaluation agent — with framework it evaluates against
 skills: [some-framework]
