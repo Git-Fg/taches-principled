@@ -1,0 +1,30 @@
+[workspace]
+resolver = "2"
+members = ["crates/wrapper"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+rust-version = "1.75"
+
+[workspace.dependencies]
+# MCP server (Streamable HTTP + stdio transports, schemars for inputSchema)
+rmcp = { version = "0.3", features = ["server", "macros", "transport-io", "schemars"] }
+schemars = "1.0"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# CLI argument parsing — same argv for both skill side and MCP init
+clap = { version = "4", features = ["derive", "env"] }
+
+# Async runtime (with `process` for `claude` shell-outs)
+tokio = { version = "1", features = ["full", "process"] }
+
+# Logging to stderr (stdout is reserved for MCP stdio transport)
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Error handling
+anyhow = "1"
+thiserror = "1"
