@@ -2,6 +2,15 @@
 
 All notable changes are documented here.
 
+## [1.6.0] — 2026-06-03
+
+### Added
+- **`web-search` skill** (core-principled 0.12.0): tool-agnostic best practices for finding, verifying, and evaluating information on the open web. Merges two competing drafts (information-retrieval lens + epistemology lens) into a single hub: cognitive discipline, query reformulation, source hierarchy (primary → secondary → tertiary), cross-reference verification with 3 gates, 17-row failure-modes table, and the discipline of stopping when an answer is unfindable. Description uses user-vocabulary triggers ("find X", "look up Y", "is this claim true", "what do experts say"). Files: `SKILL.md` + `references/{query-shapes,source-hierarchy,verification-protocol,when-not-to-search}.md`.
+
+### Changed
+- **core-principled bumped to 0.12.0** (from 0.11.0) for the new `web-search` skill.
+- **marketplace.json**: `core-principled` description updated to mention web search best practices; keywords gain `web-search`, `web-research`, `fact-check`, `source-evaluation`.
+
 ## [1.5.0] — 2026-06-03
 
 ### Changed

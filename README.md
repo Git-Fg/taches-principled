@@ -35,7 +35,7 @@ Skills load on demand and give Claude domain expertise without bloating every co
 | **diagnose** | Systematic problem investigation |
 | **refine** | Quality improvement hub (simplify, review, critique, polish) |
 | **subagent-orchestration** | Designing and orchestrating multi-agent systems |
-| **add-task** | Capturing structured task ideas |
+| **web-search** | Find, verify, and evaluate information on the open web |
 
 Run `/skills` in Claude Code to see the full list, or browse `plugins/core-principled/skills/`.
 
@@ -76,6 +76,7 @@ Each plugin below is independently installable and extends the core with special
 | **tp-fpf** | First Principles Framework for hypothesis-driven decisions |
 | **tp-git** | Git workflow automation |
 | **tp-session-audit** | Session meta-review, behavioral analysis, and GitHub issue reporting |
+| **claude-cli-wrapper** | MCP wrapper for the Claude Code CLI — six focused tools for executing, reviewing, and managing sessions programmatically |
 
 ## Installation
 
