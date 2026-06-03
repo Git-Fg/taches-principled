@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "taches-principled",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, development skills, and an optimal MCP wrapper for the Claude Code CLI.",
   "owner": {
     "name": "Felix",
@@ -10,8 +10,8 @@
   "plugins": [
     {
       "name": "core-principled",
-      "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, test strategy, project maintenance (plan archival and memory hygiene), code structure (architecture, transparency, API design, idiomatic naming), and tool-agnostic web search best practices (reformulation, source hierarchy, verification).",
-      "version": "0.12.0",
+      "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, test strategy, project maintenance (plan archival and memory hygiene), code structure (architecture, transparency, API design, idiomatic naming), tool-agnostic web search best practices (reformulation, source hierarchy, verification), and a live Claude Code / Agent SDK / Claude API documentation lookup agent backed by the official llms.txt index.",
+      "version": "0.13.0",
       "author": {
         "name": "Felix",
         "email": "felix@example.com"
@@ -48,7 +48,11 @@
         "headless",
         "archive",
         "learnings",
-        "rules"
+        "rules",
+        "claude-code-docs",
+        "llms-txt",
+        "documentation-lookup",
+        "reference-oracle"
       ]
     },
     {

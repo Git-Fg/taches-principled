@@ -2,6 +2,15 @@
 
 All notable changes are documented here.
 
+## [1.7.0] — 2026-06-03
+
+### Added
+- **`tp-cc-docs` agent** (core-principled 0.13.0): Reference oracle that answers questions about Claude Code, the Claude Agent SDK, and the Claude API by fetching the official documentation on every call rather than from training data. Embeds a point-in-time mirror of `https://code.claude.com/llms.txt` (145 doc pages) as a routing hint, then delegates to the canonical `https://code.claude.com/docs/en/<page>.md` URLs for the actual content. Description uses user-vocabulary triggers ("how do I X in Claude Code", "can Claude do Y", "what is the difference between hooks and skills", "where is setting Z documented"). CONTRAST clause distinguishes it from `tp-researcher` (general technology research). Color `orange` (general purpose, documentation). Tools: Bash, Read, WebFetch, WebSearch. Skills preloaded broadly per "better too much than not enough" — matches `tp-researcher`'s skill set plus `web-search`.
+
+### Changed
+- **core-principled bumped to 0.13.0** (from 0.12.0) for the new `tp-cc-docs` agent.
+- **marketplace.json**: `core-principled` description updated to mention the docs lookup agent; keywords gain `claude-code-docs`, `llms-txt`, `documentation-lookup`, `reference-oracle`. Marketplace version bumped to 0.14.0.
+
 ## [1.6.0] — 2026-06-03
 
 ### Added
