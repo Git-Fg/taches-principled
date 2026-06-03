@@ -2,6 +2,22 @@
 
 All notable changes are documented here.
 
+## [1.8.0] — 2026-06-03
+
+### Added
+- **`tp-mcp` plugin (0.1.0)**: New domain-specific plugin for MCP (Model Context Protocol) server design and implementation. Three skills covering the full server lifecycle, derived from the design thesis documented in the Kimi brainstorm on the `claude-cli-wrapper` schema:
+  - **`mcp-server-design`** (the hub) — Design principles: equilibrated recursivity (flat schema, deep data via pass-through), tool decomposition (1 tool vs N, when to split, the `claude-cli-wrapper` 6-tool case study), output contract (`CallToolResult` text+JSON vs other content types), JSON-RPC error code discipline (`-32602` for schema violations, custom codes for domain failures, `-32603` only for wrapper crashes), tool annotations (readOnlyHint/destructiveHint/idempotentHint/openWorldHint), pass-through principle for deep structures, context budget (≤12 KB total schema, ≤2 KB per tool), capability negotiation (tools/resources/prompts/sampling/elicitation), security MUST/SHOULD checklist (Origin header validation, OAuth Resource Server since June 2025 spec, treat annotations as untrusted), naming conventions, the Claude-Optimal validation checklist.
+  - **`mcp-server-implement`** (the production) — Build an MCP server in Rust with `rmcp` + `schemars` + `tokio`. Cargo.toml setup with the right features (`server`, `transport-io`, `transport-streamable-http-server`, `macros`), the macro cheat sheet (`#[tool_router]`, `#[tool_handler]`, `#[tool]`, `Parameters<T>`, `JsonSchema`), schemars attribute mapping table (length/range/regex/format → JSON Schema), enum idioms (rename_all, hyphenated variants), optional field patterns (`skip_serializing_if`), state management with `Arc<Mutex<...>>`, server lifecycle (initialize → capabilities → shutdown), transport choice (stdio vs Streamable HTTP vs legacy HTTP+SSE, decision matrix), stderr-only logging (`tracing-subscriber` with `with_writer(stderr)`), error mapping (`McpError::invalid_request/invalid_params/method_not_found/internal_error`), output construction, testing with the MCP Inspector, building and shipping (cross-compile, LTO/strip).
+  - **`mcp-tool-surface`** (the meta) — JSON Schema authoring for tools. Constraint design (enum/pattern/range/format/length for every property), `additionalProperties: false` discipline, `oneOf` vs discriminator-enum tradeoff (the 95/5 rule), `$ref` vs inline, draft-2020-12 selection, required vs optional decisions, the "schema is an LLM instruction manual" framing, description-writing recipe (what/format/constraints/safety), tool name conventions (snake_case, verb_noun, domain prefix when 5+), nested objects (2-level rule), defaults that help, output schemas, common-pitfalls catalog.
+- **`claude-cli` skill (claude-cli-wrapper plugin 0.2.0)**: New skill body for the existing `claude-cli-wrapper` plugin. Documents the 6 tools (`claude_execute`, `claude_session`, `claude_context`, `claude_review`, `claude_agent`, `claude_config`), per-tool semantics, key parameters, common workflows (one-shot / multi-turn / background agent / code review / structured output), output contract, and anti-patterns. The skill is the user-facing map of the binary; the design rationale lives in `mcp-server-design`.
+- **marketplace.json**: `tp-mcp` plugin entry added (category: development, version 0.1.0). Marketplace catalog version bumped to 0.15.0 (from 0.14.0).
+
+### Design decisions
+- **Plugin namespace:** `tp-mcp` (sibling of `tp-git`, `tp-fpf`, `tp-sadd`, `tp-rust`) — keeps the MCP knowledge in its own plugin rather than bloating `core-principled`.
+- **3 skills, not 4-5:** The 3 skills have non-overlapping triggers (design / implement / schema authoring) — that's the routing test for whether to split. Quality evaluation and client patterns are deferred follow-ups.
+- **JSON Schema 2020-12 default:** Per the MCP spec. Explicit `$schema` field recommended for clarity.
+- **Streamable HTTP over legacy HTTP+SSE:** The new standard for remote MCP servers. Legacy HTTP+SSE retained only for backward compatibility with 2024-11-05 clients.
+
 ## [1.7.0] — 2026-06-03
 
 ### Added
