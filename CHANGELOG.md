@@ -2,6 +2,21 @@
 
 All notable changes are documented here.
 
+## [1.7.0] — 2026-06-03
+
+### Added
+- **`tp-rust` plugin (0.1.0)**: New domain-specific plugin with four skills covering the full Rust project lifecycle, derived from a 4-track research effort (workspace, project layout, tooling, release/dependencies) analyzing 25+ production repositories and 150+ sources:
+  - **`rust-scaffold`** — Scaffold a single-crate Rust project (lib, bin, or both) with modern defaults. Default edition 2024, MSRV 1.81, resolver 2, cargo-nextest-ready structure, doctests, MSRV-aware lints. Includes Cargo.toml template, MSRV policy (api-guidelines + RustCrypto camp split), feature flag playbook ("should be additive" with mutual-exclusion escape hatch), rustdoc conventions, edition migration checklist.
+  - **`rust-workspace`** — Manage a Cargo workspace: when to split, three workspace anatomy templates, workspace inheritance (1.64+) with the additive-defaults pitfall (cargo #12162), MSRV coordination, cross-crate patterns (reqwest `__internal` feature), real-world patterns table (tokio, axum, ripgrep, cargo, rust-analyzer, deno).
+  - **`rust-quality`** — Set up CI + clippy + nextest + coverage + supply-chain ladder. Copy-pasteable GitHub Actions workflow (dtolnay + Swatinem + taiki-e stack), clippy policy (pedantic for libs), nextest profile, cargo-deny `deny.toml` (verified against 0.19+ schema, no `vulnerability`/`unlicensed` removed keys), cargo-vet Stage 2, DX tools (bacon, sccache, mold), criterion benchmarking.
+  - **`rust-release`** — Manage the release lifecycle. Cargo semver (pre-1.0 vs 1.0+, MSRV policy decision), changelog tooling decision (git-cliff vs release-please vs hand-curated), publishing playbook (3 hard rules, yank semantics, workspace lockstep), dependency management (MSRV-aware updates, `[patch.crates-io]`, vendoring), supply-chain ongoing maintenance (cargo-vet, Dependabot), feature deprecation 3-step cycle.
+- **marketplace.json**: `tp-rust` plugin entry added (category: development, version 0.1.0). Marketplace catalog version bumped to 0.14.0 (from 0.13.0).
+
+### Design decisions
+- **Plugin namespace:** `tp-rust` (sibling of `tp-git`, `tp-fpf`, `tp-sadd`) rather than bolting onto `core-principled`. The 4 skills are cohesive and distinct from the existing principles.
+- **4 skills, not 3 or 5:** Maps 1:1 to the natural Rust lifecycle (scaffold → structure → quality → release) with minimal overlap. Cross-skill handoffs documented in each skill (e.g., `rust-quality` → `rust-release` for supply-chain ongoing maintenance).
+- **Edition 2024 + MSRV 1.81 as defaults:** edition 2024 is stable since Rust 1.85 (Feb 2025); MSRV 1.81 unlocks the MSRV-aware resolver (Sept 2024). Both are ahead of much of the ecosystem but right for new projects.
+
 ## [1.6.0] — 2026-06-03
 
 ### Added
