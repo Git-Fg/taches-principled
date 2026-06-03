@@ -2,7 +2,7 @@
 name: review
 description: "Run structured code review passes via the wrapper — flat params, mode/effort/output_format enums, return pass/fail findings as a string."
 allowed-tools: Read, Bash, Grep, Glob
-when_to_use: "Use when invoking the wrapper's `review` MCP tool to run a structured code review with enum-validated mode and effort. Triggers on 'review code', 'run review', 'audit diff', 'critique changes'. Do NOT use for general execution (use execute) or session lifecycle (use session)."
+when_to_use: "Use when invoking the `review` tool to run a structured code review. Triggers on 'review code', 'audit diff', 'critique changes'. Do NOT use for prompts (use execute)."
 argument-hint: "[target] [--mode security|style|perf|correctness|all] [--effort low|medium|high|max] [--output_format text|json]"
 ---
 

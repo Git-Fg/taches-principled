@@ -2,7 +2,7 @@
 name: session
 description: "Manage Claude Code CLI sessions via the claude-cli-wrapper MCP server — create, list, resume, end. Session IDs are UUID v4."
 allowed-tools: Read, Bash, Grep, Glob
-when_to_use: "Use when invoking the wrapper's `session_*` MCP tools to create, list, resume, or end a Claude Code session. Triggers on 'start a session', 'list sessions', 'resume session', 'session id'. Do NOT use for executing prompts (use execute) or attaching context (use context)."
+when_to_use: "Use when invoking `session_*` tools to create, list, resume, or end a Claude Code session. Triggers on 'start session', 'list sessions', 'resume session'. Do NOT use for prompts (use execute)."
 argument-hint: "[create|list|get|resume|end] [--session-id <uuid>]"
 ---
 

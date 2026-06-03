@@ -2,7 +2,7 @@
 name: context
 description: "Attach, replace, and inspect context payloads for Claude Code sessions. Complex structures travel as JSON-serialized strings."
 allowed-tools: Read, Bash, Grep, Glob
-when_to_use: "Use when invoking the wrapper's `context_*` MCP tools to attach files, knowledge blobs, or task context to a session. Triggers on 'attach context', 'add file', 'load context', 'replace context'. Do NOT use for prompt execution (use execute) or session lifecycle (use session)."
+when_to_use: "Use when invoking `context_*` tools to attach files or knowledge blobs to a session. Triggers on 'attach context', 'add file', 'load context', 'replace context'. Do NOT use for prompts (use execute)."
 argument-hint: "[attach|list|get|replace|clear] [--session-id <uuid>] [--payload <json-string>]"
 ---
 

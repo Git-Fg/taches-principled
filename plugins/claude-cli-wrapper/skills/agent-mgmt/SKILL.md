@@ -2,7 +2,7 @@
 name: agent-mgmt
 description: "Spawn, list, inspect, and stop sub-agents through the wrapper. Sub-agent config travels as a JSON-serialized string. Flat parameter surface."
 allowed-tools: Read, Bash, Grep, Glob
-when_to_use: "Use when invoking the wrapper's `agent_*` MCP tools to spawn, list, inspect, or stop sub-agents. Triggers on 'spawn agent', 'list agents', 'inspect agent', 'stop agent'. Do NOT use for prompt execution (use execute) or session lifecycle (use session)."
+when_to_use: "Use when invoking `agent_*` tools to spawn, list, inspect, or stop sub-agents. Triggers on 'spawn agent', 'list agents', 'inspect agent', 'stop agent'. Do NOT use for prompts (use execute)."
 argument-hint: "[spawn|list|get|stop] [--name <id>] [--task <string>] [--config <json-string>]"
 ---
 

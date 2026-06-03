@@ -2,7 +2,7 @@
 name: execute
 description: "Execute Claude Code CLI invocations via the claude-cli-wrapper MCP server. Run prompts with mode, effort, output_format enums."
 allowed-tools: Read, Bash, Grep, Glob
-when_to_use: "Use when invoking the wrapper's `execute` MCP tool to run a Claude Code CLI task. Triggers on 'run claude', 'execute prompt', 'start claude task'. Do NOT use for session lifecycle (use session) or context attachment (use context)."
+when_to_use: "Use when invoking the wrapper's `execute` tool to run a Claude Code CLI task. Triggers on 'run claude', 'execute prompt', 'start claude task'. Do NOT use for session lifecycle (use session)."
 argument-hint: "[prompt] [--mode code|plan|ask] [--effort low|medium|high|max] [--output_format text|json|stream-json] [--session-id <uuid>]"
 ---
 

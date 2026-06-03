@@ -1,8 +1,8 @@
 ---
 name: config
-description: "Read, write, and validate the wrapper's local config file via the wrapper. Config blob is a JSON-serialized string. Single source of truth: config-file.md."
+description: "Read, write, and validate the wrapper's local config file. Config blob is a JSON-serialized string. Source of truth: config-file.md."
 allowed-tools: Read, Bash, Grep, Glob
-when_to_use: "Use when invoking the wrapper's `config_*` MCP tools to read, set, validate, or reload the local config file. Triggers on 'read config', 'set api key', 'configure model', 'validate config', 'reload config'. Do NOT use for runtime session params (use execute/session)."
+when_to_use: "Use when invoking `config_*` tools to read, set, validate, or reload the local config. Triggers on 'read config', 'set api key', 'configure model'. Do NOT use for runtime params."
 argument-hint: "[get|set|validate|reload|path] [--key <dotted-path>] [--value <json-string>]"
 ---
 

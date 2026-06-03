@@ -2,7 +2,7 @@
 name: claude-cli-wrapper
 description: "Hub for the claude-cli-wrapper MCP server — execute, session, context, review, agent, and config tools. Routes to spoke skills."
 allowed-tools: Read, Bash, Grep, Glob
-when_to_use: "Use when invoking the Claude Code CLI wrapper MCP server. Routes to the appropriate spoke skill (execute, session, context, review, agent-mgmt, config). Do NOT use for unrelated tools."
+when_to_use: "Routes to the wrapper's spoke skills (execute, session, context, review, agent-mgmt, config). Use when the request targets any of those tools. Do NOT use for unrelated MCP servers."
 argument-hint: "[mode] [args...]"
 ---
 

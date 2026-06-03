@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "taches-principled",
-  "version": "0.12.0",
-  "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, and development skills.",
+  "version": "0.13.0",
+  "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, development skills, and an optimal MCP wrapper for the Claude Code CLI.",
   "owner": {
     "name": "Felix",
     "email": "felix@example.com"
@@ -133,6 +133,31 @@
         "behavioral-verification",
         "cross-analyze",
         "adjudicate"
+      ]
+    },
+    {
+      "name": "claude-cli-wrapper",
+      "description": "Optimal MCP wrapper for the Claude Code CLI — six focused tools (claude_execute, claude_session, claude_context, claude_review, claude_agent, claude_config) with flat parameter surfaces, pass-through for complex JSON, UUID session_id validation, and enum-bounded mode/effort/permission. Ideal for any agent that needs to drive Claude Code programmatically.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Felix",
+        "email": "felix@example.com"
+      },
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "source": "./plugins/claude-cli-wrapper",
+      "category": "productivity",
+      "keywords": [
+        "taches-principled",
+        "claude-code",
+        "mcp",
+        "cli-wrapper",
+        "execute",
+        "session-management",
+        "code-review",
+        "agent-spawn",
+        "config"
       ]
     }
   ]
