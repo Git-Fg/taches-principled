@@ -17,7 +17,7 @@ argument-hint: "[feature concept, problem, or topic]"
 IF user wants to explore or refine an unformed idea → use brainstorm mode: collaborative questioning to refine
 IF user wants creative idea generation (not refinement) → use **create-ideas** mode
 IF user has simple task capture needs → use task-lifecycle CAPTURE mode instead
-IF user needs formal planning with milestones → use create-plans instead
+IF user needs formal planning with milestones → use plan-lifecycle PLAN mode instead
 IF user already knows exactly what they want → skip to design capture directly
 IF combining with development workflow → produce `.principled/specs/plans/<topic>.design.md` then create task file
 IF user needs structured evaluation rather than generation → use evaluation workflow instead
@@ -28,12 +28,12 @@ IF idea is fully formed and documented → no need for this skill
 ## DO NOT Boundaries
 
 - **DO NOT use for simple task capture** — use `task-lifecycle` CAPTURE mode instead for task capture
-- **DO NOT use for formal planning** — use `create-plans` instead for project planning
+- **DO NOT use for formal planning** — use `plan-lifecycle PLAN mode` instead for project planning
 
 ## CONTRAST
 
 - CONTRAST with task-lifecycle CAPTURE: ideation explores and refines ideas through dialogue; task-lifecycle CAPTURE mode captures clear intent as a draft. Use ideation when the idea is vague; use task-lifecycle CAPTURE when intent is clear.
-- CONTRAST with create-plans: ideation explores ideas; create-plans decomposes a project into phases and tasks. Use ideation when the concept needs exploration; use create-plans when scope is clear and decomposition is needed.
+- CONTRAST with plan-lifecycle PLAN mode: ideation explores ideas; plan-lifecycle PLAN mode decomposes a project into phases and tasks. Use ideation when the concept needs exploration; use plan-lifecycle PLAN mode when scope is clear and decomposition is needed.
 
 ---
 

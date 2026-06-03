@@ -18,7 +18,7 @@ claude plugin install taches-principled
 ```bash
 /debug <issue>        # Debug a problem
 /simplify [file]     # Simplify code
-/skill create-plans   # Plan a project
+/skill plan-lifecycle   # Plan a project
 ```
 
 Most skills load automatically when their description matches your task. Only `/debug`, `/simplify`, and `/whats-next` are explicit slash commands.
@@ -31,7 +31,7 @@ Skills load on demand and give Claude domain expertise without bloating every co
 
 | Skill | When to Use |
 |-------|-------------|
-| **create-plans** | Planning projects, phases, or features for Claude to build |
+| **plan-lifecycle** | Planning projects, phases, or features for Claude to build |
 | **diagnose** | Systematic problem investigation |
 | **refine** | Quality improvement hub (simplify, review, critique, polish) |
 | **subagent-orchestration** | Designing and orchestrating multi-agent systems |
@@ -58,11 +58,11 @@ Specialized agents for quality, review, and evaluation work.
 
 | Agent | Purpose |
 |-------|---------|
-| **code-reviewer** | Reviews code for issues that matter |
-| **grader** | Evaluates skill teaching effectiveness |
-| **critic** | Independent multi-perspective critique |
-| **global-implementer** | Quality-gated task implementation |
-| **skill-auditor** | Reviews skills for clarity and effectiveness |
+| **tp-code-quality-reviewer** | Reviews code for quality and standards |
+| **tp-grader** | Evaluates skill teaching effectiveness |
+| **tp-critic** | Independent multi-perspective critique |
+| **tp-global-implementer** | Quality-gated task implementation |
+| **tp-skill-auditor** | Reviews skills for clarity and effectiveness |
 
 Browse `plugins/core-principled/agents/` for the full roster.
 
@@ -100,7 +100,7 @@ claude plugin install tp-sadd
 claude plugin install tp-session-audit
 ```
 
-Install only the plugins you need:
+# Install only the plugins you need:
 
 ```bash
 # Core plugin (required)
@@ -110,7 +110,6 @@ claude plugin install taches-principled
 claude plugin install tp-fpf              # First principles reasoning
 claude plugin install tp-git             # Git workflow automation
 claude plugin install tp-sadd            # Structured agent-driven development
-claude plugin install tp-tdd             # Test-driven development
 claude plugin install tp-session-audit  # Session meta-review
 ```
 
@@ -120,11 +119,11 @@ To fully reinstall from scratch:
 
 ```bash
 # Uninstall all plugins
-claude plugin uninstall taches-principled tp-fpf tp-git tp-sadd tp-tdd tp-session-audit
+claude plugin uninstall taches-principled tp-fpf tp-git tp-sadd tp-session-audit
 
 # Remove marketplace
 claude plugin marketplace remove taches-principled
-
+```
 # Re-add and reinstall (from Full Marketplace Setup above)
 ```
 

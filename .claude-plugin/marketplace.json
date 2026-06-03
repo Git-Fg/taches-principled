@@ -25,7 +25,9 @@
         "claude-code",
         "skills",
         "subagents",
+        "plan-lifecycle",
         "planning",
+        "execution",
         "review",
         "kaizen",
         "analysis",
@@ -132,6 +134,6 @@
         "cross-analyze",
         "adjudicate"
       ]
-    },
-    ]
+    }
+  ]
 }

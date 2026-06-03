@@ -14,3 +14,10 @@
 # Python bytecode caches
 plugins/**/__pycache__/
 *.pyc
+
+# Mavis runtime (local plans, session state)
+.mavis/
+
+# OpenCode runtime (node_modules, tmp dylibs)
+.opencode/
+node_modules/

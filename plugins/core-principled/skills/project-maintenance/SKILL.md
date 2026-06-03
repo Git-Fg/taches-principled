@@ -8,11 +8,11 @@ argument-hint: "[plan-archive|memory-audit|memory-dedup|memory-archive|memory-cl
 
 ## Routing Guidance
 
-- AFTER execute-plans completes and `SUMMARY.md` is created (PLAN-ARCHIVE).
+- AFTER plan-lifecycle EXECUTE mode completes and `SUMMARY.md` is created (PLAN-ARCHIVE).
 - On long-running VPS instances (30+ days) when memory files have accumulated (MEMORY-AUDIT, MEMORY-DEDUP, MEMORY-CLEAN).
 - When the user wants to preserve plan artifacts before starting fresh (PLAN-ARCHIVE).
 - When stale memory entries reference deleted projects or agents (MEMORY-ARCHIVE, MEMORY-CLEAN).
-- Do NOT use for ongoing plans (no `SUMMARY.md` yet) — execute-plans first.
+- Do NOT use for ongoing plans (no `SUMMARY.md` yet) — plan-lifecycle EXECUTE mode first.
 - Do NOT use for auditing rules files — use `rules-orchestration` AUDIT mode.
 - Do NOT use for capturing general session insights — use `refine` MEMORIZE.
 
@@ -70,7 +70,7 @@ The closure step in the plan lifecycle. Preserves plan artifacts and distills le
 1. Locate target plan artifacts: `PLAN.md`, `SUMMARY.md`, related scratchpad files.
 2. Identify the milestone/phase from `ROADMAP.md` or directory structure.
 3. **HARD PRECONDITION CHECK — ABORT if not satisfied:**
-   - **A. Plan completed:** `SUMMARY.md` MUST exist at the same path as `PLAN.md`. If missing, emit `{"status": "failed", "reason": "no-summary", "retry_possible": false, "completed_portion": "discovery", "remediation": "Run execute-plans to produce SUMMARY.md, or run /archive with --abandoned flag if the plan was intentionally abandoned."}` and STOP. Do NOT proceed.
+   - **A. Plan completed:** `SUMMARY.md` MUST exist at the same path as `PLAN.md`. If missing, emit `{"status": "failed", "reason": "no-summary", "retry_possible": false, "completed_portion": "discovery", "remediation": "Run plan-lifecycle EXECUTE mode to produce SUMMARY.md, or run /archive with --abandoned flag if the plan was intentionally abandoned."}` and STOP. Do NOT proceed.
    - **B. Plan abandoned (explicit override):** If user passes `--abandoned` or `--force`, accept the plan as abandoned. Archive bundle includes a `STATUS.md` placeholder noting the abandonment and reason (sourced from the user); learnings extraction is limited to whatever `PLAN.md` captured.
 **Execution flags — there are no flag-based auto-confirm switches.** PLAN-ARCHIVE recognizes `--abandoned` (or `--force`) to override the `SUMMARY.md` precondition. MEMORY-ARCHIVE and MEMORY-CLEAN recognize `--days N` to override the default 30-day age threshold. The agent always presents a planned-action summary and waits for the user to say "yes" or "proceed" before any file move or delete. This is the safety boundary for all destructive operations. **Enforcement:** Phases 2 (Archive) and 3 (Condense) MUST NOT execute until Phase 1's precondition passes. This is a hard gate, not a warning. **Enforcement:** Phases 2 (Archive) and 3 (Condense) MUST NOT execute until Phase 1's precondition passes. This is a hard gate, not a warning.
 
@@ -97,7 +97,7 @@ Present summary:
 - Learnings extracted: {n} new, {n} reinforced
 - Knowledge base updated: yes/no
 
-After archival, consider starting a new cycle with `create-plans` to scope the next phase or feature. Archive preserves context; planning resumes momentum.
+After archival, consider starting a new cycle with `plan-lifecycle PLAN mode` to scope the next phase or feature. Archive preserves context; planning resumes momentum.
 
 ### Boundary Policy
 

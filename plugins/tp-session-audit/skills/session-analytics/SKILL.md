@@ -174,7 +174,7 @@ Reviews Claude Code session transcripts for behavioral anti-patterns and investi
 ### Process (REVIEW mode)
 
 1. **Discover session** — find the target transcript
-2. **Spawn `meta-reviewer` subagent** — reads full JSONL, produces behavioral analysis
+2. **Spawn `session-meta-reviewer` subagent** — reads full JSONL, produces behavioral analysis
 3. **Present findings** — anti-patterns (PLUGIN scope only), what went well, scope verdict
 4. **Next step suggestion** — if actionable findings exist, suggest running ISSUE mode
 
@@ -182,23 +182,23 @@ Reviews Claude Code session transcripts for behavioral anti-patterns and investi
 
 1. **Discover session** — same as REVIEW
 2. **Spawn 2 parallel subagents**:
-   - **Diagnostic subagent** (**`meta-reviewer`**): reads transcript, identifies anti-patterns and root cause scope
-   - **Context & Outcome subagent** (**`transcript-context-analyzer`**): analyzes git state, environment, and behavioral outcomes (what worked vs what broke)
+   - **Diagnostic subagent** (**`session-meta-reviewer`**): reads transcript, identifies anti-patterns and root cause scope
+   - **Context & Outcome subagent** (**`session-context-analyzer`**): analyzes git state, environment, and behavioral outcomes (what worked vs what broke)
 3. **Synthesize** — merge findings, cross-reference with git state, deduplicate, assign severity
 4. **Scope gate** — check if findings are PLUGIN scope (reportable) or USER-FILE/ENVIRONMENT scope (excluded)
 5. **Write unified report** to `.principled/scratch/meta-review-{session_id}.md`
 
 ### Privacy
 
-The **`meta-reviewer`** agent strips: file contents from workspace, user prompts verbatim (paraphrases intent only), project directory paths, environment variables, tokens, credentials.
+The **`session-meta-reviewer`** agent strips: file contents from workspace, user prompts verbatim (paraphrases intent only), project directory paths, environment variables, tokens, credentials.
 
 ### Execution
 
-**Default: subagent delegation.** For REVIEW, spawn one **`meta-reviewer`** subagent. For INVESTIGATE, spawn 2 parallel subagents. The main agent synthesizes results; it never performs transcript analysis inline.
+**Default: subagent delegation.** For REVIEW, spawn one **`session-meta-reviewer`** subagent. For INVESTIGATE, spawn 2 parallel subagents. The main agent synthesizes results; it never performs transcript analysis inline.
 
 **Spawn pattern:**
 - Scope: session transcript at `~/.claude/sessions/{uuid}/raw-transcript.jsonl`
-- Role: **`meta-reviewer`** (diagnostic), **`transcript-context-analyzer`** (context & outcome analysis)
+- Role: **`session-meta-reviewer`** (diagnostic), **`session-context-analyzer`** (context & outcome analysis)
 - Output: `.principled/scratch/meta-review-{session_id}.md`
 
 ---
@@ -240,11 +240,11 @@ The user can override with explicit confirmation.
 
 ### Execution
 
-**Default: subagent delegation.** For privacy audit and body construction, spawn an **`issue-generator`** subagent. For issue creation, use the Bash tool directly with `gh issue create`.
+**Default: subagent delegation.** For privacy audit and body construction, spawn an **`session-issue-generator`** subagent. For issue creation, use the Bash tool directly with `gh issue create`.
 
 **Spawn pattern:**
 - Scope: `.principled/scratch/meta-review-{session_id}.md`
-- Role: **`issue-generator`** (privacy audit, body construction)
+- Role: **`session-issue-generator`** (privacy audit, body construction)
 - Output: issue body file → `gh issue create`
 
 ---
@@ -262,8 +262,10 @@ The user can override with explicit confirmation.
 
 2. **Fan out three parallel specialists** (spawn all three concurrently with background=true):
    - **`session-inspector`** (**`--full`** mode) ← stream-json output → structured event list
-   - **`meta-reviewer`** (custom subagent) ← persisted JSONL → anti-pattern list
+   - **`session-meta-reviewer`** (custom subagent) ← persisted JSONL → anti-pattern list
    - **`tp-debug-tracer`** (custom subagent, if available) ← debug log → root-cause traces
+     - **Note:** `tp-debug-tracer` is also used by `diagnose` STACK-TRACE mode for backward call-chain debugging.
+
    - If **`tp-debug-tracer`** is not available, use the **`session-inspector`** on the debug log instead
 
 3. **Wait for all three** (TaskOutput with block=true for all three)
@@ -287,7 +289,7 @@ The user can override with explicit confirmation.
   "findings": [
     {
       "finding": "<description>",
-      "analysts": ["meta-reviewer", "debug-tracer"],
+      "analysts": ["session-meta-reviewer", "debug-tracer"],
       "convergence": "high",
       "severity": "HIGH",
       "evidence": { "file": "<path>", "line": <n>, "text": "..." }
@@ -345,8 +347,8 @@ The user can override with explicit confirmation.
 ## Reference Index
 
 IF performing structured data extraction (INSPECT) → spawn **`session-inspector`**
-IF performing behavioral diagnosis (REVIEW) → spawn **`meta-reviewer`**
-IF performing deep investigation (INVESTIGATE) → spawn **`meta-reviewer`** and **`transcript-context-analyzer`**
-IF performing context and outcome analysis → spawn **`transcript-context-analyzer`**
-IF performing privacy audit and issue body construction (ISSUE) → spawn **`issue-generator`**
+IF performing behavioral diagnosis (REVIEW) → spawn **`session-meta-reviewer`**
+IF performing deep investigation (INVESTIGATE) → spawn **`session-meta-reviewer`** and **`session-context-analyzer`**
+IF performing context and outcome analysis → spawn **`session-context-analyzer`**
+IF performing privacy audit and issue body construction (ISSUE) → spawn **`session-issue-generator`**
 IF performing forensic log analysis (CROSS-ANALYZE) → spawn **`session-inspector`**

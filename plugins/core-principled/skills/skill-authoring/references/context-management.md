@@ -139,10 +139,24 @@ When a skill is invoked:
 
 ---
 
+## Skill-Internal File References
+
+### Rule 1: Local Resolution
+Any path written within a skill MUST resolve within that skill's own folder. A reference to `references/X.md` resolves to `plugins/NAME/skills/SKILL/references/X.md`.
+
+### Rule 2: No Parent Traversal
+File paths MUST NOT use `../` to traverse outside the skill directory. Skills are self-contained. If a skill needs a reference file used by another skill, it must have its own local copy or the reference must be merged. Cross-skill citations must be semantic ("See the [Name] skill") rather than path-based.
+
+### Rule 3: Centralized Routing (SKILL.md only)
+ONLY the main SKILL.md file is permitted to cite supporting files. Reference files (in `references/`, `agents/`, `templates/`, `scripts/` folders) must never cross-cite other reference files. The SKILL.md is the sole, centralized router for all internal citations.
+
+---
+
 ## Common Mistakes
 
 | Mistake | Result | Fix |
 |---------|--------|-----|
+| Use `../` to reach other skills | Brittle paths, breaks when moved | Use local paths only; cite skills by name |
 | Put "When to Read" in reference files | Recursive loading logic, defeats lazy design | Reference files are pure content — only SKILL.md has loading logic |
 | Put everything in SKILL.md | Context bloat, slow loading | Move details to references/ |
 | Passive citations in SKILL.md | Ignored by LLM | Use strict imperatives with mandatory language |

@@ -8,7 +8,7 @@ argument-hint: "[ANALYZE|ADD|RESTRUCTURE|REVIEW|SYNC] [target]"
 
 ## Routing Guidance
 
-- IMMEDIATELY after significant skill execution (create-plans, execute-plans, refine) when conventions were established.
+- IMMEDIATELY after significant skill execution (plan-lifecycle, refine) when conventions were established.
 - FIRST when CLAUDE.md exceeds 200 lines or .claude/rules/ has more than 10 files.
 - Do NOT use for one-off questions or temporary instructions.
 - Do NOT modify managed/enterprise rules at system paths.

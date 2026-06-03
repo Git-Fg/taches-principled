@@ -199,7 +199,6 @@ description: Routes tasks to domain specialists. Use for any pharmacology, diagn
 
 ### Exempt Skills (Do Not Merge)
 
-- `create-plans` + `execute-plans` — project planning lifecycle
 - `refine-task` + `implement-task` — task lifecycle (refine produces specs, implement executes)
 - `ideation` + `add-task` — capture lifecycle (ideation explores, add-task persists)
 - Marketplace hub skills — plugins with multi-mode routing
@@ -214,6 +213,7 @@ description: Routes tasks to domain specialists. Use for any pharmacology, diagn
 
 | Hub Skill | Skills Merged | Rationale |
 |-----------|---------------|-----------|
+| `plan-lifecycle` | `create-plans` + `execute-plans` | Compositional pair; project planning to execution lifecycle |
 | `diagnose` | `analyse` + `analyse-problem` + `root-cause-tracing` | All problem investigation; different methods, same purpose |
 | `refine` | `reflexion` (all modes) + `write-concisely` | All improve artifact quality |
 | `subagent-orchestration` | `subagent-orchestration` + `create-subagents` | Both teach multi-agent patterns |
@@ -322,11 +322,13 @@ The first four ship under `plugins/` and `.claude-plugin/`. The fifth lives at t
 
 ### Skill-Internal File References
 
-**Two canonical rules govern skill file referencing:**
+**Three canonical rules govern skill file referencing:**
 
-1. **Default resolution**: Any path written within a skill that points to its own supporting content is, by default, resolved within that skill's folder. For example, a reference to `references/plan-format.md` from within the `create-plans` skill resolves to `plugins/core-principled/skills/create-plans/references/plan-format.md`.
+1. **Default resolution**: Any path written within a skill that points to its own supporting content is, by default, resolved within that skill's folder. For example, a reference to `references/plan-format.md` from within the `plan-lifecycle` skill resolves to `plugins/core-principled/skills/plan-lifecycle/references/plan-format.md`.
 
-2. **Centralized routing**: ONLY the main SKILL.md file is permitted to cite supporting files. Reference files (in `references/`, `agents/`, `templates/`, `scripts/` folders) must never cross-cite other reference files. The SKILL.md is the sole, centralized router for all internal citations.
+2. **No parent traversal**: File paths MUST NOT use relative parent paths (`../`) to traverse outside their containing skill directory. Skills are self-contained units; all internal references must resolve locally within the skill's root folder. Cross-skill references must be semantic (citing a skill or role by name) rather than filesystem-based.
+
+3. **Centralized routing**: ONLY the main SKILL.md file is permitted to cite supporting files. Reference files (in `references/`, `agents/`, `templates/`, `scripts/` folders) must never cross-cite other reference files. The SKILL.md is the sole, centralized router for all internal citations.
 
 **Strong language requirements:**
 - Use deterministic, imperative citations. Never use passive language like "You can read", "See reference", or "Optional guide available at".

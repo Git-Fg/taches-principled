@@ -330,11 +330,13 @@ skill-name/
 
 ### File Reference Conventions
 
-**Two canonical rules:**
+**Three canonical rules:**
 
 1. **Path resolution**: Any path within a skill that points to its own supporting content resolves within that skill's folder. Use clean relative paths like `references/file.md`, `agents/template.md`. Never use complex variables like `{baseDir}` or `${CLAUDE_SKILL_DIR}`.
 
-2. **Centralized routing**: ONLY SKILL.md cites supporting files. Reference files must never cross-cite other reference files. The SKILL.md is the sole router — all citations flow through it, never peer-to-peer between references.
+2. **No parent traversal**: File paths MUST NOT use relative parent paths (`../`) to traverse outside the skill directory. Skills are self-contained. Cross-skill references must be semantic (citing a skill or role by name) rather than path-based.
+
+3. **Centralized routing**: ONLY SKILL.md cites supporting files. Reference files must never cross-cite other reference files. The SKILL.md is the sole router — all citations flow through it, never peer-to-peer between references.
 
 **Citation language — deterministic over passive:**
 - WRONG: "You can read references/format.md for formatting rules"
@@ -398,7 +400,7 @@ Passive citations are ignored by LLMs 99% of the time. Every reference must be a
 | Missing guard rail | Set `disable-model-invocation: true` for destructive skills |
 | Brittle path reference | Use clean relative paths (e.g., `references/file.md`) — paths resolve within the skill's folder by default |
 | Relying on `allowed-tools` for security | `allowed-tools` only partially blocks; tools like `Edit` and `Agent` completely bypass it. Use `disallowed-tools` instead. |
-| Undeclared dependency | Document required MCP servers or external tools |
+| Undeclared dependency | Document required MCP servers in .mcp.json (see docs/official/plugins/plugins-reference.md §MCP servers); plugin agents silently ignore mcpServers frontmatter — declare all MCP servers in the plugin's .mcp.json or plugin.json, not in agent definition files |
 | Global package installation | Install packages locally to avoid interfering with the user's computer environment |
 | Unsafe network calls | Audit external sources; external dependencies can change and become malicious |
 | Recursive trigger | Let descriptions route. No cross-references in bodies. |
@@ -442,4 +444,7 @@ Skill creation follows phases: requirements → draft → verify → integrate. 
 
 **Principle over procedure:** A skill about coordinated work should demonstrate coordination. Frame each phase as a tracked task with clear completion criteria.
 
-For pre-commit verification of threshold checks, ALWAYS spawn a reviewer subagent and loop until no HIGH findings — it verifies routing signal density, delta clarity, and anti-pattern quality before the skill enters the loading pool.
+For pre-commit verification of threshold checks, ALWAYS spawn a reviewer subagent and loop until no HIGH findings.
+Spawn **`tp-skill-auditor`** to audit frontmatter validity, description triggers, and structure.
+Spawn **`tp-grader`** to evaluate teaching effectiveness across the four weighted dimensions.
+This verifies routing signal density, delta clarity, and anti-pattern quality before the skill enters the loading pool.

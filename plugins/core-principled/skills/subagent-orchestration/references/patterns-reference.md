@@ -238,4 +238,15 @@ def handle_customer_request(request):
 
 ## Framework Reference
 
-IF implementing a LangGraph supervisor, AutoGen GroupChat, CrewAI hierarchy, or consensus mechanism → BEFORE writing any code read `references/frameworks.md`. Do not proceed or make assumptions without reading this file.
+When selecting a multi-agent framework, match the framework's core abstraction to your task's coordination needs:
+
+- **LangGraph** — Best for **cyclic workflows and complex state management**. Uses a graph-based representation (nodes and edges) with explicit control over state transitions. Ideal for supervisors that need to loop back to specific stages or handle complex branching logic.
+- **AutoGen** — Best for **conversational and event-driven patterns**. Centered on "GroupChat" abstractions where agents interact via message-passing. Excellent for multi-agent debates, brainstorming, and flexible role-playing scenarios.
+- **CrewAI** — Best for **role-based process flows**. Focuses on "Crews" of agents with defined roles and tasks, often following a hierarchical or sequential process. Great for production-style pipelines where tasks flow through specialized workers with defined handoffs.
+- **LlamaIndex Workflows** — Best for **data-centric agentic RAG**. Provides event-driven orchestration optimized for connecting retrieval, synthesis, and evaluation steps in a highly observable way.
+
+**Decision Rule:**
+- Need strict, cyclic state control? → **LangGraph**
+- Need dynamic conversational interaction? → **AutoGen**
+- Need structured, role-based task execution? → **CrewAI**
+- Need event-driven, retrieval-heavy orchestration? → **LlamaIndex Workflows**

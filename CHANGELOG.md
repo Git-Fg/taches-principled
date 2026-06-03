@@ -36,16 +36,12 @@ All notable changes are documented here.
 
 ## [1.4.0] — 2026-06-02
 
-### Added
-- **tp-tdd plugin**: New plugin for test-driven development. Contains `tp-test-strategist` agent for test planning and coverage analysis.
-
 ### Changed
-- **tp-test-strategist agent**: Moved from `core-principled/agents/` to `tp-tdd/agents/` to follow colocalization rule (only invoked by test-orchestration skill).
 - **tp-sadd agents**: Renamed with `sadd-` prefix in both filename and frontmatter `name` field to match spawn directives in `sadd` skill. Agents affected: `explorer` → `sadd-explorer`, `judge` → `sadd-judge`, `meta-judge` → `sadd-meta-judge`, `generator` → `sadd-generator`, `synthesizer` → `sadd-synthesizer`, `expander` → `sadd-expander`.
 - **tp-fpf agents**: Renamed with `fpf-` prefix in both filename and frontmatter `name` field to match spawn directives in `fpf` skill. Agents affected: `hypothesis-generator` → `fpf-hypothesis-generator`, `evidence-validator` → `fpf-evidence-validator`, `logic-verifier` → `fpf-logic-verifier`, `trust-auditor` → `fpf-trust-auditor`.
 - **session-analytics CROSS-ANALYZE**: Fixed cross-plugin reference from `taches-principled:debug-tracer` to `core-principled:tp-debug-tracer`.
 - **session-analytics ADJUDICATE**: Fixed agent references: `tp-sadd:judge` → `tp-sadd:sadd-judge`, fallback updated to `core-principled:tp-critic`.
-- **marketplace.json**: Bumped to 0.12.0. Added `tp-tdd` plugin entry.
+- **marketplace.json**: Bumped to 0.12.0.
 - **core-principled plugin.json**: Bumped to 0.10.1.
 - **README.md**: Updated version to 0.12.0.
 
@@ -200,7 +196,7 @@ All notable changes are documented here.
 
 ### Changed
 - **Lifecycle hints removed**: Removed soft-orchestration lifecycle hints from add-task, create-prompts, implement-task per debate WEAK verdict — CONTRAST sections and decision routers are sufficient for routing
-- **tp-tdd/tdd**: Added CONTRAST section clarifying distinction from test strategy skill
+- **test-orchestration**: Added CONTRAST section clarifying distinction from test strategy skill
 - **refine-task**: Trimmed business analysis section (70 lines removed) — procedure condensed to principle
 - **implement-task**: Trimmed Pattern B/C detailed walkthroughs (150 lines removed) — step-by-step scripts condensed to policy
 
@@ -326,7 +322,7 @@ All notable changes are documented here.
 
 ### Added
 - **22 root skills**: Integrated review (review-pr, review-local-changes), kaizen (kaizen, analyse, analyse-problem, cause-and-effect, plan-do-check-act, root-cause-tracing, why), and docs (update-docs, write-concisely) into root plugin
-- **6 separate plugins**: Ported from context-engineering-kit — tp-sadd (9 skills), tp-fpf (3 skills), tp-git (4 skills), tp-tdd (1 skill), tp-ddd (14 rules) (tp-sdd deprecated and consolidated into root)
+- **5 separate plugins**: Ported from context-engineering-kit — tp-sadd (9 skills), tp-fpf (3 skills), tp-git (4 skills), tp-session-audit, tp-ddd (14 rules) (tp-sdd deprecated and consolidated into root)
 - **Decision routers**: All 60 skills now have IF/THEN decision routers at top
 - **Semantic vocabulary**: Cross-plugin synergy through shared workflow vocabulary (no plugin name references)
 - **Integration architecture**: `.principled/plans/BRIEF.md`, `ROADMAP.md`, `scratch/integration-architecture.md`, `scratch/fan-out-plan.md`

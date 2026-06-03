@@ -26,19 +26,10 @@ Create well-formatted commits with conventional messages and publish pull reques
 2. **Lint:** Run pre-commit checks unless `--no-verify`
 3. **Stage:** Auto-stage if no files staged
 4. **Split:** If changes touch multiple concerns, split into atomic commits
-5. **Message:** Generate with emoji + conventional commit format
+5. **Message:** Generate with emoji + conventional commit format.
 
-| Type | Emoji |
-|------|-------|
-| feat | ✨ |
-| fix | 🐛 |
-| docs | 📝 |
-| style | 💄 |
-| refactor | ♻️ |
-| perf | ⚡ |
-| test | ✅ |
-| chore | 🔧 |
-| ci | 🚀 |
+### Commit Conventions
+You MUST read `references/commit-conventions.md` BEFORE generating commit messages to ensure compliance with conventional commit types and emojis.
 
 ## PR Workflow
 
@@ -56,13 +47,8 @@ Create well-formatted commits with conventional messages and publish pull reques
 
 Post line-specific comments on PR diffs. Supports single comments and batched multi-file reviews.
 
-## Quick Reference
-
-| Goal | Command |
-|------|---------|
-| Single inline comment | `gh api repos/{owner}/{repo}/pulls/{pr}/comments -f body='...' -f commit_id='<sha>' -f path='<file>' -F line=<n> -f side='RIGHT'` |
-| Multi-comment review | `echo '{ "event": "COMMENT", "body": "...", "comments": [...] }' \| gh api repos/{owner}/{repo}/pulls/{pr}/reviews --input -` |
-| Get latest commit SHA | `gh api repos/{owner}/{repo}/pulls/{pr} --jq '.head.sha'` |
+### Review Commands
+You MUST read `references/review-commands.md` BEFORE executing PR reviews to use the correct `gh api` commands and review event types.
 
 ## Batch Review
 
@@ -79,12 +65,9 @@ Load all open issues from GitHub and create structured technical specifications.
 
 ## Load Issues
 
-```bash
-gh issue list --limit 100
-gh issue view <number> --json number,title,body,state,createdAt,updatedAt,author,labels,assignees,url
-mkdir -p ./specs/issues
-# Save as <NNN>-<kebab-case-title>.md
-```
+1. List issues using `gh issue list`.
+2. View specific issues using `gh issue view`.
+3. Save structured data to `./specs/issues/`.
 
 ## Analyze Issue
 
@@ -104,29 +87,8 @@ Bug fixes: emphasize test plan and reproduction. Features: emphasize technical a
 
 Power-user git: attach metadata to commits without changing SHA, work on multiple branches simultaneously.
 
-## Git Notes
-
-| Task | Command |
-|------|---------|
-| Add note | `git notes add -m "message" <sha>` |
-| Append | `git notes append -m "message" <sha>` |
-| View | `git notes show <sha>` |
-| Namespace | `git notes --ref=<name> add -m "..." <sha>` |
-| Push | `git push origin refs/notes/<name>` |
-
-Namespaces organize notes by purpose (reviews, testing, audit). Use `git config notes.rewrite.rebase true` to preserve on rebase.
-
-## Git Worktrees
-
-```bash
-git worktree add -b <branch> <path>           # new branch from HEAD
-git worktree add <path> <branch>              # existing branch
-git worktree add --track -b <branch> <path> origin/<branch>  # from remote
-git worktree list                             # list all
-git worktree remove <path>                    # remove
-```
-
-Use worktrees instead of stashing when switching contexts. One worktree per active branch.
+### Advanced Operations
+You MUST read `references/advanced-git.md` BEFORE performing advanced git operations to ensure correct usage of git notes and worktrees.
 
 **Spawn Directives:**
 - **ALWAYS spawn `git-worktree-manager` for parallel worktree setup or multi-worktree operations**

@@ -1,7 +1,7 @@
 {
   "name": "tp-session-audit",
-  "version": "0.2.1",
-  "description": "Session analytics — INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue generation).",
+  "version": "0.3.0",
+  "description": "Session analytics — CAPTURE (headless behavioral artifact collection), INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue reporting). One hub skill, four modes.",
   "author": {
     "name": "Felix",
     "email": "felix@example.com"

@@ -197,7 +197,7 @@ Pairs that create then execute should be clearly named:
 
 | Create | Execute |
 |--------|---------|
-| `create-plans` | `execute-plans` |
+| `plan-lifecycle` | `task-lifecycle` |
 | `task-lifecycle` (REFINE mode) | `task-lifecycle` (IMPLEMENT mode) |
 
 ### Cross-Skill References

@@ -13,7 +13,7 @@ argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-lo
 - IMMEDIATELY after completing significant work needing independent quality verification (CRITIQUE).
 - IMMEDIATELY when producing documentation, READMEs, or human-readable text (POLISH).
 - When consolidating reflection or critique findings into durable project memory (MEMORIZE).
-- Do NOT use for architectural decisions or greenfield development — use `create-plans` instead.
+- Do NOT use for architectural decisions or greenfield development — use `plan-lifecycle PLAN mode` instead.
 - CONTRAST with update-docs: that updates existing docs; this improves prose quality (POLISH).
 - CONTRAST with ddd: refine improves quality of existing artifacts (present, corrective); ddd performs structural analysis (architecture, quality, transparency, API). Use refine when the issue is known and needs fixing; use ddd when a specific structural question surfaces.
 - CONTRAST with kaizen: refine is on-demand quality improvement; kaizen provides continuous guardrails. Use refine after completing work; use kaizen during every code decision.
@@ -108,29 +108,9 @@ When a chain of if/elif or match/case branches over a single enum or string, rep
 4. **Mark every change with `# SIMPLIFY: <reason>`** for future verification.
 5. **Dead-code removal is always safe** if reachability is proven statically.
 
-### Numeric Thresholds
+### Implementation Guidelines
 
-| Metric | Threshold | Action |
-|--------|-----------|--------|
-| Function length | >40 lines | Extract cohesive subgroups |
-| Nesting depth | >3 levels | Guard clauses, early returns |
-| Parameters | >5 | Bundle into config object |
-| Boolean flags in params | >=2 | Split function or use enum |
-| Duplicate blocks | >=3 occurrences | Extract or parameterize |
-| Variables reassigned | >3 times | Split into smaller functions |
-
-### Anti-Patterns
-
-| Wrong | Right | Consequence |
-|-------|-------|-------------|
-| Splitting a 50-line function into 5 ten-line functions called once | Extract only when the block has a clear identity | Indirection without abstraction increases cognitive load |
-| Renaming during extraction | One transformation per commit | Bugs become untraceable |
-| Removing "unnecessary" null checks | Keep defensive checks unless type system enforces | Latent production bugs |
-| Over-normalizing with reduce/chains | Use comprehensions for simple maps/filters | The simplification becomes harder to read |
-| Flattening with boolean flags | Early returns for each condition | Debugging requires evaluating boolean algebra mentally |
-| Inlining a helper used in 3 places with different semantics | Only inline when call sites are semantically identical | Subtle semantic differences pass tests but fail at runtime |
-| Optimizing before simplifying | Simplify first, profile second, optimize third | Premature optimization creates complex code |
-| Leaving dead code as "documentation" | Git history is the record — delete | Signal-to-noise ratio degrades |
+You MUST read `references/simplify-guidelines.md` BEFORE beginning simplification to ensure compliance with numeric thresholds and anti-pattern protections.
 
 ### Boundary Policy
 
@@ -182,42 +162,9 @@ Self-critique with severity-rated findings AND multi-judge consensus for high-st
 
 Severity-rated critique without independent judges.
 
-#### Complexity Triage
+### Critique Methodology
 
-| Complexity | Signal | Depth |
-|------------|--------|-------|
-| Quick (<50 lines) | Single file, straightforward | Surface check |
-| Standard (50-200 lines) | Some abstraction or indirection | Full framework |
-| Deep (200+ lines) | Hard to verify correctness | Deep audit |
-
-#### Process
-
-1. **Initial Assessment** — Evaluate completeness, quality, correctness, dependency verification
-2. **Evidence-Based Critique** — State the problem, explain consequence, rate severity, suggest the fix
-3. **Fact-Checking** — Verify performance claims, technical facts, security assertions, best practice claims
-4. **Decision** — Approve, Request changes, or Reject
-
-#### Scoring Scale
-
-| Score | Meaning |
-|-------|---------|
-| 1 | Unacceptable — fundamental failures |
-| 2 | Below average — multiple issues |
-| 3 | Adequate — meets basic requirements |
-| 4 | Good — meets ALL requirements, minor issues |
-| 5 | Excellent — exceeds requirements |
-
-Default score is 2. Justify any upward deviation with evidence.
-
-#### Bias Countermeasures
-
-| Bias | How It Distorts You | Countermeasure |
-|------|-------------------|----------------|
-| **Sycophancy** | Wanting to say nice things | Praise is forbidden. Your job is rejection. |
-| **Length bias** | Long output = impressive | Penalize verbosity. Concise beats lengthy. |
-| **Authority bias** | Confident tone = correct | Verify every claim. Confidence is evidence of nothing. |
-| **Completion bias** | Finished = good | Completion equals nothing. |
-| **Effort bias** | Hard work = merit | Judge output, not input. |
+You MUST read `references/critique-rubric.md` BEFORE performing a critique to align with complexity triage standards, scoring scales, and bias countermeasures.
 
 ### Path 2: Multi-Judge Critique (for high-stakes work)
 
@@ -302,27 +249,9 @@ Use `--dry-run` to preview without writing. Specify source (last, selection) or 
 
 Apply Strunk & White's *Elements of Style* principles to any text a human will read. Claude already knows these rules — this skill triggers their application.
 
-### Principles of Composition
+### Composition Standards
 
-1. **Use the active voice** — more direct and vigorous than passive
-2. **Put statements in positive form** — say what is, not what isn't
-3. **Use definite, specific, concrete language** — prefer specifics to generalities
-4. **Omit needless words** — every word must tell
-5. **Keep related words together** — position shows relationship
-6. **Place emphatic words at the end** — the end is the position of prominence
-7. **Use parallel construction** — coordinate ideas in similar form
-8. **One paragraph per topic** — begin with a topic sentence
-
-### Application
-
-When writing documentation, run through each principle mentally:
-1. Scan for passive voice — rewrite to active
-2. Scan for "there is/are" — replace with stronger verb
-3. Scan for negative statements — replace with positive form
-4. Scan for wordy phrases — replace with concise equivalents
-5. Scan for vague language — replace with concrete specifics
-
-Do not enumerate which rules you applied. Simply produce cleaner text.
+You MUST read `references/polish-principles.md` BEFORE polishing prose to apply Strunk & White composition principles for clarity and conciseness.
 
 ### Design Decision
 

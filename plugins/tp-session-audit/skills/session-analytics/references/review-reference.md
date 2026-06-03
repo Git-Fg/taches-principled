@@ -4,7 +4,7 @@ Diagnoses behavioral anti-patterns in Claude Code session transcripts.
 
 ## Privacy Protocol
 
-The meta-reviewer agent must strip from output:
+The session-meta-reviewer agent must strip from output:
 - File contents from the user's workspace
 - User prompts verbatim — paraphrase intent only
 - Project directory paths
@@ -32,15 +32,15 @@ Output contains only: behavioral patterns, tool names, error categories, and sug
 ## REVIEW Mode Process
 
 1. **Discover session** — locate `~/.claude/sessions/{uuid}/raw-transcript.jsonl`
-2. **Spawn meta-reviewer agent** with:
+2. **Spawn session-meta-reviewer agent** with:
    - Session transcript path
    - Any user-specified concern (`--concern` argument)
    - Mode: REVIEW (single-pass diagnostic)
-3. **Agent reads full JSONL** — identifies anti-patterns using the meta-reviewer agent definition
+3. **Agent reads full JSONL** — identifies anti-patterns using the session-meta-reviewer agent definition
 4. **Agent writes findings** to `.principled/scratch/meta-review-{session_id}.md`
 5. **Main agent reads output** — summarizes for user with scope verdict
 
-### Meta-Reviewer Agent Prompt
+### Session-Meta-Reviewer Agent Prompt
 
 ```
 You are a diagnostic agent reviewing a Claude Code session transcript.
@@ -87,13 +87,13 @@ For deep investigation of structural or recurring failures:
 1. **Discover session** — same as REVIEW
 2. **Spawn 2 parallel subagents**:
 
-   **Diagnostic agent** (meta-reviewer):
+   **Diagnostic agent** (session-meta-reviewer):
    ```
    Read {transcript_path}, identify anti-patterns, classify by severity and scope.
    Write to {output_dir}/diagnostic.md
    ```
 
-   **Context & Outcome agent** (transcript-context-analyzer):
+   **Context & Outcome agent** (session-context-analyzer):
    ```
    Analyze git state, environment, and behavioral outcomes (what worked vs what broke).
    Write to {output_dir}/context-outcome.md

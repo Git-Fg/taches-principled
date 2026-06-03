@@ -97,10 +97,10 @@ The user can override with explicit confirmation. If they confirm, proceed with 
 
 ## Subagent Pattern
 
-For privacy audit and body construction, spawn an **`issue-generator`** subagent:
+For privacy audit and body construction, spawn an **`session-issue-generator`** subagent:
 
 ```
-Spawn issue-generator:
+Spawn session-issue-generator:
 Sanitize meta-review finding for public GitHub issue creation.
 
 Input: {meta_review_path}
