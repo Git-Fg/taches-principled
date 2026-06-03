@@ -70,3 +70,6 @@ You MUST read `references/document-templates.md` BEFORE executing documentation 
 
 You MUST read `references/evaluation-protocol.md` BEFORE scoring any artifacts.
 Evaluation uses the shared judge protocol for chain-of-thought, scratchpad-first writing, MAX_ITERATIONS semantics, and full integrity rules.
+
+## CONTRAST
+- NOT for: ddd (structure vs task execution), NOT for diagnose (analysis vs tracking), NOT for refine (improvement vs task closure), NOT for plan-do-check-act (plan vs do)

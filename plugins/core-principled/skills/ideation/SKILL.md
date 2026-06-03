@@ -89,7 +89,13 @@ Incremental validation catches misunderstandings early.
 
 # Create Ideas Mode
 
-Generate 6 distinct responses for a given topic: 3 **`tp-ideation-anchor`** agents representing central solutions, and 3 **`tp-ideation-tail`** agents exploring different solution regions. Responses must be genuinely distinct.
+Generate 6 distinct responses for a given topic.
+
+- **Anchor subagents:** Spawn 3 `tp-ideation-anchor` subagents for high-probability central solutions.
+- **Tail subagents:** Spawn 3 `tp-ideation-tail` subagents for low-probability distinct regions.
+- **Synthesis:** Do not merge or average — present 6 distinct ranked options to the user.
+- **Ranked presentation:** Order options by combined anchor/tail interest; do not flatten diversity.
+- **Output:** Write ranked design to `.principled/specs/plans/<topic>.design.md` and commit to git.
 
 ## Failure Signal
 
@@ -98,6 +104,14 @@ Generate 6 distinct responses for a given topic: 3 **`tp-ideation-anchor`** agen
 ```
 
 ---
+
+## CONTRAST
+
+- NOT for: structured agent-driven development — use sadd
+- NOT for: first-principles reasoning — use fpf
+- NOT for: code quality improvement — use refine
+- NOT for: root cause diagnosis — use diagnose
+- NOT for: design constraint decisions — use kaizen
 
 ## Reference Index
 

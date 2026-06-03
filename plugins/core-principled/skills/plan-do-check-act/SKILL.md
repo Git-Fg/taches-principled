@@ -103,10 +103,12 @@ Phase 2 always begins at small scale. Full rollout only after the Check phase co
 ### Failed experiments are learning, not failure
 ---
 
-## Reference Index
+## CONTRAST
+- NOT for: ddd (structure vs design-time decisions), NOT for diagnose (debugging vs prevention), NOT for refine (artifact polishing), NOT for kaizen (incremental vs design-time)
+
+## Agent Spawn Map
 
 IF designing PDCA experiment (Plan) → spawn **`tp-plan-architect`**
 IF executing PDCA change (Do) → spawn **`tp-global-implementer`**
 IF evaluating PDCA results (Check) → spawn **`tp-plan-verifier`**
 IF synthesizing PDCA outcome (Act) → spawn **`tp-pdca-synthesizer`**
-ting why.

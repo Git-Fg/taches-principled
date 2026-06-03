@@ -144,3 +144,6 @@ DESIGN output: Produced by the core `subagent-orchestration` skill — see that 
 | EXPLORE | Max redesign cycles exhausted | Escalate to human |
 
 All modes include structured failure signals with retry_possible flag.
+
+## CONTRAST
+- NOT for: ddd (structure vs competitive generation), NOT for diagnose (analysis vs design), NOT for refine (polish vs compete)

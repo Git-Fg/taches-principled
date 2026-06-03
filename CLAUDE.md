@@ -394,6 +394,25 @@ Skills define when to move content to `.attic/`. The attic preserves context for
 
 ## Execution Rules
 
+### Git Safety Protocol
+
+**NEVER use `git reset --hard` or any destructive git command.** These wipe working tree state that cannot be recovered from git alone. If you need to restore code to a known-good state:
+
+1. **Use `git diff` or `git show`** to identify exactly what changed and what the original content was
+2. **Use surgical `Edit` or `Write` tools** to restore specific files or sections — never wipe an entire tree
+3. **Use `git stash`** to safely set aside changes you want to preserve but not commit
+4. **Use `git checkout HEAD -- <path>`** to restore a single file to HEAD state (non-destructive overwrite)
+5. **Use `git log` + `git show`** to inspect history and reconstruct what you need
+
+**The hard reset anti-pattern:** `git reset --hard HEAD` was used in this session and wiped staged skill improvements (flattened `references/modes/`, expanded stubs). The changes were recovered by re-reading this summary and re-executing. Future agents must not repeat this — use selective restoration instead.
+
+**Recovery protocol when you've lost track of what was staged:**
+1. Run `git status` to see what files are modified vs staged
+2. Use `git diff --staged` to recover staged content you thought was lost
+3. Re-apply any work product that existed before the destructive command using what you can reconstruct from this session's summary
+
+---
+
 ### Deterministic Language
 
 **Execution-critical requirements use strong language (ALWAYS, NEVER, MUST). Exploratory guidance uses soft language (consider, prefer, typically).**

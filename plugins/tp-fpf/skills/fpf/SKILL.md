@@ -160,6 +160,9 @@ Before presenting DRR to user: spawn tp-critic subagent. Loop until no HIGH find
 
 ---
 
+## CONTRAST
+- NOT for: ddd (structure vs reasoning), NOT for diagnose (bugs vs hypotheses), NOT for kaizen (incremental vs first-principles)
+
 ## Reference Index
 
 IF generating competing hypotheses → spawn **`fpf-hypothesis-generator`**

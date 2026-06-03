@@ -286,3 +286,6 @@ Never delegate:
 | Generate edge-case tests | Contest | Multiple perspectives catch gaps |
 | Major refactor | Horizontal Split + Specialist | Dedicated expert attention |
 | Ongoing maintenance | Background Monitor | Proactive improvement |
+
+## CONTRAST
+- NOT for: ddd (structure vs delegation), NOT for diagnose (analysis vs orchestration), NOT for sadd (patterns vs execution)

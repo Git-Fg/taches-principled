@@ -273,3 +273,6 @@ Claude already knows these rules from training. The skill's only job is to trigg
 | `failed` | `critique-conflict` | `false` |
 | `failed` | `scope-overflow` | `true` |
 | `failed` | `self-critique-loop` | `true` |
+
+## CONTRAST
+- NOT for: ddd (structure vs artifact quality), NOT for diagnose (root cause vs polish), NOT for plan-do-check-act (improvement vs experimentation), NOT for kaizen (cleanup vs design constraints)

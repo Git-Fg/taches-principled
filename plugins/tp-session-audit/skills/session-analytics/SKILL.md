@@ -344,6 +344,9 @@ The user can override with explicit confirmation.
 
 ---
 
+## CONTRAST
+NOT for diagnose (session patterns vs code bugs), NOT for code-review (workflow anti-patterns vs code quality)
+
 ## Reference Index
 
 IF performing structured data extraction (INSPECT) → spawn **`session-inspector`**

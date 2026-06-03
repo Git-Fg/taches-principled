@@ -11,6 +11,15 @@ All notable changes are documented here.
 - **core-principled bumped to 0.12.0** (from 0.11.0) for the new `web-search` skill.
 - **marketplace.json**: `core-principled` description updated to mention web search best practices; keywords gain `web-search`, `web-research`, `fact-check`, `source-evaluation`.
 
+### Fixed
+- **ddd SKILL.md** (core-principled): Description rewritten from method-leaking to user vocabulary; "What This Skill Changes" section added; QUALITY mode expanded with 5-step Process, 4 Anti-Patterns, 4 Failure Cases; Failure Signal JSON schemas added for ARCHITECTURE and API modes; CONTRAST section added. Token budget ~1,688 tokens (well under 2,000 safe limit).
+- **diagnose SKILL.md** (core-principled): H1 renamed to `## Routing Guidance`; original `## Routing Guidance` renamed to `## Activation Triggers`; orphaned Gemba Walk/VSM/Muda Analysis rows removed; CONTRAST section added.
+- **ideation SKILL.md** (core-principled): "Create Ideas Mode" expanded from 1-line stub to full 9-line section with anchor/tail subagent roles, synthesis rule, ranked output format; CONTRAST section added.
+- **8 skills CONTRAST sections** (core-principled + tp-fpf + tp-sadd + tp-session-audit): Added CONTRAST sections to kaizen, plan-do-check-act, refine, task-lifecycle, subagent-orchestration, fpf, sadd, session-analytics for routing mutual exclusivity.
+- **plan-do-check-act SKILL.md** (core-principled): Corrupted fragment "ting why." removed; "Reference Index" renamed to "Agent Spawn Map".
+- **session-analytics references** (tp-session-audit): `cross-analyze-protocol.md` and `adjudicate-protocol.md` expanded from stubs to full reference content.
+- **CLAUDE.md**: Git Safety Protocol section added — "NEVER use `git reset --hard`" with surgical recovery alternatives.
+
 ## [1.5.0] — 2026-06-03
 
 ### Changed

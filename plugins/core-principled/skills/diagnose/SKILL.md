@@ -9,7 +9,7 @@ when_to_use: |
 argument-hint: "[problem description]"
 ---
 
-## Routing Guidance
+## Activation Triggers
 
 - IMMEDIATELY when investigating incidents, recurring issues, systemic failures, or bugs with long call chains.
 - CONTRAST with fpf and refine: diagnose investigates why something is broken (past, causal, unknown type); fpf evaluates competing options to decide a path forward (future); refine improves known artifacts (present, corrective). Prefer diagnose when "problem" or "issue" appears without alternatives.
@@ -36,7 +36,7 @@ IF user specifies a mode explicitly → apply that mode directly
 
 ---
 
-# Diagnose
+## Routing Guidance
 
 Problem investigation across five complementary methods. Each method targets a distinct problem structure. AUTO mode removes decision overhead when the target type is clear.
 
@@ -50,17 +50,6 @@ Auto-selects the most appropriate method based on problem type when the user has
 | A clear single causal chain from symptom to root cause | Five Whys |
 | Multiple potential contributing factors across domains | Fishbone |
 | An error deep in execution with unknown origin | Stack Trace |
-| Code implementation, legacy systems, docs vs reality gaps | Gemba Walk (via AUTO sub-selection) |
-| Workflows, CI/CD pipelines, cycle time | Value Stream Mapping (via AUTO sub-selection) |
-| Code quality, technical debt, waste | Muda Analysis (via AUTO sub-selection) |
-
-### AUTO Sub-Selection
-
-When AUTO mode selects deeper analysis or when the problem type is already clear:
-
-- **Gemba Walk** — Observe actual code: entry points, data flow, compare assumptions against reality, document surprises
-- **Value Stream Mapping** — Measure flow: map steps, measure processing vs waiting time, calculate lead time and efficiency
-- **Muda Analysis** — Classify waste: examine seven waste types, quantify impact, prioritize by severity
 
 ---
 
@@ -95,3 +84,9 @@ A3 can incorporate Five Whys or Fishbone within its root cause section. Stack Tr
 - `reason`: Specific failure mode from the options above
 - `completed_portion`: What was completed before failure (e.g., "5 whys completed, cause unclear")
 - `retry_possible`: `true` if recoverable with different approach; `false` if needs human input
+
+## CONTRAST
+
+- NOT for: runtime debugging with breakpoints or live instrumentation — use the debug skill
+- NOT for: first-principles reasoning on competing hypotheses — use fpf
+- NOT for: general code improvement or cleanup — use refine

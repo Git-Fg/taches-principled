@@ -121,3 +121,6 @@ The patterns these pillars enforce (making invalid states unrepresentable, valid
 
 ### Guardrail stance, not procedure
 This skill does not define a workflow. It defines invariants that apply across all workflows. The structured analysis methods (tracing, Five Whys, Fishbone, PDCA, A3) are complementary tools invoked when these guardrails surface a problem worth analyzing in depth.
+
+## CONTRAST
+- NOT for: ddd (structure vs design-time decisions), NOT for diagnose (debugging vs prevention), NOT for refine (artifact polishing), NOT for plan-do-check-act (experimentation vs design constraints)
