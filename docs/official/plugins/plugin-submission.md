@@ -4,6 +4,10 @@ when_to_read: When submitting plugins for distribution or choosing between direc
 path: ./official/plugins/plugin-submission.md
 ---
 
+> ## Documentation Index
+> Fetch the complete documentation index at: https://code.claude.com/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
 # Plugin Submission - Claude Official Documentation
 
 Source: https://claude.com/docs/plugins/submit

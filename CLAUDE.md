@@ -739,6 +739,8 @@ This marketplace must synergize with any other marketplace or plugin the user ma
 | [agent-types.md](docs/official/agent-types.md) | Before choosing agent type |
 | [agent-tool-params.md](docs/official/agent-tool-params.md) | Before spawning subagents |
 | [agent-skill-integration.md](docs/official/agent-skill-integration.md) | Before adding skills to agents |
+| [rules.md](docs/official/rules.md) | Before writing rules or CLAUDE.md |
+| [memory.md](docs/official/memory.md) | Before configuring CLAUDE.md hierarchy or .claude/rules/ |
 
 ### Plugin References
 

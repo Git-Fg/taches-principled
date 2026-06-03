@@ -4,6 +4,10 @@ when_to_read: When choosing agent types or understanding model/tool implications
 path: ./official/agent-types.md
 ---
 
+> ## Documentation Index
+> Fetch the complete documentation index at: https://code.claude.com/docs/llms.txt
+> Use this file to discover all available pages before exploring further.
+
 # Agent Types Reference
 
 Source: [Claude Code Subagents Documentation](https://code.claude.com/docs/en/sub-agents.md)
