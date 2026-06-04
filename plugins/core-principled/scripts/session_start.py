@@ -95,12 +95,39 @@ def main() -> None:
         "Subagent fan-out is a cost-bearing decision, not a default."
     )
 
+    # Subagent contract design awareness (P1-P6 from CHANGELOG 1.14.0)
+    coaching += (
+        "\n\n## Subagent contract awareness\n"
+        "When writing or modifying a subagent definition, the 6 design principles "
+        "(P1-P6) at "
+        "`plugins/core-principled/skills/subagent-orchestration/references/subagent-contract-design.md` "
+        "apply. The P6 ground-truth principle requires that any subagent making "
+        "factual claims about the codebase must have Read access and must actually "
+        "Read the relevant files before asserting file paths, line numbers, or content. "
+        "Use the 3-phase testing methodology (static read → real invocation → JSONL trace) "
+        "in `docs/CONTRIBUTING.md` before merging any agent change."
+    )
+
+    # Session log location awareness (from CHANGELOG commit f319b32)
+    coaching += (
+        "\n\n## Session log locations\n"
+        "When auditing a session, read the canonical artifact map at "
+        "`plugins/tp-session-audit/skills/session-analytics/references/session-anatomy.md` "
+        "BEFORE opening any log file. Key paths: main session transcript at "
+        "`~/.claude/projects/<encoded-cwd>/<sessionId>.jsonl`; subagent transcripts at "
+        "`~/.claude/projects/<encoded-cwd>/<sessionId>/subagents/<agent-id>.jsonl`; "
+        "captures at `~/.claude/captures/<UUID>.{stream.jsonl,debug.log}`. "
+        "The encoded-CWD scheme replaces `/` with `-`."
+    )
+
     # Dynamic .principled awareness
     project_dir = os.environ.get("CLAUDE_PROJECT_DIR")
     if project_dir:
         principled_path = Path(project_dir) / ".principled"
+        marketplace_path = Path(project_dir) / ".claude-plugin"
     else:
         principled_path = Path.cwd() / ".principled"
+        marketplace_path = Path.cwd() / ".claude-plugin"
 
     if principled_path.exists():
         tree, snippets = scan_principled(principled_path)
@@ -109,6 +136,15 @@ def main() -> None:
             if snippets:
                 principled_section += "\n\n### File Previews" + "".join(snippets)
             coaching += principled_section
+
+    # Catalog state awareness (two-source model)
+    if marketplace_path.exists():
+        catalog_section = "\n\n## Catalog state (two-source model)\n"
+        catalog_section += "name/version/description: per-plugin `plugin.json` (spec-authoritative)\n"
+        catalog_section += "source/homepage/repository/license/category/keywords: `.claude-plugin/_meta.json`\n"
+        catalog_section += "marketplace.json is derived. Update via CLAUDE.md 'Version & Release' one-liner.\n"
+        catalog_section += "CI: `.github/workflows/validate-marketplace.yml` runs on every PR.\n"
+        coaching += catalog_section
 
     output = {
         "hookSpecificOutput": {
