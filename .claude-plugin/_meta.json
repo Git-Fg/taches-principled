@@ -1,0 +1,74 @@
+{
+  "core-principled": {
+    "source": "./plugins/core-principled",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "development",
+    "keywords": ["claude-code", "skills", "subagents", "plan-lifecycle", "planning", "execution", "review", "testing", "multi-agent", "tool-design", "documentation", "security", "web-research", "rules"]
+  },
+  "tp-sadd": {
+    "source": "./plugins/tp-sadd",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "development",
+    "keywords": ["taches-principled", "claude-code", "evaluation", "subagents", "judge"]
+  },
+  "tp-fpf": {
+    "source": "./plugins/tp-fpf",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "development",
+    "keywords": ["taches-principled", "claude-code", "reasoning", "fpf", "decisions"]
+  },
+  "tp-git": {
+    "source": "./plugins/tp-git",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "productivity",
+    "keywords": ["taches-principled", "claude-code", "git", "version-control"]
+  },
+  "tp-session-audit": {
+    "source": "./plugins/tp-session-audit",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "productivity",
+    "keywords": ["taches-principled", "claude-code", "session-analytics", "meta-review", "session-analysis", "behavioral-review", "capture", "behavioral-verification", "cross-analyze", "adjudicate"]
+  },
+  "claude-cli-wrapper": {
+    "source": "./plugins/claude-cli-wrapper",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "productivity",
+    "keywords": ["taches-principled", "claude-code", "mcp", "cli-wrapper", "execute", "session-management", "code-review", "agent-spawn", "config"]
+  },
+  "tp-rust": {
+    "source": "./plugins/tp-rust",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "development",
+    "keywords": ["taches-principled", "claude-code", "rust", "cargo", "rust-scaffold", "rust-workspace", "rust-quality", "rust-release", "rust-tooling", "rust-publishing", "rust-supply-chain", "rust-ci"]
+  },
+  "tp-mcp": {
+    "source": "./plugins/tp-mcp",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "development",
+    "keywords": ["taches-principled", "claude-code", "mcp", "model-context-protocol", "mcp-server", "mcp-server-design", "mcp-server-implement", "mcp-tool-surface", "json-schema", "rmcp", "schemars", "rust-mcp"]
+  },
+  "tp-wiki": {
+    "source": "./plugins/tp-wiki",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "productivity",
+    "keywords": ["taches-principled", "claude-code", "wiki", "knowledge-base", "notes", "lint", "search", "ingest", "build"]
+  }
+}
