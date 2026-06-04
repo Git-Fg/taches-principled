@@ -18,10 +18,10 @@ The single most important framing for every change in this repo:
 | `plugins/<plugin>/hooks/*` | **End-user Claude** | At lifecycle events |
 | `.claude-plugin/marketplace.json` | **Marketplace installer** | At plugin install |
 | `CLAUDE.md` (this file) | **Maintainer only** (human + AI in this repo) | Only when working *in this repo* |
-| `docs/` | **Maintainer only** | Read by us when authoring; invisible to anyone installing the marketplace |
+| `knowledge/` | **Maintainer only** | Read by us when authoring; invisible to anyone installing the marketplace |
 | `README.md`, `CHANGELOG.md` | **Human readers** on GitHub | Never loaded into a Claude session |
 
-The implication for every recommendation, reasoning artifact, or research note: **if it lives outside `plugins/`, end-user Claude never sees it.** Reasoning kept only in `docs/` or in this file is scaffolding for the maintainer. To change end-user behavior, the change has to materialize as edits inside `plugins/` (a skill body, an agent definition, a command body, a reference file cited by an SKILL.md, or a hook script).
+The implication for every recommendation, reasoning artifact, or research note: **if it lives outside `plugins/`, end-user Claude never sees it.** Reasoning kept only in `knowledge/` or in this file is scaffolding for the maintainer. To change end-user behavior, the change has to materialize as edits inside `plugins/` (a skill body, an agent definition, a command body, a reference file cited by an SKILL.md, or a hook script).
 
 When generic agents and specialized inline versions cover the same capability, prefer the generic agent. A generic agent's body becomes the canonical version; domain-specific knowledge lives in the skill that invokes it, not in the agent definition itself. An agent is only orphaned when no skill describes a capability it would resolve.
 
@@ -169,7 +169,7 @@ CONTRAST:
 
 ## Hub-Spoke Skill Architecture
 
-Skills can operate as **hubs** (orchestrate other skills via decision routing) or **spokes** (do one thing). Read [Skills](docs/official/skills.md) for hub-spoke patterns BEFORE adding or merging skills.
+Skills can operate as **hubs** (orchestrate other skills via decision routing) or **spokes** (do one thing). Read [Skills](knowledge/raw/official/skills.md) for hub-spoke patterns BEFORE adding or merging skills.
 
 ### Hub Skills — The `Modes:` Directive
 
@@ -232,7 +232,7 @@ Hub-and-spoke consolidation target: 22-28 skills. Run `find plugins -name SKILL.
 - `name` / `version` / `description` per plugin: `plugins/*/.claude-plugin/plugin.json` (spec-authoritative per CHANGELOG 1.12.0)
 - `source` / `homepage` / `repository` / `license` / `category` / `keywords` per plugin: `.claude-plugin/_meta.json` (catalog-only metadata)
 
-Read [docs/official/plugins/marketplaces.md](docs/official/plugins/marketplaces.md) and [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) BEFORE modifying marketplace.json or adding plugins.
+Read [knowledge/raw/official/plugins/marketplaces.md](knowledge/raw/official/plugins/marketplaces.md) and [knowledge/concepts/contributing.md](knowledge/concepts/contributing.md) BEFORE modifying marketplace.json or adding plugins.
 
 **Directory structure (9 plugins):**
 ```
@@ -493,9 +493,9 @@ Five artifact types with distinct loading behaviors, token costs, and **audience
 | **Skill body** (SKILL.md content) | End-user Claude | Loaded on trigger; reference files load lazily on imperative citation |
 | **Agent definition** | End-user Claude | Per-spawn, loaded at spawn time |
 | **Command body** | End-user Claude | User-invoked, zero context until used |
-| **CLAUDE.md / `docs/`** | **Maintainer only** | Loaded only when working in this repo as a contributor; **end-user Claude never sees it** |
+| **CLAUDE.md / `knowledge/`** | **Maintainer only** | Loaded only when working in this repo as a contributor; **end-user Claude never sees it** |
 
-The first four ship under `plugins/` and `.claude-plugin/`. The fifth lives at the repo root and under `docs/` — it is scaffolding for the human and AI maintaining the marketplace, not for the marketplace's users. Every reasoning artifact written to `docs/research/`, every brainstorm, every synthesis: invisible to end users unless its conclusions materialize as edits inside `plugins/`.
+The first four ship under `plugins/` and `.claude-plugin/`. The fifth lives at the repo root and under `knowledge/` — it is scaffolding for the human and AI maintaining the marketplace, not for the marketplace's users. Every reasoning artifact written to `knowledge/`, every brainstorm, every synthesis: invisible to end users unless its conclusions materialize as edits inside `plugins/`.
 
 ### Path Configuration
 
@@ -740,7 +740,7 @@ The `mcp__{server_name}__{tool_name}` format is **Claude Code's internal convent
 
 You MUST consult the `skill-authoring` skill for detailed guidance on skill categories, policy/mechanism pattern, progressive disclosure, frontmatter fields, cross-skill references, decision routers, description optimization, and command format BEFORE authoring or modifying any skill.
 
-You MUST read [Skills](docs/official/skills.md) for frontmatter field reference BEFORE writing skill frontmatter.
+You MUST read [Skills](knowledge/raw/official/skills.md) for frontmatter field reference BEFORE writing skill frontmatter.
 
 ---
 
@@ -770,7 +770,7 @@ git push
 
 Version format: `[1.2.3]` — semantic versioning. Default is minor bump. Patch for typos and docs only. Major only for architectural changes.
 
-See `docs/templates/changelog-entry.md` for the entry template.
+See `knowledge/templates/changelog-entry.md` for the entry template.
 
 ### Commit Messages
 
@@ -786,18 +786,18 @@ Create feature branches, commit with conventional messages, push, and create PRs
 
 ### Project Checks
 
-- [ ] README updated if structure changed; synced to all docs/ locations
+- [ ] README updated if structure changed; synced to all knowledge/ locations
 - [ ] CHANGELOG entry added
 - [ ] `marketplace.json` plugin description, version, and keywords updated
 - [ ] `marketplace.json` has no duplicate `version:` keys per plugin entry (CHANGELOG 1.14.0 regression class) — run `jq -e '.plugins | all(. as $p | ([keys[] | select(. == "version")] | length) == 1)' .claude-plugin/marketplace.json`
 - [ ] No MCP runtime dependencies
 - [ ] No broken cross-references between skills
-- [ ] No shared docs/ folders expecting cross-skill reuse
+- [ ] No shared knowledge/ folders expecting cross-skill reuse
 
 ### Skill Quality Checks
 
 - [ ] **Subagent spawn check**: Every skill that explores, implements, researches, or creates has explicit spawn instructions in its body — not optional tips, not conditional recommendations
-- [ ] **Subagent contract check**: For any new or modified agent, the `tools:` field matches the operations stated in the contract body. 6 design principles (P1-P6) at `plugins/core-principled/skills/subagent-orchestration/references/subagent-contract-design.md` apply. Test with the 3-phase methodology (static read → real invocation → JSONL trace) per [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
+- [ ] **Subagent contract check**: For any new or modified agent, the `tools:` field matches the operations stated in the contract body. 6 design principles (P1-P6) at `plugins/core-principled/skills/subagent-orchestration/references/subagent-contract-design.md` apply. Test with the 3-phase methodology (static read → real invocation → JSONL trace) per [knowledge/concepts/contributing.md](knowledge/concepts/contributing.md).
 - [ ] **Critique loop check**: Every skill that produces artifacts ends with "spawn critic subagent, loop until no HIGH findings" or equivalent
 - [ ] **Skill budget check**: Run `/context` and `/doctor` — verify no skills dropped or descriptions truncated. Calculate: hub (<500 tokens) + active domains (<2,000 each) + references/ (unlimited). If total loaded SKILL.md content approaches 10k, truncate or move to references/.
 - [ ] **Description length check**: Combined `description` + `when_to_use` ≤1,536 chars; front-load trigger phrases in the first 200 chars
@@ -935,29 +935,29 @@ This marketplace must synergize with any other marketplace or plugin the user ma
 
 | Doc | When to Read |
 |-----|-------------|
-| [subagents.md](docs/official/subagents.md) | Before creating agents |
-| [skills.md](docs/official/skills.md) | Before authoring skills |
-| [hooks.md](docs/official/hooks.md) | Before configuring hooks |
-| [commands.md](docs/official/commands.md) | Before creating commands |
-| [permissions.md](docs/official/permissions.md) | Before configuring permissions |
-| [agent-types.md](docs/official/agent-types.md) | Before choosing agent type |
-| [agent-tool-params.md](docs/official/agent-tool-params.md) | Before spawning subagents |
-| [agent-skill-integration.md](docs/official/agent-skill-integration.md) | Before adding skills to agents |
-| [rules.md](docs/official/rules.md) | Before writing rules or CLAUDE.md |
-| [memory.md](docs/official/memory.md) | Before configuring CLAUDE.md hierarchy or .claude/rules/ |
+| [subagents.md](knowledge/raw/official/subagents.md) | Before creating agents |
+| [skills.md](knowledge/raw/official/skills.md) | Before authoring skills |
+| [hooks.md](knowledge/raw/official/hooks.md) | Before configuring hooks |
+| [commands.md](knowledge/raw/official/commands.md) | Before creating commands |
+| [permissions.md](knowledge/raw/official/permissions.md) | Before configuring permissions |
+| [agent-types.md](knowledge/raw/official/agent-types.md) | Before choosing agent type |
+| [agent-tool-params.md](knowledge/raw/official/agent-tool-params.md) | Before spawning subagents |
+| [agent-skill-integration.md](knowledge/raw/official/agent-skill-integration.md) | Before adding skills to agents |
+| [rules.md](knowledge/raw/official/rules.md) | Before writing rules or CLAUDE.md |
+| [memory.md](knowledge/raw/official/memory.md) | Before configuring CLAUDE.md hierarchy or .claude/rules/ |
 
 ### Plugin References
 
 | Doc | When to Read |
 |-----|-------------|
-| [plugins/creating.md](docs/official/plugins/creating.md) | Before creating plugins |
-| [plugins/marketplaces.md](docs/official/plugins/marketplaces.md) | Before setting up marketplace |
-| [plugins/plugins-reference.md](docs/official/plugins/plugins-reference.md) | Before advanced plugin work |
+| [plugins/creating.md](knowledge/raw/official/plugins/creating.md) | Before creating plugins |
+| [plugins/marketplaces.md](knowledge/raw/official/plugins/marketplaces.md) | Before setting up marketplace |
+| [plugins/plugins-reference.md](knowledge/raw/official/plugins/plugins-reference.md) | Before advanced plugin work |
 
 ### Refreshing Official Docs
 
 ```bash
-curl -sL "https://code.claude.com/docs/en/<topic>.md" -o docs/official/<topic>.md
+curl -sL "https://code.claude.com/docs/en/<topic>.md" -o knowledge/raw/official/<topic>.md
 ```
 
 Where `<topic>` matches the URL slug from `code.claude.com/docs/llms.txt`. Always verify the download starts with `> ## Documentation Index`.
@@ -968,7 +968,7 @@ Where `<topic>` matches the URL slug from `code.claude.com/docs/llms.txt`. Alway
 
 | Term | Definition |
 |------|------------|
-| **Maintainer-only artifact** | Anything at the repo root (`CLAUDE.md`, `README.md`, `CHANGELOG.md`) or under `docs/` — invisible to end-user Claude; visible only to the human and AI maintaining this marketplace |
+| **Maintainer-only artifact** | Anything at the repo root (`CLAUDE.md`, `README.md`, `CHANGELOG.md`) or under `knowledge/` — invisible to end-user Claude; visible only to the human and AI maintaining this marketplace |
 | **End-user-visible artifact** | Anything under `plugins/` or `.claude-plugin/` — loaded by Claude Code sessions that install this marketplace |
 | **Semantic routing** | AI matches task intent to agent/skill capabilities based on description meaning, not file names |
 | **Hub skill** | Skill using decision routing to dispatch to internal modes (contrast with spoke) |

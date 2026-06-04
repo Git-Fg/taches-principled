@@ -192,6 +192,6 @@ This skill is part of the `tp-wiki` plugin and depends on **optional** MCP tools
 ## Detailed Methodology
 
 For full operational guidance (ingest, query, lint, archiving, Obsidian sync, pitfalls),
-read `references/llm-wiki-methodology.md`. The wiki format itself is documented in
-`references/wiki-format.md`. The intent file format (`.wiki/intent.md`) is in
-`references/intent-format.md`.
+read `$WIKI_ROOT/concepts/llm-wiki-methodology.md`. The wiki format itself is documented in
+`$WIKI_ROOT/SCHEMA.md`. The intent file format (`.wiki/intent.md`) is in
+`$WIKI_ROOT/concepts/intent-format.md`.

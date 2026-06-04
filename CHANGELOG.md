@@ -2,6 +2,25 @@
 
 All notable changes are documented here.
 
+## [1.15.0] — 2026-06-04
+
+### Changed
+
+- **Doc folder migration: `docs/` → `knowledge/`** (resolves #41's structural question). All 21 maintainer-only documentation files (CONTRIBUTING, persistence-schema, templates, refreshed official docs, the 3 wiki-format spec files) consolidated into a single wiki-shaped folder at the repo root. The Karpathy LLM-wiki structure (entities/concepts/queries/raw/templates) is now the canonical organization for marketplace reference material. **Personal wikis (MyWiki, PharmaWiki) stay external** — the `~/.claude/wiki-root.md` registry is extended with `WIKI_ROOT_marketplace=/Users/felix/Documents/AutoPluginClaw/taches-principled/knowledge` so tp-wiki's subagents can search/lint/ingest marketplace docs. SKILL.md citations for the wiki format spec now use `$WIKI_ROOT/SCHEMA.md` and `$WIKI_ROOT/concepts/*` so the same skill works for any registered wiki.
+
+- **Folder naming: `knowledge/` not `wiki-doc/`** to avoid the personal-wiki/codebase confusion surfaced earlier in the session. The folder contains marketplace maintainer documentation, not personal knowledge. The "wiki-like" structure is a documentation convention (entities/concepts/raw/templates), not a claim that this folder is "a wiki."
+
+- **Core-principled 0.15.2 → 0.16.0**: `scripts/session_start.py` and `skills/skill-authoring/SKILL.md` updated to reflect new paths. The `docs/CONTRIBUTING.md` self-check list in CLAUDE.md now references `knowledge/concepts/contributing.md`.
+
+- **tp-wiki 0.1.2 → 0.2.0**: The 3 wiki-format reference files moved out of `plugins/tp-wiki/skills/wiki/references/` and into `knowledge/` (`SCHEMA.md`, `concepts/intent-format.md`, `concepts/llm-wiki-methodology.md`). The `wiki` skill body now uses `$WIKI_ROOT/SCHEMA.md` and `$WIKI_ROOT/concepts/*` for citations — this is the canonical pattern for any plugin whose reference material is wiki-relative. Subagents (wiki-searcher, wiki-linter, wiki-ingester) need no changes; they already accept `wiki_path` or `alias` and operate on the registered wiki.
+
+### Migration notes
+
+- Every historical `docs/` reference in CHANGELOG.md is preserved as-is (it describes the state at the time of writing). New entries reference `knowledge/`.
+- The marketplace's `docs/` tree is gone. `docs/CONTRIBUTING.md` → `knowledge/concepts/contributing.md`. `docs/official/X.md` → `knowledge/raw/official/X.md`. `docs/templates/X.md` → `knowledge/templates/X.md`. `docs/persistence-schema.md` → `knowledge/concepts/persistence-schema.md`.
+- The curl command for refreshing official docs is now: `curl -sL "https://code.claude.com/docs/en/<topic>.md" -o knowledge/raw/official/<topic>.md`
+- `tp-wiki` users who install the marketplace get the new `knowledge/` folder automatically. Personal wikis (registered in `~/.claude/wiki-root.md`) are unaffected.
+
 ## [1.14.0] — 2026-06-04
 
 Resolves issues #35, #36, #37, #38 (all subagent contract redesign) plus a

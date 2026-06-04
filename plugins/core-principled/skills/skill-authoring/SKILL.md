@@ -400,7 +400,7 @@ Passive citations are ignored by LLMs 99% of the time. Every reference must be a
 | Missing guard rail | Set `disable-model-invocation: true` for destructive skills |
 | Brittle path reference | Use clean relative paths (e.g., `references/file.md`) — paths resolve within the skill's folder by default |
 | Relying on `allowed-tools` for security | `allowed-tools` only partially blocks; tools like `Edit` and `Agent` completely bypass it. Use `disallowed-tools` instead. |
-| Undeclared dependency | Document required MCP servers in .mcp.json (see docs/official/plugins/plugins-reference.md §MCP servers); plugin agents silently ignore mcpServers frontmatter — declare all MCP servers in the plugin's .mcp.json or plugin.json, not in agent definition files |
+| Undeclared dependency | Document required MCP servers in .mcp.json (see knowledge/raw/official/plugins/plugins-reference.md §MCP servers); plugin agents silently ignore mcpServers frontmatter — declare all MCP servers in the plugin's .mcp.json or plugin.json, not in agent definition files |
 | Global package installation | Install packages locally to avoid interfering with the user's computer environment |
 | Unsafe network calls | Audit external sources; external dependencies can change and become malicious |
 | Recursive trigger | Let descriptions route. No cross-references in bodies. |

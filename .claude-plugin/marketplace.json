@@ -184,7 +184,7 @@
     },
     {
       "name": "core-principled",
-      "version": "0.15.2",
+      "version": "0.16.0",
       "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, security audit, test strategy. Live Claude Code/Agent SDK/API docs via tp-cc-docs and /cc-docs slash command.",
       "source": "./plugins/core-principled",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -330,7 +330,7 @@
     },
     {
       "name": "tp-wiki",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Search, query, ingest, and verify a personal wiki, knowledge base, or notes system. Use when user mentions 'wiki', 'KB', 'knowledge base', 'look up in my notes', 'find in my wiki', 'lint wiki', 'check wiki consistency', 'add to wiki', 'ingest into wiki', or 'populate wiki'. Ships with wiki-searcher (read), wiki-linter (verify), and wiki-ingester (build) subagents.",
       "source": "./plugins/tp-wiki",
       "homepage": "https://github.com/Git-Fg/taches-principled",

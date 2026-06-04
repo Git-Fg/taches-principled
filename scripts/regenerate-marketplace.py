@@ -2,7 +2,7 @@
 """
 Regenerate .claude-plugin/marketplace.json from its two SSoT sources.
 
-Two-source catalog model (per CLAUDE.md and docs/official/plugins/marketplaces.md):
+Two-source catalog model (per CLAUDE.md and knowledge/raw/official/plugins/marketplaces.md):
   - Per-plugin plugin.json: name, version, description (spec-authoritative)
   - .claude-plugin/_meta.json: source, homepage, repository, license,
     category, keywords (catalog-only metadata)
