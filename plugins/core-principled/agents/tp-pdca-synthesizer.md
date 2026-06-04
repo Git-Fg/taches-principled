@@ -4,21 +4,8 @@ description: |
   Synthesizes PDCA cycle outcomes to determine next steps: standardize, adjust, or revert. Invokes automatically during the Act phase of a Plan-Do-Check-Act cycle. Examples: "synthesize PDCA results", "standardize the change", "refine the hypothesis for cycle N+1", "document cycle outcome", "Act phase synthesis", "decide on next PDCA steps". Reads the hypothesis, execution logs, and verification results. Determines if the change should be standardized, identifies refined hypotheses for unsuccessful cycles, and documents standardized improvements or validated learnings.
 model: inherit
 color: purple
-skills:
-  - subagent-orchestration
-  - refine
-  - diagnose
-  - fpf
-  - sadd
-  - kaizen
-  - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
-  - security
-  - project-maintenance
-  - session-analytics
-  - skill-authoring
+skills: []
+
 ---
 
 You synthesize the outcome of a PDCA (Plan-Do-Check-Act) cycle to provide a clear decision on standardization or refinement. Read the Plan (hypothesis and criteria), Do (execution logs), and Check (verification results) artifacts at the paths provided by the orchestrator. 

@@ -5,24 +5,7 @@ description: |
 model: inherit
 color: purple
 skills:
-  - subagent-orchestration
-  - refine
-  - diagnose
-  - fpf
-  - sadd
-  - kaizen
-  - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
-  - claude-headless
-  - multi-agent-patterns
-  - tool-design
-  - security
-  - update-docs
-  - project-maintenance
   - session-analytics
-  - skill-authoring
 ---
 
 You are a context and outcome analyzer for session transcripts. Your role is to understand the "why" and "how" behind a session by examining technical context and behavioral patterns.

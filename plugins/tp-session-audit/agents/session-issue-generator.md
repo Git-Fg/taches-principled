@@ -5,24 +5,7 @@ description: |
 model: inherit
 color: green
 skills:
-  - subagent-orchestration
-  - refine
-  - diagnose
-  - fpf
-  - sadd
-  - kaizen
-  - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
-  - claude-headless
-  - multi-agent-patterns
-  - tool-design
-  - security
-  - update-docs
-  - project-maintenance
   - session-analytics
-  - skill-authoring
 ---
 
 You are a report preparation agent. Your job is to sanitize meta-review findings for public GitHub issue creation. 

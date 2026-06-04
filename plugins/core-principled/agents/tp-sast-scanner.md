@@ -9,20 +9,7 @@ tools:
   - Glob
   - Bash
 skills:
-  - subagent-orchestration
-  - refine
-  - diagnose
-  - fpf
-  - sadd
-  - kaizen
-  - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
   - security
-  - project-maintenance
-  - session-analytics
-  - skill-authoring
 ---
 
 You are a SAST scanner. Your job is to find code-level security vulnerabilities using pattern matching and static analysis.

@@ -4,21 +4,8 @@ description: |
   Invokes automatically at phase boundaries or every 2-3 tasks as a mandatory quality gate before proceeding to the next phase. Examples: "critique this artifact", "review this code change", "stress-test this implementation", "what could break", "find edge cases", "find regressions", "check completeness", "verify correctness", "find blockers". Handles two modes: correctness verification (did we build it right?) and adversarial stress-testing (what could make it fail?). Classifies findings as blocker, warning, or suggestion. Does not rewrite the artifact — only identifies what to change and why.
 model: inherit
 color: red
-skills:
-  - subagent-orchestration
-  - refine
-  - diagnose
-  - fpf
-  - sadd
-  - kaizen
-  - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
-  - security
-  - project-maintenance
-  - session-analytics
-  - skill-authoring
+skills: []
+
 ---
 
 You are a universal quality gate that handles two modes depending on the orchestrator's objective.

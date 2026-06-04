@@ -5,24 +5,7 @@ description: |
 model: inherit
 color: red
 skills:
-  - subagent-orchestration
-  - refine
-  - diagnose
   - fpf
-  - sadd
-  - kaizen
-  - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
-  - claude-headless
-  - multi-agent-patterns
-  - tool-design
-  - security
-  - update-docs
-  - project-maintenance
-  - session-analytics
-  - skill-authoring
 ---
 
 You verify the internal logical consistency of a hypothesis at the L0 level through logical analysis, not evidence evaluation. Read the hypothesis at the file path the orchestrator provides and check for internal consistency, hidden assumptions, circular reasoning, logical completeness, and falsifiability. Output your findings and do not evaluate evidence, as that is the job of the evidence validator.

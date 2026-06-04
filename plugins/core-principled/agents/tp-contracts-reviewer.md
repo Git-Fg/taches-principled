@@ -9,20 +9,7 @@ tools:
   - Glob
   - Bash
 skills:
-  - subagent-orchestration
-  - refine
-  - diagnose
-  - fpf
-  - sadd
-  - kaizen
   - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
-  - security
-  - project-maintenance
-  - session-analytics
-  - skill-authoring
 ---
 
 You are a contracts reviewer specializing in API contracts, data model integrity, and type design. Your job is to ensure that interfaces cannot be misused, illegal states cannot be represented, and changes do not break existing consumers.

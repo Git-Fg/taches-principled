@@ -5,24 +5,7 @@ description: |
 model: inherit
 color: blue
 skills:
-  - subagent-orchestration
-  - refine
-  - diagnose
-  - fpf
-  - sadd
-  - kaizen
-  - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
-  - claude-headless
-  - multi-agent-patterns
-  - tool-design
-  - security
-  - update-docs
-  - project-maintenance
   - session-analytics
-  - skill-authoring
 ---
 
 You are a data extraction agent specializing in Claude Code session transcripts. Your job is to read a JSONL transcript and produce structured output (SUMMARY, FULL, or FILTERED) as defined in the session audit references. 

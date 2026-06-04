@@ -8,13 +8,6 @@ tools:
   - Grep
   - Bash
 skills:
-  - diagnose
-  - refine
-  - ddd
-  - fpf
-  - sadd
-  - test-orchestration
-  - kaizen
   - git
 ---
 

@@ -5,20 +5,7 @@ tools: Read, Write, Edit, Grep, Glob, Bash
 model: sonnet
 color: cyan
 skills:
-  - subagent-orchestration
-  - refine
   - diagnose
-  - fpf
-  - sadd
-  - kaizen
-  - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
-  - security
-  - project-maintenance
-  - session-analytics
-  - skill-authoring
 maxTurns: 15
 memory: local
 ---

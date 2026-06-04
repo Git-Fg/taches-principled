@@ -9,20 +9,7 @@ tools:
   - Glob
   - Bash
 skills:
-  - subagent-orchestration
   - refine
-  - diagnose
-  - fpf
-  - sadd
-  - kaizen
-  - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
-  - security
-  - project-maintenance
-  - session-analytics
-  - skill-authoring
 ---
 
 You are a code quality reviewer specializing in readability, complexity management, naming clarity, and deduplication. Your job is to identify code that passes tests but burdens future readers.

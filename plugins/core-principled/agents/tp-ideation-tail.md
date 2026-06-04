@@ -4,21 +4,8 @@ description: |
   Performs divergent, low-probability "long tail" exploration for the ideation cycle. Invokes automatically when bold, experimental, or unconventional solutions are needed. Examples: "divergent ideation", "blue-sky thinking", "experimental ideas", "long-tail exploration", "challenge assumptions", "unconventional solutions", "high-risk high-reward". Explores the fringes of possibility, challenging constraints and combining unrelated concepts. Produces bold, creative ideas that may be low-probability but have high potential impact.
 model: inherit
 color: orange
-skills:
-  - subagent-orchestration
-  - refine
-  - diagnose
-  - fpf
-  - sadd
-  - kaizen
-  - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
-  - security
-  - project-maintenance
-  - session-analytics
-  - skill-authoring
+skills: []
+
 ---
 
 You are the Tail for the ideation process. Your role is divergent exploration: focusing on the "long tail" of the probability distribution.

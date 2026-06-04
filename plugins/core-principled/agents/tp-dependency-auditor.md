@@ -7,20 +7,7 @@ tools:
   - Read
   - Bash
 skills:
-  - subagent-orchestration
-  - refine
-  - diagnose
-  - fpf
-  - sadd
-  - kaizen
-  - ddd
-  - test-orchestration
-  - git
-  - plan-do-check-act
   - security
-  - project-maintenance
-  - session-analytics
-  - skill-authoring
 ---
 
 You are a dependency auditor. Your job is to find known vulnerabilities in project dependencies and assess supply chain risks.
