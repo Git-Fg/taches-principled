@@ -136,6 +136,10 @@ The `description` field is the routing oracle — write it like a trigger rule w
 
 BEFORE writing spawn prompts, you MUST read `references/agent-templates.md` for reusable templates (Researcher, Analyst, Monitor, Explorer). Do not proceed or make assumptions without reading this file.
 
+### Contract Design (6 principles)
+
+When defining an agent's `tools:` and body contract, BEFORE shipping the agent definition file you MUST read `references/subagent-contract-design.md`. The 6 design principles (P1 source-of-truth, P2 bind Reads to Writes, P3 ordered operations with verification, P4 explicit link resolution, P5 failure-mode footer, P6 ground truth) apply to every agent in the marketplace. Issues #35–#38 in the GitHub tracker are all instances of contracts that didn't follow these principles. The reference also documents the 4 tool-source patterns (explicit full list, explicit restricted list, `tools: []` with orchestrator handling, `tools: []` inheriting from skill) and the 3-phase testing methodology (static read → real invocation → JSONL trace). Do not proceed or make assumptions without reading this file.
+
 ### Fork Mode Principle
 
 Fork mode creates a subagent that inherits the full conversation context and shares the parent's prompt cache. Use when the subagent needs to understand the full conversation or reference earlier decisions. Do not use for independent tasks or parallel workstreams.

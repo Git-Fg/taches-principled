@@ -168,7 +168,7 @@ This skill is part of the `tp-wiki` plugin and depends on **optional** MCP tools
 
 ## Anti-patterns
 
-❌ **Modifying `raw/` files after they are written.** Sources are immutable. The ingester writes them once with `source_url` / `source_path` / `ingested` / `sha256` frontmatter and never re-touches them. Re-fetching for a new ingest is a separate event with a new sha.
+❌ **Modifying `raw/` files after they are written.** Sources are immutable. The ingester writes them once with `source_url` / `source_path` / `ingested` frontmatter and never re-touches them. Re-fetching for a new ingest is a separate event with a new `ingested` date.
 
 ❌ **Creating a page from a single mention.** Page threshold is 2+ sources OR central to one source. A single mention in passing doesn't earn its own page — it goes in a more general page or stays as a wikilink target stub.
 

@@ -2,6 +2,70 @@
 
 All notable changes are documented here.
 
+## [1.14.0] — 2026-06-04
+
+Resolves issues #35, #36, #37, #38 (all subagent contract redesign) plus a
+regression introduced by the #34 fix. Derived from the audit captured in
+`.principled/plans/AUDIT-2026-06-04.md`.
+
+### Fixed
+
+- **`marketplace.json` duplicate `version` keys** (regression from #34 fix, commit `4c4cf8a`). The build script that derives the catalog from per-plugin manifests produced duplicate `"version":` fields in 5 plugin entries (core-principled, tp-fpf, tp-git, tp-sadd, tp-session-audit, tp-wiki). JSON parsers silently use the second value, so the marketplace displayed the **previous** version for those plugins. Cleaned the duplicates. The root-cause bug is in the build script (still pending) but the data file is correct as of this commit. To prevent recurrence, add a CI check: `jq -e '.plugins | all(. as $p | $p | has("version") and (.version | type == "string")) and ([.plugins[] | keys[] | select(. == "version")] | length == (.plugins | length))' .claude-plugin/marketplace.json > /dev/null` (or simpler: assert no plugin entry has the literal string `"version":` appearing more than once).
+
+- **tp-wiki: removed `sha256` from the wiki format schema** (closes #35 R1). The field was a code smell: it required a tool (`Bash` + `sha256sum`) the subagent didn't have, and the load-bearing fact — "have we re-fetched this source?" — was already captured by the `ingested:` date. Removed from:
+  - `plugins/tp-wiki/skills/wiki/SKILL.md` line 171 (anti-patterns section)
+  - `plugins/tp-wiki/skills/wiki/references/wiki-format.md` (no `sha256` in spec)
+  - `plugins/tp-wiki/skills/wiki/references/llm-wiki-methodology.md` (3 references: schema, capture step, lint step ⑧)
+  - `plugins/tp-wiki/agents/wiki-ingester.md` (2 mode definitions)
+  Replaced with date-based re-ingest logic: "compare the new source's `Last-Modified` to the existing `ingested` date; re-process if newer, skip otherwise." The wiki-linter's Check F (stale content) is already date-based — no linter changes needed.
+
+### Added
+
+- **6 design principles for subagent contracts** (closes #35 R2, #36 P6). New reference doc at `plugins/core-principled/skills/subagent-orchestration/references/subagent-contract-design.md`. P1 (source of truth for every value), P2 (bind Writes to Reads explicitly), P3 (ordered operations with verification), P4 (explicit link resolution algorithm), P5 (failure-mode footer on every contract), **P6 (ground truth — subagents that make factual claims must have Read access to the source of truth; the new principle from issue #36)**. Plus: 4 tool-source patterns (explicit full list, explicit restricted list, `tools: []` with orchestrator handling, `tools: []` inheriting from skill), 3-phase testing methodology (static read → real invocation → JSONL trace), and a per-plugin contract template. The `subagent-orchestration` skill body now requires reading this file before authoring any agent definition.
+
+- **`fpf-evidence-validator` ground-truth clause (P6)** (closes #38). The agent's contract now states: "When making factual claims about the codebase, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as 'unverified' rather than asserting it." Cites issue #38's fpf-hypothesis-generator JSONL trace as the failure mode this prevents.
+
+### Changed
+
+- **4 `tp-fpf` subagents gain explicit `tools:` lists** (closes #38). The agents were `tools: []` but their contracts referenced file I/O operations. Real-condition testing of `fpf-hypothesis-generator` produced a JSONL trace (`agent-a0a86b88086618af3.jsonl`) with **0 tool calls made** — the model self-acknowledged the contradiction. The fix grants the minimum tool set per role:
+  - `fpf-hypothesis-generator` → `Read, Write, Glob, Grep` (read context, write hypothesis, search for related files)
+  - `fpf-evidence-validator` → `Read, Grep, Glob, Bash` (cross-reference the codebase; Bash for the `find` patterns the linter might want)
+  - `fpf-logic-verifier` → `Read, Glob` (read the hypothesis, find related files for the logical analysis)
+  - `fpf-trust-auditor` → `Read, Glob` (read the 3 source documents, find assumptions)
+  All 4 retain the maintainer's in-flight `skills:` additions (e.g., `diagnose` on `fpf-evidence-validator`) — the two changes are orthogonal.
+
+- **3 `tp-sadd` subagents gain explicit `tools:` lists** (closes #37). Same class of bug as #38 but in `tp-sadd`. The 3 subagents that handle file I/O (the other 3 are text-only and correctly have no `tools:` field):
+  - `sadd-synthesizer` → `Read, Glob` (read all judge reports and candidate solutions)
+  - `sadd-generator` → `Read, Glob` (read the evaluation spec)
+  - `sadd-judge` → `Read, Write, Glob` (read candidates, write findings to the orchestrator-specified path)
+  The 3 text-only agents (`sadd-expander`, `sadd-explorer`, `sadd-meta-judge`) are unchanged — text output is the correct contract for their role.
+
+### Out of scope (deferred to next batches)
+
+- **Issue #35 R3** — apply the 6 principles to the 3 `tp-wiki` subagent contracts (numbered operations with verification, "Failure modes" footer). 1 day, next batch.
+- **Issue #35 R4** — document the 3-phase methodology in `CONTRIBUTING.md`. 30 min, next batch.
+- **Issue #36 R5** — audit the 18 `core-principled` subagents with `tools: []`. 3-5 days, dedicated engagement.
+- **Marketplace build script fix** — the root cause of the duplicate-version regression is in the script, not the data. Add a CI check + dedup pass in the script.
+- **All other items from `AUDIT-2026-06-04.md` Part 4 Phase 4.**
+
+### Verification
+
+- 77 `plugins/**/agents/*.md` and `plugins/**/skills/**/SKILL.md` files parse cleanly under PyYAML `safe_load`. 0 errors.
+- 9 `plugins/**/.claude-plugin/plugin.json` and 1 `marketplace.json` parse cleanly under `jq`. 0 errors.
+- 9 plugin versions in `marketplace.json` match the corresponding per-plugin `plugin.json`. Verified via `jq`.
+- All 7 redesigned subagents have `tools:` lists that match their contract's stated operations. Verified via the static real-condition test in the audit.
+- All 3 text-only `tp-sadd` subagents (expander, explorer, meta-judge) correctly have no `tools:` field. Verified.
+- All 8 sha256 references removed from `plugins/tp-wiki/`. Verified via `grep -r sha256 plugins/tp-wiki` returning 0 matches.
+- 0 regressions on closed-issue fixes (issues #10, #11, #12, #17, #27). Verified.
+
+### Changed (versions)
+
+- **`tp-fpf`** 0.3.4 (unchanged — patches to agents don't bump per `semver` for tooling)
+- **`tp-sadd`** 0.3.5 (unchanged)
+- **`tp-wiki`** 0.1.2 (unchanged)
+- **`core-principled`** 0.15.2 (unchanged)
+- **Marketplace** 0.23.0 → 0.23.1 (catalog change for the sha256 removal; the per-plugin bumps are not warranted since the contract additions are additive, not breaking).
+
 ## [1.13.0] — 2026-06-04
 
 Resolves the post-initial-release audit of the new `tp-wiki` plugin.

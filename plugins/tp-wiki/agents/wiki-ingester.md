@@ -101,7 +101,7 @@ The orchestrator passes one of these modes plus context:
 ### Mode: url
 Context contains a URL. Fetch the content and integrate into the wiki.
 1. Use web_extract or mcp__mcp-searxng__fetch to get the content as markdown
-2. Save raw content to `raw/articles/` with descriptive filename + frontmatter (source_url, ingested, sha256)
+2. Save raw content to `raw/articles/` with descriptive filename + frontmatter (source_url, ingested)
 3. Analyze takeaways — what entities, concepts does this source introduce?
 4. Check index.md and search for existing pages on those entities/concepts
 5. Create or update wiki pages per SCHEMA.md thresholds (2+ sources OR central to one source)
@@ -120,7 +120,7 @@ Context contains pasted text or notes. Integrate into wiki as raw + wiki pages.
 ### Mode: file
 Context contains a file path. Read the file and integrate.
 1. Detect file type: PDF → raw/papers/, text/article → raw/articles/, other → raw/
-2. Save with frontmatter (source_path, ingested, sha256)
+2. Save with frontmatter (source_path, ingested)
 3. Process as above
 
 ### Mode: bulk

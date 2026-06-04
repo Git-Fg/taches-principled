@@ -89,12 +89,14 @@ Raw sources also get a small frontmatter block so re-ingests can detect drift:
 ---
 source_url: https://example.com/article
 ingested: YYYY-MM-DD
-sha256: <hex digest of the raw content below the frontmatter>
 ---
-```
 
-The `sha256` lets a future re-ingest of the same URL skip processing when unchanged,
-and flag drift when the source has changed.
+The `ingested` date is the load-bearing fact. It is the version identifier for
+the raw archive. A re-ingest that finds an existing `raw/<name>.md` with a recent
+`ingested` date can skip re-processing the source (the schema, tags, and
+cross-references all need re-validation regardless of whether the bytes changed).
+A re-ingest of a `raw/<name>.md` whose `ingested` date is older than the
+SCHEMA.md stale threshold should re-fetch the source and re-validate.
 
 ---
 
@@ -202,8 +204,11 @@ When the user provides a source (URL, file, paste), integrate it into the wiki:
    - PDF → fetch as markdown, save to `raw/papers/`
    - Pasted text → save to appropriate `raw/` subdirectory
    - Name the file descriptively: `raw/articles/source-title-2026.md`
-   - **Add raw frontmatter** (`source_url`, `ingested`, `sha256` of the body).
-     On re-ingest: recompute sha256, skip if identical, flag drift if different.
+   - **Add raw frontmatter** (`source_url`, `ingested`).
+     On re-ingest: compare the new source's `Last-Modified` (or fetch time) to
+     the existing `ingested` date. If newer, re-process. If older or same, skip
+     re-processing of the raw archive (the schema, tags, and cross-references
+     may still need re-validation per the lint Check F stale threshold).
 
 ② **Discuss takeaways** with the user — what's interesting for the domain.
    (Skip in automated/cron contexts.)
@@ -255,7 +260,12 @@ When the user asks to lint or health-check the wiki:
 ⑤ **Stale content:** Pages whose `updated` date is >90 days old.
 ⑥ **Contradictions:** Pages with `contested: true` or `contradictions:` frontmatter.
 ⑦ **Quality signals:** Pages with `confidence: low` or single-source pages without a confidence field.
-⑧ **Source drift:** For each `raw/` file with `sha256:`, recompute and flag mismatches.
+⑧ **Source drift:** For each `raw/` file, check the `ingested` date against
+    SCHEMA.md's stale threshold. Files older than the threshold are flagged for
+    potential re-ingest. (Note: this is "drift" in the sense of "the source
+    might have changed since we archived it" — a separate concept from the
+    `updated:` field of a wiki page, which tracks when we last edited the
+    synthesis, not the source.)
 ⑨ **Page size:** Flag pages over 200 lines — candidates for splitting.
 ⑩ **Tag audit:** List all tags in use, flag any not in the SCHEMA.md taxonomy.
 ⑪ **Log rotation:** If log.md exceeds 500 entries, rotate it.
