@@ -39,7 +39,7 @@ You MUST read `references/commit-conventions.md` BEFORE generating commit messag
 4. **Create:** Draft PR by default, convert to ready when complete
 
 **Spawn Directives:**
-- **ALWAYS spawn `git-preflight-checker` to run pre-flight checks (lint, type-check) in parallel while the main agent prepares the commit message**
+- **ALWAYS use the `git-preflight-checker` skill to run pre-flight checks (lint, type-check) in parallel while the main agent prepares the commit message**
 
 ---
 
@@ -91,7 +91,7 @@ Power-user git: attach metadata to commits without changing SHA, work on multipl
 You MUST read `references/advanced-git.md` BEFORE performing advanced git operations to ensure correct usage of git notes and worktrees.
 
 **Spawn Directives:**
-- **ALWAYS spawn `git-worktree-manager` for parallel worktree setup or multi-worktree operations**
+- **ALWAYS use the `git-worktree-manager` skill for parallel worktree setup or multi-worktree operations**
 
 ---
 

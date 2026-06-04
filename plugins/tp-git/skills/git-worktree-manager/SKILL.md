@@ -1,0 +1,92 @@
+---
+name: git-worktree-manager
+description: "Manage git worktrees: create, list, remove, prune, and audit worktree state. Use when setting up parallel development environments, isolating branches for review, or managing multi-branch workflows."
+when_to_use: |
+  - "Create a git worktree"
+  - "List worktrees"
+  - "Remove a worktree"
+  - "Prune stale worktree references"
+  - "Audit a worktree's state"
+---
+
+# git-worktree-manager
+
+Create, audit, and remove git worktrees for parallel development. Run
+the commands directly via the `Bash` tool — this skill is a reference
+for the exact git invocations, not a subagent.
+
+## Available operations
+
+### Create a new worktree
+
+```bash
+git worktree add -b <branch> <path> <start-point>
+```
+
+Before running, verify:
+- The target path does not already exist
+- The branch name is not already in use (`git branch --list <branch>`)
+- The start-point is a valid commit / branch / tag
+
+### List all worktrees
+
+```bash
+git worktree list --porcelain
+```
+
+The `--porcelain` flag gives parseable output (one worktree per
+record, with branch + commit + path). Use this for any state-reading
+code.
+
+### Remove a worktree
+
+```bash
+git worktree remove <path>
+# or, if the worktree has uncommitted changes:
+git worktree remove --force <path>
+```
+
+Before removing, check for uncommitted changes:
+
+```bash
+git -C <path> status --porcelain
+# If non-empty, warn before forcing removal.
+```
+
+### Prune stale references
+
+```bash
+git worktree prune
+```
+
+Use after a worktree's directory is deleted out-of-band (manual `rm`,
+crash, etc.) to clean up `.git/worktrees/`.
+
+### Audit a specific worktree
+
+```bash
+git -C <path> status --porcelain
+git -C <path> log --oneline -5
+git -C <path> rev-parse --abbrev-ref HEAD
+```
+
+Returns: branch, HEAD, recent commits, uncommitted-changes status.
+
+## After every mutation
+
+Return the full worktree list so the calling agent has current state:
+
+```bash
+git worktree list --porcelain
+```
+
+## Common pitfalls
+
+- Don't create a worktree at a path inside another worktree
+- Don't `git checkout` a branch that's already checked out in another
+  worktree — the create will fail with a clear error
+- Don't `git worktree remove` a worktree whose directory is on a
+  network mount that's currently disconnected — use `--force` only if
+  you've confirmed the contents are unrecoverable
+- Don't forget that deleting the worktree directory out-of-band
+  requires a follow-up `git worktree prune` to clean metadata
