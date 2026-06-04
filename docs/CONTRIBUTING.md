@@ -85,21 +85,35 @@ This is the maintainer's checklist when writing a new agent.
 
 ## 4 Tool-Source Patterns
 
-The `tools:` field can be set in 4 ways. Pick the right one for the
-agent's role.
+**The default is no `tools:` field.** Subagents inherit the full tool pool.
+Only add `tools:` when the body has a NEVER-do-X policy that the tool
+boundary must enforce. The canonical example: `wiki-searcher` whose body
+says "NEVER write or modify any wiki file" and whose
+`tools: [Read, Glob, Grep]` enforces it.
+
+The `tools:` field can be set in 4 ways. Patterns 3 and 4 (no field) are
+the default for agents without NEVER policies. Patterns 1 and 2 are
+exceptional — only when a tool boundary is the enforcement mechanism.
 
 | Pattern | When to use | Example |
 |---------|-------------|---------|
-| **Explicit full list** | Agent has a specific role with specific operations | `tools: [Read, Write, Edit, Bash]` for an implementer |
-| **Explicit restricted list** | Agent is a focused tool with limited scope (e.g. read-only auditor) | `tools: [Read, Glob, Grep]` for `tp-wiki:wiki-searcher` |
-| **`tools: []` with orchestrator handling** | Agent's output is text-only; any file I/O is the orchestrator's job | `sadd-expander`, `sadd-explorer`, `sadd-meta-judge` (correctly have no `tools:`) |
-| **`tools: []` inheriting from skill** | Agent is spawned in a context where the calling skill predefines the tool surface | Less common; the marketplace generally uses explicit lists |
+| **Default: no `tools:` field** | Most subagents. Agent inherits the full tool pool from the host environment. | 43 of 47 marketplace agents currently use this (wiki-searcher is the exception). |
+| **Explicit full list** | Agent has a NEVER-do-X boundary requiring all listed tools (e.g., a generator whose body says "NEVER run destructive Bash"). | Rare — the marketplace has zero current examples. |
+| **Explicit restricted list** | Agent is a focused read-only tool where the boundary enforces "NEVER write" (e.g., `wiki-searcher`). | `tools: [Read, Glob, Grep]` for `tp-wiki:wiki-searcher` only. |
+| **`tools: []` with orchestrator handling** | Agent's output is text-only; any file I/O is the orchestrator's job. | `sadd-expander`, `sadd-explorer`, `sadd-meta-judge`. |
+
+**Only add `tools:` when the body says "NEVER do X" and the tool boundary
+is the enforcement layer.** The restriction cost is real: the agent
+loses user-configured MCP servers, project-specific tools, and
+`settings.json` quirks. The benefit is imaginary unless the NEVER policy
+is load-bearing.
 
 **The bug class caught by the 2026-06-04 audit:** agents with `tools: []`
-(the third or fourth pattern) but file-I/O contracts in their body. Real
-testing revealed the model would self-acknowledge the contradiction
-("I don't have Write access") and produce zero tool calls. The fix was
-to grant the minimum tool set per role.
+but file-I/O contracts in their body. Real testing revealed the model
+would self-acknowledge the contradiction ("I don't have Write access")
+and produce zero tool calls. The fix was NOT to add tool lists
+indiscriminately — it was to audit whether the agent actually needs to
+write, and if so, remove the `tools: []` or let it inherit.
 
 ---
 

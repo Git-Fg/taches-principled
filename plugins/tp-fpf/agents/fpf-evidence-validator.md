@@ -6,11 +6,6 @@ color: green
 skills:
   - fpf
   - diagnose
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
 ---
 
 ## Ground truth (P6)

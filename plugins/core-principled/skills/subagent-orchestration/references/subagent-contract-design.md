@@ -177,20 +177,56 @@ If the answer to the first is yes and either of the next two is no, the subagent
 
 ## Application: the 4 marketplace tool-source patterns
 
-From issue #36 (Universal Gap B), there are 4 distinct patterns in the marketplace for how a subagent gets its tools. Document them and pick explicitly:
+From issue #36 (Universal Gap B), there are 4 distinct patterns in the marketplace for how a subagent gets its tools. **Patterns 1 and 2 are exceptional — only use them when a NEVER policy requires the tool boundary as enforcement.** Patterns 3 and 4 (no `tools:` field at all) are the actual defaults.
 
 | Pattern | When to use | Example |
 |---|---|---|
-| **A. Explicit full tool list** | Subagent has a clear read/write tool surface. | `tp-git:git-pr-reviewer` (`tools: [Read, Grep, Bash, git]`) |
-| **B. Explicit restricted tool list** | Read-only or write-only subagent. The tool list is a *guarantee*, not a suggestion. | `tp-wiki:wiki-searcher` (`tools: [Read, Glob, Grep]`) |
+| **Default: no `tools:` field** | Most subagents. Agent inherits the full tool pool. | 43 of 47 marketplace agents currently use this. |
+| **A. Explicit full tool list** | ONLY when body says "NEVER do X" and the boundary enforces it (e.g., must have Write but not Bash). | Zero current marketplace examples — only add when a NEVER policy demands it. |
+| **B. Explicit restricted tool list** | ONLY when body says "NEVER do X" and the tool boundary is the enforcement layer. The tool list is a *guarantee*, not a suggestion. | `tp-wiki:wiki-searcher` (`tools: [Read, Glob, Grep]`) is the **only** current example. |
 | **C. `tools: []` with implicit orchestrator handling** | Subagent returns text output. The orchestrator writes to disk on its behalf. **Only valid when the contract is text-only.** | `tp-sadd:sadd-meta-judge` (YAML output as text) |
 | **D. `tools: []` inheriting from skill `allowed-tools`** | Partial; harness inheritance is undocumented. **Avoid.** The marketplace is moving away from this. | `tp-session-audit:session-inspector` (Bash missing despite skill allowing it) |
 
 **The decision rule:**
 
-- If the subagent writes files → use Pattern A or B. Pick A when the subagent owns its own file I/O, B when the orchestrator should control write access.
-- If the subagent returns text only and the orchestrator handles file I/O → use Pattern C. **State this explicitly in the contract** ("The orchestrator writes the output to disk on your behalf.").
+- If the agent's body has no NEVER policy → use the default (no `tools:` field). The agent inherits the full tool pool.
+- If the agent's body says "NEVER do X" and the tool boundary IS the enforcement layer → use Pattern A or B. Choose A when the agent needs full access but must be blocked from specific tools; choose B when the agent should only have narrow access.
+- If the agent returns text only and the orchestrator handles file I/O → use Pattern C. **State this explicitly in the contract** ("The orchestrator writes the output to disk on your behalf.").
 - Avoid Pattern D. Document it in the schema if you must support it.
+
+---
+
+## When to declare a `tools:` list
+
+**Only when a body policy says "NEVER do X" and the tool boundary is the enforcement layer.**
+
+The tool boundary is not a way to scope down an agent's capabilities for hygiene or least-privilege aesthetics — it is a hard enforcement mechanism. If the body policy is advisory (the model is trusted to follow it), the `tools:` list is unnecessary and harmful.
+
+**Worked example — the canonical case:**
+
+`tp-wiki:wiki-searcher` has body text: "NEVER write or modify any wiki file." Its frontmatter declares:
+```yaml
+tools: [Read, Glob, Grep]
+```
+This is legitimate because:
+1. The body contains an explicit NEVER policy ("NEVER write or modify")
+2. The tool boundary is the **only** enforcement mechanism — without it, the model could choose to ignore the advisory
+3. The tool list is minimal (only Read operations that support the search function)
+
+**The restriction cost is real:** any `tools:` list removes the agent's access to user-configured MCP servers, project-specific tools, and `settings.json` quirks. This is an acceptable trade-off only when the NEVER policy is load-bearing and the cost is intentional.
+
+---
+
+## When NOT to declare a `tools:` list
+
+Do not add `tools:` when:
+
+- The body has no NEVER policy — the agent is trusted to use tools as appropriate for its role
+- The body says "produce a solution" or "generate output" with no restrictions — this is a DO policy, not a NEVER policy, and the agent should inherit the full tool pool
+- The body references file I/O but the orchestrator handles it — use Pattern C instead
+- The rationale is "least privilege" or "security hygiene" without a specific NEVER policy — this is imaginary security that costs real capability
+
+The 7 agents that were incorrectly updated in June 2026 (`fpf-hypothesis-generator`, `fpf-evidence-validator`, `fpf-logic-verifier`, `fpf-trust-auditor`, `sadd-generator`, `sadd-judge`, `sadd-synthesizer`) had `tools:` added based on a misreading of issues #37 and #38. Their bodies have no NEVER policies — they have DO policies ("generate", "validate", "judge"). They correctly inherit the full tool pool.
 
 ---
 
@@ -227,9 +263,9 @@ color: <red|blue|green|yellow|purple|orange|pink|cyan>
 background: true   # only for long-running agents
 skills:
   - <owning skill>            # 1-3 skills, never 0 unless pure reasoning
-tools:
-  - Read
-  - Write                      # or Glob/Grep/Bash as needed
+# tools:                           # OMIT unless body has a NEVER-do-X policy
+#   - Read                      # Only when a NEVER policy requires the tool boundary
+#   - Write                     # as the enforcement layer. Default: inherit all tools.
 ---
 
 # Role
