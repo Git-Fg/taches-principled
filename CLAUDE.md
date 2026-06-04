@@ -610,12 +610,31 @@ You MUST read [Skills](docs/official/skills.md) for frontmatter field reference 
 # 1. Make your changes
 git add -A && git commit -m "message"
 
-# 2. Bump plugin version in marketplace.json (minor for features, patch for fixes)
-# Edit .claude-plugin/marketplace.json — bump the "version" field for the affected plugin
+# 2. Bump plugin version in its plugin.json (minor for features, patch for fixes)
+# Edit plugins/<name>/.claude-plugin/plugin.json — bump the "version" field
 
-# 3. Push
+# 3. Re-generate marketplace.json
+python3 -c "
+import json, pathlib
+root = pathlib.Path('.claude-plugin')
+with open('_meta.json') as f: meta = json.load(f)
+plugins = []
+for d in sorted((root.parent / 'plugins').iterdir()):
+    p = d / '.claude-plugin' / 'plugin.json'
+    if not p.exists(): continue
+    with open(p) as f: data = json.load(f)
+    m = meta.get(data['name'], {})
+    entry = {'name': data['name'], 'version': data['version'], 'description': data['description']}
+    entry.update({k: m[k] for k in ('source','homepage','repository','license','category','keywords') if k in m})
+    plugins.append(entry)
+with open('marketplace.json', 'w') as f: json.dump({**meta, 'plugins': plugins}, f, indent=2)
+"
+
+# 4. Push
 git push
 ```
+
+> **Single source of truth:** `name`, `version`, `description` come from the per-plugin `plugin.json`. All other catalog fields (`source`, `category`, `keywords`, `homepage`, `repository`, `license`) come from `.claude-plugin/_meta.json`. Never edit `marketplace.json` directly — it is regenerated from these two sources.
 
 ### CHANGELOG Convention
 
