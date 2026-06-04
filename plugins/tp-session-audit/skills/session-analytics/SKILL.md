@@ -355,3 +355,27 @@ IF performing deep investigation (INVESTIGATE) → spawn **`session-meta-reviewe
 IF performing context and outcome analysis → spawn **`session-context-analyzer`**
 IF performing privacy audit and issue body construction (ISSUE) → spawn **`session-issue-generator`**
 IF performing forensic log analysis (CROSS-ANALYZE) → spawn **`session-inspector`**
+
+## Cross-plugin dependencies
+
+This skill is part of the `tp-session-audit` plugin and depends on
+**optional** agents from other plugins. Each is a soft dependency —
+the skill works without it, falling back to the noted substitute.
+
+| Agent | Source plugin | Used in | Fallback if absent |
+|---|---|---|---|
+| `tp-debug-tracer` | *(not yet published in this marketplace)* | `CROSS-ANALYZE` mode, for backward call-chain root-cause from debug logs | `session-inspector` on the debug log (single-agent path) |
+| `tp-fpf:fpf-evidence-validator` | `tp-fpf` | `CROSS-ANALYZE` evidence validation stage | Skip the validation stage and note it in the report |
+| `tp-sadd:sadd-judge` | `tp-sadd` | `CROSS-ANALYZE` adversarial-check pass | `core-principled:tp-critic` (a single critic instead of a judge panel) |
+
+Why these aren't hard dependencies: `tp-session-audit` ships
+standalone — a user who only wants session analytics should be
+able to install just this plugin. The optional cross-plugin agents
+add depth (judge panels, evidence validation, stack-trace
+root-causing) but are not required for the core flow.
+
+The body of this skill (under `## Process → CROSS-ANALYZE` and
+`## Process → meta-analysis`) already says "if available" and names
+the fallback inline; this section exists to make the dependency
+contract greppable for maintainers and CI scripts that audit
+cross-plugin coupling.

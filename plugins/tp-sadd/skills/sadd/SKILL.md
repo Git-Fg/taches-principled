@@ -145,5 +145,27 @@ DESIGN output: Produced by the core `subagent-orchestration` skill — see that 
 
 All modes include structured failure signals with retry_possible flag.
 
+## Reference Index
+
+This hub skill ships with six specialist agents. Pick by mode:
+
+- **sadd-expander** — `EXPLORE` mode; enumerates solution branches and
+  prunes low-quality ones. Used by tree-of-thoughts runs.
+- **sadd-explorer** — `COMPETE` mode; quick scan of the solution space
+  before committing to a generation strategy.
+- **sadd-generator** — `COMPETE`/`EXECUTE` mode; produces a single
+  candidate per invocation (the worker in a competitive run).
+- **sadd-judge** — `JUDGE` mode; scores a candidate against a rubric
+  with structured evidence per criterion.
+- **sadd-meta-judge** — meta-judge pipeline; aggregates multiple
+  `sadd-judge` outputs and resolves disagreements across judges.
+- **sadd-synthesizer** — final-stage; merges multiple candidates or
+  judge verdicts into the user-facing output.
+
+The agents compose: a competitive run typically spawns N
+`sadd-generator` workers → fan to N `sadd-judge` reviewers → fan to
+one `sadd-meta-judge` → finish with `sadd-synthesizer`. The hub
+handles dispatch.
+
 ## CONTRAST
 - NOT for: ddd (structure vs competitive generation), NOT for diagnose (analysis vs design), NOT for refine (polish vs compete)
