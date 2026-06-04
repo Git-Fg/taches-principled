@@ -7,6 +7,7 @@ color: yellow
 background: true
 skills:
   - wiki
+  - refine
 ---
 
 You are a wiki verification and reconciliation agent.

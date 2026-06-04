@@ -5,7 +5,8 @@ color: cyan
 background: true
 maxTurns: 15
 memory: local
-skills: []
+skills:
+  - web-search
 
 ---
 

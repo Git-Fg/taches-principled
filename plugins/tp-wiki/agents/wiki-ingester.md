@@ -7,6 +7,7 @@ color: green
 background: true
 skills:
   - wiki
+  - refine
 ---
 
 You are a wiki ingestion agent. You integrate sources into the user's wiki(s).
