@@ -4,20 +4,39 @@ All notable changes are documented here.
 
 ## [1.13.0] — 2026-06-04
 
+Resolves the post-initial-release audit of the new `tp-wiki` plugin.
+Six small commits covering the manifest-hygiene, hub-skill structure,
+agent safety, and prose-clarity findings.
+
+### Fixed
+
+- **Missing `plugins/tp-wiki/.claude-plugin/plugin.json`** (tp-wiki 0.1.1). The plugin shipped with a marketplace catalog entry but no per-plugin manifest — the same bug class we fixed for `claude-cli-wrapper` / `tp-mcp` / `tp-rust` in #11 Commit 4. Without it, install would have fallen back to marketplace.json-derived metadata for tp-wiki only.
+- **`wiki-searcher` tool-scope safety gap** (tp-wiki 0.1.1). The agent body said "NEVER write or modify any wiki file" but had no `tools:` field, so it inherited Write / Edit / Bash. The body policy was a request, not a guarantee. Now `tools: [Read, Glob, Grep]` enforces read-only at the tool boundary. Matches the sister agents and the focused-agent pattern across the marketplace.
+
 ### Added
 
-- **`tp-wiki` plugin** (v0.1.0) — new plugin for markdown wiki / knowledge base management. Ships with:
-  - `wiki` hub skill — routes to subagents, resolves `$WIKI_ROOT` (env var → `~/.claude/wiki-root` → user prompt)
-  - `wiki-searcher` agent (blue, sonnet) — read-only retrieval, preload: wiki
-  - `wiki-linter` agent (yellow, sonnet) — verify consistency + intent drift, preload: wiki
-  - `wiki-ingester` agent (green, sonnet) — ingest sources (url/text/file/bulk), preload: wiki
-  - `references/wiki-format.md` — wiki format conventions
-  - `references/intent-format.md` — plain-text intent file spec (`.wiki/intent.md`)
-  - `references/llm-wiki-methodology.md` — full operational methodology (Ingest/Query/Lint/Archive)
+- **Hub-skill `## Reference Index`** (tp-wiki 0.1.1). Names the 3 shipped agents (wiki-searcher, wiki-linter, wiki-ingester) and maps each to its mode, color, model, and tool scope. Same pattern as the sadd Reference Index from #14 D2.
+- **Hub-skill `## Cross-plugin dependencies`** (tp-wiki 0.1.1). Documents the soft deps on `mcp__mcp-searxng__fetch` and `mcp__mcp-searxng__extract` for `wiki-ingester` mode `url`, both with Claude Code built-in fallbacks (WebFetch). The plugin has no hard cross-plugin deps — it's self-contained.
+- **Hub-skill `## Decision Router`** (tp-wiki 0.1.1). Replaces the informal "Routing — Delegate to Subagents" section with an intent-signal → subagent table, plus disambiguation guidance for ambiguous intents.
+- **Hub-skill `## Anti-patterns`** (tp-wiki 0.1.1). 7 specific failure modes with "don't do this" framing — mutating `raw/`, single-source pages, tag sprawl, skipping orientation, etc.
 
-- **Generalized llm-wiki base**: `plugins/tp-wiki/skills/wiki/SKILL.md` is a copy of the personal `llm-wiki` skill, generalized to remove MyWiki/PharmaWiki hardcoding. The original `~/.claude/skills/llm-wiki/SKILL.md` is untouched.
+### Changed
 
-- **Marketplace bumped** to v0.21.0.
+- **`wiki/SKILL.md` frontmatter tightened** (tp-wiki 0.1.1). Description now wrapped in double-quotes (the bug class from #10 Bug 4 — the original bare multi-line value was fragile). Added `when_to_use:` and `argument-hint:` (the latter was missing across the hub skill).
+- **`wiki-linter` Check A–G each get an explicit `Action` line** (tp-wiki 0.1.1). The Auto-Fix section at the bottom said "auto-fix safe violations" but the per-check prose didn't say what to do for any individual check. Now each check has an explicit Action: report-only by default, with auto-fix gated behind user approval.
+- **`wiki-linter` Check F documents the 90-day default as overridable** (tp-wiki 0.1.1). If `intent.md` has a line of the form "no page older than N months/days without review", use that; otherwise default to 90 days.
+- **`wiki-searcher` description gets more trigger phrases** (tp-wiki 0.1.1). Aligned to the same trigger surface as the hub skill's `when_to_use` and the marketplace entry, so routing into the agent doesn't have a narrower signal.
+- **`Mandatory Orientation` backtick disambiguation** (tp-wiki 0.1.1). The `SCHEMA.md` / `index.md` / `log.md` references are conceptual files in the user's wiki, not files in this plugin. Added a one-line note so future maintainers don't grep the plugin for them and conclude they're missing.
+
+### Skip notes
+
+- Findings 11 (agent description style consistency) was already resolved — all 3 agents used quoted multi-line YAML; the SKILL.md was the inconsistent one, fixed in the frontmatter-tightening change above.
+- Findings 13, 14, 15, 16 from the audit were minor polish items, addressed in the wiki-linter Action lines + the wiki-searcher trigger coverage + the Mandatory Orientation disambiguation.
+
+### Changed
+
+- **`tp-wiki`** 0.1.0 → 0.1.1 (patch — manifest hygiene, safety gap, hub-skill structure; no new features).
+- **Marketplace** 0.21.0 → 0.22.0 (catalog change for the tp-wiki patch).
 
 ## [1.12.0] — 2026-06-04
 
