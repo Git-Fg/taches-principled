@@ -1083,3 +1083,25 @@ Now that you understand subagents, explore these related features:
 * [Distribute subagents with plugins](/en/plugins) to share subagents across teams or projects
 * [Run Claude Code programmatically](/en/headless) with the Agent SDK for CI/CD and automation
 * [Use MCP servers](/en/mcp) to give subagents access to external tools and data
+
+---
+
+## Marketplace-specific: subagent contract design
+
+The taches-principled marketplace extends the upstream subagent
+documentation with a 6-principle contract design framework. Every
+subagent shipped under a taches-principled plugin must adhere to:
+
+- **P1** — Source of truth for every value
+- **P2** — Bind Writes to Reads explicitly
+- **P3** — Ordered operations with verification
+- **P4** — Explicit link resolution algorithm
+- **P5** — Failure-mode footer on every contract
+- **P6** — Ground truth (subagents making factual claims must have Read access)
+
+Plus 4 tool-source patterns and a 3-phase testing methodology
+(static read → real invocation → JSONL trace analysis). See
+`plugins/core-principled/skills/subagent-orchestration/references/subagent-contract-design.md`
+in the marketplace for the full reference. The marketplace's
+`docs/CONTRIBUTING.md` documents the maintainer-side testing
+methodology.
