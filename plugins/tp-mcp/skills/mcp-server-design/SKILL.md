@@ -1,6 +1,6 @@
 ---
 name: mcp-server-design
-description: Design an MCP (Model Context Protocol) server that LLM agents can call cleanly. Tool decomposition (1 vs N), equilibrated recursivity (flat schema, deep data via pass-through), output contract (CallToolResult text+JSON), JSON-RPC error code discipline, context budget (≤12 KB total schema), tool annotations, naming, capability negotiation, security best practices. Use when the user says "design an MCP server", "should this be one tool or many", "how to structure tool schemas", "MCP server best practices", "JSON-RPC errors", "tool naming".
+description: Design an MCP (Model Context Protocol) server that LLM agents can call cleanly. Tool decomposition (1 vs N), flat schema with deep data via pass-through, output contract (text+JSON), JSON-RPC error code discipline, context budget (≤12 KB total schema), tool annotations, naming, capability negotiation, security best practices. Use when the user says "design an MCP server", "should this be one tool or many", "how to structure tool schemas", "MCP server best practices", "JSON-RPC errors", "tool naming".
 when_to_use: |
   - "Should I split this into multiple tools or keep it as one?"
   - "Design an MCP server for X"
@@ -39,7 +39,12 @@ authoring details, see `mcp-tool-surface`.
 - "Review my MCP server design" / "is my server Claude-optimal?" → (future `mcp-server-quality` skill)
 - "Wrap a CLI as an MCP server" → this skill + `mcp-server-implement` together; the `claude-cli` skill is a worked example
 
----
+## CONTRAST
+
+- NOT for: writing a JSON Schema for a tool — use mcp-tool-surface
+- NOT for: implementing the server in code (rmcp, schemars, transport) — use mcp-server-implement
+- NOT for: building a non-MCP CLI tool — use subagent-orchestration or shell tooling
+- This skill is the design layer; the implementation layer is mcp-server-implement
 
 ## §2. The core design thesis: equilibrated recursivity
 
@@ -518,4 +523,4 @@ The model does NOT see:
 - [12] CodiLime: MCP explained — https://codilime.com/blog/model-context-protocol-explained/
 - [13] WebFuse MCP Cheat Sheet (2026) — https://www.webfuse.com/mcp-cheat-sheet
 - [14] Kimi brainstorm: "Optimal MCP Schema for a Claude Code CLI Wrapper" (the doc the user shared) — internal
-- [15] Worked example in this marketplace: `plugins/claude-cli-wrapper` (the 6-tool decomposition)
+- [15] Worked example in this marketplace: the `claude-cli` skill in the `claude-cli-wrapper` plugin (6-tool decomposition)

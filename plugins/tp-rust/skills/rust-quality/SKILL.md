@@ -1,6 +1,6 @@
 ---
 name: rust-quality
-description: Set up the Rust quality pipeline — GitHub Actions CI (dtolnay + Swatinem + taiki-e), clippy pedantic, cargo-nextest (1.4-3.4× faster than cargo test), coverage with cargo-llvm-cov, and the supply-chain ladder (cargo-audit → cargo-deny → cargo-vet). Use when the user says "set up CI for Rust", "configure clippy", "speed up tests", "add coverage", "audit dependencies", "set up supply-chain", "add benchmarks", "lint as error in CI".
+description: Set up the Rust quality pipeline — CI with clippy, faster test runner (nextest), coverage reporting, dependency auditing, and the supply-chain ladder. Use when the user says "set up CI for Rust", "configure clippy", "speed up tests", "add coverage", "audit dependencies", "set up supply-chain", "add benchmarks", "lint as error in CI".
 when_to_use: |
   - "Set up CI for my Rust project"
   - "Configure clippy for a library"
@@ -35,9 +35,13 @@ release/publishing, use `rust-release`.
 - "Lint as error in CI"
 
 **DO NOT use this skill for:**
-- "scaffold" / "Cargo.toml" / "edition" → `rust-scaffold`
-- "split into workspace" / "share deps" → `rust-workspace`
-- "publish" / "version" / "changelog" → `rust-release` (the supply-chain ladder is a cross-skill handoff — quality sets it up, release maintains it)
+
+## CONTRAST
+
+- NOT for: scaffold / Cargo.toml / edition — use rust-scaffold
+- NOT for: split into workspace / share deps — use rust-workspace
+- NOT for: publish / version / changelog — use rust-release (the supply-chain ladder is a cross-skill handoff — quality sets it up, release maintains it)
+- This skill covers CI / clippy / tests / coverage; release and scaffold are separate skills
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: rust-release
-description: Manage the Rust release lifecycle — Cargo semver (0.x.y pre-1.0, MSRV bumps), changelog generation (git-cliff vs release-please vs hand-curated), publishing (cargo publish, yank, ownership), and supply-chain hardening (cargo-vet, Dependabot, [patch.crates-io]). Use when the user says "publish to crates.io", "bump version", "set up release-plz", "yank a version", "deprecate a feature", "add a changelog", "transfer crate ownership".
+description: Manage the Rust release lifecycle — semver and MSRV policy, changelog generation, publishing to crates.io (including yank and ownership transfer), and supply-chain hardening with vet and dependabot. Use when the user says "publish to crates.io", "bump version", "set up release-plz", "yank a version", "deprecate a feature", "add a changelog", "transfer crate ownership".
 when_to_use: |
   - "Publish my crate to crates.io"
   - "Bump the version / set up release-plz"
@@ -35,9 +35,13 @@ and supply-chain maintenance. For initial project setup, use `rust-scaffold` or
 - "How do I publish a workspace?"
 
 **DO NOT use this skill for:**
-- "scaffold" / "Cargo.toml" / "feature flags" → `rust-scaffold`
-- "split into workspace" / "MSRV coordination" → `rust-workspace`
-- "set up CI" / "set up cargo-deny" → `rust-quality` (this skill covers ongoing maintenance, not setup)
+
+## CONTRAST
+
+- NOT for: scaffold / Cargo.toml / feature flags — use rust-scaffold
+- NOT for: split into workspace / MSRV coordination — use rust-workspace
+- NOT for: initial CI / cargo-deny setup — use rust-quality (this skill covers ongoing maintenance, not setup)
+- This skill is the release lifecycle; scaffolding, structure, and quality are upstream
 
 ---
 

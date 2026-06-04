@@ -1,6 +1,6 @@
 ---
 name: mcp-server-implement
-description: Build an MCP server in Rust using rmcp + schemars + tokio. Tool attribute mapping (`#[tool]`, `#[tool_handler]`, `#[tool_router]`), JSON Schema constraint generation, enum/rename/optional idioms, server lifecycle (initialize → capabilities → shutdown), transport choice (stdio vs Streamable HTTP), stderr-only logging, error mapping, testing with the MCP Inspector. Use when the user says "implement an MCP server in Rust", "rmcp + schemars patterns", "build an MCP tool", "Rust MCP server", "transport choice stdio vs HTTP", "MCP server lifecycle".
+description: Build an MCP server in Rust — tool attributes, server lifecycle (initialize → capabilities → shutdown), transport choice (stdio vs Streamable HTTP), stderr-only logging, error mapping, and testing with the MCP Inspector. Use when the user says "implement an MCP server in Rust", "build an MCP tool", "Rust MCP server", "transport choice stdio vs HTTP", "MCP server lifecycle".
 when_to_use: |
   - "Build me an MCP server in Rust"
   - "Set up rmcp with schemars for tool schemas"
@@ -31,10 +31,12 @@ see `mcp-server-design`. For the JSON Schema authoring details, see
 - "Map Rust types to JSON Schema for MCP"
 - "Implement an MCP tool with structured output"
 
-**DO NOT use this skill for:**
-- "Design an MCP server" / "1 tool vs N" / "schema design" → `mcp-server-design`
-- "Write a good JSON Schema" / "constraints" / "descriptions" → `mcp-tool-surface`
-- "Implement in Python" / "TypeScript" / "Go" → not covered (use SDK-specific docs)
+## CONTRAST
+
+- NOT for: designing an MCP server's tool decomposition or output contract — use mcp-server-design
+- NOT for: writing the JSON Schema for a single tool — use mcp-tool-surface
+- NOT for: MCP server implementation in Python / TypeScript / Go — use the SDK-specific docs
+- This skill covers Rust implementation (rmcp + schemars + tokio) only; the design and schema layers are separate skills
 - "Build an MCP client" → not covered (no client skill yet)
 
 ---
@@ -77,7 +79,7 @@ async-trait = "0.1"
 
 > **Version drift warning:** the rmcp API has broken between 0.1, 0.2, 0.3, and 0.16+ releases.
 > The examples in this skill are validated against the version that ships in
-> `plugins/claude-cli-wrapper` (rmcp 0.3.2). If you pin a different minor, expect
+> the `claude-cli-wrapper` plugin in this marketplace (rmcp 0.3.2). If you pin a different minor, expect
 > macro and import differences.
 
 ---
@@ -656,4 +658,4 @@ cross build --release --target x86_64-pc-windows-msvc
 - [8] HackMD: A Coder's Guide to the Official Rust MCP Toolkit — https://hackmd.io/@Hamze/S1tlKZP0kx
 - [9] mcpcat.io: Build MCP Servers in Rust — https://mcpcat.io/guides/building-mcp-server-rust/
 - [10] schemars docs — https://docs.rs/schemars/
-- [11] Worked example: `plugins/claude-cli-wrapper` in this marketplace
+- [11] Worked example: the `claude-cli` skill in this marketplace's `claude-cli-wrapper` plugin
