@@ -45,28 +45,40 @@ see `mcp-server-design`. For the JSON Schema authoring details, see
 [package]
 name = "my-mcp-server"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [dependencies]
-rmcp = { version = "0.16", features = ["server", "transport-io", "transport-streamable-http-server", "macros"] }
+# rmcp 0.3 — feature names changed from the 0.16 era
+rmcp = { version = "0.3", features = ["server", "macros", "transport-io", "schemars"] }
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-schemars = "0.8"
+schemars = "1.0"            # only needed if you DON'T enable rmcp's `schemars` re-export
 anyhow = "1"
-thiserror = "2"
+thiserror = "1"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 async-trait = "0.1"
+
+# For Streamable HTTP transport (optional, only if not using stdio):
+# rmcp = { version = "0.3", features = ["server", "macros", "transport-streamable-http-server"] }
+# axum = "0.7"
+# tower = "0.5"
 ```
 
-**Feature flags explained:**
-- `server` — core server-side functionality
-- `transport-io` — stdio transport (always needed for local servers)
-- `transport-streamable-http-server` — Streamable HTTP transport (remote servers)
+**Feature flags (rmcp 0.3):**
+- `server` — core server-side types and `ServerHandler` trait
+- `macros` — `#[tool]`, `#[tool_handler]`, `#[tool_router]`, `#[prompt]`
+- `transport-io` — stdio transport
+- `transport-streamable-http-server` — Streamable HTTP transport (remote / multi-client)
 - `transport-sse-server` — legacy HTTP+SSE (only if you must support 2024-11-05 clients)
-- `macros` — `#[tool]`, `#[tool_handler]`, `#[tool_router]`, `#[prompt]`, etc.
+- `schemars` — re-exports `schemars` so you can `use rmcp::schemars::JsonSchema;` and avoid adding `schemars` as a direct dep
 - `client` — only if you're also building a client in the same crate
+
+> **Version drift warning:** the rmcp API has broken between 0.1, 0.2, 0.3, and 0.16+ releases.
+> The examples in this skill are validated against the version that ships in
+> `plugins/claude-cli-wrapper` (rmcp 0.3.2). If you pin a different minor, expect
+> macro and import differences.
 
 ---
 
@@ -74,25 +86,25 @@ async-trait = "0.1"
 
 ```rust
 use rmcp::{
-    handler::server::wrapper::Parameters,
-    schemars,        // re-exported for convenience
-    tool, tool_handler, tool_router,
     ServerHandler, ServiceExt,
+    handler::server::tool::Parameters,
+    model::{Implementation, ServerCapabilities, ServerInfo},
+    tool, tool_handler, tool_router,
     transport::stdio,
-    model::*,
 };
-use schemars::JsonSchema;
+use rmcp::schemars::JsonSchema;   // re-exported when you enable the `schemars` feature
 use serde::{Deserialize, Serialize};
 
-// 1. Server struct (the "thing" that owns your tools)
+// 1. Server struct — must own a `ToolRouter<Self>` for the macros to work
 #[derive(Clone)]
 pub struct MyServer {
-    // state goes here (e.g., Arc<Mutex<State>>)
+    tool_router: rmcp::handler::server::router::tool::ToolRouter<Self>,
     state: MyState,
 }
 
 // 2. Tool input struct (auto-generates the JSON Schema)
 #[derive(Debug, Deserialize, Serialize, JsonSchema)]
+#[serde(deny_unknown_fields, default)]
 pub struct MyToolParams {
     #[schemars(description = "First number to add")]
     pub a: i32,
@@ -103,30 +115,48 @@ pub struct MyToolParams {
 // 3. Tool methods on a `#[tool_router]` impl block
 #[tool_router]
 impl MyServer {
+    // Constructor is just a regular method (the `Self::tool_router()` call
+    // wires up the `#[tool]`-annotated methods declared on this impl).
+    fn new(state: MyState) -> Self {
+        Self {
+            tool_router: Self::tool_router(),
+            state,
+        }
+    }
+
+    // Sync tool: return type goes straight into CallToolResult
     #[tool(description = "Add two numbers")]
-    fn add(&self, Parameters(MyToolParams { a, b }): Parameters<MyToolParams>) -> String {
-        (a + b).to_string()
+    fn add(&self, Parameters(MyToolParams { a, b }): Parameters<MyToolParams>)
+        -> Result<rmcp::model::CallToolResult, rmcp::ErrorData>
+    {
+        Ok(rmcp::model::CallToolResult::success(vec![
+            rmcp::model::Content::text((a + b).to_string())
+        ]))
     }
 
     // Async tool: just make the function async
     #[tool(description = "Fetch a URL")]
-    async fn fetch(&self, Parameters(p): Parameters<FetchParams>) -> Result<String, String> {
+    async fn fetch(&self, Parameters(p): Parameters<FetchParams>)
+        -> Result<rmcp::model::CallToolResult, rmcp::ErrorData>
+    {
         // ...
     }
 }
 
-// 4. ServerHandler impl: declares capabilities and metadata
-#[tool_handler(name = "my-mcp-server", version = "1.0.0", instructions = "A simple calculator")]
+// 4. ServerHandler impl — `#[tool_handler(router = self.tool_router)]` wires
+//    up the #[tool] method dispatch. The `name` / `version` / `instructions`
+//    fields live in the ServerInfo returned by get_info(), NOT as macro args.
+#[tool_handler(router = self.tool_router)]
 impl ServerHandler for MyServer {
-    // Override default capabilities if needed
     fn get_info(&self) -> ServerInfo {
         ServerInfo {
-            protocol_version: ProtocolVersion::V_2025_11_25,
-            capabilities: ServerCapabilities::builder()
-                .enable_tools()
-                .build(),
-            server_info: Implementation::from_build_env(),
-            instructions: Some("A simple calculator".to_string()),
+            server_info: Implementation {
+                name: "my-mcp-server".into(),
+                version: env!("CARGO_PKG_VERSION").into(),
+            },
+            capabilities: ServerCapabilities::default(),  // builder() also fine
+            instructions: Some("A simple calculator".into()),
+            ..Default::default()
         }
     }
 }
@@ -143,13 +173,18 @@ async fn main() -> anyhow::Result<()> {
         )
         .init();
 
-    let server = MyServer { state: MyState::new() };
-    let transport = stdio();
-    let service = server.serve(transport).await?;
+    let server = MyServer::new(MyState::new());
+    let service = server.serve(stdio()).await?;
     service.waiting().await?;
     Ok(())
 }
 ```
+
+**Key API shape (rmcp 0.3) — what the macros actually expect:**
+- `#[tool_router]` impl **must** define a field `tool_router: ToolRouter<Self>` on the struct; the constructor calls `Self::tool_router()` to initialize it.
+- `#[tool_handler(router = self.tool_router)]` is the only supported macro form. The older `#[tool_handler(name = "...", version = "...", instructions = "...")]` form **does not exist** in 0.3 — `name` / `version` / `instructions` belong in `ServerInfo`.
+- `#[tool(description = "...")]` — the tool's `name` defaults to the method name (e.g. `add`); pass `name = "my_tool"` to override.
+- Return type is `Result<CallToolResult, rmcp::ErrorData>` — the `McpError` alias and 3-arg `internal_error("code", data)` shape from older docs do not apply.
 
 ---
 
@@ -405,47 +440,63 @@ For Streamable HTTP servers, stdout logging is fine (it's not a protocol channel
 
 ## §11. Error mapping
 
-```rust
-use rmcp::ErrorData as McpError;
+The error type is `rmcp::ErrorData` (re-exported at the crate root in 0.3).
+The 2-arg constructor shape is `(message: impl Into<String>, data: Option<impl Serialize>)`.
 
-// Wrap domain errors in McpError so they become JSON-RPC error responses
-fn map_domain_error(e: anyhow::Error) -> McpError {
-    McpError::internal_error(
-        "tool_execution_failed",
-        Some(serde_json::json!({
-            "message": e.to_string(),
-            "backtrace": e.backtrace().map(|b| b.to_string()),
-        }))
+```rust
+use rmcp::ErrorData;
+
+// Wrap a domain error so it surfaces as a JSON-RPC error response
+fn map_domain_error(e: anyhow::Error) -> ErrorData {
+    ErrorData::internal_error(
+        e.to_string(),                       // human-readable message
+        Some(serde_json::json!({ "source": "tool_execution" })),  // optional structured data
     )
 }
 
 // In a tool method
 #[tool(description = "Read a file")]
-async fn read_file(&self, Parameters(p): Parameters<ReadFileParams>) -> Result<String, McpError> {
+async fn read_file(
+    &self,
+    Parameters(p): Parameters<ReadFileParams>,
+) -> Result<rmcp::model::CallToolResult, ErrorData> {
     // Security: validate path
     if !is_path_allowed(&p.path) {
-        return Err(McpError::invalid_request("access denied: path outside allowed directories", None));
+        return Err(ErrorData::invalid_request(
+            "access denied: path outside allowed directories",
+            None,
+        ));
     }
     let content = tokio::fs::read_to_string(&p.path)
         .await
-        .map_err(|e| McpError::invalid_request(&format!("read failed: {e}"), None))?;
-    Ok(content)
+        .map_err(|e| ErrorData::invalid_params(format!("read failed: {e}"), None))?;
+    Ok(rmcp::model::CallToolResult::success(vec![
+        rmcp::model::Content::text(content)
+    ]))
 }
 ```
 
-**MCP error constructors (from `rmcp::ErrorData`):**
-- `McpError::invalid_request(msg, data)` → JSON-RPC `-32600`
-- `McpError::invalid_params(msg, data)` → JSON-RPC `-32602` (most common for schema violations)
-- `McpError::method_not_found(msg, data)` → JSON-RPC `-32601`
-- `McpError::internal_error(msg, data)` → JSON-RPC `-32603` (use sparingly — only for true internal errors)
-- Custom codes via `McpError::custom(code, msg, data)` for domain errors
+**`rmcp::ErrorData` constructors (2-arg form, all take `impl Into<String>` + `Option<impl Serialize>`):**
+- `ErrorData::parse_error(msg, data)` → JSON-RPC `-32700` (malformed JSON)
+- `ErrorData::invalid_request(msg, data)` → JSON-RPC `-32600`
+- `ErrorData::method_not_found(msg, data)` → JSON-RPC `-32601`
+- `ErrorData::invalid_params(msg, data)` → JSON-RPC `-32602` (most common for schema/validation failures)
+- `ErrorData::internal_error(msg, data)` → JSON-RPC `-32603` (use sparingly — true internal bugs only)
+- `ErrorData::custom(code, msg, data)` → arbitrary code (use for domain-specific `-32001`…`-32099` codes)
+- `ErrorData::resource_not_found(msg, data)` → MCP-specific code for missing resources
 
 **Map your domain error categories to error codes:**
-- Validation failed → `-32602` (invalid params)
+- Validation failed (bad input shape, missing required field) → `-32602` (invalid params)
 - Auth failed → custom `-32001`
 - Rate limited → custom `-32002`
-- Dependency unavailable → custom `-32003`
-- Internal bug → `-32603` (with a clear message, since you'll debug from this)
+- Dependency unavailable (downstream service down) → custom `-32003`
+- Internal bug (you hit an `unwrap`/panic-recovered branch) → `-32603` (with a clear message — you'll debug from this)
+
+> **Don't conflate tool-returned `is_error: true` with transport errors.** A tool that
+> completed and wants to tell the client "the file you asked for doesn't exist"
+> should return `Ok(CallToolResult { is_error: Some(true), content: ... })`, NOT
+> `Err(...)`. Transport-level `Err(ErrorData)` means the call didn't even run.
+> Save `Err` for cases the client should retry, route differently, or escalate.
 
 ---
 
@@ -468,7 +519,7 @@ Ok(CallToolResult::success(vec![
 ]))
 
 // Error output
-Err(McpError::invalid_request("file not found", Some(json!({ "path": path }))))
+Err(rmcp::ErrorData::invalid_request("file not found", Some(json!({ "path": path }))))
 ```
 
 **For long output**, truncate and return a handle:
@@ -578,7 +629,7 @@ cross build --release --target x86_64-pc-windows-msvc
 
 ❌ **`println!()` in a stdio server** — corrupts the JSON-RPC stream, client disconnects
 ❌ **`eprintln!` without `tracing`** — works but loses structure, no log levels
-❌ **Returning a Rust error type directly** — must wrap in `McpError` (or implement `IntoContents`)
+❌ **Returning a Rust error type directly** — must wrap in `rmcp::ErrorData` (or implement `IntoContents`)
 ❌ **Forgetting `Arc<Mutex<...>>` and getting borrow-checker errors** — the server struct must be `Clone`
 ❌ **Long-held locks inside async tools** — deadlock risk; clone what you need and drop the lock
 ❌ **Sync file I/O in async tools** — use `tokio::fs` not `std::fs`
@@ -586,9 +637,9 @@ cross build --release --target x86_64-pc-windows-msvc
 ❌ **Emit `tools/list_changed` for tools that never change** — wastes notifications
 ❌ **Declare `sampling: {}` capability but never call `create_message`** — clients will send sampling requests you can't handle
 ❌ **Trust the client's tool-call args without re-validating** — server-side validation is mandatory
-❌ **Use `rmcp` 0.1.x or older macro syntax in 0.16+ code** — APIs changed; `tool_box` → `tool_router`, `Parameters` wrapper required
+❌ **Use the 0.1.x `tool_box` macro or the 0.16 `tool_handler(name=…, version=…)` form in 0.3+ code** — APIs changed; rmcp 0.3 expects `#[tool_handler(router = self.tool_router)]` and the `name` / `version` / `instructions` live in `ServerInfo`
 ❌ **Skip the `serde` derive on input structs** — rmcp needs both `Deserialize` (for incoming) and `Serialize` (for errors and responses)
-❌ **Forgetting to set `protocol_version` in `ServerInfo`** — older protocol versions break with newer features
+❌ **Call `ErrorData::internal_error("code", Some(data))` with a domain "code" string as the first arg** — the first arg is the human-readable `message`, not a code. Use `ErrorData::custom(code, msg, data)` if you need a non-standard code
 ❌ **Build the binary in debug mode for distribution** — slow startup, large size, debug symbols in stdout sometimes
 
 ---
