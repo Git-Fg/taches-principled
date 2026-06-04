@@ -15,6 +15,13 @@ Create, audit, and remove git worktrees for parallel development. Run
 the commands directly via the `Bash` tool — this skill is a reference
 for the exact git invocations, not a subagent.
 
+## CONTRAST
+
+- NOT for: commit / push / branch / merge — use the `git` skill
+- NOT for: PR review of changes in a worktree — use `git-pr-reviewer`
+- NOT for: persistent session isolation — worktrees are git-level, not session-level
+- This skill is purely for git-worktree plumbing; release and review are separate
+
 ## Available operations
 
 ### Create a new worktree

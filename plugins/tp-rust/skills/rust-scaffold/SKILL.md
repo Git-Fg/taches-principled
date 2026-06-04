@@ -29,10 +29,12 @@ scaffolding — for multi-crate workspaces, use `rust-workspace` instead.
 - "Configure feature flags"
 - "Set up rustdoc with Examples/Errors/Panics"
 
-**DO NOT use this skill for:**
-- "Cargo workspace" / "split a crate" / "share dependencies" → `rust-workspace`
-- "clippy" / "rustfmt" / "tests are slow" / "set up CI" → `rust-quality`
-- "publish" / "version bump" / "release-plz" → `rust-release`
+## CONTRAST
+
+- NOT for: Cargo workspaces with multiple crates — use rust-workspace
+- NOT for: clippy / rustfmt / slow tests / CI setup — use rust-quality
+- NOT for: publishing or version bumping — use rust-release
+- This skill is for a single-crate setup; multi-crate work is a separate skill
 
 ---
 

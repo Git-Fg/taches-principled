@@ -11,7 +11,12 @@ argument-hint: "<PLAN|EXECUTE> [path|--phase N]"
 - **Hub Skill:** Combines project planning (PLAN) and plan execution (EXECUTE).
 - **PLAN mode**: 'plan this project', 'create roadmap', 'break down feature', 'decompose work', 'generate PLAN.md'.
 - **EXECUTE mode**: 'run plan', 'execute roadmap', 'build it', 'do it', 'run PLAN.md'.
-- CONTRAST with task-lifecycle: task-lifecycle manages individual task SPECS; plan-lifecycle manages project ROADMAPS and phase PLANS.
+
+## CONTRAST
+
+- NOT for: day-to-day task tracking or individual task SPECS — use task-lifecycle
+- NOT for: early-stage idea exploration before a project exists — use ideation
+- NOT for: small A/B tests at small scale — use plan-do-check-act
 
 ## Decision Router
 

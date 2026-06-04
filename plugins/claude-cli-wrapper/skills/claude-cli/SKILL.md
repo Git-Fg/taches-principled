@@ -38,7 +38,11 @@ implementation details, see `mcp-server-implement`.
 - "How do I write a good JSON Schema" → `mcp-tool-surface`
 - "How do I write a Claude Code hook" / "slash command" → not covered here
 
----
+## CONTRAST
+
+- NOT for: spawning in-process subagents within the current Claude Code session — use subagent-orchestration
+- NOT for: designing an MCP server from scratch — use mcp-server-design
+- NOT for: writing a single Claude Code hook — see the official hooks docs
 
 ## §2. The 6-tool surface
 
@@ -365,7 +369,7 @@ claude_execute({
 ## §13. Key sources
 
 - [1] Kimi brainstorm: "Optimal MCP Schema for a Claude Code CLI Wrapper" (the design doc) — internal
-- [2] `claude-cli-wrapper` plugin source — `plugins/claude-cli-wrapper/` in this marketplace
+- [2] The 6-tool decomposition example: the `claude-cli` skill in this marketplace's `claude-cli-wrapper` plugin
 - [3] Claude Code CLI documentation — https://docs.claude.com/en/docs/claude-code
 - [4] MCP spec for tool surface patterns — https://modelcontextprotocol.io/specification/2025-11-25
 - [5] Marketplace entry — `marketplace.json` in this repo

@@ -12,7 +12,12 @@ argument-hint: "[ANALYZE|ADD|RESTRUCTURE|REVIEW|SYNC] [target]"
 - FIRST when CLAUDE.md exceeds 200 lines or .claude/rules/ has more than 10 files.
 - Do NOT use for one-off questions or temporary instructions.
 - Do NOT modify managed/enterprise rules at system paths.
-- CONTRAST with refine MEMORIZE: MEMORIZE captures to .principled/memory/learnings.md; rules-orchestration integrates into committed rules files.
+
+## CONTRAST
+
+- NOT for: capturing session learnings to scratchpad — use refine MEMORIZE
+- NOT for: archiving completed plans — use project-maintenance PLAN-ARCHIVE
+- NOT for: one-off temp instructions that won't be repeated
 
 ## Decision Router
 

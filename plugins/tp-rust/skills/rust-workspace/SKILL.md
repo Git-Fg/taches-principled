@@ -31,10 +31,12 @@ Multi-crate Rust workspace decisions. For single-crate scaffolding, use
 - "Convert a single crate into a workspace"
 - "Share dev-dependencies across the workspace"
 
-**DO NOT use this skill for:**
-- "scaffold" / "single crate" / "what edition" → `rust-scaffold`
-- "CI" / "clippy" / "test" / "audit" → `rust-quality`
-- "publish" / "version bump" / "changelog" → `rust-release` (workspace lockstep versioning is a cross-skill handoff)
+## CONTRAST
+
+- NOT for: scaffolding a single crate — use rust-scaffold
+- NOT for: CI / clippy / test / audit setup — use rust-quality
+- NOT for: publishing or version bumping (workspace lockstep versioning is a cross-skill handoff to rust-release) — use rust-release
+- This skill is for multi-crate workspace structure; quality and release are separate skills
 
 ---
 

@@ -15,6 +15,13 @@ commit or merge proceeds. The skill runs the same checks the deleted
 `git-preflight-checker` agent used to, but as a skill so the main agent
 executes them directly (no subagent context overhead).
 
+## CONTRAST
+
+- NOT for: fixing the failures — only validate and report
+- NOT for: running the full test suite every time — focus on changed files
+- NOT for: git operations (commit, branch, worktree) — use the `git` skill
+- NOT for: code review of the changes — use `git-pr-reviewer` or `refine REVIEW`
+
 ## The four checks, in order
 
 Stop on the first failure — no point running type-check if lint already
