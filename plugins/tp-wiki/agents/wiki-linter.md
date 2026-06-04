@@ -5,6 +5,7 @@ description: "Verify wiki consistency and reconcile entries against user-defined
   find broken links, or reconcile wiki with intent."
 color: yellow
 model: sonnet
+background: true
 skills:
   - wiki
 tools:

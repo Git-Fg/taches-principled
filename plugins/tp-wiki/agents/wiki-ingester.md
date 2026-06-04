@@ -5,6 +5,7 @@ description: "Ingest sources, articles, or notes into a markdown wiki. Use when 
   'populate wiki', or 'feed into wiki'."
 color: green
 model: sonnet
+background: true
 skills:
   - wiki
 tools:
