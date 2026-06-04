@@ -31,27 +31,39 @@ pub async fn run_tool(
     let result = match tool {
         "claude_execute" => {
             let input: ExecuteInput = serde_json::from_value(value)?;
-            tools::execute(&claude_path, input).await?
+            tools::execute(&claude_path, input)
+                .await
+                .map_err(anyhow::Error::from)?
         }
         "claude_session" => {
             let input: SessionInput = serde_json::from_value(value)?;
-            tools::session(&claude_path, input).await?
+            tools::session(&claude_path, input)
+                .await
+                .map_err(anyhow::Error::from)?
         }
         "claude_context" => {
             let input: ContextInput = serde_json::from_value(value)?;
-            tools::context(&claude_path, input).await?
+            tools::context(&claude_path, input)
+                .await
+                .map_err(anyhow::Error::from)?
         }
         "claude_review" => {
             let input: ReviewInput = serde_json::from_value(value)?;
-            tools::review(&claude_path, input).await?
+            tools::review(&claude_path, input)
+                .await
+                .map_err(anyhow::Error::from)?
         }
         "claude_agent" => {
             let input: AgentInput = serde_json::from_value(value)?;
-            tools::agent(&claude_path, input).await?
+            tools::agent(&claude_path, input)
+                .await
+                .map_err(anyhow::Error::from)?
         }
         "claude_config" => {
             let input: ConfigInput = serde_json::from_value(value)?;
-            tools::config(&claude_path, input).await?
+            tools::config(&claude_path, input)
+                .await
+                .map_err(anyhow::Error::from)?
         }
         other => {
             anyhow::bail!(

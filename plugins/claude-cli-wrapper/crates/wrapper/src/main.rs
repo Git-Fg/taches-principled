@@ -20,10 +20,14 @@
 #![warn(missing_docs)]
 
 mod claude_cli;
+mod error;
 mod schema;
 mod script;
 mod server;
 mod tools;
+
+#[cfg(test)]
+mod smoke_test;
 
 use clap::{Parser, Subcommand};
 use std::path::PathBuf;

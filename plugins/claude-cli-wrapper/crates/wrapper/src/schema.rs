@@ -56,6 +56,7 @@ pub enum PermissionMode {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, Default)]
 #[serde(deny_unknown_fields, default)]
+#[schemars(extend("additionalProperties" = false))]
 pub struct ExecuteInput {
     pub prompt: String,
 
@@ -129,6 +130,7 @@ pub struct ExecuteInput {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, Default)]
 #[serde(deny_unknown_fields, default)]
+#[schemars(extend("additionalProperties" = false))]
 pub struct SessionInput {
     pub action: SessionAction,
 
@@ -160,6 +162,7 @@ pub enum SessionAction {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, Default)]
 #[serde(deny_unknown_fields, default)]
+#[schemars(extend("additionalProperties" = false))]
 pub struct ContextInput {
     pub action: ContextAction,
 
@@ -185,6 +188,7 @@ pub enum ContextAction {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, Default)]
 #[serde(deny_unknown_fields, default)]
+#[schemars(extend("additionalProperties" = false))]
 pub struct ReviewInput {
     pub target: String,
 
@@ -209,6 +213,7 @@ pub enum ReviewOutputFormat {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, Default)]
 #[serde(deny_unknown_fields, default)]
+#[schemars(extend("additionalProperties" = false))]
 pub struct AgentInput {
     pub action: AgentAction,
 
@@ -238,6 +243,7 @@ pub enum AgentAction {
 
 #[derive(Debug, Clone, Serialize, Deserialize, JsonSchema, Default)]
 #[serde(deny_unknown_fields, default)]
+#[schemars(extend("additionalProperties" = false))]
 pub struct ConfigInput {
     pub action: ConfigAction,
 
@@ -262,4 +268,53 @@ pub enum ConfigAction {
     SetEffort,
     SetPermissions,
     LoadSettings,
+}
+
+// -----------------------------------------------------------------------------
+// Output envelope
+// -----------------------------------------------------------------------------
+//
+// The six tools return a JSON envelope of this shape. The MCP 2025-11-25 spec
+// adds an `outputSchema` field to `Tool` and `structuredContent` to
+// `CallToolResult` so the model can read the result shape a priori. The
+// rmcp 0.3.2 release predates those fields, so the envelope is currently
+// delivered as a JSON-encoded `text` content item and the schema is
+// declared here for documentation + future upgrade:
+//
+//     #[schemars(extend("$ref" = "#/definitions/WrapperResultEnvelope"))]
+//     output_schema = schemars::schema_for!(WrapperResultEnvelope),
+//
+// When rmcp 0.4+ lands `Tool::output_schema` support, this struct becomes
+// the single source of truth for both the runtime payload and the schema
+// the model sees.
+#[derive(Debug, Clone, Serialize, Deserialize, JsonSchema)]
+#[schemars(extend("additionalProperties" = false))]
+#[allow(dead_code)] // schema-only; instantiated once rmcp adds output_schema support
+pub struct WrapperResultEnvelope {
+    /// Exit code of the underlying `claude` CLI invocation. `0` means the
+    /// CLI succeeded; non-zero means the CLI itself returned an error
+    /// (which surfaces as `is_error: true` in the CallToolResult, not as
+    /// a transport-level `Err`).
+    pub exit_code: i32,
+
+    /// Captured stdout from the CLI. For `--output-format json` runs this
+    /// is the JSON payload the CLI printed; for `text` runs it's the raw
+    /// text output.
+    pub stdout: String,
+
+    /// Captured stderr from the CLI. Diagnostic and warning messages only
+    /// — the wrapper itself logs to stderr via `tracing` outside the
+    /// captured-stderr buffer.
+    pub stderr: String,
+
+    /// For JSON-output runs, the parsed JSON object. `None` for text runs
+    /// or when the CLI returned non-JSON output.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output_parsed: Option<serde_json::Value>,
+
+    /// Convenience: if `output_parsed.session_id` exists, lifted to a
+    /// top-level field so callers don't have to dig into the parsed JSON
+    /// to continue a session.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub session_id: Option<String>,
 }

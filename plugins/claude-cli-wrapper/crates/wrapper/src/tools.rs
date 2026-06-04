@@ -1,6 +1,7 @@
 //! The six tool handlers, shared between MCP and script surfaces.
 
 use crate::claude_cli;
+use crate::error::WrapperError;
 use crate::schema::{
     AgentAction, AgentInput, ConfigAction, ConfigInput, ContextAction, ContextInput, ExecuteInput,
     ReviewInput, SessionAction, SessionInput,
@@ -38,14 +39,10 @@ impl ToolResult {
         }
     }
 
-    pub fn err(text: impl Into<String>) -> Self {
-        Self {
-            content: vec![ToolContent::Text { text: text.into() }],
-            is_error: true,
-        }
-    }
-
-    pub fn from_claude(result: &claude_cli::ClaudeInvocationResult) -> Self {
+    /// Convert a CLI invocation result into a `ToolResult`. Non-zero exit
+    /// codes are surfaced as `Err(WrapperError::CliNonzeroExit)` so callers
+    /// (MCP server, script mode) can map them to the right error code.
+    pub fn from_claude(result: &claude_cli::ClaudeInvocationResult) -> Result<Self, WrapperError> {
         let mut response = json!({
             "exit_code": result.exit_code,
             "stdout": result.stdout,
@@ -65,9 +62,14 @@ impl ToolResult {
         }
 
         if result.exit_code == 0 {
-            Self::ok(response.to_string())
+            Ok(Self::ok(response.to_string()))
         } else {
-            Self::err(response.to_string())
+            Err(WrapperError::CliNonzeroExit {
+                exit_code: result.exit_code,
+                stdout: result.stdout.clone(),
+                stderr: result.stderr.clone(),
+                output_parsed: result.output_parsed.clone(),
+            })
         }
     }
 }
@@ -76,18 +78,29 @@ impl ToolResult {
 // `claude_execute`
 // -----------------------------------------------------------------------------
 
-pub async fn execute(claude_path: &std::path::PathBuf, input: ExecuteInput) -> Result<ToolResult> {
-    let args_json = serde_json::to_value(&input)?;
-    let argv = claude_cli::build_execute_argv(claude_path, &args_json)?;
-    let result = claude_cli::invoke(argv).await?;
-    Ok(ToolResult::from_claude(&result))
+pub async fn execute(
+    claude_path: &std::path::PathBuf,
+    input: ExecuteInput,
+) -> Result<ToolResult, WrapperError> {
+    let args_json = serde_json::to_value(&input)
+        .map_err(anyhow::Error::from)
+        .map_err(WrapperError::Internal)?;
+    let argv = claude_cli::build_execute_argv(claude_path, &args_json)
+        .map_err(WrapperError::Internal)?;
+    let result = claude_cli::invoke(argv)
+        .await
+        .map_err(WrapperError::Internal)?;
+    ToolResult::from_claude(&result)
 }
 
 // -----------------------------------------------------------------------------
 // `claude_session`
 // -----------------------------------------------------------------------------
 
-pub async fn session(claude_path: &std::path::PathBuf, input: SessionInput) -> Result<ToolResult> {
+pub async fn session(
+    claude_path: &std::path::PathBuf,
+    input: SessionInput,
+) -> Result<ToolResult, WrapperError> {
     let mut argv = vec![claude_path.to_string_lossy().to_string()];
 
     let needs_session_id = matches!(
@@ -95,7 +108,9 @@ pub async fn session(claude_path: &std::path::PathBuf, input: SessionInput) -> R
         SessionAction::Resume | SessionAction::Info | SessionAction::Close
     );
     if needs_session_id && input.session_id.is_none() {
-        anyhow::bail!("`session_id` is required for this action");
+        return Err(WrapperError::Internal(anyhow::anyhow!(
+            "`session_id` is required for this action"
+        )));
     }
 
     match input.action {
@@ -120,15 +135,18 @@ pub async fn session(claude_path: &std::path::PathBuf, input: SessionInput) -> R
     argv.push("--output-format".to_string());
     argv.push("json".to_string());
 
-    let result = claude_cli::invoke(argv).await?;
-    Ok(ToolResult::from_claude(&result))
+    let result = claude_cli::invoke(argv).await.map_err(WrapperError::Internal)?;
+    ToolResult::from_claude(&result)
 }
 
 // -----------------------------------------------------------------------------
 // `claude_context`
 // -----------------------------------------------------------------------------
 
-pub async fn context(claude_path: &std::path::PathBuf, input: ContextInput) -> Result<ToolResult> {
+pub async fn context(
+    claude_path: &std::path::PathBuf,
+    input: ContextInput,
+) -> Result<ToolResult, WrapperError> {
     let mut argv = vec![claude_path.to_string_lossy().to_string()];
 
     match input.action {
@@ -136,7 +154,9 @@ pub async fn context(claude_path: &std::path::PathBuf, input: ContextInput) -> R
             let dir = input
                 .directory_path
                 .as_deref()
-                .ok_or_else(|| anyhow::anyhow!("`directory_path` required for add_directory"))?;
+                .ok_or_else(|| WrapperError::Internal(anyhow::anyhow!(
+                    "`directory_path` required for add_directory"
+                )))?;
             argv.push("--add-dir".to_string());
             argv.push(dir.to_string());
             argv.push("--output-format".to_string());
@@ -146,7 +166,9 @@ pub async fn context(claude_path: &std::path::PathBuf, input: ContextInput) -> R
             let name = input
                 .worktree_name
                 .as_deref()
-                .ok_or_else(|| anyhow::anyhow!("`worktree_name` required for setup_worktree"))?;
+                .ok_or_else(|| WrapperError::Internal(anyhow::anyhow!(
+                    "`worktree_name` required for setup_worktree"
+                )))?;
             argv.push("--worktree".to_string());
             argv.push(name.to_string());
         }
@@ -155,15 +177,18 @@ pub async fn context(claude_path: &std::path::PathBuf, input: ContextInput) -> R
         }
     }
 
-    let result = claude_cli::invoke(argv).await?;
-    Ok(ToolResult::from_claude(&result))
+    let result = claude_cli::invoke(argv).await.map_err(WrapperError::Internal)?;
+    ToolResult::from_claude(&result)
 }
 
 // -----------------------------------------------------------------------------
 // `claude_review`
 // -----------------------------------------------------------------------------
 
-pub async fn review(claude_path: &std::path::PathBuf, input: ReviewInput) -> Result<ToolResult> {
+pub async fn review(
+    claude_path: &std::path::PathBuf,
+    input: ReviewInput,
+) -> Result<ToolResult, WrapperError> {
     let target_desc = match input.target.as_str() {
         "current" => "the current branch".to_string(),
         t if t.starts_with("http") => format!("the PR at {t}"),
@@ -221,7 +246,10 @@ pub async fn review(claude_path: &std::path::PathBuf, input: ReviewInput) -> Res
 // `claude_agent`
 // -----------------------------------------------------------------------------
 
-pub async fn agent(claude_path: &std::path::PathBuf, input: AgentInput) -> Result<ToolResult> {
+pub async fn agent(
+    claude_path: &std::path::PathBuf,
+    input: AgentInput,
+) -> Result<ToolResult, WrapperError> {
     let mut argv = vec![claude_path.to_string_lossy().to_string()];
 
     match input.action {
@@ -232,7 +260,9 @@ pub async fn agent(claude_path: &std::path::PathBuf, input: AgentInput) -> Resul
             let name = input
                 .agent_name
                 .as_deref()
-                .ok_or_else(|| anyhow::anyhow!("`agent_name` required for status"))?;
+                .ok_or_else(|| WrapperError::Internal(anyhow::anyhow!(
+                    "`agent_name` required for status"
+                )))?;
             argv.push("--agent-status".to_string());
             argv.push(name.to_string());
         }
@@ -240,7 +270,9 @@ pub async fn agent(claude_path: &std::path::PathBuf, input: AgentInput) -> Resul
             let name = input
                 .agent_name
                 .as_deref()
-                .ok_or_else(|| anyhow::anyhow!("`agent_name` required for terminate"))?;
+                .ok_or_else(|| WrapperError::Internal(anyhow::anyhow!(
+                    "`agent_name` required for terminate"
+                )))?;
             argv.push("--kill-agent".to_string());
             argv.push(name.to_string());
         }
@@ -248,15 +280,21 @@ pub async fn agent(claude_path: &std::path::PathBuf, input: AgentInput) -> Resul
             let name = input
                 .agent_name
                 .as_deref()
-                .ok_or_else(|| anyhow::anyhow!("`agent_name` required for spawn"))?;
+                .ok_or_else(|| WrapperError::Internal(anyhow::anyhow!(
+                    "`agent_name` required for spawn"
+                )))?;
             let description = input
                 .agent_description
                 .as_deref()
-                .ok_or_else(|| anyhow::anyhow!("`agent_description` required for spawn"))?;
+                .ok_or_else(|| WrapperError::Internal(anyhow::anyhow!(
+                    "`agent_description` required for spawn"
+                )))?;
             let prompt = input
                 .agent_prompt
                 .as_deref()
-                .ok_or_else(|| anyhow::anyhow!("`agent_prompt` required for spawn"))?;
+                .ok_or_else(|| WrapperError::Internal(anyhow::anyhow!(
+                    "`agent_prompt` required for spawn"
+                )))?;
 
             let exec = ExecuteInput {
                 prompt: prompt.to_string(),
@@ -290,15 +328,18 @@ pub async fn agent(claude_path: &std::path::PathBuf, input: AgentInput) -> Resul
 
     argv.push("--output-format".to_string());
     argv.push("json".to_string());
-    let result = claude_cli::invoke(argv).await?;
-    Ok(ToolResult::from_claude(&result))
+    let result = claude_cli::invoke(argv).await.map_err(WrapperError::Internal)?;
+    ToolResult::from_claude(&result)
 }
 
 // -----------------------------------------------------------------------------
 // `claude_config`
 // -----------------------------------------------------------------------------
 
-pub async fn config(claude_path: &std::path::PathBuf, input: ConfigInput) -> Result<ToolResult> {
+pub async fn config(
+    claude_path: &std::path::PathBuf,
+    input: ConfigInput,
+) -> Result<ToolResult, WrapperError> {
     let mut argv = vec![claude_path.to_string_lossy().to_string(), "-p".to_string()];
 
     let prompt = match input.action {
@@ -306,26 +347,34 @@ pub async fn config(claude_path: &std::path::PathBuf, input: ConfigInput) -> Res
             let model = input
                 .model_value
                 .as_deref()
-                .ok_or_else(|| anyhow::anyhow!("`model_value` required for set_model"))?;
+                .ok_or_else(|| WrapperError::Internal(anyhow::anyhow!(
+                    "`model_value` required for set_model"
+                )))?;
             format!("Persist model={model} to user settings via --settings.")
         }
         ConfigAction::SetEffort => {
             let effort = input
                 .effort_value
-                .ok_or_else(|| anyhow::anyhow!("`effort_value` required for set_effort"))?;
+                .ok_or_else(|| WrapperError::Internal(anyhow::anyhow!(
+                    "`effort_value` required for set_effort"
+                )))?;
             format!("Persist effort={effort:?} to user settings via --settings.")
         }
         ConfigAction::SetPermissions => {
             let perm = input
                 .permissions_value
-                .ok_or_else(|| anyhow::anyhow!("`permissions_value` required for set_permissions"))?;
+                .ok_or_else(|| WrapperError::Internal(anyhow::anyhow!(
+                    "`permissions_value` required for set_permissions"
+                )))?;
             format!("Persist permissions={perm:?} to user settings via --settings.")
         }
         ConfigAction::LoadSettings => {
             let path = input
                 .settings_path
                 .as_deref()
-                .ok_or_else(|| anyhow::anyhow!("`settings_path` required for load_settings"))?;
+                .ok_or_else(|| WrapperError::Internal(anyhow::anyhow!(
+                    "`settings_path` required for load_settings"
+                )))?;
             argv.push("--settings".to_string());
             argv.push(path.to_string());
             "Print the resolved active settings.".to_string()
@@ -336,6 +385,6 @@ pub async fn config(claude_path: &std::path::PathBuf, input: ConfigInput) -> Res
     argv.push("--output-format".to_string());
     argv.push("json".to_string());
 
-    let result = claude_cli::invoke(argv).await?;
-    Ok(ToolResult::from_claude(&result))
+    let result = claude_cli::invoke(argv).await.map_err(WrapperError::Internal)?;
+    ToolResult::from_claude(&result)
 }
