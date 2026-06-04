@@ -1,9 +1,14 @@
 ---
 name: wiki
-description: "Search, query, ingest, or verify a personal wiki, knowledge base, or notes system.
-  Use when user mentions 'wiki', 'KB', 'knowledge base', 'look up in my notes', 'find in my wiki',
-  'search my docs', 'lint wiki', 'check wiki consistency', 'add to wiki', 'ingest into wiki',
-  'populate wiki', or 'build wiki'."
+description: "Search, query, ingest, or verify a personal wiki, knowledge base, or notes system. Use when user mentions 'wiki', 'KB', 'knowledge base', 'look up in my notes', 'find in my wiki', 'search my docs', 'lint wiki', 'check wiki consistency', 'add to wiki', 'ingest into wiki', 'populate wiki', or 'build wiki'."
+when_to_use: |
+  - "Find something in my wiki / KB / notes"
+  - "Search the wiki for X"
+  - "Lint / verify / check consistency of the wiki"
+  - "Add to the wiki / ingest into the wiki / populate the wiki"
+  - "Build the wiki from a URL / file / notes"
+  - NOT for: general web search (use web-search), code search, reading project documentation outside the wiki, real-time meeting notes
+argument-hint: "[query|ingest|lint] [args...]"
 ---
 
 # Wiki Hub — Routing and Operations
