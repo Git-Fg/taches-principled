@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "taches-principled",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, development skills, and an optimal MCP wrapper for the Claude Code CLI.",
   "owner": {
     "name": "Felix",
@@ -173,6 +173,27 @@
         "rmcp",
         "schemars",
         "rust-mcp"
+      ]
+    },
+    {
+      "name": "tp-wiki",
+      "description": "Search, query, ingest, and verify a personal wiki, knowledge base, or notes system. Use when user mentions 'wiki', 'KB', 'knowledge base', 'look up in my notes', 'find in my wiki', 'lint wiki', 'check wiki consistency', 'add to wiki', 'ingest into wiki', or 'populate wiki'. Ships with wiki-searcher (read), wiki-linter (verify), and wiki-ingester (build) subagents.",
+      "version": "0.1.0",
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "source": "./plugins/tp-wiki",
+      "category": "productivity",
+      "keywords": [
+        "taches-principled",
+        "claude-code",
+        "wiki",
+        "knowledge-base",
+        "notes",
+        "lint",
+        "search",
+        "ingest",
+        "build"
       ]
     }
   ]

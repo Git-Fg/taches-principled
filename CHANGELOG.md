@@ -2,6 +2,23 @@
 
 All notable changes are documented here.
 
+## [1.13.0] — 2026-06-04
+
+### Added
+
+- **`tp-wiki` plugin** (v0.1.0) — new plugin for markdown wiki / knowledge base management. Ships with:
+  - `wiki` hub skill — routes to subagents, resolves `$WIKI_ROOT` (env var → `~/.claude/wiki-root` → user prompt)
+  - `wiki-searcher` agent (blue, sonnet) — read-only retrieval, preload: wiki
+  - `wiki-linter` agent (yellow, sonnet) — verify consistency + intent drift, preload: wiki
+  - `wiki-ingester` agent (green, sonnet) — ingest sources (url/text/file/bulk), preload: wiki
+  - `references/wiki-format.md` — wiki format conventions
+  - `references/intent-format.md` — plain-text intent file spec (`.wiki/intent.md`)
+  - `references/llm-wiki-methodology.md` — full operational methodology (Ingest/Query/Lint/Archive)
+
+- **Generalized llm-wiki base**: `plugins/tp-wiki/skills/wiki/SKILL.md` is a copy of the personal `llm-wiki` skill, generalized to remove MyWiki/PharmaWiki hardcoding. The original `~/.claude/skills/llm-wiki/SKILL.md` is untouched.
+
+- **Marketplace bumped** to v0.21.0.
+
 ## [1.12.0] — 2026-06-04
 
 Resolves issues #11–#16 opened by `MiaouLeChat929` on the post-#10 audit
