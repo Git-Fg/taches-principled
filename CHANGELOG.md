@@ -2,6 +2,28 @@
 
 All notable changes are documented here.
 
+## [1.11.0] — 2026-06-04
+
+### Added
+- **`tp-cc-docs` agent** (core-principled 0.13.0): Reference oracle that answers questions about Claude Code, the Claude Agent SDK, and the Claude API by fetching the official documentation on every call rather than from training data. Embeds a point-in-time mirror of `https://code.claude.com/llms.txt` (145 doc pages) as a routing hint, then delegates to the canonical `https://code.claude.com/docs/en/<page>.md` URLs for the actual content. Description uses user-vocabulary triggers ("how do I X in Claude Code", "can Claude do Y", "what is the difference between hooks and skills", "where is setting Z documented"). CONTRAST clause distinguishes it from `tp-researcher` (general technology research). Color `orange` (general purpose, documentation). Tools: Bash, Read, WebFetch, WebSearch. Skills preloaded broadly per "better too much than not enough" — matches `tp-researcher`'s skill set plus `web-search`. Merged from open PR #5.
+- **Marketplace keywords**: `claude-code-docs`, `llms-txt`, `documentation-lookup`, `reference-oracle`.
+
+### Fixed
+- **`claude-cli-wrapper` cross-platform launcher** (claude-cli-wrapper 0.2.1): the previously shipped `bin/claude-cli-wrapper` was a `Mach-O 64-bit arm64` binary only, causing `ENOEXEC` on every Linux / Intel Mac host (#10 Bug 1, critical). Replaced with a 50-line bash launcher at the same path that resolves the right binary in this order: (1) per-host prebuilt (`bin/claude-cli-wrapper.${OS}-${ARCH}`), (2) cached local build at `target/release/claude-cli-wrapper`, (3) freshly built binary via `cargo build --release` (~2-3 min one-time cost, then cached). Apple Silicon hosts continue to use the prebuilt unchanged. Adds `plugins/claude-cli-wrapper/README.md` with per-platform install contract. Follow-up: CI release pipeline for per-platform prebuilts (tracked in #10 §"Recommended upstream guardrails").
+- **3 SKILL.md YAML frontmatter parse errors** (regression from 1.10.0 commit `2a77f23`): all three skills now parse cleanly under PyYAML safe_load and the Claude Code runtime parser. Closes #10 Bugs 2, 3, 4. The fixes were already in the working tree from the 1.11.0 prep pass (handoff.md B1–B3) and are now committed.
+  - **`claude-cli/SKILL.md`** — unquoted `description:` contained YAML-significant colons (`lifecycle:`, `tuning:`). Wrapped in double-quotes and replaced inner colons with em-dashes.
+  - **`kaizen/SKILL.md`** — closing `---` was stranded at line 25 after `user-invocable: false` was added; moved to line 7 so the body is no longer parsed as frontmatter.
+  - **`mcp-tool-surface/SKILL.md`** — unquoted `description:` contained YAML-significant punctuation (`` `additionalProperties: false` ``, `oneOf`, `$ref`, `draft-2020-12`). Wrapped in double-quotes and removed the backticks.
+
+### Changed
+- **`claude-cli-wrapper`** 0.2.0 → 0.2.1 (patch — binary-arch fix).
+- **`core-principled`** 0.12.0 → 0.13.0 (minor — new `tp-cc-docs` agent).
+- **Marketplace** 0.17.0 → 0.18.0 (minor — catalog change for new agent).
+
+### Verification
+- Re-ran the frontmatter audit (PyYAML safe_load on every `plugins/**/SKILL.md` and `agents/*.md`): **73 / 73 files parse cleanly**, 0 errors.
+- Local smoke test on Apple Silicon: `./plugins/claude-cli-wrapper/bin/claude-cli-wrapper --version` resolves to the renamed prebuilt (`bin/claude-cli-wrapper.darwin-arm64`) and prints `claude-cli-wrapper 0.1.0`. Pre-arm64 verification still needs the cross-platform CI guardrail noted above.
+
 ## [1.10.0] — 2026-06-04
 
 ### Changed
