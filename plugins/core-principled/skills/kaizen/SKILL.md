@@ -4,6 +4,7 @@ description: "Apply four design-time guardrails to every code decision: incremen
 when_to_use: "Use when user wants to avoid over-engineering, apply YAGNI, or make architectural and code design decisions. Background guardrails applied to every code change; pair with the ddd skill for deep structural analysis."
 argument-hint: Applied automatically when implementing, refactoring, designing, or handling errors
 user-invocable: false
+---
 
 ## Routing Guidance
 

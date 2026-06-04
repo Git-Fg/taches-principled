@@ -1,6 +1,6 @@
 ---
 name: mcp-tool-surface
-description: Write a good JSON Schema for an MCP tool surface. Constraint design (length, range, pattern, enum), `additionalProperties: false` discipline, the `oneOf` vs discriminator-enum tradeoff, `$ref` vs inline, draft-2020-12 selection, naming (snake_case, verb_noun), `description` that earns its context cost, required vs optional decisions, properties that make LLMs fill args correctly on first try. Use when the user says "write a tool schema", "JSON Schema best practices", "schema constraints", "tool description", "required vs optional", "tool naming convention".
+description: "Write a good JSON Schema for an MCP tool surface. Constraint design (length, range, pattern, enum), additionalProperties-false discipline, the oneOf vs discriminator-enum tradeoff, $ref vs inline, draft-2020-12 selection, naming (snake_case, verb_noun), description that earns its context cost, required vs optional decisions, properties that make LLMs fill args correctly on first try. Use when the user says 'write a tool schema', 'JSON Schema best practices', 'schema constraints', 'tool description', 'required vs optional', 'tool naming convention'."
 when_to_use: |
   - "What constraints should I put on this property?"
   - "Should I use enum or oneOf?"
