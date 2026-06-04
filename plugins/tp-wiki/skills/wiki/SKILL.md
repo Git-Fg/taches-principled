@@ -18,12 +18,71 @@ Based on [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf5
 
 ## Wiki Root Resolution
 
-Resolve the wiki root in this order:
-1. `$WIKI_ROOT` env var
-2. `~/.claude/wiki-root` file (single-line path)
-3. Ask user: "Where is your wiki? (enter the folder path)"
+**The wiki root is not a single value — it's a registry of zero or more wikis.** Run `cat ~/.claude/wiki-root.md` at the start of every operation to discover what's configured. The file is a plain-text registry of `WIKI_ROOT_*` env var names, one per line.
 
-After resolving, use that path for all wiki operations.
+### The registry file (`~/.claude/wiki-root.md`)
+
+Format: one env var name per line. Blank lines and lines starting with `#` are ignored.
+
+```
+# ~/.claude/wiki-root.md
+WIKI_ROOT_main
+WIKI_ROOT_work
+WIKI_ROOT_personal
+WIKI_ROOT_research
+```
+
+Each name refers to an env var the user has set in their shell with the actual folder path:
+
+```bash
+# in ~/.zshrc / ~/.bashrc
+export WIKI_ROOT_main=/Users/felix/notes/main
+export WIKI_ROOT_work=/Users/felix/notes/work
+export WIKI_ROOT_personal=/Users/felix/notes/personal
+export WIKI_ROOT_research=/Users/felix/notes/research
+```
+
+The registry file is the source of truth for **which wikis exist**; the env vars are the source of truth for **where each wiki lives**. The user updates one or both as their setup changes.
+
+### Resolution algorithm
+
+At the start of every wiki operation, do this in order:
+
+1. **`cat ~/.claude/wiki-root.md`** — discover the configured wikis. If the file doesn't exist, jump to "no registry" below.
+2. **For each non-blank, non-comment line in the file**, treat it as an env var name and read its value from the environment. Build a list of `{alias, path}` pairs.
+3. **Apply the disambiguation rules** (see below).
+4. **Fall through to "no registry"** if no env vars resolve.
+
+**Legacy single-wiki shortcut:** if `WIKI_ROOT` (no suffix) is set in the environment AND the registry file is missing or empty, use it. This preserves the original 0.1.0 behavior for users who haven't migrated.
+
+### Disambiguation — picking the right wiki when several are configured
+
+| User signal | Action |
+|---|---|
+| User named a specific wiki: "the work wiki", "my main notes", "wiki 2" | Match against aliases/numbers, use that one. If no match, ask. |
+| User's intent implies a domain: "search the project wiki", "ingest into research" | Match alias containing the keyword. If ambiguous, ask. |
+| User says nothing about which wiki | If exactly one is configured → use it without asking. If multiple → ask: "Which wiki? You have: main, work, personal, research. (or 'set up a new one')" |
+| User says "all wikis" or wants an operation across them | Run the operation once per configured wiki. Aggregate results. |
+
+**Alias numbering:** if the user says "wiki 2", number is 1-based by the order lines appear in the registry file. So `WIKI_ROOT_main` is wiki 1, `WIKI_ROOT_work` is wiki 2, etc.
+
+### No registry — first-time setup
+
+If `~/.claude/wiki-root.md` doesn't exist AND `WIKI_ROOT` is unset, ask the user to set up the registry:
+
+> "No wikis configured. To set up:
+> 1. Create the directory for your wiki (e.g., `mkdir -p ~/notes/main`)
+> 2. Set an env var: `export WIKI_ROOT_<alias>=/path/to/wiki`"
+> 3. Add the alias to `~/.claude/wiki-root.md` (one per line)
+> 4. Re-run the command. Or say 'create a new wiki at <path>' and I'll do steps 1-3 for you."
+
+### Confirming the chosen wiki before destructive operations
+
+For `INGEST` and `LINT` operations, after picking the wiki from the registry, **confirm the choice with the user** before doing anything that mutates files:
+
+> "Operating on: `WIKI_ROOT_work` = `/Users/felix/notes/work`. Proceed?"
+
+The confirmation can be skipped for `QUERY` (read-only) operations.
 
 ## Decision Router
 
@@ -31,15 +90,16 @@ Classify the user's intent, then spawn the matching subagent. When in doubt, ask
 
 | User intent (signal words) | Spawn | Pass to the subagent |
 |---|---|---|
-| **Query / Search**: "find", "look up", "search", "what does my wiki say about", "do I have notes on" | `wiki-searcher` (read-only) | The user's natural-language query |
-| **Ingest / Build / Add**: "add to wiki", "ingest", "save to wiki", "import", "file this into wiki", "populate wiki", "build wiki from <source>" | `wiki-ingester` | Mode (`url` / `text` / `file` / `bulk`) + the content + optional `wiki_path` hint |
-| **Lint / Verify**: "lint", "check consistency", "verify", "find broken links", "reconcile", "audit" | `wiki-linter` | The verification directive + optional `wiki_path` hint |
+| **Query / Search**: "find", "look up", "search", "what does my wiki say about", "do I have notes on" | `wiki-searcher` (read-only) | The user's natural-language query + the resolved `wiki_path` |
+| **Ingest / Build / Add**: "add to wiki", "ingest", "save to wiki", "import", "file this into wiki", "populate wiki", "build wiki from <source>" | `wiki-ingester` | Mode (`url` / `text` / `file` / `bulk`) + the content + the resolved `wiki_path` |
+| **Lint / Verify**: "lint", "check consistency", "verify", "find broken links", "reconcile", "audit" | `wiki-linter` | The verification directive + the resolved `wiki_path` |
 
 **Dispatch notes:**
 - `wiki-searcher` is the only subagent that can run on every load — it does no writes.
-- `wiki-linter` and `wiki-ingester` both read AND write. The hub does NOT touch the wiki directly; the subagents are the only paths that can mutate `$WIKI_ROOT/`.
+- `wiki-linter` and `wiki-ingester` both read AND write. The hub does NOT touch the wiki directly; the subagents are the only paths that can mutate the resolved wiki.
 - If the user's intent is ambiguous between `ingest` and `lint` (e.g., "fix my wiki"), default to `lint` (read-only path) and let the user escalate to `ingest` if needed.
 - For multi-source bulk ingest, prefer `bulk` mode — it does one search pass instead of N.
+- **Multi-wiki operation:** if the user says "lint all my wikis" or "ingest this into all my wikis", pass the operation to the subagent once per resolved wiki. The subagent reports per-wiki results.
 
 ## Reference Index
 
