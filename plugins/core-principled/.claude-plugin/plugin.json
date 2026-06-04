@@ -1,7 +1,7 @@
 {
   "name": "core-principled",
-  "version": "0.13.0",
-  "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, test strategy, and a live Claude Code / Agent SDK / Claude API documentation lookup agent (tp-cc-docs) backed by the official llms.txt index.",
+  "version": "0.14.0",
+  "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, test strategy, a live Claude Code / Agent SDK / Claude API documentation lookup agent (tp-cc-docs) backed by the official llms.txt index, and a /cc-docs slash command for end-user invocation.",
   "author": {
     "name": "Felix",
     "email": "felix@example.com"

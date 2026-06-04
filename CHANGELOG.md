@@ -2,6 +2,19 @@
 
 All notable changes are documented here.
 
+## [1.11.1] — 2026-06-04
+
+### Added
+- **`/cc-docs` slash command** (core-principled 0.14.0): 7-line command body that spawns the `tp-cc-docs` subagent and returns its cited answer. `argument-hint: "[question about Claude Code, Agent SDK, or Claude API]"`. Description in user vocabulary ("Ask a Claude Code, Agent SDK, or Claude API documentation question and get a cited answer from the live docs"). Body is 1 sentence, no markdown, semantic subagent reference — follows the marketplace's "high trust + high freedom" command convention. Recreates the content of PR #7 directly on main to avoid PR-merge machinery.
+- **`.github/workflows/refresh-cc-docs.yml`** (157 lines): Weekly cron (Mondays 07:17 UTC) downloads `https://code.claude.com/llms.txt`, compares its sha256 to the embedded snapshot inside `plugins/core-principled/agents/tp-cc-docs.md`, and opens a single `chore/refresh-cc-docs-snapshot` PR via `peter-evans/create-pull-request` if the upstream has drifted. `delete-branch: true` keeps the auto-PR graveyard clean. Also fires on `workflow_dispatch` and on any push that touches the agent file. Recreates the content of PR #6 directly on main for the same reason.
+
+### Changed
+- **`core-principled`** 0.13.0 → 0.14.0 (minor — new `/cc-docs` slash command).
+- **Marketplace** 0.18.0 → 0.19.0 (catalog change for new slash command).
+
+### Why this is on main, not via PR
+The user instructed to land the PR #6 + #7 content on main directly to avoid the merge-conflict overhead of three-way merging each PR branch against the post-#5 main line. The content is preserved exactly as the contributor wrote it in PRs #6 and #7. Both PRs are closed in GitHub and the closeout commit (`9904da1`) documents the rationale.
+
 ## [1.11.0] — 2026-06-04
 
 ### Added
