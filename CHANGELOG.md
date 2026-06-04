@@ -2,6 +2,15 @@
 
 All notable changes are documented here.
 
+## [1.8.1] — 2026-06-04
+
+### Added
+- **Integrate open PRs #8 + #9** from `MiaouLeChat929` (external fork). Two new slash commands under `core-principled/commands/`:
+  - **`/plan <topic>`** — wraps `plan-lifecycle` in PLAN mode. Asks 2-5 clarifying questions, spawns explorer + researcher subagents in parallel, then hands off to the skill for the full create-plans protocol.
+  - **`/plan-execute <path>`** — wraps `plan-lifecycle` in EXECUTE mode against an existing PLAN.md. Picks the right strategy (autonomous/segmented/sequential) and runs workers + critics.
+  - These complete the lifecycle surface: `/plan` (create) → `/plan-execute` (run) → `/archive plan-archive` (finalize).
+  - File content preserved exactly as the contributor wrote it; commits/CHANGELOG batched at release time per marketplace discipline.
+
 ## [1.8.0] — 2026-06-03
 
 ### Added
