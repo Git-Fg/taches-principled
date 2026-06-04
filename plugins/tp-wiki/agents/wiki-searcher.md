@@ -1,6 +1,6 @@
 ---
 name: wiki-searcher
-description: "Retrieve and synthesize information from a markdown wiki or knowledge base. Use when user wants to query, search, look up, or find something in their wiki."
+description: "Retrieve and synthesize information from a markdown wiki or knowledge base. Use when user wants to query, search, look up, find, or read something from their wiki / KB / notes — 'find in my wiki', 'search my notes', 'look up in my KB', 'what does my wiki say about X', 'do I have notes on Y', 'query the wiki'."
 color: blue
 model: sonnet
 skills:

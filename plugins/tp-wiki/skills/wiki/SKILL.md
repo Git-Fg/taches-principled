@@ -59,6 +59,8 @@ The agents compose: a typical ingest run reads `SCHEMA.md` → fetches the sourc
 2. **Read `$WIKI_ROOT/index.md`** — what pages already exist (prevents duplicates)
 3. **Scan `$WIKI_ROOT/log.md`** (last 20-30 lines) — what's been done recently
 
+(These three files live in the user's wiki at `$WIKI_ROOT/`, not in this plugin. They are the wiki's own configuration and state, not the plugin's.)
+
 ## Cross-plugin dependencies
 
 This skill is part of the `tp-wiki` plugin and depends on **optional** MCP tools. The skill works without them, falling back to the noted substitute.
