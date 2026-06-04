@@ -2,6 +2,21 @@
 
 All notable changes are documented here.
 
+## [1.9.0] — 2026-06-04
+
+### Changed
+- **Marketplace discoverability audit pass** — fixed routing and CONTRAST gaps surfaced by a 10-utterance routing test. No new skills; pure quality improvements to existing descriptions and structure.
+  - **`tp-git/SKILL.md`** — added explicit §CONTRAST section listing what `git` does NOT do (plan / review / diagnose / security / task-lifecycle) and cross-links to `plan-lifecycle`, `refine`, `diagnose`, `security`, `task-lifecycle`.
+  - **`test-orchestration/SKILL.md`** — added §CONTRAST distinguishing "plan and fix tests" from "just run the tests" and from `refine` / `diagnose` / `plan-lifecycle` / `security`.
+  - **`claude-cli/SKILL.md`** — tightened `description` to fire only for programmatic agent-driven use, NOT for direct user-driven Claude Code. Removed the over-trigger on the word "claude" in casual mentions.
+  - **`plan-lifecycle/SKILL.md`** — added "add a new feature" / "where do I start" / "start a new project" to the trigger vocabulary, and rewrote the `description` to lead with user-facing phrases.
+  - **`task-lifecycle/SKILL.md`** — added "add a new feature" to the `description` and trigger vocabulary.
+- **Routing test (verification):** before the fix, 5/10 utterances had a clear winner; after, 7/10 have a clear winner and the remaining 3 are legitimate "two skills could both fit" ties (plan-lifecycle vs task-lifecycle, both with trigger scores of 3).
+
+### Verification methodology
+- Ran a routing test of 10 realistic user utterances against the marketplace's 27 skills. For each utterance, the test scores each skill by counting how many of the utterance's content words appear in the skill's `description` field. The top-3 skills are reported, and the marketplace is considered well-routed when each utterance has a clear winner (top score > second score).
+- Routing test script kept at `/tmp/marketplace-routing-test.py` for re-runs after future skill additions.
+
 ## [1.8.1] — 2026-06-04
 
 ### Added

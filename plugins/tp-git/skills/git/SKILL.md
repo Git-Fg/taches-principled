@@ -101,3 +101,18 @@ SHIP: Commits on feature branch + draft PR URL
 REVIEW: Posted comments on GitHub PR
 ISSUES: Issue files in `./specs/issues/` + specification documents
 ADVANCED: Notes in `.git/refs/notes/` + additional working directories
+
+---
+
+## §CONTRAST
+
+**DO NOT use this skill for:**
+- "Plan a project / feature / phase end-to-end" → `plan-lifecycle` (or `/plan` slash command in core-principled)
+- "Review my code for design / architecture" → `refine` REVIEW mode
+- "Investigate a bug / root cause" → `diagnose`
+- "Write a security audit of a project" → `security` skill
+- "Run a multi-phase task from a spec" → `task-lifecycle`
+
+CONTRAST with `tp-sadd` judge pattern: this skill handles git operations; `tp-sadd` evaluates code with judges.
+
+CONTRAST with `claude-cli`: this skill is for git CLI; `claude-cli` wraps the Claude Code CLI as MCP tools.

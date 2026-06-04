@@ -1,8 +1,8 @@
 ---
 name: task-lifecycle
-description: "Track and build features from initial idea to implementation. Use when user says 'add task', 'refine this', or 'build it'."
+description: "Track and build features from initial idea to implementation. Use when the user wants to add a new feature, add a task, refine an idea, build something, or turn a rough description into a detailed technical spec."
 when_to_use: |
-  - User wants to capture a new requirement or feature idea as a draft.
+  - User wants to capture a new requirement, feature, or task idea as a draft.
   - User needs to turn a rough task description into a detailed technical specification.
   - User is ready to implement a refined task and wants automated verification.
   - User wants to update documentation to reflect completed work.

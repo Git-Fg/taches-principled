@@ -1,8 +1,8 @@
 ---
 name: plan-lifecycle
-description: "Manage the full project lifecycle: PLAN (create executable roadmaps) and EXECUTE (run plans with intelligent orchestration)."
+description: "Plan or run a project end-to-end — PLAN mode creates executable PLAN.md roadmaps with checkpoints; EXECUTE mode runs a plan with worker + critic subagents. Use when the user wants to add a new feature, start a new project, break down work into phases, run a plan, or build something non-trivial."
 allowed-tools: Read, Write, Bash, Grep
-when_to_use: "Use for multi-phase projects, feature breakdowns, running PLAN.md files, or building out planned phases. Examples: 'plan this project', 'run the plan', 'build it'."
+when_to_use: "Use for multi-phase projects, feature breakdowns, running PLAN.md files, or building out planned phases. Examples: 'plan this project', 'add a feature', 'where do I start', 'run the plan', 'build it'."
 argument-hint: "<PLAN|EXECUTE> [path|--phase N]"
 ---
 

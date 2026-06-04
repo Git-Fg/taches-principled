@@ -30,6 +30,19 @@ IF refactoring → tests must already exist and pass before starting
 
 ---
 
+## §CONTRAST
+
+**DO NOT use this skill for:**
+- "Run the tests / see if they pass" — just run `cargo test` / `pytest` etc. directly; this skill is for *planning* and *fixing*, not for routine test runs
+- "Review my code quality" → `refine` REVIEW mode
+- "Investigate a failing test's root cause" → `diagnose` (this skill fixes symptoms; diagnose finds the underlying cause)
+- "Plan the project / break it into phases" → `plan-lifecycle` (or `/plan` slash command)
+- "Scan code for security vulnerabilities" → `security` skill
+
+CONTRAST with `task-lifecycle`: task-lifecycle manages individual task SPECS end-to-end; this skill focuses specifically on the test layer.
+
+---
+
 # STRATEGY
 
 Test planning decisions — what to test, what to mock, how to structure test data.
