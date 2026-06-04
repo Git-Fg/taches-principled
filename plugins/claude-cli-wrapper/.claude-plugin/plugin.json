@@ -1,0 +1,9 @@
+{
+  "name": "claude-cli-wrapper",
+  "version": "0.2.1",
+  "description": "Optimal MCP wrapper for the Claude Code CLI — single Rust binary exposing six tools (claude_execute, claude_session, claude_context, claude_review, claude_agent, claude_config) over both MCP stdio and a `mcp-tool` script fallback. Flat snake_case parameter surfaces, action-enum discriminators for lifecycle tools, pass-through for complex JSON, UUID session_id validation, and enum-bounded mode/effort/permission. Cross-platform launcher at `bin/claude-cli-wrapper` resolves to a per-host prebuilt (Apple Silicon), cached local build, or freshly compiled binary on first use (~2-3 min). Ideal for any agent that needs to drive Claude Code programmatically.",
+  "author": {
+    "name": "Felix",
+    "email": "felix@example.com"
+  }
+}
