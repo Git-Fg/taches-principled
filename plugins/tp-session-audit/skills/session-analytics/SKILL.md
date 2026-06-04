@@ -44,6 +44,8 @@ Before behavioral verification, trigger collision testing, hook validation, or p
 
 ### CAPTURE Protocol
 
+You MUST read `references/session-anatomy.md` BEFORE running a capture. The capture protocol below writes to paths documented in that file. Do not skip it.
+
 Generate a capture UUID, then run the canonical capture incantation:
 
 1. **Generate identifiers:**
@@ -129,15 +131,17 @@ After CAPTURE, route to **INSPECT** mode for artifact parsing, then to **REVIEW*
 
 ---
 
-Parses raw session JSONL into structured data — tool calls, errors, cost, loaded plugins, and behavioral events. You MUST read `references/inspect-reference.md` before executing INSPECT mode.
+Parses raw session JSONL into structured data — tool calls, errors, cost, loaded plugins, and behavioral events. You MUST read `references/inspect-reference.md` AND `references/session-anatomy.md` before executing INSPECT mode. Do not proceed without reading both files.
 
 ### Session Discovery
 
-Claude Code stores session transcripts at `~/.claude/sessions/{uuid}/raw-transcript.jsonl`.
+Claude Code stores session transcripts at `~/.claude/projects/<encoded-cwd>/<sessionId>.jsonl` (and `~/.claude/sessions/{uuid}/raw-transcript.jsonl` for older sessions). The full filesystem layout — including subagent paths, capture artifact paths, and the encoded-CWD scheme — is in `references/session-anatomy.md`. Read that file first to decode project paths and locate subagent transcripts.
 
-1. **Latest session**: `ls -t ~/.claude/sessions/ | head -1` → use that UUID
-2. **By ID**: user provides the UUID directly
-3. **By content**: grep across sessions for a keyword the user remembers
+1. **By project**: glob `~/.claude/projects/<encoded-cwd>/*.jsonl` — the encoded-CWD is `/` → `-` substitution
+2. **Latest session**: `ls -t ~/.claude/projects/<encoded-cwd>/*.jsonl | head -1` → use that session ID
+3. **By ID**: user provides the session UUID directly
+4. **By content**: `grep -l <keyword> ~/.claude/projects/<encoded-cwd>/*.jsonl` for grep-based discovery
+5. **Subagents**: `ls ~/.claude/projects/<encoded-cwd>/<sessionId>/subagents/` for that session's subagent transcripts
 
 If no session ID provided and latest session is empty or still running, try the previous one.
 
@@ -163,7 +167,7 @@ If no session ID provided and latest session is empty or still running, try the 
 
 ## REVIEW Mode
 
-Reviews Claude Code session transcripts for behavioral anti-patterns and investigates root causes. You MUST read `references/review-reference.md` before executing REVIEW mode.
+Reviews Claude Code session transcripts for behavioral anti-patterns and investigates root causes. You MUST read `references/review-reference.md` AND `references/session-anatomy.md` before executing REVIEW mode. Do not proceed without reading both files.
 
 ### REVIEW Submodes
 

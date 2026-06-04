@@ -547,3 +547,62 @@ The patterns in this skill use stable combinations. The individual flags are alw
 | `failed` | `session-timeout` | `true` |
 | `failed` | `permission-denied` | `true` |
 | `failed` | `tool-unavailable` | `false` |
+
+## Session artifact filesystem layout
+
+For a complete scannable map of every log location, see `references/session-anatomy.md` in this skill. The map covers:
+
+- **Main session transcript** at `~/.claude/projects/<encoded-cwd>/<sessionId>.jsonl`
+- **Subagent transcripts** at `~/.claude/projects/<encoded-cwd>/<sessionId>/subagents/<agent-id>.jsonl` (and `.meta.json`)
+- **Capture artifacts** at `~/.claude/captures/<UUID>.{stream.jsonl,debug.log,jsonl}`
+- **Legacy raw transcript** at `~/.claude/sessions/{uuid}/raw-transcript.jsonl` (older sessions)
+
+If you need to find logs, decode the `<encoded-cwd>`, or glob for a project's sessions, read `references/session-anatomy.md` BEFORE proceeding. Do not skip it.
+
+## Hook input field schema (audit-critical)
+
+Every hook event receives a JSON payload (stdin for command hooks, POST body for HTTP hooks). The fields most relevant to audit workflows:
+
+| Field | Present on | Type | Notes |
+|-------|-----------|------|-------|
+| `session_id` | all events | string | UUID of the parent session |
+| `transcript_path` | all events | string | Absolute path to the main session's `.jsonl` |
+| `agent_transcript_path` | `SubagentStop` only | string | Absolute path to the subagent's own `.jsonl` |
+| `cwd` | all events | string | Original working directory (unencoded) |
+| `hook_event_name` | all events | string | Event type (`PreToolUse`, `PostToolUse`, `SubagentStart`, etc.) |
+| `agent_id` | subagent events | string | Subagent UUID |
+| `agent_type` | subagent events | string | `Explore`, `Plan`, `general-purpose`, or custom |
+| `last_assistant_message` | `SubagentStop` | string | Subagent's final message |
+
+The `transcript_path` field is the load-bearing field for any audit/review workflow. A hook that needs to read the full session context, correlate events, or stream additional context back to the model uses this path directly. No other field reliably identifies the on-disk file.
+
+For `SubagentStop`, the `agent_transcript_path` field points to the subagent's own isolated transcript at `<session-dir>/subagents/agent-<id>.jsonl`. Subagent transcripts persist independently of the main conversation compaction and survive session restarts.
+
+## Subagent transcripts
+
+When the main conversation spawns a subagent, three files appear under the session directory:
+
+```
+~/.claude/projects/<encoded-cwd>/<sessionId>/
+├── <sessionId>.jsonl                          # main session transcript
+├── tool-results/                               # per-tool-call raw output
+└── subagents/
+    ├── agent-<agent-id>.jsonl                  # subagent's own transcript
+    └── agent-<agent-id>.meta.json              # agent type, description, parent ref
+```
+
+Subagent transcripts are **isolated**: they do not share context with the main conversation. When a subagent runs in foreground, the parent waits; when it runs in background, the parent proceeds in parallel. Either way, the subagent's full event stream is written to its own `.jsonl`. The parent can read this file after `SubagentStop` to understand what the subagent did.
+
+Transcripts persist for `cleanupPeriodDays` (default: 30 days) before automatic cleanup. Resume a subagent's context by resuming the parent session — the `claude` CLI re-loads subagent transcripts from disk on resume.
+
+## Encoded-CWD path convention
+
+Claude Code encodes the working directory for the `~/.claude/projects/` directory name by replacing `/` with `-`. Examples:
+
+| Original | Encoded |
+|----------|---------|
+| `/Users/felix/projects/api` | `-Users-felix-projects-api` |
+| `/home/devadmin/work` | `-home-devadmin-work` |
+| `/Users/felix/Documents/AutoPluginClaw/taches-principled` | `-Users-felix-Documents-AutoPluginClaw-taches-principled` |
+
+This encoding is a Claude Code convention. To recover the original path, replace every `-` with `/` (which only works for POSIX paths with no hyphens — Windows paths are ambiguous, but each event's `cwd` field stores the unencoded value for unambiguous recovery).
