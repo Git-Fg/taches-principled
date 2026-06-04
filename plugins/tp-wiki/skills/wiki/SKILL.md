@@ -80,9 +80,20 @@ Classify the user's intent, then spawn the matching subagent. When in doubt, ask
 
 | User intent (signal words) | Spawn | Pass to the subagent |
 |---|---|---|
-| **Query / Search**: "find", "look up", "search", "what does my wiki say about", "do I have notes on" | `wiki-searcher` (read-only) | The user's natural-language query + the resolved `wiki_path` |
-| **Ingest / Build / Add**: "add to wiki", "ingest", "save to wiki", "import", "file this into wiki", "populate wiki", "build wiki from <source>" | `wiki-ingester` | Mode (`url` / `text` / `file` / `bulk`) + the content + the resolved `wiki_path` |
-| **Lint / Verify**: "lint", "check consistency", "verify", "find broken links", "reconcile", "audit" | `wiki-linter` | The verification directive + the resolved `wiki_path` |
+| **Query / Search**: "find", "look up", "search", "what does my wiki say about", "do I have notes on" | `wiki-searcher` (read-only) | `query` (string) + `wiki_path` (string) or `alias` (string) — see Argument Contract below |
+| **Ingest / Build / Add**: "add to wiki", "ingest", "save to wiki", "import", "file this into wiki", "populate wiki", "build wiki from <source>" | `wiki-ingester` | `mode` (`url`/`text`/`file`/`bulk`) + `content` + `wiki_path` or `alias` |
+| **Lint / Verify**: "lint", "check consistency", "verify", "find broken links", "reconcile", "audit" | `wiki-linter` | `directive` (string) + `wiki_path` or `alias` |
+
+### Argument Contract (steering the orchestrator)
+
+**The hub (you) is the orchestrator. Always pass `wiki_path` to the subagent. Always.**
+
+- `wiki_path` is the absolute path the subagent should operate on. **Resolve it before spawning** — read `~/.claude/wiki-root.md`, apply the disambiguation rules, get the path.
+- If you don't know the path but know the alias, pass `alias` instead. The subagent will resolve it from the registry.
+- **Never spawn a subagent without one of `wiki_path` or `alias`.** The subagent can technically self-discover from the registry as a last resort, but the contract is: the hub has already done the resolution work, the subagent just executes.
+- For multi-wiki operations ("all my wikis"): spawn the subagent once per wiki, passing each resolved `wiki_path` in turn. The subagent reports per-wiki results.
+
+**The subagent will refuse to start if neither `wiki_path` nor `alias` is provided** and the registry is empty/unreadable. Treat that as a setup error and surface the no-registry message to the user.
 
 **Dispatch notes:**
 - `wiki-searcher` is the only subagent that can run on every load — it does no writes.
