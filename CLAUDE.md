@@ -228,19 +228,28 @@ Hub-and-spoke consolidation target: 22-28 skills. Run `find plugins -name SKILL.
 
 ## Plugin Architecture
 
-**Monolithic marketplace-centric model** — `marketplace.json` is the sole authoritative catalog for all plugins. Read [docs/official/plugins/marketplaces.md](docs/official/plugins/marketplaces.md) BEFORE modifying marketplace.json or adding plugins.
+**Two-source catalog model** — `marketplace.json` is generated from two sources, not hand-edited:
+- `name` / `version` / `description` per plugin: `plugins/*/.claude-plugin/plugin.json` (spec-authoritative per CHANGELOG 1.12.0)
+- `source` / `homepage` / `repository` / `license` / `category` / `keywords` per plugin: `.claude-plugin/_meta.json` (catalog-only metadata)
 
-**Directory structure:**
+Read [docs/official/plugins/marketplaces.md](docs/official/plugins/marketplaces.md) and [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) BEFORE modifying marketplace.json or adding plugins.
+
+**Directory structure (9 plugins):**
 ```
 plugins/
-├── tp-git/                    # Git workflow automation
+├── core-principled/           # Full dev lifecycle — planning, review, debugging, contract design
+├── claude-cli-wrapper/        # MCP wrapper for the Claude Code CLI (6 tools)
 ├── tp-sadd/                   # Structured agent-driven development
 ├── tp-fpf/                    # First principles reasoning
-├── tp-tdd/                    # Test-driven development
-└── tp-session-audit/          # Session meta-review and behavioral analysis
+├── tp-git/                    # Git workflow automation
+├── tp-mcp/                    # MCP server design, implementation, tool-surface
+├── tp-rust/                   # Rust project lifecycle (scaffold, workspace, quality, release)
+├── tp-session-audit/          # Session meta-review and behavioral analysis
+└── tp-wiki/                   # Personal wiki tools (search, lint, ingest)
 
 .claude-plugin/
-└── marketplace.json            # Single source of truth
+├── _meta.json                 # Catalog metadata SSoT (source, keywords, etc.)
+└── marketplace.json            # Derived from per-plugin plugin.json + _meta.json
 ```
 
 Each plugin is fully standalone with its own `skills/`, `agents/`, and `commands/` directories. Zero code sharing, zero dependencies, zero runtime coupling.
@@ -794,6 +803,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] README updated if structure changed; synced to all docs/ locations
 - [ ] CHANGELOG entry added
 - [ ] `marketplace.json` plugin description, version, and keywords updated
+- [ ] `marketplace.json` has no duplicate `version:` keys per plugin entry (CHANGELOG 1.14.0 regression class) — run `jq -e '.plugins | all(. as $p | ([keys[] | select(. == "version")] | length) == 1)' .claude-plugin/marketplace.json`
 - [ ] No MCP runtime dependencies
 - [ ] No broken cross-references between skills
 - [ ] No shared docs/ folders expecting cross-skill reuse
@@ -801,6 +811,7 @@ Create feature branches, commit with conventional messages, push, and create PRs
 ### Skill Quality Checks
 
 - [ ] **Subagent spawn check**: Every skill that explores, implements, researches, or creates has explicit spawn instructions in its body — not optional tips, not conditional recommendations
+- [ ] **Subagent contract check**: For any new or modified agent, the `tools:` field matches the operations stated in the contract body. 6 design principles (P1-P6) at `plugins/core-principled/skills/subagent-orchestration/references/subagent-contract-design.md` apply. Test with the 3-phase methodology (static read → real invocation → JSONL trace) per [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md).
 - [ ] **Critique loop check**: Every skill that produces artifacts ends with "spawn critic subagent, loop until no HIGH findings" or equivalent
 - [ ] **Skill budget check**: Run `/context` and `/doctor` — verify no skills dropped or descriptions truncated. Calculate: hub (<500 tokens) + active domains (<2,000 each) + references/ (unlimited). If total loaded SKILL.md content approaches 10k, truncate or move to references/.
 - [ ] **Description length check**: Combined `description` + `when_to_use` ≤1,536 chars; front-load trigger phrases in the first 200 chars
