@@ -6,19 +6,7 @@ All notable changes are documented here.
 
 ### Changed
 
-- **Codify `.principled/` runtime cwd pre-load in 7 brainstorming/planning skills.** The marketplace's persistence layer (`.principled/`) lives in the user's project cwd, not in the marketplace repo. Skills that already write to `.principled/` subdirs now also read it at intake to surface prior context (plans, learnings, scratch notes, PDCA cycles, fpf hypotheses, candidates) that may inform the current work. Each skill gracefully degrades if the folder is absent. Skills updated, with their relevant subdirs:
-
-  | Skill | Subdirs to pre-load |
-  |---|---|
-  | `ideation` | `specs/plans/`, `memory/`, `scratch/` |
-  | `plan-lifecycle` | `plans/` (BRIEF, ROADMAP, SUMMARY), `memory/learnings.md` |
-  | `plan-do-check-act` | `pdca/` (prior cycles), `memory/learnings.md` |
-  | `task-lifecycle` | `specs/tasks/` (draft/todo/in-progress/done), `specs/scratchpad/` |
-  | `fpf` | `fpf/` (context, knowledge/L0-L2, decisions), `memory/learnings.md` |
-  | `refine` | `memory/learnings.md`, `scratch/` |
-  | `sadd` | `sadd/` (candidates, judge-reports, syntheses), `specs/plans/` |
-
-  Each skill gains a single `**Persistence:**` sentence inserted between frontmatter and Routing Guidance. No frontmatter, description, or routing signal changes — 7 files, 28 insertions, 0 deletions. The marketplace's own behavior on its own repo is incidental; the primary target is any project that installs the marketplace.
+- **Codify `.principled/` as the runtime persistence emplacement in 7 brainstorming/planning skills.** The marketplace's persistence layer (`.principled/`) lives in the user's project cwd, not in the marketplace repo. Each of the 7 skills gains a `## Runtime persistence` section teaching that `.principled/` is the natural home for principled-related runtime artifacts — at intake, read whatever is there if any; when the skill produces durable artifacts, write them to `.principled/` too. The teaching is intentionally generalist (no prescribed subdirs, no schema, no INDEX/SCHEME convention) so it remains true regardless of how the user actually structures their persistence. Each skill gracefully degrades if the folder is absent. Skills updated: `ideation`, `plan-lifecycle`, `plan-do-check-act`, `task-lifecycle`, `fpf`, `refine`, `sadd`. No frontmatter, description, or routing signal changes. The marketplace's own behavior on its own repo is incidental; the primary target is any project that installs the marketplace.
 
 - **Marketplace** 0.23.1 → 0.24.0 (catalog change for the persistence codification).
 - **core-principled** 0.16.0 → 0.17.0 — 5 skills updated.

@@ -9,9 +9,9 @@ when_to_use: |
 argument-hint: "[subcommand] [task-title-or-path] [--flags]"
 ---
 
-## Pre-load cwd context
+## Runtime persistence
 
-**Persistence:** at intake, read `cwd/.principled/specs/tasks/` (draft/todo/in-progress/done) and `cwd/.principled/specs/scratchpad/` if any — prior tasks and scratchpad notes may inform this work; skip if `.principled/` is absent.
+`.principled/` (in cwd) is the natural runtime emplacement for principled-related artifacts. At intake, read whatever is there if any — prior context may inform this work. When this skill produces durable artifacts, write them to `.principled/` too. Skip if absent.
 
 ## Routing Guidance
 

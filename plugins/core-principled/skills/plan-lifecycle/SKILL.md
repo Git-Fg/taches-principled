@@ -6,9 +6,9 @@ when_to_use: "Use for multi-phase projects, feature breakdowns, running PLAN.md 
 argument-hint: "<PLAN|EXECUTE> [path|--phase N]"
 ---
 
-## Pre-load cwd context
+## Runtime persistence
 
-**Persistence:** at intake, read `cwd/.principled/plans/` (BRIEF, ROADMAP, SUMMARY) and `cwd/.principled/memory/learnings.md` if any — prior plans and learnings may inform this one; skip if `.principled/` is absent.
+`.principled/` (in cwd) is the natural runtime emplacement for principled-related artifacts. At intake, read whatever is there if any — prior context may inform this work. When this skill produces durable artifacts, write them to `.principled/` too. Skip if absent.
 
 ## Routing Guidance
 

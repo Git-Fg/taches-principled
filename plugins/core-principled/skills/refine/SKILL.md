@@ -6,9 +6,9 @@ when_to_use: "Use for PR reviews, simplifying complex logic, or capturing projec
 argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-low|low]"
 ---
 
-## Pre-load cwd context
+## Runtime persistence
 
-**Persistence:** at intake, read `cwd/.principled/memory/learnings.md` and `cwd/.principled/scratch/` if any — prior learnings and scratch notes may inform refinement and must be read before MEMORIZE appends new entries; skip if `.principled/` is absent.
+`.principled/` (in cwd) is the natural runtime emplacement for principled-related artifacts. At intake, read whatever is there if any — prior context may inform this work. When this skill produces durable artifacts, write them to `.principled/` too. Skip if absent.
 
 ## Routing Guidance
 

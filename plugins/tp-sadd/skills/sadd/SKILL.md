@@ -7,9 +7,9 @@ when_to_use: |
   - User wants to delegate a task to a background worker with automated verification.
 ---
 
-## Pre-load cwd context
+## Runtime persistence
 
-**Persistence:** at intake, read `cwd/.principled/sadd/` (candidates, judge-reports, syntheses) and `cwd/.principled/specs/plans/` if any — prior candidates and prior designs may inform competitive generation; skip if `.principled/` is absent.
+`.principled/` (in cwd) is the natural runtime emplacement for principled-related artifacts. At intake, read whatever is there if any — prior context may inform this work. When this skill produces durable artifacts, write them to `.principled/` too. Skip if absent.
 
 ## Routing Guidance
 

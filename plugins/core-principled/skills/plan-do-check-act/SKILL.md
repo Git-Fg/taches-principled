@@ -5,9 +5,9 @@ when_to_use: "Use for proof-of-concepts, A/B tests, and validating improvements 
 argument-hint: "[improvement goal or problem to address] [--cycle N]"
 ---
 
-## Pre-load cwd context
+## Runtime persistence
 
-**Persistence:** at intake, read `cwd/.principled/pdca/` (prior cycles) and `cwd/.principled/memory/learnings.md` if any — earlier cycles and lessons may inform the new hypothesis; skip if `.principled/` is absent.
+`.principled/` (in cwd) is the natural runtime emplacement for principled-related artifacts. At intake, read whatever is there if any — prior context may inform this work. When this skill produces durable artifacts, write them to `.principled/` too. Skip if absent.
 
 ## Routing Guidance
 

@@ -5,9 +5,9 @@ when_to_use: "Use when user wants to analyze a problem from first principles, ev
 user-invocable: false
 ---
 
-## Pre-load cwd context
+## Runtime persistence
 
-**Persistence:** at intake, read `cwd/.principled/fpf/` (context.md, knowledge/L0/L1/L2, decisions) and `cwd/.principled/memory/learnings.md` if any — prior hypotheses and rationale may inform this cycle; skip if `.principled/` is absent; the fpf skill will initialize fresh.
+`.principled/` (in cwd) is the natural runtime emplacement for principled-related artifacts. At intake, read whatever is there if any — prior context may inform this work. When this skill produces durable artifacts, write them to `.principled/` too. Skip if absent.
 
 ## Routing Guidance
 
