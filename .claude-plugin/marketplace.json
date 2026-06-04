@@ -184,7 +184,7 @@
     },
     {
       "name": "core-principled",
-      "version": "0.17.0",
+      "version": "0.18.0",
       "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, security audit, test strategy. Live Claude Code/Agent SDK/API docs via tp-cc-docs and /cc-docs slash command.",
       "source": "./plugins/core-principled",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -308,7 +308,7 @@
     },
     {
       "name": "tp-session-audit",
-      "version": "0.3.2",
+      "version": "0.3.3",
       "description": "Session analytics \u2014 CAPTURE (headless behavioral artifact collection), INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue reporting). One hub skill, four modes.",
       "source": "./plugins/tp-session-audit",
       "homepage": "https://github.com/Git-Fg/taches-principled",

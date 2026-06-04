@@ -6,12 +6,13 @@ All notable changes are documented here.
 
 ### Changed
 
-- **Codify `.principled/` as the runtime persistence emplacement in 7 brainstorming/planning skills.** The marketplace's persistence layer (`.principled/`) lives in the user's project cwd, not in the marketplace repo. Each of the 7 skills gains a `## Runtime persistence` section teaching that `.principled/` is the natural home for principled-related runtime artifacts — at intake, read whatever is there if any; when the skill produces durable artifacts, write them to `.principled/` too. The teaching is intentionally generalist (no prescribed subdirs, no schema, no INDEX/SCHEME convention) so it remains true regardless of how the user actually structures their persistence. Each skill gracefully degrades if the folder is absent. Skills updated: `ideation`, `plan-lifecycle`, `plan-do-check-act`, `task-lifecycle`, `fpf`, `refine`, `sadd`. No frontmatter, description, or routing signal changes. The marketplace's own behavior on its own repo is incidental; the primary target is any project that installs the marketplace.
+- **Codify `.principled/` as the runtime persistence emplacement in 7 brainstorming/planning skills + 5 subagents.** The marketplace's persistence layer (`.principled/`) lives in the user's project cwd, not in the marketplace repo. Each of the 7 skills gains a `## Runtime persistence` section teaching that `.principled/` is the natural home for principled-related runtime artifacts — at intake, read whatever is there if any; when the skill produces durable artifacts, write them to `.principled/` too. The 5 subagents that already have explicit write-side instructions to `.principled/` (tp-pdca-synthesizer, session-context-analyzer, session-inspector, session-issue-generator, session-meta-reviewer) gain the same teaching as a `## Orient (mandatory)` section (or inline sentence for the plain-text PDCA agent) — the conventional default paths in their bodies remain as fallbacks, not mandates. The teaching is intentionally generalist (no prescribed subdirs, no schema, no INDEX/SCHEME convention) so it remains true regardless of how the user actually structures their persistence. Each artifact gracefully degrades if the folder is absent. Skills updated: `ideation`, `plan-lifecycle`, `plan-do-check-act`, `task-lifecycle`, `fpf`, `refine`, `sadd`. Subagents updated: `tp-pdca-synthesizer` (core-principled), `session-context-analyzer`, `session-inspector`, `session-issue-generator`, `session-meta-reviewer` (tp-session-audit). No frontmatter, description, or routing signal changes. The marketplace's own behavior on its own repo is incidental; the primary target is any project that installs the marketplace.
 
-- **Marketplace** 0.23.1 → 0.24.0 (catalog change for the persistence codification).
-- **core-principled** 0.16.0 → 0.17.0 — 5 skills updated.
+- **Marketplace** 0.23.1 → 0.25.0 (catalog change for the persistence codification, including the subagent orient extension).
+- **core-principled** 0.16.0 → 0.18.0 — 5 skills + 1 subagent updated.
 - **tp-fpf** 0.3.4 → 0.4.0 — 1 skill updated.
 - **tp-sadd** 0.3.5 → 0.4.0 — 1 skill updated.
+- **tp-session-audit** 0.3.1 → 0.3.3 — 4 subagents updated.
 
 ## [1.15.0] — 2026-06-04
 
