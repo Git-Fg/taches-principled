@@ -2,8 +2,8 @@
 name: tp-test-strategist
 description: |
   Test planning specialist for complex test suites. Analyzes code for coverage gaps, recommends mock strategies, and designs fixture patterns. Examples: "plan tests for this module", "what should I test", "find coverage gaps", "design test fixtures", "mock strategy for this service", "test plan for this feature", "what test strategy fits this code", "design the test suite". Focuses on critical paths, public interfaces, error and edge cases, and integration points. Does not test getter/setter boilerplate, framework glue, private implementation details, or trivial one-liners.
-model: inherit
 color: cyan
+background: true
 skills:
   - test-orchestration
 ---

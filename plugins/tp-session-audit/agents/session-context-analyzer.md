@@ -2,8 +2,8 @@
 name: session-context-analyzer
 description: |
   Analyzes the technical and behavioral context of a session transcript. Invokes during the INVESTIGATE mode of session audits. Examples: "analyze session context", "check git state for session", "identify what went well", "evaluate tool effectiveness", "contextual analysis of failure". Checks git history, diff stats, active plugins, and skill availability at session start. Separates successful tool patterns and effective recovery from failures and bottlenecks. Produces evidence-based reports on session context and "good/bad" outcomes.
-model: inherit
 color: purple
+background: true
 skills:
   - session-analytics
 ---

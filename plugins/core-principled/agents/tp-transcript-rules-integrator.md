@@ -1,9 +1,8 @@
 ---
 name: tp-transcript-rules-integrator
 description: "Integrates approved rule proposals into .claude/rules/ and CLAUDE.md. Handles file creation, updates, and git operations."
-model: sonnet
 color: green
-tools: Read, Write, Edit, Bash, Grep, Glob
+background: true
 maxTurns: 15
 memory: local
 skills:

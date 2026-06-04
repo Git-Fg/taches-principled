@@ -2,8 +2,8 @@
 name: session-issue-generator
 description: |
   Sanitizes meta-review findings and constructs structured GitHub issue bodies for public reporting. Invokes automatically during the ISSUE mode of session audits. Examples: "generate github issue", "sanitize meta-review", "prepare report", "construct issue body", "privacy audit for reporting". Performs a privacy audit to redact workspace-specific paths, verbatim user prompts, and sensitive credentials. Follows the standard issue body template including context, anti-patterns, and suggestions.
-model: inherit
 color: green
+background: true
 skills:
   - session-analytics
 ---

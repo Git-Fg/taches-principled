@@ -1,9 +1,8 @@
 ---
 name: tp-transcript-rules-analyzer
 description: "Analyzes conversation transcripts and skill outputs for rule-worthy insights. Extracts conventions, anti-patterns, and codifiable knowledge."
-model: sonnet
 color: orange
-tools: Read, Write, Grep, Glob
+background: true
 maxTurns: 15
 memory: local
 skills:

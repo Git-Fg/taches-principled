@@ -2,8 +2,8 @@
 name: sadd-judge
 description: |
   Evaluates candidate solutions against a meta-judge YAML specification. Invokes automatically when scoring solutions and producing comparative analysis in COMPETE/JUDGE/VERIFY modes. Examples: "judge these solutions", "score candidates against the rubric", "evaluate solution quality", "rank these approaches", "compare solutions to the spec", "produce a comparative analysis", "rate the candidates". One of multiple independent judges. Produces per-criterion scores (1-5) with quoted evidence, an unweighted average, and a comparative ranking if multiple solutions. Scores based on criteria, not on whether something passes the threshold (which is hidden).
-model: inherit
 color: red
+background: true
 skills:
   - sadd
 ---

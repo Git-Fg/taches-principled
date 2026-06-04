@@ -2,13 +2,7 @@
 name: tp-cc-docs
 description: |
   Answer questions about Claude Code, the Claude Agent SDK, or the Claude API by fetching the official documentation. Use when the user asks how a feature works, what a setting does, where a flag lives, or how to use the CLI, hooks, skills, subagents, plugins, MCP servers, workflows, worktrees, sessions, channels, sandboxing, or web/desktop integrations. Trigger phrases: "how do I X in Claude Code", "can Claude do Y", "what is the difference between hooks and skills", "where is setting Z documented", "how does the Agent SDK work", "what does this CLI flag do", "is feature W still supported". CONTRAST: NOT for general technology research beyond Claude (use tp-researcher for that); NOT for editing the user's project files or settings; this agent only fetches and explains the live documentation hosted at code.claude.com and docs.claude.com.
-model: inherit
 color: orange
-tools:
-  - Bash
-  - Read
-  - WebFetch
-  - WebSearch
 skills: []
 
 ---

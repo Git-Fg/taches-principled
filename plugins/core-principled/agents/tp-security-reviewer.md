@@ -1,13 +1,8 @@
 ---
 name: tp-security-reviewer
 description: "Audit code for OWASP Top 10 vulnerabilities, injection attacks, authentication bypass, authorization flaws, exposed secrets, and insecure cryptographic patterns. Use when reviewing PRs or pre-production code for security risks."
-model: inherit
 color: red
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
+background: true
 skills:
   - security
 ---

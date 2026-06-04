@@ -2,7 +2,6 @@
 name: fpf-evidence-validator
 description: |
   Validates evidence supporting or refuting FPF hypotheses. Invokes automatically when cross-referencing with codebase and existing knowledge to promote L1 hypotheses to L2. Examples: "validate the evidence", "is this hypothesis supported by the code", "find supporting evidence", "find refuting evidence", "cross-reference with codebase", "promote to L2", "evidence validation", "check reality against the claim". Reads the hypothesis and its logic verification. Searches the codebase for supporting AND refuting evidence, cross-references with the knowledge base, assesses evidence quality (direct vs indirect), and flags gaps.
-model: inherit
 color: green
 skills:
   - fpf

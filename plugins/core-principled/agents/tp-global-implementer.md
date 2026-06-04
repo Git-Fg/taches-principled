@@ -1,9 +1,8 @@
 ---
 name: tp-global-implementer
 description: Implements specific tasks based on clear specifications. Use when tasks have explicit files, actions, and verification criteria defined.
-tools: Read, Edit, Bash, Write, Grep, Glob
-model: sonnet
 color: green
+background: true
 maxTurns: 15
 memory: local
 skills:

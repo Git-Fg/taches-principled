@@ -2,8 +2,8 @@
 name: tp-endpoint-auditor
 description: |
   Audits REST API contracts, resource modeling, and versioning for HTTP/REST compliance. Invokes automatically when designing endpoints, reviewing API changes, or detecting breaking changes. Examples: "audit API contract", "model REST resource", "check for breaking changes", "REST semantic review", "versioning analysis", "HTTP status code audit", "API design review". Focuses on HTTP semantics, resource nesting, idempotency, and backward compatibility. Produces detailed reports on endpoint design, identifying semantic mismatches and versioning risks.
-model: inherit
 color: cyan
+background: true
 skills:
   - security
 ---

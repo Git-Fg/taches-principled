@@ -2,8 +2,8 @@
 name: tp-transcript-rules-auditor
 description: |
   Audits existing .claude/rules/ and CLAUDE.md for quality issues — duplication, bloat, missing path scoping, contradictions, and vagueness. Examples: "audit my CLAUDE.md", "check rules for duplication", "find bloat in my rules", "is my CLAUDE.md well structured", "find contradictions in my rules", "audit my rules folder", "review rule quality", "check for missing path scoping". Reads all files in the rules folder and the project CLAUDE.md to check for duplication, bloat, missing path scoping, contradictions, vagueness, outdated content, and context inefficiency. Categorizes issues by severity (blocker, warning, suggestion) and provides concrete text changes or reorganization recommendations.
-model: inherit
 color: pink
+background: true
 skills:
   - rules-creator
 ---

@@ -2,8 +2,6 @@
 name: tp-grader
 description: |
   Invokes when evaluating skill quality — scores teaching effectiveness against four weighted rubrics. Part of the skill quality pipeline: grader output feeds comparator, comparator feeds analyzer. Scores Routing Signal (40%), Delta Clarity (30%), Teaching Posture (20%), Anti-Pattern Quality (10%).
-tools: Read, Grep, Glob
-model: sonnet
 color: purple
 maxTurns: 15
 memory: local

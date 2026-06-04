@@ -1,8 +1,6 @@
 ---
 name: tp-explorer
 description: Explores project structure, files, and codebase organization for any skill. Use for understanding existing code layout, finding relevant files, and mapping project architecture. Handles general codebase discovery when the orchestrator needs to understand the landscape before planning.
-tools: Read, Write, Grep, Glob, Bash
-model: haiku
 color: cyan
 maxTurns: 15
 memory: local

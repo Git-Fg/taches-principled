@@ -1,13 +1,8 @@
 ---
 name: tp-code-quality-reviewer
 description: "Review code for readability, complexity hotspots, naming clarity, and duplication. Use when improving code quality, simplifying complex functions, or reducing cognitive load. Does not focus on bugs or security — only on how clearly and simply the code expresses its intent."
-model: inherit
 color: yellow
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
+background: true
 skills:
   - refine
 ---

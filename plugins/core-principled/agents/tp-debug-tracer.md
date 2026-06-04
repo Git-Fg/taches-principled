@@ -1,8 +1,6 @@
 ---
 name: tp-debug-tracer
 description: Traces bugs backward through call stacks to find original triggers. Invokes automatically when debugging complex call chains or using diagnose STACK-TRACE mode.
-tools: Read, Write, Edit, Grep, Glob, Bash
-model: sonnet
 color: cyan
 skills:
   - diagnose

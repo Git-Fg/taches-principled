@@ -1,13 +1,8 @@
 ---
 name: tp-historical-reviewer
 description: "Analyze git history for past bugs, recurring patterns, and context around changed files. Use when reviewing PRs or investigating why certain patterns exist. Surfaces what went wrong before in the same files so the same mistakes are not repeated."
-model: inherit
 color: yellow
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
+background: true
 skills:
   - refine
 ---

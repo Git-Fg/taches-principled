@@ -1,13 +1,8 @@
 ---
 name: tp-secrets-detector
 description: "Scan codebases for exposed API keys, tokens, credentials, private keys, and other sensitive data. Use when running SECRETS-DETECTION mode in the security skill. Uses pattern matching and entropy analysis to find credential exposure."
-model: inherit
 color: red
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
+background: true
 skills:
   - security
 ---

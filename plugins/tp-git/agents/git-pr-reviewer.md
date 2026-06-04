@@ -1,12 +1,8 @@
 ---
 name: git-pr-reviewer
 description: "Review a single file changed in a PR — find bugs, security issues, code quality problems, and contract violations. Use when the main agent is synthesizing a multi-file PR review and needs parallel file-level analysis."
-model: inherit
 color: yellow
-tools:
-  - Read
-  - Grep
-  - Bash
+background: true
 skills:
   - git
 ---

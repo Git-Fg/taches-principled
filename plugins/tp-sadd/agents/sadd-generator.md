@@ -2,8 +2,8 @@
 name: sadd-generator
 description: |
   Produces independent candidate solutions from a meta-judge evaluation specification. Invokes automatically when running parallel COMPETE mode generation of multiple complete solutions. Examples: "generate a solution", "produce a candidate", "compete with other solutions", "implement from this spec", "write a solution that maximizes the rubric", "generate a complete independent solution", "compete-mode generation". Produces one complete, self-contained solution addressing every rubric criterion, handling edge cases explicitly, and including verification. Fills gaps and resolves ambiguities with documented choices. Does not read other generators' output.
-model: inherit
 color: blue
+background: true
 skills:
   - sadd
 ---

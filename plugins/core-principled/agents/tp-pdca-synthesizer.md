@@ -2,8 +2,8 @@
 name: tp-pdca-synthesizer
 description: |
   Synthesizes PDCA cycle outcomes to determine next steps: standardize, adjust, or revert. Invokes automatically during the Act phase of a Plan-Do-Check-Act cycle. Examples: "synthesize PDCA results", "standardize the change", "refine the hypothesis for cycle N+1", "document cycle outcome", "Act phase synthesis", "decide on next PDCA steps". Reads the hypothesis, execution logs, and verification results. Determines if the change should be standardized, identifies refined hypotheses for unsuccessful cycles, and documents standardized improvements or validated learnings.
-model: inherit
 color: purple
+background: true
 skills: []
 
 ---

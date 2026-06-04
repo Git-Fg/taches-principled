@@ -2,7 +2,6 @@
 name: fpf-trust-auditor
 description: |
   Audits trust in FPF hypotheses by calculating R_eff (evidence reliability) and identifying weakest links. Invokes automatically when decision readiness needs quantification for validated hypotheses. Examples: "audit hypothesis trust", "compute R_eff", "how confident can we be", "find the weakest evidence link", "is this hypothesis decision-ready", "quantify confidence", "trust audit", "evidence reliability check". Reads the hypothesis, logic verification, and evidence validation. Produces an effective reliability score (minimum across evidence sources), identifies the weakest link, audits each assumption's sensitivity vs reliability, and determines decision readiness with what additional evidence would help.
-model: inherit
 color: yellow
 skills:
   - fpf

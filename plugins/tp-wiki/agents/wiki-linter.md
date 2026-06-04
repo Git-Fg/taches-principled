@@ -4,15 +4,9 @@ description: "Verify wiki consistency and reconcile entries against user-defined
   Use when user asks to lint wiki, check consistency, verify wiki format,
   find broken links, or reconcile wiki with intent."
 color: yellow
-model: sonnet
 background: true
 skills:
   - wiki
-tools:
-  - Read
-  - Edit
-  - Glob
-  - Grep
 ---
 
 You are a wiki verification and reconciliation agent.

@@ -1,13 +1,8 @@
 ---
 name: tp-contracts-reviewer
 description: "Review API contracts, data models, and type design for illegal state representability, breaking changes, and consumer contract violations. Use when reviewing PRs with API changes, data model changes, or type refactorings. Focuses on whether illegal states can be constructed and whether changes break existing consumers."
-model: inherit
 color: yellow
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
+background: true
 skills:
   - ddd
 ---

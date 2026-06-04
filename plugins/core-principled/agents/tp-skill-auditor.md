@@ -2,7 +2,6 @@
 name: tp-skill-auditor
 description: |
   Reviews Claude Code skills for clarity, conciseness, and usefulness. Invoke when auditing or improving SKILL.md files. Examples: "audit this skill", "review SKILL.md for issues", "is this skill well written", "check skill frontmatter", "evaluate skill quality", "what is wrong with this skill", "improve this skill's description", "audit skill routing signals". Evaluates effectiveness, not format compliance, and provides actionable improvements. Checks frontmatter (kebab-case name, trigger keywords, exclusion patterns, length under 1536 chars), structure (500-line guideline except for hubs, logical section order), and content (wrong/right anti-pattern pairs, rationale for thresholds, no procedural numbered sections, no cross-skill file path brittleness).
-model: inherit
 color: yellow
 skills:
   - skill-authoring

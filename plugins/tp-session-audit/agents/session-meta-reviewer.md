@@ -2,8 +2,8 @@
 name: session-meta-reviewer
 description: |
   Diagnoses behavioral anti-patterns from Claude Code session transcripts — identifies tool misuse, skipped verifications, and instruction-following failures. Examples: "review this session", "what went wrong", "behavioral analysis", "diagnose agent behavior", "find anti-patterns", "audit a transcript", "postmortem the session", "what did the agent do wrong". Reads a JSONL transcript without skipping events, extracts environment context from the init event, and identifies anti-patterns (repeated tool failures, skipped verifications, context waste, wrong tool selection, missing subagent delegation, premature commits, loops). Scopes root cause as plugin, user file, environment, or model. Strips workspace contents, user prompts, project paths, env vars, tokens, and credentials.
-model: inherit
 color: orange
+background: true
 skills:
   - session-analytics
 ---

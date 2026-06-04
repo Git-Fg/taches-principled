@@ -1,9 +1,8 @@
 ---
 name: tp-researcher
 description: Researches technologies, libraries, APIs, and best practices for unfamiliar components. Use when implementation requires unfamiliar technology or when best practices need verification.
-tools: Read, Grep, Glob, WebSearch, Write
-model: sonnet
 color: cyan
+background: true
 maxTurns: 15
 memory: local
 skills: []

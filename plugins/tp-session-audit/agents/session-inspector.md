@@ -2,8 +2,8 @@
 name: session-inspector
 description: |
   Extracts structured data from Claude Code session transcripts while applying privacy protocols. Invokes automatically for the INSPECT mode of session audits. Examples: "extract session data", "summarize transcript", "filter session events", "extract tool usage", "analyze session cost". Strips absolute paths, paraphrases user prompts, redacts environment variables and tokens, and excludes file contents from output. Produces SUMMARY, FULL, or FILTERED output in markdown or JSON formats.
-model: inherit
 color: blue
+background: true
 skills:
   - session-analytics
 ---

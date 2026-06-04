@@ -1,13 +1,8 @@
 ---
 name: tp-bug-hunter
 description: "Find logic errors, edge cases, null pointer risks, race conditions, and state corruption in code changes. Use when reviewing PRs, local changes, or scanning for hidden bugs. Traces data flow from input to output to find where invalid state originates."
-model: inherit
 color: red
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
+background: true
 skills: []
 
 ---

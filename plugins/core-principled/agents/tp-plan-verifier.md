@@ -1,9 +1,8 @@
 ---
 name: tp-plan-verifier
 description: Verifies implementations against specifications, runs tests, and checks for regressions. Use when confirming that implemented features work correctly and don't break existing functionality.
-tools: Read, Bash, Write, Edit
-model: haiku
 color: yellow
+background: true
 maxTurns: 15
 memory: local
 skills:

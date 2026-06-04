@@ -1,13 +1,8 @@
 ---
 name: tp-test-coverage-reviewer
 description: "Analyze test coverage gaps, untested error paths, and missing edge case tests. Use when reviewing PRs or assessing test quality. Determines whether the existing tests would catch the bugs found by other reviewers, and surfaces critical paths that lack coverage."
-model: inherit
 color: yellow
-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
+background: true
 skills:
   - refine
 ---

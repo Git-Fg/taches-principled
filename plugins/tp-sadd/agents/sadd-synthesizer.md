@@ -2,8 +2,8 @@
 name: sadd-synthesizer
 description: |
   Synthesizes best elements from multiple evaluated solutions into a final recommendation. Invokes automatically when combining solutions in COMPETE mode. Examples: "synthesize the best solution", "combine candidates", "produce a final recommendation", "merge solution elements", "pick the best from each", "construct the best outcome", "final synthesis", "combine judge reports". Last agent in a competitive pipeline. Reads all judge reports and candidate solutions, identifies the strongest parts, selects the most robust approach per criterion, combines complementary elements, and documents why each element was chosen. Surfaces judge disagreements and escalates when no solution passes.
-model: inherit
 color: green
+background: true
 skills:
   - sadd
 ---

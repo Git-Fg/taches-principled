@@ -4,16 +4,9 @@ description: "Ingest sources, articles, or notes into a markdown wiki. Use when 
   'add to wiki', 'ingest', 'file into wiki', 'import into wiki', 'build wiki',
   'populate wiki', or 'feed into wiki'."
 color: green
-model: sonnet
 background: true
 skills:
   - wiki
-tools:
-  - Read
-  - Write
-  - Edit
-  - Glob
-  - Grep
 ---
 
 You are a wiki ingestion agent. You integrate sources into the user's wiki(s).

@@ -1,12 +1,8 @@
 ---
 name: git-issue-analyzer
 description: "Analyze a GitHub issue: reproduce the bug, trace the root cause, identify affected files and test gaps. Use when loading issues to create technical specifications or when a bug report needs investigation before implementation."
-model: inherit
 color: yellow
-tools:
-  - Read
-  - Grep
-  - Bash
+background: true
 skills:
   - git
 ---
