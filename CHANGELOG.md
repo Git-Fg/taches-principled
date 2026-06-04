@@ -2,6 +2,62 @@
 
 All notable changes are documented here.
 
+## [1.12.0] — 2026-06-04
+
+Resolves issues #11–#16 opened by `MiaouLeChat929` on the post-#10 audit
+batch. Twelve commits, three tiers (user-breaking → polish → housekeeping).
+All commits land direct to main, no PR machinery (consistent with how
+#6/#7 were handled).
+
+### Tier A — user-breaking (fixed first)
+
+- **`mcp-server-implement` skill aligned to the rmcp 0.3 API actually shipping in `claude-cli-wrapper`** (tp-mcp 0.1.1, fixes #13 C1/C2/C3). The §2 `Cargo.toml` example was pinned to rmcp 0.16 (actual: 0.3.2). The §3 macro cheat sheet showed `#[tool_handler(name = ..., version = ..., instructions = ...)]` and `Implementation::from_build_env()` (both don't exist in 0.3). The §11 error mapping aliased `McpError` (the alias is gone; use `rmcp::ErrorData` directly) and used `anyhow::Error::backtrace()` (requires the anyhow backtrace feature). The §16 anti-patterns and §12 (output construction) had one leftover stale `McpError::invalid_request` reference. All rewritten against the working API; `cargo check` clean on `claude-cli-wrapper` 0.2.2.
+- **`tp-mcp` schemars cheat-sheet + Consuming-in-Claude-Code section** (tp-mcp 0.1.1, fixes #13 C4/C5). New `## §14. Schemars attribute cheat-sheet` in `mcp-tool-surface` maps every schemars attribute to its JSON Schema keyword, lists the `serde` attributes that affect schema generation, and documents the `extend("keyword" = value)` / `schema_with` escape hatches. New `## §14. Consuming in Claude Code` in `mcp-server-design` covers the actual discovery handshake Claude Code performs, the install paths, what the model sees vs. doesn't see, and a symptom → cause → fix table for common consumer-side debugging. Trailing §14–§16 renumbered to §15–§17 in both skills.
+- **`claude-cli-wrapper` MCP server design tightened** (claude-cli-wrapper 0.2.2, fixes #12 H1/H2/H3/H4):
+  - **H1**: `#[schemars(extend("additionalProperties" = false))]` added to all 6 input structs (`ExecuteInput`, `SessionInput`, `ContextInput`, `ReviewInput`, `AgentInput`, `ConfigInput`). `#[serde(deny_unknown_fields)]` alone does not auto-emit `additionalProperties: false` in schemars 1.0. Smoke test asserts the schema property.
+  - **H2**: `annotations(title, read_only_hint, destructive_hint, idempotent_hint, open_world_hint)` added to all 6 `#[tool(...)]` macros. Annotations reflect actual semantics: `claude_review` is the only read-only tool; `claude_execute` and `claude_agent` carry `open_world_hint: true`; etc.
+  - **H3**: replaced the single `internal_error` mapping with a typed `WrapperError` enum. `CliNonzeroExit` → JSON-RPC `-32001` (custom) with the full envelope in the `data` field, replacing the old `is_error: true` behavior. `Internal(anyhow::Error)` → JSON-RPC `-32603` (standard) for real wrapper failures. The MCP server, script mode, and the typed-error path all share the same mapping (`impl From<WrapperError> for ErrorData`).
+  - **H4**: `WrapperResultEnvelope` struct added to `schema.rs` documenting the output shape. rmcp 0.3.2 predates the MCP 2025-11-25 `Tool::output_schema` / `CallToolResult::structured_content` fields, so the envelope is currently delivered as a JSON-encoded `text` content item and the schema is declared here for the day rmcp 0.4+ lands. Each tool's description now references the envelope shape explicitly.
+
+### Tier B — polish
+
+- **Three plugins received the missing `.claude-plugin/plugin.json`** (fixes #11 items 1/2/3): `claude-cli-wrapper`, `tp-mcp`, `tp-rust`. Content sourced from the existing `marketplace.json` entries so install-time metadata is byte-identical to what the index advertises. The per-plugin manifest is the spec-authoritative source; the marketplace catalog is just an index.
+- **MCP/hooks manifest hygiene** (fixes #11 items 4/6): dropped the redundant `"type": "stdio"` from `claude-cli-wrapper/.mcp.json` (stdio is the default), dropped the meaningless `"matcher": "*"` from the `core-principled` `SessionStart` hook (SessionStart has no tool name to match against), added the missing `"hooks": "./hooks/hooks.json"` declaration to `core-principled/.claude-plugin/plugin.json` (the hook file existed all along but was never advertised, so installs were silently dropping it).
+- **Per-plugin `author` blocks dropped from `marketplace.json`** (fixes #11 item 7). All 8 plugins now ship a per-plugin `plugin.json` with their own `author`, which the spec treats as the authoritative source. The per-plugin `plugins[].author` field was duplicating the same info for every entry. The marketplace-level `owner` block stays (different concept — "owner of the marketplace" per spec).
+- **`web-search` `when_to_use` trimmed 507 → 191 chars** (core-principled 0.15.0, fixes #14 D1). The 200-char metadata cap is a hard routing budget; descriptions that overshoot get silently truncated in high-context sessions and the tail (the NOT clause, which prevents false-positive routing to code/local search) disappears. Trim keeps the trigger list, the tool-agnostic framing, and the NOT-for list; example phrasings moved into the skill body.
+- **`sadd` Reference Index added** (tp-sadd 0.3.4, fixes #14 D2). New section names all 6 shipped agents (`sadd-expander`, `sadd-explorer`, `sadd-generator`, `sadd-judge`, `sadd-meta-judge`, `sadd-synthesizer`) and maps each to its mode. Previously the only way to discover the agent roster was to read each agent's `description` field and infer the dispatch pattern from context.
+- **`session-analytics` cross-plugin dependencies documented** (tp-session-audit 0.3.1, fixes #14 D3). New `## Cross-plugin dependencies` section makes the soft-dep contract on `tp-debug-tracer`, `tp-fpf:fpf-evidence-validator`, and `tp-sadd:sadd-judge` greppable for maintainers, names the fallback per dep, and explains why these are soft (the plugin ships standalone).
+- **`sadd-meta-judge` model: opus → sonnet** (tp-sadd 0.3.4, fixes #15 E2). The agent's only job is to generate a YAML evaluation spec (objective, rubric, pass/fail checklist, pass threshold). Structured generation work — sonnet handles it well and the marginal quality of opus on a 3-5-criterion rubric is not worth the cost multiplier.
+- **Two single-Bash agents converted to skills** (tp-git 0.3.3, fixes #15 E3). `git-preflight-checker` (`tools: [Bash]`) and `git-worktree-manager` (`tools: [Bash]`) are now `tp-git/skills/git-preflight-checker/SKILL.md` and `tp-git/skills/git-worktree-manager/SKILL.md`. An agent that only runs Bash commands pays subagent overhead (context load, model invocation, message passing) for what the main agent can do with one Bash tool call. Updated `tp-git/skills/git/SKILL.md` to use the new skill names.
+- **44 agent skill blocks audited and cargo-cult removed** (fixes #15 E4; the issue said 27 — actual count is 44, all agents). Every agent was preloading the same 13–17 general-purpose skills regardless of purpose. After the audit: 9 pure-reasoning agents get `skills: []` (Claude picks on demand); 35 domain-focused agents get exactly 1 relevant skill (e.g., `tp-secrets-detector → security`, `fpf-evidence-validator → fpf`, `sadd-judge → sadd`). All 44 files re-validated for YAML frontmatter correctness after the rewrite.
+
+### Tier C — housekeeping
+
+- **`core-principled` keywords pruned 31 → 14** (fixes #16 F1). The original list mixed universal product labels, cross-cutting workflow names, and individual skill/agent handles. The third category is too granular for marketplace discovery — when a user types `fact-check` they want the fact-check skill, not the whole plugin. Kept only stable cross-cutting workflow nouns and product-level labels; individual tool names belong in skill frontmatter.
+
+### Documentation
+
+- **`/improve` command body clarified** (fixes #16 F2). Both `/improve` and `refine` were discoverable entry points to the same CRITIQUE machinery and the overlap was unclear. `/improve` is the shorthand ("make this better, your call"); `refine` is the skill with explicit mode selection (SIMPLIFY / REVIEW / CRITIQUE / POLISH / MEMORIZE). The command body now spells out the relationship and includes a routing table.
+- **Agent prefix rule documented in `CLAUDE.md`** (fixes #16 F3). The marketplace ships with an asymmetric naming convention: `core-principled` agents use `tp-*` (legacy namespace disambiguator), sub-plugins use `<plugin>-*` (the plugin name itself is the namespace). The rule is a historical artifact, not a flaw to be smoothed out — do not "fix" it with a mechanical rename, which would break every hardcoded spawn.
+
+### Skip notes
+
+- **E5** (`tools:` missing on subagents is expected) — skipped per user instruction. The convention is: `tools:` on an agent is a hard allowlist; absent `tools:` means inherit everything. The 23-of-46 number from the issue is real but `tools:` is only appropriate for read-only / restricted agents, not for general-purpose workers.
+- **#11 item 5** (email `felix@example.com`) — `example.com` is a placeholder, not a real privacy concern. No change.
+- **#14 D4** (fpf Reference Index) — issue was wrong, fpf already has a Reference Index. No change.
+
+### Changed
+
+- **`core-principled`** 0.14.0 → 0.15.0 (minor — new hooks field, `/improve` rewrite, 9 agents moved to `skills: []`, keywords trimmed 31→14).
+- **`claude-cli-wrapper`** 0.2.1 → 0.2.2 (minor — H1/H2/H3/H4 MCP server design fixes; new `error.rs` module).
+- **`tp-mcp`** 0.1.0 → 0.1.1 (patch — skill content fixes; schemars cheat-sheet + Consuming-in-Claude-Code sections).
+- **`tp-git`** 0.3.2 → 0.3.3 (minor — 2 single-Bash agents → skills).
+- **`tp-sadd`** 0.3.3 → 0.3.4 (minor — sadd-meta-judge opus→sonnet, Reference Index).
+- **`tp-fpf`** 0.3.2 → 0.3.3 (patch — 4 agent skill blocks trimmed).
+- **`tp-session-audit`** 0.3.0 → 0.3.1 (minor — cross-plugin deps doc).
+- **`tp-rust`** 0.1.0 → 0.1.0 (no change — not touched in this batch; bumped only for the new `plugin.json`).
+- **Marketplace** 0.19.0 → 0.20.0 (catalog change for the seven per-plugin bumps above; new `plugin.json` files for `claude-cli-wrapper`, `tp-mcp`, `tp-rust`; per-plugin `author` blocks dropped; `core-principled` keywords pruned).
+
 ## [1.11.1] — 2026-06-04
 
 ### Added

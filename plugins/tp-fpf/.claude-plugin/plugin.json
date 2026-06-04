@@ -1,6 +1,6 @@
 {
   "name": "tp-fpf",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "First Principles Framework — structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
   "author": {
     "name": "Felix",
