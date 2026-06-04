@@ -11,7 +11,7 @@
     {
       "name": "core-principled",
       "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, test strategy, project maintenance (plan archival and memory hygiene), code structure (architecture, transparency, API design, idiomatic naming), tool-agnostic web search best practices (reformulation, source hierarchy, verification), a live Claude Code / Agent SDK / Claude API documentation lookup agent (tp-cc-docs) backed by the official llms.txt index, and a /cc-docs slash command for end-user invocation.",
-      "version": "0.15.0",
+      "version": "0.15.1",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
       "license": "MIT",
