@@ -758,21 +758,7 @@ git add -A && git commit -m "message"
 # Edit plugins/<name>/.claude-plugin/plugin.json — bump the "version" field
 
 # 3. Re-generate marketplace.json
-python3 -c "
-import json, pathlib
-root = pathlib.Path('.claude-plugin')
-with open('_meta.json') as f: meta = json.load(f)
-plugins = []
-for d in sorted((root.parent / 'plugins').iterdir()):
-    p = d / '.claude-plugin' / 'plugin.json'
-    if not p.exists(): continue
-    with open(p) as f: data = json.load(f)
-    m = meta.get(data['name'], {})
-    entry = {'name': data['name'], 'version': data['version'], 'description': data['description']}
-    entry.update({k: m[k] for k in ('source','homepage','repository','license','category','keywords') if k in m})
-    plugins.append(entry)
-with open('marketplace.json', 'w') as f: json.dump({**meta, 'plugins': plugins}, f, indent=2)
-"
+python3 scripts/regenerate-marketplace.py
 
 # 4. Push
 git push

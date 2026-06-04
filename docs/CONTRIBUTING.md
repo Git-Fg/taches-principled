@@ -138,3 +138,37 @@ Trigger a full re-audit when any of these change:
    on `tp-cc-docs` skills preloading — see CHANGELOG Skip notes)
 4. A subagent makes a factual claim that turns out to be wrong (the
    P6 ground-truth failure mode)
+
+---
+
+## Marketplace Regeneration
+
+The catalog file `.claude-plugin/marketplace.json` is **derived**, not hand-edited.
+It is regenerated from two SSoT sources:
+
+| Source file | Fields contributed |
+|---|---|
+| `plugins/<name>/.claude-plugin/plugin.json` | `name`, `version`, `description` |
+| `.claude-plugin/_meta.json` | `source`, `homepage`, `repository`, `license`, `category`, `keywords` |
+
+### When to run
+
+After editing any per-plugin `plugin.json` or `.claude-plugin/_meta.json`.
+
+### How to run
+
+```bash
+python3 scripts/regenerate-marketplace.py
+```
+
+### How to verify
+
+Run the same structural check that CI performs:
+
+```bash
+jq -e '.plugins | all(. as $p | ([keys[] | select(. == "version")] | length) == 1)' .claude-plugin/marketplace.json
+```
+
+If it prints nothing and exits 0, the catalog is clean. If it reports duplicate
+`version:` keys, the regeneration wrote malformed output — fix the script, do
+not hand-edit marketplace.json.
