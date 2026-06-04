@@ -1,6 +1,6 @@
 {
   "name": "tp-wiki",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Search, query, ingest, and verify a personal wiki, knowledge base, or notes system. Use when user mentions 'wiki', 'KB', 'knowledge base', 'look up in my notes', 'find in my wiki', 'lint wiki', 'check wiki consistency', 'add to wiki', 'ingest into wiki', or 'populate wiki'. Ships with wiki-searcher (read), wiki-linter (verify), and wiki-ingester (build) subagents.",
   "author": {
     "name": "Felix",

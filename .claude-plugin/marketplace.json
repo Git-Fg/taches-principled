@@ -24,6 +24,7 @@
     },
     {
       "name": "core-principled",
+      "version": "0.15.2",
       "version": "0.15.1",
       "description": "Principle-based Claude Code plugin for the full development lifecycle \u2014 planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, test strategy, a live Claude Code / Agent SDK / Claude API documentation lookup agent (tp-cc-docs) backed by the official llms.txt index, and a /cc-docs slash command for end-user invocation.",
       "source": "./plugins/core-principled",
@@ -38,6 +39,7 @@
     },
     {
       "name": "tp-fpf",
+      "version": "0.3.4",
       "version": "0.3.3",
       "description": "First Principles Framework \u2014 structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
       "source": "./plugins/tp-fpf",
@@ -52,6 +54,7 @@
     },
     {
       "name": "tp-git",
+      "version": "0.3.4",
       "version": "0.3.3",
       "description": "Git workflow automation \u2014 conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
       "source": "./plugins/tp-git",
@@ -94,6 +97,7 @@
     },
     {
       "name": "tp-sadd",
+      "version": "0.3.5",
       "version": "0.3.4",
       "description": "Structured agent-driven development with multi-pattern evaluation \u2014 judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
       "source": "./plugins/tp-sadd",
@@ -108,6 +112,7 @@
     },
     {
       "name": "tp-session-audit",
+      "version": "0.3.2",
       "version": "0.3.1",
       "description": "Session analytics \u2014 CAPTURE (headless behavioral artifact collection), INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue reporting). One hub skill, four modes.",
       "source": "./plugins/tp-session-audit",
@@ -122,6 +127,7 @@
     },
     {
       "name": "tp-wiki",
+      "version": "0.1.2",
       "version": "0.1.1",
       "description": "Search, query, ingest, and verify a personal wiki, knowledge base, or notes system. Use when user mentions 'wiki', 'KB', 'knowledge base', 'look up in my notes', 'find in my wiki', 'lint wiki', 'check wiki consistency', 'add to wiki', 'ingest into wiki', or 'populate wiki'. Ships with wiki-searcher (read), wiki-linter (verify), and wiki-ingester (build) subagents.",
       "source": "./plugins/tp-wiki",

@@ -1,6 +1,6 @@
 {
   "name": "tp-session-audit",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Session analytics — CAPTURE (headless behavioral artifact collection), INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue reporting). One hub skill, four modes.",
   "author": {
     "name": "Felix",
