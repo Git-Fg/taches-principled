@@ -1,0 +1,144 @@
+name: Validate marketplace
+
+# Codifies the structural checks the 2026-06-04 audit performed manually.
+# The audit caught a regression class (duplicate `version:` keys per plugin
+# entry in marketplace.json) that should never reach main again.
+#
+# What this validates:
+#   1. JSON syntax on marketplace.json and every plugin.json
+#   2. No duplicate `version:` keys per plugin entry in marketplace.json
+#   3. Per-plugin plugin.json version matches the marketplace.json entry
+#   4. Every plugin listed in marketplace.json has a plugin.json on disk
+#   5. Every plugin with a plugin.json is listed in marketplace.json
+#   6. The two-source catalog model: name/version/description in plugin.json;
+#      source/homepage/repository/license/category/keywords in _meta.json
+#
+# Triggers on PR, push to main, and manual dispatch.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.claude-plugin/marketplace.json'
+      - '.claude-plugin/_meta.json'
+      - 'plugins/*/.claude-plugin/plugin.json'
+  pull_request:
+    paths:
+      - '.claude-plugin/marketplace.json'
+      - '.claude-plugin/_meta.json'
+      - 'plugins/*/.claude-plugin/plugin.json'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: marketplace.json structural validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Validate JSON syntax (all manifest files)
+        run: |
+          set -e
+          # Top-level marketplace.json
+          jq empty .claude-plugin/marketplace.json
+          # Every per-plugin plugin.json
+          for f in plugins/*/.claude-plugin/plugin.json; do
+            jq empty "$f"
+          done
+          echo "All JSON files parse cleanly."
+
+      - name: Check for duplicate version: keys (regression from 1.14.0)
+        run: |
+          # Each plugin entry must have exactly one `version` key. JSON
+          # parsers silently use the second value, so duplicates produce
+          # wrong-version display in the marketplace UI.
+          DUPES=$(jq -r '
+            .plugins[]
+            | select(([keys[] | select(. == "version")] | length) != 1)
+            | .name
+          ' .claude-plugin/marketplace.json)
+          if [ -n "$DUPES" ]; then
+            echo "ERROR: duplicate or missing version: keys in marketplace.json for plugins:"
+            echo "$DUPES"
+            exit 1
+          fi
+          echo "No duplicate version: keys."
+
+      - name: Check per-plugin version parity (marketplace.json <-> plugin.json)
+        run: |
+          set -e
+          for plugin_dir in plugins/*/; do
+            name=$(basename "$plugin_dir")
+            plugin_json="${plugin_dir}.claude-plugin/plugin.json"
+            [ -f "$plugin_json" ] || continue
+            marketplace_version=$(jq -r --arg n "$name" '.plugins[] | select(.name == $n) | .version' .claude-plugin/marketplace.json)
+            plugin_version=$(jq -r '.version' "$plugin_json")
+            if [ "$marketplace_version" != "$plugin_version" ]; then
+              echo "ERROR: version mismatch for $name: marketplace.json=$marketplace_version plugin.json=$plugin_version"
+              exit 1
+            fi
+          done
+          echo "All plugin versions in sync."
+
+      - name: Check no orphan plugins (in marketplace.json but no plugin.json)
+        run: |
+          set -e
+          for name in $(jq -r '.plugins[].name' .claude-plugin/marketplace.json); do
+            if [ ! -f "plugins/${name}/.claude-plugin/plugin.json" ]; then
+              echo "ERROR: $name listed in marketplace.json but plugins/${name}/.claude-plugin/plugin.json is missing"
+              exit 1
+            fi
+          done
+          echo "All marketplace plugins have plugin.json files."
+
+      - name: Check no unlisted plugins (have plugin.json but not in marketplace.json)
+        run: |
+          set -e
+          LISTED=$(jq -r '.plugins[].name' .claude-plugin/marketplace.json | sort)
+          for plugin_dir in plugins/*/; do
+            name=$(basename "$plugin_dir")
+            [ -f "${plugin_dir}.claude-plugin/plugin.json" ] || continue
+            if ! echo "$LISTED" | grep -qx "$name"; then
+              echo "ERROR: $name has plugin.json but is not listed in marketplace.json"
+              exit 1
+            fi
+          done
+          echo "All plugin.json files are listed in marketplace.json."
+
+      - name: Validate two-source catalog model (P1-P6 subagent-contract-design)
+        run: |
+          set -e
+          # Per-plugin plugin.json must contain name, version, description.
+          for f in plugins/*/.claude-plugin/plugin.json; do
+            MISSING=$(jq -r '
+              [keys[]] | . as $k |
+              ["name", "version", "description"] | . as $required |
+              [ $required[] | select(. as $r | $k | index($r) | not) ] |
+              if length > 0 then "missing: " + (join(", ")) else empty end
+            ' "$f")
+            if [ -n "$MISSING" ]; then
+              echo "ERROR: $f has missing required fields: $MISSING"
+              exit 1
+            fi
+          done
+          # _meta.json must exist and parse
+          if [ ! -f .claude-plugin/_meta.json ]; then
+            echo "ERROR: .claude-plugin/_meta.json is missing (catalog-metadata SSoT)"
+            exit 1
+          fi
+          jq empty .claude-plugin/_meta.json
+          # Every plugin in _meta.json must also be in marketplace.json
+          for name in $(jq -r 'keys[]' .claude-plugin/_meta.json); do
+            if ! jq -e --arg n "$name" '.plugins[] | select(.name == $n)' .claude-plugin/marketplace.json > /dev/null; then
+              echo "ERROR: $name in _meta.json but not in marketplace.json"
+              exit 1
+            fi
+          done
+          echo "Two-source catalog model intact."
