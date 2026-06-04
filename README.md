@@ -1,6 +1,6 @@
 # TACHES Principled
 
-**Version:** marketplace 0.22.0 · project 1.13.0
+**Version:** marketplace 0.23.1 · project 1.14.0
 
 A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans — with principle-based guidance that teaches judgment over procedure.
 
