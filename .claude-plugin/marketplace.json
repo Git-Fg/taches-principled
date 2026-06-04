@@ -1,17 +1,170 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "taches-principled",
-  "version": "0.23.1",
-  "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, development skills, and an optimal MCP wrapper for the Claude Code CLI.",
-  "owner": {
-    "name": "Felix",
-    "email": "https://github.com/Git-Fg/taches-principled/issues"
+  "core-principled": {
+    "source": "./plugins/core-principled",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "development",
+    "keywords": [
+      "claude-code",
+      "skills",
+      "subagents",
+      "plan-lifecycle",
+      "planning",
+      "execution",
+      "review",
+      "testing",
+      "multi-agent",
+      "tool-design",
+      "documentation",
+      "security",
+      "web-research",
+      "rules"
+    ]
+  },
+  "tp-sadd": {
+    "source": "./plugins/tp-sadd",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "development",
+    "keywords": [
+      "taches-principled",
+      "claude-code",
+      "evaluation",
+      "subagents",
+      "judge"
+    ]
+  },
+  "tp-fpf": {
+    "source": "./plugins/tp-fpf",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "development",
+    "keywords": [
+      "taches-principled",
+      "claude-code",
+      "reasoning",
+      "fpf",
+      "decisions"
+    ]
+  },
+  "tp-git": {
+    "source": "./plugins/tp-git",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "productivity",
+    "keywords": [
+      "taches-principled",
+      "claude-code",
+      "git",
+      "version-control"
+    ]
+  },
+  "tp-session-audit": {
+    "source": "./plugins/tp-session-audit",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "productivity",
+    "keywords": [
+      "taches-principled",
+      "claude-code",
+      "session-analytics",
+      "meta-review",
+      "session-analysis",
+      "behavioral-review",
+      "capture",
+      "behavioral-verification",
+      "cross-analyze",
+      "adjudicate"
+    ]
+  },
+  "claude-cli-wrapper": {
+    "source": "./plugins/claude-cli-wrapper",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "productivity",
+    "keywords": [
+      "taches-principled",
+      "claude-code",
+      "mcp",
+      "cli-wrapper",
+      "execute",
+      "session-management",
+      "code-review",
+      "agent-spawn",
+      "config"
+    ]
+  },
+  "tp-rust": {
+    "source": "./plugins/tp-rust",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "development",
+    "keywords": [
+      "taches-principled",
+      "claude-code",
+      "rust",
+      "cargo",
+      "rust-scaffold",
+      "rust-workspace",
+      "rust-quality",
+      "rust-release",
+      "rust-tooling",
+      "rust-publishing",
+      "rust-supply-chain",
+      "rust-ci"
+    ]
+  },
+  "tp-mcp": {
+    "source": "./plugins/tp-mcp",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "development",
+    "keywords": [
+      "taches-principled",
+      "claude-code",
+      "mcp",
+      "model-context-protocol",
+      "mcp-server",
+      "mcp-server-design",
+      "mcp-server-implement",
+      "mcp-tool-surface",
+      "json-schema",
+      "rmcp",
+      "schemars",
+      "rust-mcp"
+    ]
+  },
+  "tp-wiki": {
+    "source": "./plugins/tp-wiki",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "productivity",
+    "keywords": [
+      "taches-principled",
+      "claude-code",
+      "wiki",
+      "knowledge-base",
+      "notes",
+      "lint",
+      "search",
+      "ingest",
+      "build"
+    ]
   },
   "plugins": [
     {
       "name": "claude-cli-wrapper",
       "version": "0.2.2",
-      "description": "Optimal MCP wrapper for the Claude Code CLI — single Rust binary exposing six tools (claude_execute, claude_session, claude_context, claude_review, claude_agent, claude_config) over both MCP stdio and a mcp-tool script fallback. Cross-platform launcher at bin/claude-cli-wrapper resolves to a per-host prebuilt (darwin-arm64 only at present; Linux/Intel fall through to cargo build, ~10-15 min first use). Ideal for any agent that needs to drive Claude Code programmatically.",
+      "description": "Optimal MCP wrapper for the Claude Code CLI \u2014 single Rust binary exposing six tools (claude_execute, claude_session, claude_context, claude_review, claude_agent, claude_config) over both MCP stdio and a mcp-tool script fallback. Cross-platform launcher at bin/claude-cli-wrapper resolves to a per-host prebuilt (darwin-arm64 only at present; Linux/Intel fall through to cargo build, ~10-15 min first use). Ideal for any agent that needs to drive Claude Code programmatically.",
       "source": "./plugins/claude-cli-wrapper",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
@@ -32,7 +185,7 @@
     {
       "name": "core-principled",
       "version": "0.15.2",
-      "description": "Principle-based Claude Code plugin for the full development lifecycle — planning, execution, authoring, code review, root-cause analysis, continuous improvement, ideation, spec-driven development, documentation, code refinement, multi-agent patterns, tool design, security auditing, test strategy, a live Claude Code / Agent SDK / Claude API documentation lookup agent (tp-cc-docs) backed by the official llms.txt index, and a /cc-docs slash command for end-user invocation.",
+      "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, security audit, test strategy. Live Claude Code/Agent SDK/API docs via tp-cc-docs and /cc-docs slash command.",
       "source": "./plugins/core-principled",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
@@ -58,7 +211,7 @@
     {
       "name": "tp-fpf",
       "version": "0.3.4",
-      "description": "First Principles Framework — structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
+      "description": "First Principles Framework \u2014 structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
       "source": "./plugins/tp-fpf",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
@@ -75,7 +228,7 @@
     {
       "name": "tp-git",
       "version": "0.3.4",
-      "description": "Git workflow automation — conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
+      "description": "Git workflow automation \u2014 conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
       "source": "./plugins/tp-git",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
@@ -91,7 +244,7 @@
     {
       "name": "tp-mcp",
       "version": "0.1.1",
-      "description": "Principled MCP (Model Context Protocol) server skills — design (equilibrated recursivity, tool decomposition, pass-through, output contract, JSON-RPC error discipline, context budget, annotations, naming, capability negotiation, security), implement (rmcp + schemars + tokio, transport choice, stderr-only logging, error mapping, testing), and tool-surface authoring (JSON Schema 2020-12 constraints, additionalProperties:false discipline, discriminator enums, naming). Three skills covering the full MCP server lifecycle, plus the `claude-cli` skill in the existing `claude-cli-wrapper` plugin as a worked example of the 6-tool decomposition pattern.",
+      "description": "Principled MCP (Model Context Protocol) server skills \u2014 design (equilibrated recursivity, tool decomposition, pass-through, output contract, JSON-RPC error discipline, context budget, annotations, naming, capability negotiation, security), implement (rmcp + schemars + tokio, transport choice, stderr-only logging, error mapping, testing), and tool-surface authoring (JSON Schema 2020-12 constraints, additionalProperties:false discipline, discriminator enums, naming). Three skills covering the full MCP server lifecycle, plus the `claude-cli` skill in the existing `claude-cli-wrapper` plugin as a worked example of the 6-tool decomposition pattern.",
       "source": "./plugins/tp-mcp",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
@@ -115,7 +268,7 @@
     {
       "name": "tp-rust",
       "version": "0.1.0",
-      "description": "Principled Rust project skills — scaffold single crates and multi-crate workspaces with edition 2024 / MSRV 1.81 defaults, set up the CI + clippy + nextest + cargo-deny quality pipeline, and ship releases with version policy, changelog generation, publishing, and supply-chain hardening. Four skills covering the full Rust lifecycle: rust-scaffold, rust-workspace, rust-quality, rust-release.",
+      "description": "Principled Rust project skills \u2014 scaffold single crates and multi-crate workspaces with edition 2024 / MSRV 1.81 defaults, set up the CI + clippy + nextest + cargo-deny quality pipeline, and ship releases with version policy, changelog generation, publishing, and supply-chain hardening. Four skills covering the full Rust lifecycle: rust-scaffold, rust-workspace, rust-quality, rust-release.",
       "source": "./plugins/tp-rust",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
@@ -139,7 +292,7 @@
     {
       "name": "tp-sadd",
       "version": "0.3.5",
-      "description": "Structured agent-driven development with multi-pattern evaluation — judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
+      "description": "Structured agent-driven development with multi-pattern evaluation \u2014 judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
       "source": "./plugins/tp-sadd",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
@@ -156,7 +309,7 @@
     {
       "name": "tp-session-audit",
       "version": "0.3.2",
-      "description": "Session analytics — CAPTURE (headless behavioral artifact collection), INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue reporting). One hub skill, four modes.",
+      "description": "Session analytics \u2014 CAPTURE (headless behavioral artifact collection), INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue reporting). One hub skill, four modes.",
       "source": "./plugins/tp-session-audit",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
