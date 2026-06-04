@@ -16,6 +16,36 @@ argument-hint: "[query|ingest|lint] [args...]"
 Build, query, and maintain a persistent, compounding knowledge base as interlinked markdown files.
 Based on [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
 
+## Teaching: Always Tell Subagents Which Wiki to Target
+
+**The rule:** This skill is a hub. The hub spawns subagents. The subagents (`wiki-searcher`, `wiki-linter`, `wiki-ingester`) need to know which wiki to operate on. **The hub's job is to resolve the target wiki BEFORE spawning, and pass it as an argument.**
+
+**Why this rule exists:** A subagent that doesn't know the target wiki has to re-resolve it from the registry. That re-resolution can disagree with what the user meant (the user said "the work wiki" but the subagent picked "main" because the alias was ambiguous). When the hub does the resolution, the user can correct it once at dispatch time, and every subagent call inherits the same answer. When the subagent does the resolution, the user has to correct it N times for N operations.
+
+**How to follow the rule:**
+
+1. **Resolve the target wiki first** — read `~/.claude/wiki-root.md` (the registry), apply the disambiguation rules, get the absolute path. If the user named a wiki, match by alias. If the user said "all my wikis", resolve all of them.
+2. **Spawn the subagent with `wiki_path` set** to the resolved absolute path. **Or** pass `alias` if you don't know the path but know the label — the subagent will resolve it from the registry (see subagent body for fallback rules).
+3. **Never spawn a subagent without `wiki_path` or `alias`**. The subagent can technically self-discover from the registry as a last resort, but that's the failure mode, not the normal flow.
+4. **For multi-wiki operations** ("lint all my wikis", "ingest this into every wiki"): spawn the subagent once per resolved wiki, passing each `wiki_path` in turn. Aggregate the per-wiki reports.
+
+**Per-subagent argument shapes** (the hub must populate these on spawn):
+
+| Subagent | Required | Optional |
+|---|---|---|
+| `wiki-searcher` | `query` (string), `wiki_path` (string) — OR `alias` (string) | `multi_wiki` (bool, default false) — set to `true` to run across all configured wikis |
+| `wiki-ingester` | `mode` (`url`/`text`/`file`/`bulk`), `content`, `wiki_path` — OR `alias` | `multi_wiki` (bool, default false) |
+| `wiki-linter` | `directive` (string), `wiki_path` — OR `alias` | `multi_wiki` (bool, default false) |
+
+**What the subagent does if `wiki_path` is missing and `alias` is missing:**
+
+1. Reads `~/.claude/wiki-root.md` itself (the registry).
+2. If exactly one wiki is configured, uses it.
+3. If multiple are configured and the registry is unambiguous for the current operation, uses the first one.
+4. If ambiguous, returns an error to the hub with the message "no `wiki_path` or `alias` provided and registry is ambiguous" — the hub then asks the user to disambiguate.
+
+**So: the hub can pass `wiki_path` (preferred) or `alias` (fallback) or rely on subagent self-discovery (last resort, returns error on ambiguity). The hub should pick the first.**
+
 ## Wiki Root Resolution (multi-wiki registry)
 
 **The wiki root is a registry, not a single value.** The file `~/.claude/wiki-root.md` is the **single source of truth** — it contains one entry per wiki, with the format `WIKI_ROOT_<name>=<absolute-path>`. No env vars are involved; the value is a literal absolute path on the right side of the `=`.
