@@ -2,6 +2,20 @@
 
 All notable changes are documented here.
 
+## [1.16.1] — 2026-06-05
+
+### Fixed
+
+- **Marketplace manifest now conforms to the official Claude Code schema (closes #47 install blocker).** The upstream `.claude-plugin/marketplace.json` was shaped as a *map* where each plugin name was a top-level key, with a `plugins` array nested under it, but no top-level `name` or `owner` field. The CLI rejected the file at `claude plugin marketplace add` time with `Invalid schema: ... name: Invalid input: expected string, received undefined, owner: Invalid input: expected object, received undefined`, breaking the install path for new users on a clean install. Restructured to the official schema shape: top-level `$schema`, `name`, `owner`, `description`, `version`, `plugins` (array). The 9 redundant plugin-name top-level keys (each holding `source`, `keywords`, etc.) are removed — the same data is already in each `plugins` array entry, which the regen script populates by merging per-plugin `plugin.json` with `_meta.json`. **Marketplace** 0.25.0 → 0.25.1 (catalog version bumps for the schema-correctness fix; no per-plugin content changed, so no per-plugin version bumps).
+
+### Added
+
+- **Marketplace-level metadata now lives in `_meta.json` under a `marketplace` block** (name, owner, description, version). The regen script reads this block and emits the schema-compliant top-level fields. This is a small but structural upgrade to the two-source catalog model: per-plugin metadata is still keyed by plugin name; marketplace-level metadata is at the top of `_meta.json` under `marketplace`.
+
+### Hardened
+
+- **CI guard extended** to reject the #47 regression class on every PR. The `validate-marketplace` workflow now also checks: (a) `marketplace.json` has top-level `name`, `owner`, `plugins` array, (b) `owner.name` is a non-empty string, (c) `_meta.json` has a `marketplace` block with `name` and `owner`, (d) the two-source catalog model iterates `_meta.json` keys while skipping the new `marketplace` block. Trigger paths extended to include `scripts/regenerate-marketplace.py` so the script itself is review-gated.
+
 ## [1.16.0] — 2026-06-04
 
 ### Changed

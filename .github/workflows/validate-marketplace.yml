@@ -12,6 +12,10 @@ name: Validate marketplace
 #   5. Every plugin with a plugin.json is listed in marketplace.json
 #   6. The two-source catalog model: name/version/description in plugin.json;
 #      source/homepage/repository/license/category/keywords in _meta.json
+#   7. The official Claude Code marketplace schema shape: top-level
+#      `name` + `owner` + `plugins` array (issue #47 install blocker).
+#      The CLI rejects the file at `claude plugin marketplace add` time
+#      if any of these required fields is missing.
 #
 # Triggers on PR, push to main, and manual dispatch.
 
@@ -22,11 +26,13 @@ on:
       - '.claude-plugin/marketplace.json'
       - '.claude-plugin/_meta.json'
       - 'plugins/*/.claude-plugin/plugin.json'
+      - 'scripts/regenerate-marketplace.py'
   pull_request:
     paths:
       - '.claude-plugin/marketplace.json'
       - '.claude-plugin/_meta.json'
       - 'plugins/*/.claude-plugin/plugin.json'
+      - 'scripts/regenerate-marketplace.py'
   workflow_dispatch: {}
 
 permissions:
@@ -134,11 +140,53 @@ jobs:
             exit 1
           fi
           jq empty .claude-plugin/_meta.json
-          # Every plugin in _meta.json must also be in marketplace.json
-          for name in $(jq -r 'keys[]' .claude-plugin/_meta.json); do
+          # Every plugin in _meta.json must also be in marketplace.json.
+          # The top-level "marketplace" key in _meta.json is metadata for
+          # the marketplace itself (name, owner, etc.) — skip it.
+          for name in $(jq -r 'keys[] | select(. != "marketplace")' .claude-plugin/_meta.json); do
             if ! jq -e --arg n "$name" '.plugins[] | select(.name == $n)' .claude-plugin/marketplace.json > /dev/null; then
               echo "ERROR: $name in _meta.json but not in marketplace.json"
               exit 1
             fi
           done
+          # _meta.json must declare the marketplace-level metadata.
+          if ! jq -e 'has("marketplace")' .claude-plugin/_meta.json > /dev/null; then
+            echo "ERROR: .claude-plugin/_meta.json is missing the top-level 'marketplace' key"
+            exit 1
+          fi
+          if ! jq -e '.marketplace | has("name") and has("owner")' .claude-plugin/_meta.json > /dev/null; then
+            echo "ERROR: .claude-plugin/_meta.json marketplace block is missing name or owner"
+            exit 1
+          fi
           echo "Two-source catalog model intact."
+
+      - name: Validate official marketplace schema shape (issue #47)
+        run: |
+          set -e
+          # The official Claude Code marketplace schema requires the
+          # top-level fields `name` (string), `owner` (object with a
+          # `name`), and `plugins` (array). Without these, the CLI
+          # rejects the file at `claude plugin marketplace add` time
+          # (issue #47). This check makes the regression unlandable.
+          MISSING=$(jq -r '
+            [keys[]] as $k |
+            ["name", "owner", "plugins"] as $required |
+            [ $required[] | select(. as $r | $k | index($r) | not) ] |
+            if length > 0 then "missing: " + (join(", ")) else empty end
+          ' .claude-plugin/marketplace.json)
+          if [ -n "$MISSING" ]; then
+            echo "ERROR: marketplace.json missing required top-level fields: $MISSING"
+            exit 1
+          fi
+          # `owner.name` must be a non-empty string.
+          OWNER_NAME=$(jq -r '.owner.name // ""' .claude-plugin/marketplace.json)
+          if [ -z "$OWNER_NAME" ]; then
+            echo "ERROR: marketplace.json owner.name is empty"
+            exit 1
+          fi
+          # `plugins` must be an array.
+          if ! jq -e '.plugins | type == "array"' .claude-plugin/marketplace.json > /dev/null; then
+            echo "ERROR: marketplace.json plugins is not an array"
+            exit 1
+          fi
+          echo "Official schema shape intact."
