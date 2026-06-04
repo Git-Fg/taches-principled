@@ -1,6 +1,13 @@
 ---
 name: mcp-server-implement
 description: Build an MCP server in Rust using rmcp + schemars + tokio. Tool attribute mapping (`#[tool]`, `#[tool_handler]`, `#[tool_router]`), JSON Schema constraint generation, enum/rename/optional idioms, server lifecycle (initialize → capabilities → shutdown), transport choice (stdio vs Streamable HTTP), stderr-only logging, error mapping, testing with the MCP Inspector. Use when the user says "implement an MCP server in Rust", "rmcp + schemars patterns", "build an MCP tool", "Rust MCP server", "transport choice stdio vs HTTP", "MCP server lifecycle".
+when_to_use: |
+  - "Build me an MCP server in Rust"
+  - "Set up rmcp with schemars for tool schemas"
+  - "Add a tool to my existing MCP server"
+  - "How do I declare capabilities with rmcp?"
+  - "How do I handle stdio vs Streamable HTTP?"
+  - "How do I log without corrupting the JSON-RPC stream?"
 ---
 
 # mcp-server-implement

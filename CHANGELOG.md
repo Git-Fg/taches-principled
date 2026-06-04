@@ -2,6 +2,24 @@
 
 All notable changes are documented here.
 
+## [1.10.0] — 2026-06-04
+
+### Changed
+- **Skill frontmatter discoverability pass** — second pass after the 1.9.0 routing audit, focused on separation of concerns at the frontmatter level. Sourced from `docs/official/skills.md` and web search on Anthropic's skill authoring guidance.
+  - **`description` rewrite to lead with user-facing triggers, not method jargon** — 6 skills whose `description` opened with abstract nouns (ideation, kaizen, project-maintenance, refine, fpf, sadd) now lead with what the USER is doing ("Explore a vague idea", "Apply four design-time guardrails", "Archive completed plans", "Review a PR", "Analyze from first principles", "Solve by generating multiple solutions").
+  - **`when_to_use` added to 8 skills** missing the field (claude-cli, all 3 tp-mcp, all 4 tp-rust). Each `when_to_use` is a multi-line YAML block with 5-7 quoted user utterances that should trigger the skill — concrete phrases, not methodology.
+  - **`user-invocable: false` added to 2 background-knowledge skills** (kaizen, fpf) — these are guardrails / methodology that the LLM should apply automatically, never something a user types `/kaizen` to invoke.
+
+### Verification
+- Re-ran the 10-utterance routing test against the marketplace: **8/10 clear winners, 2/10 legitimate two-skill-fits** (up from 7/10 in 1.9.0). The two remaining ties are both plan-lifecycle vs task-lifecycle on "add a new feature" — both legitimately apply.
+- Audit script (description length, verb-leading, kitchen-sink detection, CONTRAST presence) re-run: 0 errors, 2 false-positive warnings from the audit's own verb list, all real issues resolved.
+
+### Methodology
+- Read `docs/official/skills.md` for the official 1,536-char cap, front-load trigger guidance, and invocation discipline (`disable-model-invocation`, `user-invocable`).
+- Read `docs/templates/command.md` for the project's "high trust + high freedom" convention: skills tell what to do, not how; commands are just triggers.
+- Web search on current skill-authoring best practices (2026): description quality, trigger vocabulary, avoidance of method-leaking.
+- Wrote `/tmp/skill-frontmatter-audit.py` — 8-check audit (length cap, verb-leading, when_to_use coverage, trigger distinctness, kitchen-sink detection, invocation discipline, body length, when_to_use format).
+
 ## [1.9.0] — 2026-06-04
 
 ### Changed

@@ -1,6 +1,13 @@
 ---
 name: rust-workspace
 description: Manage a Cargo workspace — decide when to split a single project, structure members, share dependencies via workspace inheritance (1.64+), coordinate MSRV across crates, and use cross-crate patterns like internal features. Use when the user says "split into a workspace", "add a member crate", "share dependencies across crates", "set up a Cargo workspace", "workspace inheritance", "internal types", "publish a subset of crates".
+when_to_use: |
+  - "Should I split this into a workspace?"
+  - "Add a member crate to my workspace"
+  - "Share dependencies across multiple crates"
+  - "Set up workspace inheritance"
+  - "How do I coordinate MSRV across a workspace?"
+  - "Internal types / __internal feature pattern"
 ---
 
 # rust-workspace

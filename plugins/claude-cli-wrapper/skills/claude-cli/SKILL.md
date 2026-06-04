@@ -1,6 +1,13 @@
 ---
 name: claude-cli
 description: Drive the Claude Code CLI as six MCP tools from another agent — claude_execute (run a prompt), claude_session (lifecycle: resume/continue/fork/list/info/close), claude_context (workspace: add dirs, worktrees), claude_review (code review), claude_agent (background agent management), claude_config (runtime tuning: model/effort/permissions/settings). Use when an agent needs to programmatically spawn or orchestrate Claude Code instances, manage their sessions, or run background sub-agents — not for direct user-driven Claude Code use.
+when_to_use: |
+  - "Spawn a Claude Code agent to run a task"
+  - "Continue / resume a Claude Code session"
+  - "List my Claude Code sessions"
+  - "Review this PR with Claude Code"
+  - "Run a background Claude Code sub-agent"
+  - "Change the model / effort / permissions for Claude Code"
 ---
 
 # claude-cli

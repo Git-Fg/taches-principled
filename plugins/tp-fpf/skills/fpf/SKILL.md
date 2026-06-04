@@ -1,7 +1,8 @@
 ---
 name: fpf
-description: "Generate and evaluate competing hypotheses. Use when deciding between alternatives or tracking decision rationale."
+description: "Analyze a problem from first principles, generate and evaluate competing hypotheses, and track decision rationale. Use when the user wants to reason from scratch, compare solutions, or make a decision between alternatives."
 when_to_use: "Use when user wants to analyze a problem from first principles, evaluate hypotheses, or manage FPF knowledge."
+user-invocable: false
 ---
 
 ## Routing Guidance

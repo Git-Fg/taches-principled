@@ -1,9 +1,9 @@
 ---
 name: kaizen
-description: "Four design-time constraints: incremental improvement, error-proofing, standardization, avoid over-engineering. Use when making code decisions."
+description: "Apply four design-time guardrails to every code decision: incremental improvement, error-proofing, standardization, and avoid over-engineering. Use when the user is about to write code, refactor, or handle errors and wants to avoid over-engineering or apply YAGNI."
 when_to_use: "Use when user wants to avoid over-engineering, apply YAGNI, or make architectural and code design decisions. Background guardrails applied to every code change; pair with the ddd skill for deep structural analysis."
 argument-hint: Applied automatically when implementing, refactoring, designing, or handling errors
----
+user-invocable: false
 
 ## Routing Guidance
 

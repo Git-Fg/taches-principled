@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "taches-principled",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Principle-based plugin ecosystem for Claude Code — planning, execution, evaluation, development skills, and an optimal MCP wrapper for the Claude Code CLI.",
   "owner": {
     "name": "Felix",

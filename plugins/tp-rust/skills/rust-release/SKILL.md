@@ -1,6 +1,14 @@
 ---
 name: rust-release
 description: Manage the Rust release lifecycle — Cargo semver (0.x.y pre-1.0, MSRV bumps), changelog generation (git-cliff vs release-please vs hand-curated), publishing (cargo publish, yank, ownership), and supply-chain hardening (cargo-vet, Dependabot, [patch.crates-io]). Use when the user says "publish to crates.io", "bump version", "set up release-plz", "yank a version", "deprecate a feature", "add a changelog", "transfer crate ownership".
+when_to_use: |
+  - "Publish my crate to crates.io"
+  - "Bump the version / set up release-plz"
+  - "Add a changelog"
+  - "Yank a version"
+  - "Deprecate a feature"
+  - "Set up cargo-vet for supply chain"
+  - "Transfer crate ownership"
 ---
 
 # rust-release

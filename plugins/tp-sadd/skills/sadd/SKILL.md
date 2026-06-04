@@ -1,6 +1,6 @@
 ---
 name: sadd
-description: "Solve complex problems by generating multiple solutions and picking the best one. Use when user says 'pick the best approach', 'compare options', or 'deep dive into a solution'."
+description: "Solve a complex problem by generating multiple candidate solutions and picking the best one with structured evaluation. Use when the user wants to compare options, pick the best approach, or do a deep dive into a hard problem where a single attempt might fail."
 when_to_use: |
   - User wants to see several alternative solutions and have them evaluated against each other.
   - User needs a thorough exploration of a problem space where a single path might fail.

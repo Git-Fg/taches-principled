@@ -1,6 +1,14 @@
 ---
 name: rust-quality
 description: Set up the Rust quality pipeline — GitHub Actions CI (dtolnay + Swatinem + taiki-e), clippy pedantic, cargo-nextest (1.4-3.4× faster than cargo test), coverage with cargo-llvm-cov, and the supply-chain ladder (cargo-audit → cargo-deny → cargo-vet). Use when the user says "set up CI for Rust", "configure clippy", "speed up tests", "add coverage", "audit dependencies", "set up supply-chain", "add benchmarks", "lint as error in CI".
+when_to_use: |
+  - "Set up CI for my Rust project"
+  - "Configure clippy for a library"
+  - "My tests are slow — switch to nextest"
+  - "Add code coverage to my Rust crate"
+  - "Audit my Rust dependencies"
+  - "Set up cargo-deny for licenses and advisories"
+  - "Add benchmarks with criterion"
 ---
 
 # rust-quality

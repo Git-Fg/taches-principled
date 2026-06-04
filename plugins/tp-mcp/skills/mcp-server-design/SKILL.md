@@ -1,6 +1,13 @@
 ---
 name: mcp-server-design
-description: Design an MCP (Model Context Protocol) server that LLM agents can call cleanly. Tool decomposition (1 vs N), equilibrated recursivity (flat schema / deep data), pass-through principle, output contract (CallToolResult text+JSON), JSON-RPC error code discipline, context budget (≤12 KB total schema), tool annotations, naming, capability negotiation, security best practices. Use when the user says "design an MCP server", "should this be one tool or many", "how to structure tool schemas", "MCP server best practices", "JSON-RPC errors", "tool naming".
+description: Design an MCP (Model Context Protocol) server that LLM agents can call cleanly. Tool decomposition (1 vs N), equilibrated recursivity (flat schema, deep data via pass-through), output contract (CallToolResult text+JSON), JSON-RPC error code discipline, context budget (≤12 KB total schema), tool annotations, naming, capability negotiation, security best practices. Use when the user says "design an MCP server", "should this be one tool or many", "how to structure tool schemas", "MCP server best practices", "JSON-RPC errors", "tool naming".
+when_to_use: |
+  - "Should I split this into multiple tools or keep it as one?"
+  - "Design an MCP server for X"
+  - "What's the right tool decomposition?"
+  - "How do I structure tool names and descriptions?"
+  - "What's the context budget for tool definitions?"
+  - "How should I handle errors in tool responses?"
 ---
 
 # mcp-server-design

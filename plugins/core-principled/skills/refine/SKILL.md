@@ -1,6 +1,6 @@
 ---
 name: refine
-description: "Improve artifact quality through code simplification, structured critique, prose polishing, and memory consolidation."
+description: "Review a PR, simplify complex code, polish prose, or capture a project learning. Use when the user wants to improve the quality of an artifact (code, doc, PR) or consolidate insights into memory. Do NOT use for bug diagnosis or for creating new features."
 allowed-tools: Read, Edit, Write
 when_to_use: "Use for PR reviews, simplifying complex logic, or capturing project learnings. Do NOT use for bug diagnosis (use diagnose) or creating new features (use task-lifecycle)."
 argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-low|low]"

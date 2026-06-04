@@ -1,6 +1,6 @@
 ---
 name: ideation
-description: "Brainstorm and explore unformed concepts or generate diverse creative options. Use when user wants to 'think through', 'explore possibilities', or 'generate ideas'."
+description: "Explore a vague idea or generate creative alternatives before committing to an approach. Use when the user wants to 'think through', 'explore possibilities', or 'generate ideas' for an unformed problem."
 when_to_use: |
   - User wants to refine a vague idea through collaborative dialogue.
   - User needs a list of creative alternatives or diverse approaches to a problem.

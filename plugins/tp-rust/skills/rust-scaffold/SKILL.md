@@ -1,6 +1,12 @@
 ---
 name: rust-scaffold
 description: Scaffold a new Rust crate (lib, bin, or both) with modern defaults — edition 2024, MSRV 1.81, resolver 2, cargo-nextest-ready structure, doctests, MSRV-aware lints. Use when the user says "scaffold a Rust crate", "new Rust project", "init a Rust library/binary", "what edition/MSRV to use", "Cargo.toml metadata", "feature flags", "rustdoc conventions".
+when_to_use: |
+  - "Start a new Rust crate"
+  - "What edition / MSRV should I pick?"
+  - "Scaffold a Rust lib + bin"
+  - "Set up feature flags for a new crate"
+  - "How do I document a Rust API with rustdoc?"
 ---
 
 # rust-scaffold
