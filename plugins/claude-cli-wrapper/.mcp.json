@@ -1,7 +1,6 @@
 {
   "mcpServers": {
     "taches-claude-cli-wrapper": {
-      "type": "stdio",
       "command": "${CLAUDE_PLUGIN_ROOT}/bin/claude-cli-wrapper",
       "args": [],
       "env": {
