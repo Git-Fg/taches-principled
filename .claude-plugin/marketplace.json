@@ -184,7 +184,7 @@
     },
     {
       "name": "core-principled",
-      "version": "0.16.0",
+      "version": "0.17.0",
       "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, security audit, test strategy. Live Claude Code/Agent SDK/API docs via tp-cc-docs and /cc-docs slash command.",
       "source": "./plugins/core-principled",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -210,7 +210,7 @@
     },
     {
       "name": "tp-fpf",
-      "version": "0.3.4",
+      "version": "0.4.0",
       "description": "First Principles Framework \u2014 structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
       "source": "./plugins/tp-fpf",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -291,7 +291,7 @@
     },
     {
       "name": "tp-sadd",
-      "version": "0.3.5",
+      "version": "0.4.0",
       "description": "Structured agent-driven development with multi-pattern evaluation \u2014 judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
       "source": "./plugins/tp-sadd",
       "homepage": "https://github.com/Git-Fg/taches-principled",
