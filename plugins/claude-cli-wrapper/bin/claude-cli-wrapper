@@ -38,13 +38,13 @@ and re-run, or build manually:
 
     cd "$PLUGIN_ROOT" && cargo build --release
 
-For Linux x86_64 hosts, a prebuilt is also expected to ship in subsequent
-releases; track .github/workflows/release-claude-cli-wrapper.yml (TODO).
+For Linux/Intel hosts, a prebuilt is expected to ship via the
+.github/workflows/release-claude-cli-wrapper.yml workflow on tag push.
 EOF
   exit 1
 fi
 
-echo "Building claude-cli-wrapper from source for ${HOST_TRIPLE} (one-time, ~2-3 minutes)..." >&2
+echo "Building claude-cli-wrapper from source for ${HOST_TRIPLE} (one-time, ~2-3 min on Apple Silicon; ~10-15 min on Linux/Intel)..." >&2
 (cd "$PLUGIN_ROOT" && cargo build --release --quiet) || {
   echo "ERROR: cargo build failed; check the output above for details." >&2
   exit 1

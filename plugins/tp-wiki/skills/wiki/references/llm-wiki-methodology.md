@@ -34,7 +34,7 @@ cross-referenced by the agent.
 
 When the user asks to create or start a wiki:
 
-1. Determine the wiki path (from `$WIKI_ROOT` or user input)
+1. Determine the wiki path — read `~/.claude/wiki-root.md` (the registry) to find an existing wiki the user wants to extend, or ask the user for a new path and a label. If creating a new wiki, append a `WIKI_ROOT_<label>=<absolute-path>` line to the registry so future operations can find it.
 2. Create the directory structure (see Architecture above)
 3. Ask the user what domain the wiki covers — be specific
 4. Write `SCHEMA.md` customized to the domain
