@@ -21,3 +21,4 @@ plugins/**/__pycache__/
 # OpenCode runtime (node_modules, tmp dylibs)
 .opencode/
 node_modules/
+handoff.md
