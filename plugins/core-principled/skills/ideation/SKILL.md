@@ -8,6 +8,10 @@ when_to_use: |
 argument-hint: "[feature concept, problem, or topic]"
 ---
 
+## Pre-load cwd context
+
+**Persistence:** at intake, read `cwd/.principled/specs/plans/`, `cwd/.principled/memory/`, and `cwd/.principled/scratch/` if any — prior designs, learnings, and scratch notes may inform this brainstorm; skip if `.principled/` is absent.
+
 ## Routing Guidance
 
 - IMMEDIATELY when a concept is vague or unformed — BEFORE sketching architecture or writing code.

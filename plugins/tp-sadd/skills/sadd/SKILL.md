@@ -7,6 +7,10 @@ when_to_use: |
   - User wants to delegate a task to a background worker with automated verification.
 ---
 
+## Pre-load cwd context
+
+**Persistence:** at intake, read `cwd/.principled/sadd/` (candidates, judge-reports, syntheses) and `cwd/.principled/specs/plans/` if any — prior candidates and prior designs may inform competitive generation; skip if `.principled/` is absent.
+
 ## Routing Guidance
 
 - COMPETE: 'best-of-N', 'competitive generation', 'generate multiple solutions', 'quality over speed'

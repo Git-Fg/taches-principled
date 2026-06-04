@@ -5,6 +5,10 @@ when_to_use: "Use for proof-of-concepts, A/B tests, and validating improvements 
 argument-hint: "[improvement goal or problem to address] [--cycle N]"
 ---
 
+## Pre-load cwd context
+
+**Persistence:** at intake, read `cwd/.principled/pdca/` (prior cycles) and `cwd/.principled/memory/learnings.md` if any — earlier cycles and lessons may inform the new hypothesis; skip if `.principled/` is absent.
+
 ## Routing Guidance
 
 - IMMEDIATELY when solving problems where outcomes need measurement — BEFORE concluding, standardizing, or shipping.

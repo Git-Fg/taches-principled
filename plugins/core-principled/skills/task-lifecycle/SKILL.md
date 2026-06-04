@@ -9,6 +9,10 @@ when_to_use: |
 argument-hint: "[subcommand] [task-title-or-path] [--flags]"
 ---
 
+## Pre-load cwd context
+
+**Persistence:** at intake, read `cwd/.principled/specs/tasks/` (draft/todo/in-progress/done) and `cwd/.principled/specs/scratchpad/` if any — prior tasks and scratchpad notes may inform this work; skip if `.principled/` is absent.
+
 ## Routing Guidance
 
 - **CAPTURE mode**: IMMEDIATELY to track new intent.

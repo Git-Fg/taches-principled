@@ -6,6 +6,10 @@ when_to_use: "Use for PR reviews, simplifying complex logic, or capturing projec
 argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-low|low]"
 ---
 
+## Pre-load cwd context
+
+**Persistence:** at intake, read `cwd/.principled/memory/learnings.md` and `cwd/.principled/scratch/` if any — prior learnings and scratch notes may inform refinement and must be read before MEMORIZE appends new entries; skip if `.principled/` is absent.
+
 ## Routing Guidance
 
 - IMMEDIATELY before merging or committing significant code changes (SIMPLIFY or REVIEW).

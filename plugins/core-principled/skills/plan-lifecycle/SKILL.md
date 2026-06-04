@@ -6,6 +6,10 @@ when_to_use: "Use for multi-phase projects, feature breakdowns, running PLAN.md 
 argument-hint: "<PLAN|EXECUTE> [path|--phase N]"
 ---
 
+## Pre-load cwd context
+
+**Persistence:** at intake, read `cwd/.principled/plans/` (BRIEF, ROADMAP, SUMMARY) and `cwd/.principled/memory/learnings.md` if any — prior plans and learnings may inform this one; skip if `.principled/` is absent.
+
 ## Routing Guidance
 
 - **Hub Skill:** Combines project planning (PLAN) and plan execution (EXECUTE).

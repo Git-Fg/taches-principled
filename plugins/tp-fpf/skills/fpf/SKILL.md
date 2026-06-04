@@ -5,6 +5,10 @@ when_to_use: "Use when user wants to analyze a problem from first principles, ev
 user-invocable: false
 ---
 
+## Pre-load cwd context
+
+**Persistence:** at intake, read `cwd/.principled/fpf/` (context.md, knowledge/L0/L1/L2, decisions) and `cwd/.principled/memory/learnings.md` if any — prior hypotheses and rationale may inform this cycle; skip if `.principled/` is absent; the fpf skill will initialize fresh.
+
 ## Routing Guidance
 
 - PROPOSE: 'first principles', 'hypothesize', 'propose options', 'FPF', 'evaluate from first principles', 'reason from scratch', 'generate hypotheses', 'evaluate alternatives', 'compare solutions', 'make a decision'
