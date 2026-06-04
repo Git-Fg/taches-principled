@@ -152,3 +152,11 @@ Report format per finding:
 - If no wiki configured, ask user for wiki path or to set up the registry
 - If no intent file, run only checks A-D
 - For multi-wiki operations, report per-wiki results under each alias heading
+
+## Failure modes this subagent defends against
+
+- **Grep partial failure**: if grep finds no results (no [[wikilinks]] found at all), do not report BROKEN — report that the wiki has no wikilinks at all, which is a different finding category.
+- **Index file missing**: if index.md does not exist, skip Check C silently and report only checks A, B, D. Do not error on missing index.
+- **Intent file desync**: if intent.md exists but has not been updated to reflect the current wiki state, the drift check may report false positives. Note this limitation in the DRIFT section header.
+- **Auto-fix scope creep**: if the user has not approved auto-fix policy, report all auto-fixable items as Suggested Fix instead of applying them. Never auto-fix without explicit approval.
+- **Multi-wiki partial failure**: when multi_wiki=true and one wiki is inaccessible (permission error, path does not exist), report it as FAILED under that alias and continue checking other wikis. Do not abort the full run.

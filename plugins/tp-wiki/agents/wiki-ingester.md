@@ -119,9 +119,10 @@ Context contains pasted text or notes. Integrate into wiki as raw + wiki pages.
 
 ### Mode: file
 Context contains a file path. Read the file and integrate.
-1. Detect file type: PDF → raw/papers/, text/article → raw/articles/, other → raw/
-2. Save with frontmatter (source_path, ingested)
-3. Process as above
+1. Read the file at `<content>` (the provided file path). Bind the body to variable `source_content`.
+2. Detect file type: PDF → raw/papers/, text/article → raw/articles/, other → raw/.
+3. Save raw file with frontmatter (source_path, ingested) using `source_content` as the body. Verify: Read back the saved file to confirm the body matches `source_content`.
+4. Process as above.
 
 ### Mode: bulk
 Context contains multiple items (URLs, file paths, or text snippets). Process as a batch:
@@ -145,3 +146,12 @@ Context contains multiple items (URLs, file paths, or text snippets). Process as
 Report every file created or updated. List pages created, pages updated, and any duplicates skipped.
 Append a log entry to $WIKI_ROOT/log.md with the ingestion summary.
 For multi-wiki operations, report per-wiki results under each alias heading.
+
+## Failure modes this subagent defends against
+
+- **Most-recent-Read wins (P2 violation)**: in Mode: file, the `source_content` variable is bound to the file body at Read time and used exclusively in the Write step. If you Read other files for format reference after reading the source file, do NOT let their content supply the Write — use `source_content` directly.
+- **Source file missing**: if the provided file path does not exist or is not readable, abort with a clear error: "Source file not found: <path>". Do not write an empty or partial file.
+- **Wrong file type routing**: if the file type detection is ambiguous (e.g., .txt that could be article or paper), route to raw/articles/ as the conservative default. Do not skip the save step.
+- **Wiki directory missing**: if the wiki root does not exist at the resolved path, create the full directory structure (SCHEMA.md, index.md, log.md) before writing any content. Do not abort — scaffold and continue.
+- **Multi-wiki partial write**: when multi_wiki=true and a write fails for one wiki, report it as FAILED under that alias and continue with other wikis. Do not abort the full batch.
+- **Duplicate detection miss**: before writing a new page, search index.md for an existing entry with the same title or alias. If found, update instead of creating a duplicate. Report whether each page was CREATED or UPDATED.

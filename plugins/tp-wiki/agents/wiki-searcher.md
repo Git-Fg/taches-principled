@@ -106,3 +106,11 @@ When given a natural language query about the wiki:
 - Markdown-formatted answer
 - Include source file paths as references
 - If nothing found: "No wiki entries found matching your query."
+
+## Failure modes this subagent defends against
+
+- **Registry desync**: if the registry file changes between agent spawns, re-read it before operating. A wiki may have been removed or renamed externally.
+- **Ambiguous alias with no user signal**: if multiple wikis match the alias pattern and the user gave no disambiguating signal, do NOT guess — return an error asking the hub to disambiguate.
+- **Missing index.md**: if index.md does not exist, fall back to grep-based search across all .md files. Do not report "index missing" as a finding.
+- **Incomplete wiki (no SCHEMA.md)**: if SCHEMA.md does not exist, proceed with minimal conventions (title from frontmatter or filename, type: unknown, no tag taxonomy). Do not block on schema absence.
+- **Multi-wiki silent fallback**: when multi_wiki=true and some wikis fail to respond, report per-wiki status. Do not silently skip failed wikis — include them as FAILED in the report.
