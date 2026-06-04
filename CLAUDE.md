@@ -339,6 +339,141 @@ the short form.
 
 **Common mistake:** Treating `allowed-tools` as a security boundary. It only skips permission prompts. For true restriction, use agent `tools:` allowlists or skill `disallowed-tools:`.
 
+## Agent Frontmatter Best Practices
+
+Three rules for plugin agent frontmatter. Apply these on every
+agent you author or audit. The rules are deliberately permissive
+in the default direction (don't restrict) and restrictive in
+the override direction (don't tune).
+
+### Rule 1: Never set `tools:` unless you really mean to restrict
+
+**Default:** no `tools:` field. The agent inherits the full
+tool pool, including:
+- All built-in tools (Read, Write, Edit, Bash, Glob, Grep, etc.)
+- All MCP servers the user has configured globally
+- All custom tools from the user's `settings.json` quirks
+- All subagent and Skill tools
+
+**Why this matters:** A `tools:` field is a HARD allowlist.
+Anything not in the list is invisible to the agent. If the
+user has an MCP server they use everywhere, the subagent
+silently loses access to it. The same for any project-specific
+tool the user has configured.
+
+**When to set `tools:`:** only when the restriction IS the
+point — when the agent's body policy says "NEVER do X" and
+the tool boundary enforces it. The current example is
+`wiki-searcher`, which is declared read-only
+(`tools: [Read, Glob, Grep]`) because the body says
+"NEVER write or modify any wiki file". Without the tool
+boundary, the body policy is a request, not a guarantee.
+
+**Anti-pattern:** setting `tools:` for "principle of least
+privilege" hygiene on agents that have no specific reason
+to be restricted. The cost is real (loses user tools, loses
+MCP servers, loses settings.json quirks) and the benefit
+is imaginary (the agent has no specific tool boundary to
+enforce — its body policy is enforced by the model, not
+the runtime).
+
+### Rule 2: Never set `model:` unless you need `opus`
+
+**Default:** no `model:` field. The agent inherits the model
+of the spawning orchestrator. No field at all = inherit.
+
+**Why this matters:** Setting `model:` is a tuning knob that
+breaks in three ways:
+1. **Cost multiplier** — a Sonnet agent spawned by an Opus
+   orchestrator wastes 5-10x budget for no quality gain
+   (the agent's task is usually simple enough that the
+   orchestrator's model handles it just as well).
+2. **Quality demotion** — a Haiku agent spawned by a Sonnet
+   orchestrator drops the reasoning quality below the
+   orchestrator's expectation.
+3. **Static lock-in** — the model assignment in frontmatter
+   doesn't track the user's current model. If the user
+   upgrades from Sonnet to Opus, the agent stays on whatever
+   was hardcoded.
+
+**When to set `model:`:** only in the ultra-rare case where
+the agent needs `model: opus` for genuinely hard reasoning —
+multi-step inference over a large body of code, evaluating
+subtle trade-offs, or synthesizing across many sources. No
+agent in the current marketplace qualifies; if you find
+yourself reaching for `model: opus`, justify it in the
+commit message and add a one-line comment in the body.
+
+**Anti-pattern:** sprinkling `model: sonnet` across all
+agents because "Sonnet is the safe default". It isn't — the
+safe default is to inherit. Sonnet is only safe if you've
+measured the agent's task complexity and confirmed Sonnet
+is the right ceiling. For a typical review/analyze agent,
+Sonnet ≠ safe; inherit = the orchestrator's choice.
+
+### Rule 3: Set `background: true` proactively when the agent is long-running
+
+**Default:** no `background:` field (equivalent to `false`).
+The agent runs synchronously and the orchestrator blocks
+until it returns.
+
+**When to set `background: true`:** as soon as the agent's
+typical runtime exceeds ~30s, OR the agent is parallel-by-
+design (fanned out, competitive generation, multi-wiki
+operations), OR the user would benefit from "fire and
+report" UX.
+
+| Typical runtime | Recommendation |
+|---|---|
+| < 5s | foreground (background adds notification overhead with no benefit) |
+| 5–30s | foreground (user expects an answer soon) |
+| 30s–5min | **background: true** |
+| > 5min | **background: true** |
+| Parallel-by-design (fanned out, N candidates, multi-wiki) | **background: true** |
+
+**Why this matters:** Background lets the orchestrator
+proceed with the next step while the agent works. The user
+can issue another command instead of staring at a spinner.
+For competitive generation (sadd-generator in COMPETE mode,
+fanned-out file reviewers in `git-pr-reviewer`), background
+is the only way to get parallelism without explicit
+`TaskOutput` coordination.
+
+**Anti-pattern:** leaving every agent foreground because
+"the user might want to see the result inline". For ops
+>30s, the user has gone back to another tab. Foreground
+just blocks the orchestrator for no benefit and serializes
+work that could be parallel.
+
+### How the three rules interact
+
+The three rules are independent but combine cleanly:
+
+- An agent that follows Rule 1 (no `tools:`), Rule 2 (no
+  `model:`), and Rule 3 (`background: true` when relevant)
+  is a "natural subagent" — it inherits everything from the
+  host environment and runs non-blocking. The user gets
+  fire-and-report UX with full tool access.
+- An agent that sets `tools:` is "restricted by design" —
+  the body policy is enforced at the tool boundary. Only
+  do this when the restriction IS the point.
+- An agent that sets `model: opus` is "tuned for depth" —
+  pays the cost multiplier for genuinely hard reasoning.
+  Only do this when the task actually requires it.
+
+**Reference implementation:** the current marketplace has 47
+agents. The audit applied these rules:
+- `tools:` removed from 23 agents; kept on `wiki-searcher`
+  (legitimate read-only restriction).
+- `model:` removed from all 47 agents (all default to
+  inherit now).
+- `background: true` added to long-running agents per the
+  decision table.
+
+The only `tools:` allowed-list remaining in the marketplace
+is `wiki-searcher`'s read-only enforcement, which is the
+canonical use case for the field.
+
 ### Artifact Taxonomy
 
 Five artifact types with distinct loading behaviors, token costs, and **audiences**:
