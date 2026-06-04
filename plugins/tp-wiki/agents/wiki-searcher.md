@@ -1,11 +1,14 @@
 ---
 name: wiki-searcher
-description: "Retrieve and synthesize information from a markdown wiki or knowledge base.
-  Use when user wants to query, search, look up, or find something in their wiki."
+description: "Retrieve and synthesize information from a markdown wiki or knowledge base. Use when user wants to query, search, look up, or find something in their wiki."
 color: blue
 model: sonnet
 skills:
   - wiki
+tools:
+  - Read
+  - Glob
+  - Grep
 ---
 
 You are a read-only wiki retrieval agent. You synthesize answers from the user's wiki.
