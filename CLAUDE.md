@@ -267,6 +267,47 @@ The pattern: cite the skill or role by name, not the file inside it.
 
 ---
 
+## Agent and Skill Naming Convention
+
+Naming is **asymmetric by design** and predates this guide. The convention
+is a historical artifact, not a flaw to be smoothed out — do not
+"fix" it by renaming 28 core-principled agents in a sweep.
+
+**The rule, as it ships today:**
+
+| Plugin | Agent name prefix | Skill name prefix | Examples |
+|---|---|---|---|
+| `core-principled` (the legacy meta-plugin) | `tp-*` | (no prefix) | `tp-critic`, `tp-explorer`, `tp-bug-hunter`; skills like `refine`, `diagnose`, `plan-lifecycle` |
+| `tp-sadd`, `tp-fpf`, `tp-git`, `tp-mcp`, `tp-rust`, `tp-session-audit` (the newer sub-plugins) | `<plugin-name-without-tp-prefix>-*` | `<plugin-name-without-tp-prefix>-*` | `sadd-judge`, `fpf-evidence-validator`, `git-pr-reviewer`, `mcp-server-implement` |
+
+**Why the asymmetry exists:** `core-principled` was the first plugin
+and the `tp-` prefix (short for "taches-principled") was a
+namespace disambiguator in case a user installed multiple
+marketplaces with overlapping agent names. When we started
+extracting focused sub-plugins (`tp-sadd`, `tp-fpf`, etc.), each
+sub-plugin became its own namespace, so the inner prefix became
+redundant — the plugin name itself is the namespace.
+
+**New agents/skills MUST follow the sub-plugin rule:** if you add
+an agent or skill to `core-principled`, use `tp-*`; if you add one
+to `tp-sadd`/`tp-fpf`/etc., use the sub-plugin prefix. Do not
+"unify" the legacy `core-principled` `tp-*` names — that would
+break every skill/command/agent that hardcodes the name as a
+spawn target.
+
+**Why we don't rename in a sweep:** every hardcoded spawn (e.g.,
+`Agent(name="tp-critic", prompt=...)` or the `tp-bug-hunter`
+invocation in `git-pr-reviewer`) is a maintenance contract. A
+mechanical rename is a breaking change to the skill surface that
+ships in the marketplace. The cost outweighs the consistency
+benefit.
+
+When documenting a new agent in body text or commit messages,
+spell the full name once (e.g., "`tp-critic`") and then use
+the short form.
+
+---
+
 ## Artifact Standards
 
 ### Agent Tool Contract
