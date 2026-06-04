@@ -4,6 +4,6 @@
   "description": "Optimal MCP wrapper for the Claude Code CLI — single Rust binary exposing six tools (claude_execute, claude_session, claude_context, claude_review, claude_agent, claude_config) over both MCP stdio and a mcp-tool script fallback. Cross-platform launcher at bin/claude-cli-wrapper resolves to a per-host prebuilt (darwin-arm64 only at present; Linux/Intel fall through to cargo build, ~10-15 min first use). Ideal for any agent that needs to drive Claude Code programmatically.",
   "author": {
     "name": "Felix",
-    "email": "felix@example.com"
+    "email": "https://github.com/Git-Fg/taches-principled/issues"
   }
 }

@@ -78,9 +78,11 @@ All commits land direct to main, no PR machinery (consistent with how
 
 ### Skip notes
 
-- **E5** (`tools:` missing on subagents is expected) — skipped per user instruction. The convention is: `tools:` on an agent is a hard allowlist; absent `tools:` means inherit everything. The 23-of-46 number from the issue is real but `tools:` is only appropriate for read-only / restricted agents, not for general-purpose workers.
-- **#11 item 5** (email `felix@example.com`) — `example.com` is a placeholder, not a real privacy concern. No change.
-- **#14 D4** (fpf Reference Index) — issue was wrong, fpf already has a Reference Index. No change.
+- **E5** (`tools:` missing on subagents is expected) — skipped per user instruction (2026-06-04, direct confirmation in issue thread). The convention: `tools:` on an agent is a hard allowlist; absent `tools:` means inherit everything. `tools:` is only appropriate for read-only / restricted agents, not for general-purpose workers.
+- **#11 item 5** (email `felix@example.com`) — no change. `example.com` is RFC 2606 reserved; the placeholder was assessed as not a real privacy concern (no harvesting risk). However, all 8 plugin manifests have since been updated to use the repository issues URL as the contact channel instead — see issue #32.
+- **#14 D4** (fpf Reference Index) — no change. Issue was factually wrong: the fpf skill already had a Reference Index at the time of filing. No corrective action needed.
+- **#15 E4 miscount** — issue stated "27 agents" but actual audit found 44. The discrepancy is not explained by the filing agent; the audit was comprehensive and covered all 44 agent definitions. No follow-up issue was filed to track the miscount itself — this is noted here as the closeout reference.
+- **tp-cc-docs skills preloading change** — the 1.11.0 entry described broad `skills:` preloading as "intentional" and "better too much than not enough". The 1.12.0 audit moved it to `skills: []` (cargo-cult removal). This is a deliberate reversal, not a continuation. The agent now relies on on-demand skill loading consistent with the post-audit pattern applied to all 35 domain-focused agents.
 
 ### Changed
 

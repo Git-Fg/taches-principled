@@ -4,6 +4,6 @@
   "description": "Git workflow automation — conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
   "author": {
     "name": "Felix",
-    "email": "felix@example.com"
+    "email": "https://github.com/Git-Fg/taches-principled/issues"
   }
 }

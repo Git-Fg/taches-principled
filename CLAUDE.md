@@ -621,14 +621,7 @@ git push
 
 Version format: `[1.2.3]` — semantic versioning. Default is minor bump. Patch for typos and docs only. Major only for architectural changes.
 
-```markdown
-## [1.2.3] — YYYY-MM-DD
-
-### Added
-### Changed
-### Removed
-### Fixed
-```
+See `docs/templates/changelog-entry.md` for the entry template.
 
 ### Commit Messages
 
