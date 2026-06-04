@@ -16,71 +16,61 @@ argument-hint: "[query|ingest|lint] [args...]"
 Build, query, and maintain a persistent, compounding knowledge base as interlinked markdown files.
 Based on [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
 
-## Wiki Root Resolution
+## Wiki Root Resolution (multi-wiki registry)
 
-**The wiki root is not a single value — it's a registry of zero or more wikis.** Run `cat ~/.claude/wiki-root.md` at the start of every operation to discover what's configured. The file is a plain-text registry of `WIKI_ROOT_*` env var names, one per line.
+**The wiki root is a registry, not a single value.** The file `~/.claude/wiki-root.md` is the **single source of truth** — it contains one entry per wiki, with the format `WIKI_ROOT_<name>=<absolute-path>`. No env vars are involved; the value is a literal absolute path on the right side of the `=`.
 
 ### The registry file (`~/.claude/wiki-root.md`)
 
-Format: one env var name per line. Blank lines and lines starting with `#` are ignored.
-
 ```
-# ~/.claude/wiki-root.md
-WIKI_ROOT_main
-WIKI_ROOT_work
-WIKI_ROOT_personal
-WIKI_ROOT_research
+# ~/.claude/wiki-root.md — wiki registry
+WIKI_ROOT_main=/Users/felix/notes/main
+WIKI_ROOT_work=/Users/felix/notes/work
+WIKI_ROOT_personal=/Users/felix/notes/personal
 ```
 
-Each name refers to an env var the user has set in their shell with the actual folder path:
-
-```bash
-# in ~/.zshrc / ~/.bashrc
-export WIKI_ROOT_main=/Users/felix/notes/main
-export WIKI_ROOT_work=/Users/felix/notes/work
-export WIKI_ROOT_personal=/Users/felix/notes/personal
-export WIKI_ROOT_research=/Users/felix/notes/research
-```
-
-The registry file is the source of truth for **which wikis exist**; the env vars are the source of truth for **where each wiki lives**. The user updates one or both as their setup changes.
+- One wiki per line.
+- Each line is `WIKI_ROOT_<label>=<absolute-path>`.
+- Blank lines and lines starting with `#` are comments (ignored).
+- The `<label>` is just an identifier (e.g., `main`, `work`, `personal`); use it to disambiguate when multiple wikis are configured.
+- `<absolute-path>` is a literal path. The user edits this file directly when adding/removing/moving wikis. **No env var lookup is performed.**
 
 ### Resolution algorithm
 
-At the start of every wiki operation, do this in order:
+At the start of every wiki operation, do this:
 
-1. **`cat ~/.claude/wiki-root.md`** — discover the configured wikis. If the file doesn't exist, jump to "no registry" below.
-2. **For each non-blank, non-comment line in the file**, treat it as an env var name and read its value from the environment. Build a list of `{alias, path}` pairs.
-3. **Apply the disambiguation rules** (see below).
-4. **Fall through to "no registry"** if no env vars resolve.
+1. **`cat ~/.claude/wiki-root.md`** — read the registry file. If the file doesn't exist or is empty (only comments), jump to "no registry" below.
+2. **For each non-blank, non-comment line**, parse it as `KEY=VALUE` and add `{label: KEY.removeprefix("WIKI_ROOT_"), path: VALUE}` to the list.
+3. **Apply the disambiguation rules** (see below) to pick which wiki to operate on.
+4. **Fall through to "no registry"** if the file is missing or has no entries.
 
-**Legacy single-wiki shortcut:** if `WIKI_ROOT` (no suffix) is set in the environment AND the registry file is missing or empty, use it. This preserves the original 0.1.0 behavior for users who haven't migrated.
+**No env var fallback.** The file is the only source of truth. If the user has `WIKI_ROOT` (no suffix) set in their shell but no entry in the registry, it is ignored.
 
 ### Disambiguation — picking the right wiki when several are configured
 
 | User signal | Action |
 |---|---|
-| User named a specific wiki: "the work wiki", "my main notes", "wiki 2" | Match against aliases/numbers, use that one. If no match, ask. |
-| User's intent implies a domain: "search the project wiki", "ingest into research" | Match alias containing the keyword. If ambiguous, ask. |
-| User says nothing about which wiki | If exactly one is configured → use it without asking. If multiple → ask: "Which wiki? You have: main, work, personal, research. (or 'set up a new one')" |
+| User named a specific wiki: "the work wiki", "my main notes", "wiki 2" | Match against labels/numbers, use that one. If no match, ask. |
+| User's intent implies a domain: "search the project wiki", "ingest into research" | Match label containing the keyword. If ambiguous, ask. |
+| User says nothing about which wiki | If exactly one is configured → use it without asking. If multiple → ask: "Which wiki? You have: main, work, personal. (or 'set up a new one')" |
 | User says "all wikis" or wants an operation across them | Run the operation once per configured wiki. Aggregate results. |
 
 **Alias numbering:** if the user says "wiki 2", number is 1-based by the order lines appear in the registry file. So `WIKI_ROOT_main` is wiki 1, `WIKI_ROOT_work` is wiki 2, etc.
 
 ### No registry — first-time setup
 
-If `~/.claude/wiki-root.md` doesn't exist AND `WIKI_ROOT` is unset, ask the user to set up the registry:
+If `~/.claude/wiki-root.md` doesn't exist or has no entries, ask the user to set up the registry:
 
 > "No wikis configured. To set up:
 > 1. Create the directory for your wiki (e.g., `mkdir -p ~/notes/main`)
-> 2. Set an env var: `export WIKI_ROOT_<alias>=/path/to/wiki`"
-> 3. Add the alias to `~/.claude/wiki-root.md` (one per line)
-> 4. Re-run the command. Or say 'create a new wiki at <path>' and I'll do steps 1-3 for you."
+> 2. Add a line to `~/.claude/wiki-root.md` in the format: `WIKI_ROOT_<label>=<absolute-path>`"
+> 3. Re-run the command. Or say 'create a new wiki at <path>' and I'll do steps 1-2 for you."
 
 ### Confirming the chosen wiki before destructive operations
 
 For `INGEST` and `LINT` operations, after picking the wiki from the registry, **confirm the choice with the user** before doing anything that mutates files:
 
-> "Operating on: `WIKI_ROOT_work` = `/Users/felix/notes/work`. Proceed?"
+> "Operating on: `WIKI_ROOT_<label>` = `<path>`. Proceed?"
 
 The confirmation can be skipped for `QUERY` (read-only) operations.
 
