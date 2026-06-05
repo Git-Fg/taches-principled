@@ -46,6 +46,7 @@ You MUST read `references/scaffold-lib-bin-rustdoc.md` BEFORE designing the code
 
 **Spawn Directives:**
 - ALWAYS spawn `rust-cargo-reviewer` to verify the draft `Cargo.toml` against the lib/bin choice, edition 2024, MSRV, feature flag playbook, and `publish = false` discipline for internal crates.
+- Spawn `rust-simplifier` when the user finishes a non-trivial chunk of code in the scaffolded layout — see `references/rust-simplifier-spawn.md`.
 
 ## Output
 
@@ -102,6 +103,7 @@ You MUST read `references/quality-dev-experience.md` BEFORE optimizing local dev
 **Spawn Directives:**
 - ALWAYS fan out `rust-pipeline-auditor` (one per `.github/workflows/*.yml` file) to audit CI for missing jobs, cache config, concurrency rules, and lint discipline.
 - ALWAYS spawn `rust-supply-chain-auditor` to verify `deny.toml` against the 0.19+ schema and assess the project's stage on the supply-chain ladder.
+- After CI is in place and the user has written substantive code, spawn `rust-simplifier` as a pre-commit polish step — see `references/rust-simplifier-spawn.md`.
 
 ## Output
 
@@ -178,6 +180,7 @@ A new published version with a CHANGELOG entry, a git tag, a `cargo publish` log
 - **rust-pipeline-auditor** — `QUALITY` mode. Audits `.github/workflows/*.yml` + `clippy.toml` + `rustfmt.toml` + `.config/nextest.toml` for the 6-job canonical CI, `RUSTFLAGS=-D warnings` discipline, nextest adoption criteria, and dev-experience tooling. Fan out one agent per CI workflow file in parallel.
 - **rust-supply-chain-auditor** — `QUALITY` (initial setup) and `RELEASE` (ongoing maintenance) modes. Audits `deny.toml` against the 0.19+ schema, `Cargo.lock` for RUSTSEC advisories, `cargo vet` audit coverage, Dependabot config, and `.cargo/config.toml` for the MSRV-aware resolver. Returns the stage (0-3) the project is at on the supply-chain ladder with the gaps blocking promotion.
 - **rust-publish-reviewer** — `RELEASE` mode. Pre-publish review: runs a mental `cargo semver-checks` against the public API delta, checks CHANGELOG for the new version, verifies `Cargo.toml` version + edition + MSRV + workspace lockstep, surfaces breaking-change signal.
+- **rust-simplifier** — `SCAFFOLD` and `QUALITY` modes. Post-implementation cleanup of recently-written `.rs` code for idiomatic Rust (ownership/borrowing, error handling, iterator chains, clone elimination) without changing behavior or borrow-checker compliance. Scope: current session diff only, `.rs` files only. Spawn guidance: see `references/rust-simplifier-spawn.md`.
 
 ---
 

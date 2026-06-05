@@ -2,6 +2,21 @@
 
 All notable changes are documented here.
 
+## [1.21.1] — 2026-06-05
+
+### Added
+
+- **`rust-simplifier` subagent** in `tp-rust`. Post-implementation cleanup of recently-written `.rs` code for idiomatic Rust (ownership/borrowing, error handling, iterator chains, clone elimination) without changing behavior or borrow-checker compliance. Spawned from `SCAFFOLD` and `QUALITY` modes. Scope: current session diff only. Follows the subagent contract design P1–P6 (P3 ordered ops with `cargo check` verification between edits, P5 failure-mode footer); inherits full tool pool and model per CLAUDE.md Rules 1 & 2. A new `references/rust-simplifier-spawn.md` reference file carries the per-spawn operational guidance, keeping the hub SKILL.md under its budget.
+
+### Migration
+
+- **No user action required.** Spawn guidance is opt-in; the main agent decides when to delegate. The description is dense and front-loaded with trigger phrases; the subagent only fires on matching requests. Existing workflows that do not mention "simplify" / "idiomatic" / "polish" continue to route to the existing 4 subagents unchanged.
+
+### Version bumps
+
+- **Marketplace** 0.29.0 → 0.29.1
+- **tp-rust** 0.3.0 → 0.3.1
+
 ## [1.21.0] — 2026-06-05
 
 ### Changed
