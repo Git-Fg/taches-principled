@@ -1,7 +1,7 @@
 {
   "name": "tp-rust",
-  "version": "0.3.0",
-  "description": "Principled Rust project skills — single `rust` hub with a `Modes:` directive covering the full Rust lifecycle: SCAFFOLD (lib/bin decision, Cargo.toml template edition 2024, MSRV 1.81, feature flag design, lib+bin code layout, rustdoc, edition migration), WORKSPACE (when to split, virtual workspace template, workspace inheritance, Cargo.lock policy, MSRV coordination, cross-crate patterns, workspace publishing), QUALITY (canonical 6-job CI, clippy + rustfmt policy, cargo-nextest, coverage, supply-chain ladder, dev-experience tooling), RELEASE (Cargo semver, changelog tooling, cargo publish playbook, supply-chain maintenance, feature deprecation). Four subagents: rust-cargo-reviewer, rust-pipeline-auditor, rust-supply-chain-auditor, rust-publish-reviewer.",
+  "version": "0.3.1",
+  "description": "Principled Rust project skills — single `rust` hub with a `Modes:` directive covering the full Rust lifecycle: SCAFFOLD (lib/bin decision, Cargo.toml template edition 2024, MSRV 1.81, feature flag design, lib+bin code layout, rustdoc, edition migration), WORKSPACE (when to split, virtual workspace template, workspace inheritance, Cargo.lock policy, MSRV coordination, cross-crate patterns, workspace publishing), QUALITY (canonical 6-job CI, clippy + rustfmt policy, cargo-nextest, coverage, supply-chain ladder, dev-experience tooling), RELEASE (Cargo semver, changelog tooling, cargo publish playbook, supply-chain maintenance, feature deprecation). Five subagents: rust-cargo-reviewer, rust-pipeline-auditor, rust-supply-chain-auditor, rust-publish-reviewer, rust-simplifier.",
   "author": {
     "name": "Felix",
     "email": "https://github.com/Git-Fg/taches-principled/issues"
