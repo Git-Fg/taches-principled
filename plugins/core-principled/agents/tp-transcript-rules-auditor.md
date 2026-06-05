@@ -5,7 +5,7 @@ description: |
 color: pink
 background: true
 skills:
-  - rules-creator
+  - rules-orchestration
 maxTurns: 15
 memory: local
 ---

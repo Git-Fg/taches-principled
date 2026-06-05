@@ -90,6 +90,42 @@ def find_reference_locations() -> dict:
     return dict(locs)
 
 
+def find_agent_names() -> set:
+    """Return the set of agent names defined in plugins/*/agents/*.md.
+
+    Used to distinguish two preload-failure modes: (a) the agent's `skills:`
+    frontmatter references a name that exists as an agent (a misuse — the
+    preload slot only loads skills, not agents), and (b) the name matches
+    neither a skill nor an agent (genuine missing-skill typo or aspirational
+    preload).
+    """
+    names: set = set()
+    for agent_md in PLUGINS_DIR.glob("*/agents/*.md"):
+        fm = parse_frontmatter(agent_md)
+        n = fm.get("name")
+        if isinstance(n, str) and n:
+            names.add(n)
+    return names
+
+
+SKIP_MARKER = "<!-- check-citations-skip -->"
+
+
+def is_skipped(agent_path: pathlib.Path) -> bool:
+    """True if the agent file declares the audit-skip marker in its body.
+
+    The marker is a one-line HTML comment placed near the top of a file that
+    intentionally cites a `references/...` path as a *string inside the
+    prose* (e.g., a teaching example demonstrating the WRONG/RIGHT citation
+    form), not as a navigation pointer. The script honors the marker to
+    avoid flagging self-referential examples.
+    """
+    try:
+        return SKIP_MARKER in agent_path.read_text()
+    except OSError:
+        return False
+
+
 def get_cited_references(agent_path: pathlib.Path) -> set:
     """Return set of `references/FILENAME.md` strings cited in an agent body."""
     text = agent_path.read_text()
@@ -104,18 +140,26 @@ def get_preloaded_skills(agent_path: pathlib.Path) -> list:
 def audit() -> int:
     skill_locs = find_skill_locations()
     ref_locs = find_reference_locations()
+    agent_names = find_agent_names()
 
     class1_cross_skill = []  # (agent, cited_ref, preloaded_skills)
     class2_missing_skill = []  # (agent, missing_skill)
+    class2_agent_as_skill = []  # (agent, name)  # preload target matches an agent
     class3_broken_ref = []  # (agent, cited_ref)
 
     for agent_path in sorted(PLUGINS_DIR.glob("*/agents/*.md")):
+        if is_skipped(agent_path):
+            continue
         preloaded = get_preloaded_skills(agent_path)
         cited = get_cited_references(agent_path)
 
-        # Class 2: missing skill preload
+        # Class 2: missing skill preload (or agent-name used as a skill)
         for skill in preloaded:
-            if skill not in skill_locs:
+            if skill in skill_locs:
+                continue
+            if skill in agent_names:
+                class2_agent_as_skill.append((agent_path, skill))
+            else:
                 class2_missing_skill.append((agent_path, skill))
 
         # Class 1: cross-skill citation (cited ref not reachable from preloaded skills)
@@ -145,11 +189,36 @@ def audit() -> int:
                 ))
 
     # Report
-    has_findings = bool(class1_cross_skill or class2_missing_skill or class3_broken_ref)
+    has_findings = bool(
+        class1_cross_skill
+        or class2_missing_skill
+        or class2_agent_as_skill
+        or class3_broken_ref
+    )
 
     if not has_findings:
         print("PASS: no citation violations, no missing preloads, no broken references")
         return 0
+
+    if class2_agent_as_skill:
+        print(
+            f"\n[2a] AGENT-NAME-AS-SKILL PRELOADS ({len(class2_agent_as_skill)} found)"
+        )
+        print(
+            "    The preload target matches an AGENT (not a skill). The `skills:`"
+        )
+        print(
+            "    frontmatter only loads skills. To use an agent's contract: drop"
+        )
+        print(
+            "    the preload and reference the agent by name in the body (it can"
+        )
+        print(
+            "    be dispatched via the Agent tool), or extract a thin contract skill."
+        )
+        for agent, name in class2_agent_as_skill:
+            rel = agent.relative_to(REPO_ROOT)
+            print(f"    - {rel}: skills: [{name!r}] (matches agent, not a skill)")
 
     if class2_missing_skill:
         print(f"\n[2] MISSING-SKILL PRELOADS ({len(class2_missing_skill)} found)")
@@ -176,7 +245,12 @@ def audit() -> int:
             print(f"        preloaded: {preloaded}")
             print(f"        ref lives in: {[os.path.relpath(p, REPO_ROOT) for p in ref_paths]}")
 
-    print(f"\nFAIL: {len(class1_cross_skill)} cross-skill + {len(class2_missing_skill)} missing-skill + {len(class3_broken_ref)} broken-ref findings")
+    print(
+        f"\nFAIL: {len(class1_cross_skill)} cross-skill + "
+        f"{len(class2_agent_as_skill)} agent-as-skill + "
+        f"{len(class2_missing_skill)} missing-skill + "
+        f"{len(class3_broken_ref)} broken-ref findings"
+    )
     return 1
 
 

@@ -8,7 +8,6 @@ skills:
   - diagnose
   - security
   - refine
-  - tp-critic
 ---
 
 You are a PR reviewer. Your job is to analyze a single file from a PR diff and surface issues along four dimensions:

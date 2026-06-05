@@ -2,6 +2,38 @@
 
 All notable changes are documented here.
 
+## [1.20.0] — 2026-06-05
+
+### Fixed
+
+- **7 cross-skill reference citations removed (Rule 3 cleanup).** The 1.19.0 hub-and-spoke split introduced 7 reference-to-reference citations across skill boundaries — e.g. `mcp-tool-surface/references/schema-styling.md` cited `mcp-server-design/references/design-decisions.md`, and 4 rust reference files cited `rust-quality/references/{supply-chain-ladder,ci-template,clippy-and-fmt}.md`. CLAUDE.md Rule 3 forbids reference files from cross-citing other reference files; the SKILL.md is the sole, centralized router. Each cross-cite is replaced with self-contained prose that names the parent skill (allowed) instead of a path into another skill's references/ (forbidden). The `mcp-server-implement/SKILL.md` §3 Handoff section gains a new line routing readers to the canonical CLI inspector example set, replacing one of the cross-skill cites with a same-skill handoff. The `skill-authoring/references/context-management.md` cross-cites (5 in-text references to `references/patterns.md`) are false positives — the paths are part of the WRONG/RIGHT teaching-example strings, not navigation pointers. The file gains a `<!-- check-citations-skip -->` marker that `check-citations.py` honors.
+
+- **4 agent preloads corrected: agent names used where skill names were intended.** The 1.19.0 release noted "7 pre-existing missing-skill preloads" as a follow-up. Investigation on 2026-06-05 revealed that 4 of the 7 were *agent names used as skill preloads* — the `skills:` frontmatter only loads skills, not agents. The 4 misconfigurations are fixed: `git-pr-reviewer` and `session-meta-reviewer` drop `tp-critic` from `skills:` and the body rewrites the "The preloaded `tp-critic` skill..." sentence to instruct the agent to *dispatch* a `tp-critic` subagent via the native agent-spawning tool. Same treatment for `tp-researcher` in `session-context-analyzer` and `tp-cc-docs` in `session-issue-generator`. The 3 remaining missing-skill preloads (`rules-creator` in 3 `tp-transcript-rules-*` agents) are renamed to `rules-orchestration` — the current umbrella skill for the rules domain, which the audit identified as the closest match for the original (apparently aspirational) preload intent.
+
+- **`scripts/check-citations.py` distinguishes agent-name-as-skill from missing-skill.** The script previously emitted a single "skill not found in marketplace" message for both cases. New behavior: if a preload target matches an existing *agent* name (not a skill name), the script emits a new `[2a] AGENT-NAME-AS-SKILL PRELOADS` category with a remediation hint ("drop the preload and reference the agent by name in the body, or extract a thin contract skill"). The script also honors the `<!-- check-citations-skip -->` marker introduced in `skill-authoring/references/context-management.md`. After all fixes, `check-citations.py` exits 0 with zero findings.
+
+### Verification
+
+- `python3 scripts/check-citations.py` → `PASS: no citation violations, no missing preloads, no broken references` (exit 0)
+- `jq -e '.plugins | all(. as $p | ([keys[] | select(. == "version")] | length) == 1)' .claude-plugin/marketplace.json` → OK
+- `jq -e '.plugins | type == "array" and length > 0' .claude-plugin/marketplace.json` → OK
+- `python3 scripts/regenerate-marketplace.py` → idempotent (no changes)
+- All per-plugin `plugin.json` files parse cleanly
+- All 5 touched plugins' versions match between `plugin.json` and `marketplace.json`
+
+### Migration
+
+- **No user action required.** The cross-cite fixes are pure prose rewrites; the preload fixes change frontmatter (the affected agents now correctly receive the skills they intended to load) and body text (the "spawn" intent is now explicit). The `check-citations.py` script change is backwards-compatible — files without the new `[2a]` category produce identical output to before.
+
+### Version bumps
+
+- **Marketplace** 0.28.1 → 0.28.2
+- **core-principled** 0.19.0 → 0.19.1 (patch: 3 transcript-rules agents fixed, 1 reference file marked skip)
+- **tp-git** 0.3.4 → 0.3.5 (patch: 1 agent preload fixed)
+- **tp-mcp** 0.2.1 → 0.2.2 (patch: 3 cross-cites removed, 1 handoff line added)
+- **tp-rust** 0.2.0 → 0.2.1 (patch: 4 cross-cites removed)
+- **tp-session-audit** 0.3.3 → 0.3.4 (patch: 3 agent preloads fixed)
+
 ## [1.19.1] — 2026-06-05
 
 ### Changed

@@ -19,7 +19,7 @@ Reference for the stylistic choices that make a schema feel right to an LLM: pro
 
 ## §2. Nested objects: avoid when possible
 
-**Default: flat.** Two levels of nesting maximum. Anything deeper should be passed through as a serialized string (per the pass-through principle in `mcp-server-design/references/design-decisions.md`).
+**Default: flat.** Two levels of nesting maximum. Anything deeper should be passed through as a serialized string (the wrapper validates syntax, not semantics — see the parent `mcp-server-design` skill for the full pass-through rationale).
 
 **Why flat wins:**
 - The LLM has to reason about each field position

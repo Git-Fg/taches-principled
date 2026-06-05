@@ -41,7 +41,7 @@ Use this when you want downstream users to commit to your crate but you still wa
 
 **Tools:**
 - Document MSRV in `[package].rust-version` (advisory, but consumers respect it)
-- CI-test the MSRV (see `rust-quality/references/ci-template.md`)
+- CI-test the MSRV (the MSRV job pattern lives in the `rust-quality` skill's CI reference)
 - Use `cargo +1.81 update` (or whatever your MSRV is) to ensure dep tree stays MSRV-compatible
 
 ## §4. Workspace lockstep versioning

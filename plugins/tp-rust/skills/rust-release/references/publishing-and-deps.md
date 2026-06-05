@@ -53,4 +53,4 @@ replace-with = "vendored-sources"
 cargo vendor
 ```
 
-Use for: air-gapped builds, reproducible CI without network, license compliance (you ship the vendored deps with the source). Most projects don't need it; the RustSec supply-chain ladder in `rust-quality/references/supply-chain-ladder.md` is the lighter-weight alternative.
+Use for: air-gapped builds, reproducible CI without network, license compliance (you ship the vendored deps with the source). Most projects don't need it; the cargo-deny → cargo-vet → Dependabot supply-chain ladder (initial setup lives in the `rust-quality` skill) is the lighter-weight alternative.

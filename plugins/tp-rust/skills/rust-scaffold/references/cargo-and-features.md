@@ -77,13 +77,13 @@ strip = "symbols"
 **MSRV policy template:**
 1. **Pick N-2 stable** as your MSRV (the version before last + the one before that). E.g., if current stable is 1.88, MSRV is 1.85.
 2. **Document the policy** in README and a top-level MSRV comment in Cargo.toml.
-3. **CI-test the MSRV** with a separate job using `dtolnay/rust-toolchain@1.81` (see `rust-quality/references/ci-template.md`).
+3. **CI-test the MSRV** with a separate job using `dtolnay/rust-toolchain@1.81` (the MSRV job pattern lives in the `rust-quality` skill's CI reference).
 4. **MSRV bumps are breaking** if downstream users compile against you. Treat them as a minor-version bump at minimum; many projects (RustCrypto, rust-bitcoin) treat MSRV bumps as major. Ask the user.
 
 **Tools:**
 - `cargo +1.81 check` — local MSRV test
 - `cargo-msrv find` — automated MSRV detection from your dep tree
-- CI matrix (see `rust-quality/references/ci-template.md`)
+- CI matrix (the matrix pattern lives in the `rust-quality` skill's CI reference)
 
 **Important historical note:** the `rust-version` field was added in **Cargo 1.56 (Oct 21, 2021)** as *advisory only*. The MSRV-aware resolver that actually *enforces* MSRV came in **Rust 1.81 (Sept 5, 2024)**. Older advice that says "rust-version is enforced since 1.56" is wrong.
 

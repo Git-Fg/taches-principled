@@ -54,6 +54,7 @@ You MUST read `references/build-and-test.md` BEFORE shipping the server. It teac
 - **Why this design works (tool decomposition, error codes, output contract)** → `mcp-server-design`
 - **How to write a good JSON Schema (constraints, descriptions, `additionalProperties`)** → `mcp-tool-surface`
 - **Worked example: `claude-cli-wrapper` 6-tool decomposition** → `claude-cli` skill
+- **CLI inspector canonical example set** (the `--cli` mode patterns) → `references/build-and-test.md` — also reachable from `mcp-server-design/references/claude-code-consumption.md` §3 (verification commands)
 - **Client-side patterns (calling an MCP server from another agent)** → not yet implemented
 - **Quality evaluation of an existing server** → planned `mcp-server-quality` skill
 

@@ -6,7 +6,7 @@ background: true
 maxTurns: 15
 memory: local
 skills:
-  - rules-creator
+  - rules-orchestration
   - diagnose
 ---
 

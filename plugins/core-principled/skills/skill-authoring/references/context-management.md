@@ -1,5 +1,7 @@
 # Context Management Reference
 
+<!-- check-citations-skip: this file's body quotes `references/patterns.md` as teaching examples for the WRONG/RIGHT citation rule. The cited path is a string inside the example, not a navigation pointer. -->
+
 Context window principles, SKILL.md vs references/ load strategy, and progressive disclosure patterns for Claude Code skills.
 
 ## Context Loading Architecture

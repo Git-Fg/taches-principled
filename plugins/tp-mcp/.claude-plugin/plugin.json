@@ -1,6 +1,6 @@
 {
   "name": "tp-mcp",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Principled MCP (Model Context Protocol) server skills — design (equilibrated recursivity, tool decomposition, pass-through, output contract, JSON-RPC error discipline, context budget, annotations, naming, capability negotiation, security), implement (rmcp + schemars + tokio, transport choice, stderr-only logging, error mapping, testing), and tool-surface authoring (JSON Schema 2020-12 constraints, additionalProperties:false discipline, discriminator enums, naming). Three skills covering the full MCP server lifecycle, plus the `claude-cli` skill in the existing `claude-cli-wrapper` plugin as a worked example of the 6-tool decomposition pattern.",
   "author": {
     "name": "Felix",

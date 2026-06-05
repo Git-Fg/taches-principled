@@ -91,7 +91,7 @@ npx @modelcontextprotocol/inspector --cli ./bin/my-mcp-server --method tools/cal
 # → No browser needed — works in any shell, including headless agents
 ```
 
-For more inspector patterns (config files, JSON arguments, remote servers, custom headers, transport selection), see `mcp-server-implement/references/build-and-test.md`.
+For more inspector patterns (config files, JSON arguments, remote servers, custom headers, transport selection), see the `mcp-server-implement` skill's testing reference (the parent SKILL.md's reference index routes you there).
 
 **The Inspector (`--cli` mode) is the ground truth** for what your schema actually looks
 like on the wire. If the model is calling the tool with wrong args, the
@@ -123,7 +123,7 @@ The model does NOT see:
 | Model sends a hallucinated field | Missing `additionalProperties: false` / `deny_unknown_fields` | Add both |
 | Model calls a "destructive" tool without confirmation | `destructiveHint` is missing or `false` | Add `annotations(destructive_hint = true)` |
 | Server returns content but model ignores it | Output format is `String` where a typed envelope would be better | Return a JSON envelope; see `claude-cli-wrapper` tools for the pattern |
-| Random disconnects mid-session | `println!` somewhere in your tool impl | Replace with `tracing` to stderr; see `mcp-server-implement/references/runtime-contracts.md` |
+| Random disconnects mid-session | `println!` somewhere in your tool impl | Replace with `tracing` to stderr (the stderr-only logging rule lives in the `mcp-server-implement` skill's runtime-contracts reference) |
 
 > **Iterative loop:** change the schema → rebuild → restart Claude Code
 > (or use a plugin dev mode that hot-reloads) → repeat the same prompt →

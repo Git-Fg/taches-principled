@@ -3,7 +3,7 @@
     "name": "taches-principled",
     "owner": { "name": "Git-Fg" },
     "description": "A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans — with principle-based guidance that teaches judgment over procedure.",
-    "version": "0.28.1"
+    "version": "0.28.2"
   },
   "core-principled": {
     "source": "./plugins/core-principled",
