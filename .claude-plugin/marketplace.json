@@ -5,7 +5,7 @@
     "name": "Git-Fg"
   },
   "description": "A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans \u2014 with principle-based guidance that teaches judgment over procedure.",
-  "version": "0.25.1",
+  "version": "0.28.0",
   "plugins": [
     {
       "name": "claude-cli-wrapper",
@@ -30,7 +30,7 @@
     },
     {
       "name": "core-principled",
-      "version": "0.18.0",
+      "version": "0.19.0",
       "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, security audit, test strategy. Live Claude Code/Agent SDK/API docs via tp-cc-docs and /cc-docs slash command.",
       "source": "./plugins/core-principled",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -89,7 +89,7 @@
     },
     {
       "name": "tp-mcp",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "description": "Principled MCP (Model Context Protocol) server skills \u2014 design (equilibrated recursivity, tool decomposition, pass-through, output contract, JSON-RPC error discipline, context budget, annotations, naming, capability negotiation, security), implement (rmcp + schemars + tokio, transport choice, stderr-only logging, error mapping, testing), and tool-surface authoring (JSON Schema 2020-12 constraints, additionalProperties:false discipline, discriminator enums, naming). Three skills covering the full MCP server lifecycle, plus the `claude-cli` skill in the existing `claude-cli-wrapper` plugin as a worked example of the 6-tool decomposition pattern.",
       "source": "./plugins/tp-mcp",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -113,7 +113,7 @@
     },
     {
       "name": "tp-rust",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Principled Rust project skills \u2014 scaffold single crates and multi-crate workspaces with edition 2024 / MSRV 1.81 defaults, set up the CI + clippy + nextest + cargo-deny quality pipeline, and ship releases with version policy, changelog generation, publishing, and supply-chain hardening. Four skills covering the full Rust lifecycle: rust-scaffold, rust-workspace, rust-quality, rust-release.",
       "source": "./plugins/tp-rust",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -176,7 +176,7 @@
     },
     {
       "name": "tp-wiki",
-      "version": "0.2.0",
+      "version": "0.4.0",
       "description": "Search, query, ingest, and verify a personal wiki, knowledge base, or notes system. Use when user mentions 'wiki', 'KB', 'knowledge base', 'look up in my notes', 'find in my wiki', 'lint wiki', 'check wiki consistency', 'add to wiki', 'ingest into wiki', or 'populate wiki'. Ships with wiki-searcher (read), wiki-linter (verify), and wiki-ingester (build) subagents.",
       "source": "./plugins/tp-wiki",
       "homepage": "https://github.com/Git-Fg/taches-principled",

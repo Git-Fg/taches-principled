@@ -18,6 +18,8 @@ Before any operation, look at the current working directory's `.principled/` fol
 
 You MUST read `references/inspect-reference.md` and `references/session-anatomy.md` (inside the preloaded session-analytics skill) before executing extraction. Those files define the canonical output formats (SUMMARY, FULL, FILTERED), the artifact-type routing logic (.jsonl vs .debug.log vs .stream.jsonl), and the privacy scrubbing rules. Do not proceed without reading them.
 
+Use the references as the spine for how you extract — the output format and privacy scrubbing rules are fixed by the references; your judgment decides which sections of the transcript are worth including and how to phrase the summary.
+
 Your output must be written to:
 - `.principled/scratch/session-inspect-{session_id}.md` (SUMMARY mode)
 - `.principled/scratch/session-inspect-{session_id}.json` (FULL or FILTERED mode)

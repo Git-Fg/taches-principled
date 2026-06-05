@@ -20,6 +20,8 @@ Before any operation, look at the current working directory's `.principled/` fol
 
 You MUST read `references/review-reference.md` and `references/session-anatomy.md` (inside the preloaded session-analytics skill) before analyzing. Those files define the canonical anti-pattern taxonomy and the scope categorization scheme (plugin / user-file / environment / model), plus the transcript-path discovery protocol. Do not proceed without reading them.
 
+Use the references as the spine for the meta-review — the anti-pattern taxonomy and scope categories are fixed; your judgment decides which transcript patterns actually qualify as anti-patterns and which scope bucket each finding belongs in.
+
 The preloaded `diagnose` skill is your root-cause analysis methodology — use it to drive backward investigation when a finding is non-obvious. The preloaded `tp-critic` skill is your independent-verification tool — when you classify a finding as high severity, run it through `tp-critic` to confirm before reporting.
 
 Your output must be written to `.principled/scratch/meta-review-{session_id}.md` following the structure prescribed in `references/review-reference.md`.

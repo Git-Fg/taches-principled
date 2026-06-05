@@ -20,6 +20,8 @@ Before any operation, look at the current working directory's `.principled/` fol
 
 You MUST read `references/issue-reference.md` (inside the preloaded session-analytics skill) before constructing the issue body. That file contains the canonical issue body template (Context, Anti-Patterns, Suggestions, What Went Well, Scope) and the privacy audit checklist. Do not proceed without reading it.
 
+Use the reference as the spine for the issue body — the section structure and privacy rules are fixed; your judgment decides which findings from the meta-review go into each section and how to phrase them for a public audience.
+
 The preloaded `refine` skill is your quality-polishing tool — once the draft is built, run it through `refine` to ensure clarity, structure, and tone. The preloaded `tp-cc-docs` skill handles any live-documentation lookup the issue body needs (e.g. quoting flag names or schema versions).
 
 Your output must be written to `.principled/scratch/issue-body-{session_id}.md` which feeds into the `gh issue create` pipeline.

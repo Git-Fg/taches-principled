@@ -24,7 +24,7 @@ Based on [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf5
 
 **How to follow the rule:**
 
-1. **Resolve the target wiki first** — read `~/.claude/wiki-root.md` (the registry), apply the disambiguation rules, get the absolute path. If the user named a wiki, match by alias. If the user said "all my wikis", resolve all of them.
+1. **Resolve the target wiki first** — read `~/.claude/wiki-root.md` (the registry) and apply the disambiguation rules from `references/registry-schema.md` to get the absolute path. If the user named a wiki, match by alias. If the user said "all my wikis", resolve all of them.
 2. **Spawn the subagent with `wiki_path` set** to the resolved absolute path. **Or** pass `alias` if you don't know the path but know the label — the subagent will resolve it from the registry (see subagent body for fallback rules).
 3. **Never spawn a subagent without `wiki_path` or `alias`**. The subagent can technically self-discover from the registry as a last resort, but that's the failure mode, not the normal flow.
 4. **For multi-wiki operations** ("lint all my wikis", "ingest this into every wiki"): spawn the subagent once per resolved wiki, passing each `wiki_path` in turn. Aggregate the per-wiki reports.
@@ -37,72 +37,17 @@ Based on [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf5
 | `wiki-ingester` | `mode` (`url`/`text`/`file`/`bulk`), `content`, `wiki_path` — OR `alias` | `multi_wiki` (bool, default false) |
 | `wiki-linter` | `directive` (string), `wiki_path` — OR `alias` | `multi_wiki` (bool, default false) |
 
-**What the subagent does if `wiki_path` is missing and `alias` is missing:**
-
-1. Reads `~/.claude/wiki-root.md` itself (the registry).
-2. If exactly one wiki is configured, uses it.
-3. If multiple are configured and the registry is unambiguous for the current operation, uses the first one.
-4. If ambiguous, returns an error to the hub with the message "no `wiki_path` or `alias` provided and registry is ambiguous" — the hub then asks the user to disambiguate.
+**What the subagent does if `wiki_path` is missing and `alias` is missing:** falls back to self-discovery from `~/.claude/wiki-root.md`, following the disambiguation rules in `references/registry-schema.md`. If exactly one wiki is configured, uses it; if the registry is unambiguous for the current operation, uses the first match; if ambiguous, returns an error to the hub ("no `wiki_path` or `alias` provided and registry is ambiguous") so the hub can ask the user to disambiguate.
 
 **So: the hub can pass `wiki_path` (preferred) or `alias` (fallback) or rely on subagent self-discovery (last resort, returns error on ambiguity). The hub should pick the first.**
 
 ## Wiki Root Resolution (multi-wiki registry)
 
-**The wiki root is a registry, not a single value.** The file `~/.claude/wiki-root.md` is the **single source of truth** — it contains one entry per wiki, with the format `WIKI_ROOT_<name>=<absolute-path>`. No env vars are involved; the value is a literal absolute path on the right side of the `=`.
+The registry at `~/.claude/wiki-root.md` is the single source of truth for which wikis exist, what they contain, and what to read inside each one before doing anything else. As the hub, your first job in any wiki operation is to read that registry, pick the right wiki for the user's request, and pass the resolved `wiki_path` to whichever subagent you spawn next.
 
-### The registry file (`~/.claude/wiki-root.md`)
+You MUST read `references/registry-schema.md` BEFORE any wiki operation. Do not proceed without reading it. It teaches the TOML schema, per-field semantics, the parsing algorithm, the disambiguation rules for picking the right wiki when several are configured, the no-registry first-time setup flow, the confirmation-before-mutating policy, and the front-load convention for descriptions. None of those mechanics live in this file anymore — they live in the reference, and the reference is the only place to consult them.
 
-```
-# ~/.claude/wiki-root.md — wiki registry
-WIKI_ROOT_main=/Users/felix/notes/main
-WIKI_ROOT_work=/Users/felix/notes/work
-WIKI_ROOT_personal=/Users/felix/notes/personal
-```
-
-- One wiki per line.
-- Each line is `WIKI_ROOT_<label>=<absolute-path>`.
-- Blank lines and lines starting with `#` are comments (ignored).
-- The `<label>` is just an identifier (e.g., `main`, `work`, `personal`); use it to disambiguate when multiple wikis are configured.
-- `<absolute-path>` is a literal path. The user edits this file directly when adding/removing/moving wikis. **No env var lookup is performed.**
-
-### Resolution algorithm
-
-At the start of every wiki operation, do this:
-
-1. **`cat ~/.claude/wiki-root.md`** — read the registry file. If the file doesn't exist or is empty (only comments), jump to "no registry" below.
-2. **For each non-blank, non-comment line**, parse it as `KEY=VALUE` and add `{label: KEY.removeprefix("WIKI_ROOT_"), path: VALUE}` to the list.
-3. **Apply the disambiguation rules** (see below) to pick which wiki to operate on.
-4. **Fall through to "no registry"** if the file is missing or has no entries.
-
-**No env var fallback.** The file is the only source of truth. If the user has `WIKI_ROOT` (no suffix) set in their shell but no entry in the registry, it is ignored.
-
-### Disambiguation — picking the right wiki when several are configured
-
-| User signal | Action |
-|---|---|
-| User named a specific wiki: "the work wiki", "my main notes", "wiki 2" | Match against labels/numbers, use that one. If no match, ask. |
-| User's intent implies a domain: "search the project wiki", "ingest into research" | Match label containing the keyword. If ambiguous, ask. |
-| User says nothing about which wiki | If exactly one is configured → use it without asking. If multiple → ask: "Which wiki? You have: main, work, personal. (or 'set up a new one')" |
-| User says "all wikis" or wants an operation across them | Run the operation once per configured wiki. Aggregate results. |
-
-**Alias numbering:** if the user says "wiki 2", number is 1-based by the order lines appear in the registry file. So `WIKI_ROOT_main` is wiki 1, `WIKI_ROOT_work` is wiki 2, etc.
-
-### No registry — first-time setup
-
-If `~/.claude/wiki-root.md` doesn't exist or has no entries, ask the user to set up the registry:
-
-> "No wikis configured. To set up:
-> 1. Create the directory for your wiki (e.g., `mkdir -p ~/notes/main`)
-> 2. Add a line to `~/.claude/wiki-root.md` in the format: `WIKI_ROOT_<label>=<absolute-path>`"
-> 3. Re-run the command. Or say 'create a new wiki at <path>' and I'll do steps 1-2 for you."
-
-### Confirming the chosen wiki before destructive operations
-
-For `INGEST` and `LINT` operations, after picking the wiki from the registry, **confirm the choice with the user** before doing anything that mutates files:
-
-> "Operating on: `WIKI_ROOT_<label>` = `<path>`. Proceed?"
-
-The confirmation can be skipped for `QUERY` (read-only) operations.
+You MUST read `references/subagent-arguments.md` BEFORE spawning any subagent. Do not proceed without reading it. It defines the argument contract (what `wiki_path`, `alias`, `multi_wiki` mean, what the self-discovery fallback does), the registry preamble every subagent inherits, and the confirmation-before-mutating policy the hub must enforce before spawning a writing subagent. The three wiki agents inherit this contract transitively via their `skills: [wiki]` frontmatter — do not re-explain it in the spawn directive, and do not paste it into a spawn prompt.
 
 ## Decision Router
 
@@ -118,7 +63,7 @@ Classify the user's intent, then spawn the matching subagent. When in doubt, ask
 
 **The hub (you) is the orchestrator. Always pass `wiki_path` to the subagent. Always.**
 
-- `wiki_path` is the absolute path the subagent should operate on. **Resolve it before spawning** — read `~/.claude/wiki-root.md`, apply the disambiguation rules, get the path.
+- `wiki_path` is the absolute path the subagent should operate on. **Resolve it before spawning** — read `~/.claude/wiki-root.md` and apply the disambiguation rules from `references/registry-schema.md` to get the path.
 - If you don't know the path but know the alias, pass `alias` instead. The subagent will resolve it from the registry.
 - **Never spawn a subagent without one of `wiki_path` or `alias`.** The subagent can technically self-discover from the registry as a last resort, but the contract is: the hub has already done the resolution work, the subagent just executes.
 - For multi-wiki operations ("all my wikis"): spawn the subagent once per wiki, passing each resolved `wiki_path` in turn. The subagent reports per-wiki results.

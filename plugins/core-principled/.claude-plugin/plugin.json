@@ -1,6 +1,6 @@
 {
   "name": "core-principled",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, security audit, test strategy. Live Claude Code/Agent SDK/API docs via tp-cc-docs and /cc-docs slash command.",
   "author": {
     "name": "Felix",

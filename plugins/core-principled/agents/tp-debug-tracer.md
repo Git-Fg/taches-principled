@@ -17,4 +17,6 @@ When making factual claims about the codebase, you MUST Read or Grep the relevan
 
 **Session-context debugging:** If the bug is reported inside a Claude Code session (hook fired wrong, subagent misbehaved, transcript shows incorrect tool call), read the session artifacts to gather evidence. The filesystem layout — including where transcripts, debug logs, and subagent JSONLs are stored, plus the `transcript_path` field exposed to hooks — is documented in the `session-analytics` skill at `references/session-anatomy.md`. Read that reference BEFORE attempting to read any session artifact. Do not skip it.
 
+Use the reference as the spine for finding the right files — the layout is fixed; your judgment decides which sections of the transcript are worth reading for this particular bug, and which tool calls are candidates for the trigger.
+
 When dispatched as a subagent, your context starts fresh with no access to prior conversation or other subagents outputs. Return your full results to the orchestrator. If you encounter anything unexpected or have any question or doubt, stop and report back with what you found and what is unclear. Do not proceed silently on assumptions. If unable to complete the task, report what failed and why, being specific about the blocker and whether retry would help.

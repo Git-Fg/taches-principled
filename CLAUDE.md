@@ -515,6 +515,8 @@ The first four ship under `plugins/` and `.claude-plugin/`. The fifth lives at t
 
 3. **Centralized routing**: ONLY the main SKILL.md file is permitted to cite supporting files. Reference files (in `references/`, `agents/`, `templates/`, `scripts/` folders) must never cross-cite other reference files. The SKILL.md is the sole, centralized router for all internal citations.
 
+4. **Subagent → preloaded-skill references (exception to Rule 3)**: When a subagent declares a skill in its `skills:` frontmatter, the subagent's body prompt MAY cite that skill's own `references/` files. The skill is already loaded for the agent, so its references are in scope. The citation MUST be a single natural-language imperative sentence ("you MUST start by reading the `wiki` skill's `references/subagent-arguments.md`") — not a procedural step and not a numbered list. The directive's job is to guarantee the reference is loaded, not to prescribe how the agent uses it. **The generalist principle still wins:** after the imperative, prefer natural-language steering prose over rigid procedure, and let the agent decide how to apply what it read. Cross-skill citations (citing references from a skill the agent has NOT loaded) remain forbidden — the gate is "if you preload it, you can cite it; if you don't, you can't." The official Claude Code docs confirm the parent's citation directive is NOT transitive to spawned subagents ([`agent-sdk/subagents.md`](https://code.claude.com/docs/en/agent-sdk/subagents.md#what-subagents-inherit) — "Preloaded skill content, unless listed in `AgentDefinition.skills`" is explicitly excluded from inheritance), so the subagent needs its own `skills:` entry to receive the parent's body OR an independent citation in its own prompt. This rule codifies the second path.
+
 **Strong language requirements:**
 - Use deterministic, imperative citations. Never use passive language like "You can read", "See reference", or "Optional guide available at".
 - Write: "You MUST read `references/X.md` BEFORE writing any code. Do not proceed or make assumptions without reading this file."
@@ -550,6 +552,8 @@ The first four ship under `plugins/` and `.claude-plugin/`. The fifth lives at t
 4. Any conditional logic inside the reference file creates a circular dependency
 
 **The strict rule:** Reference files must be pure content — no frontmatter, no loading triggers, no "When to read" sections, no conditional loading paragraphs. All conditional loading logic must reside exclusively in the parent SKILL.md router. The SKILL.md cites references imperatively; reference files never cite themselves or contain routing logic.
+
+**Orthogonal to Rule 4 above:** The chicken-and-egg rule governs what a reference file may contain (no routing logic inside the reference). Rule 4 governs who may issue a citation from outside the file (a subagent that has preloaded the parent skill may). The two rules do not conflict — a reference file remains pure content, and a subagent body may still cite it from outside.
 
 **Correct pattern:**
 - SKILL.md body: "You MUST read `references/patterns.md` BEFORE writing code."

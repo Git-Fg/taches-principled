@@ -2,6 +2,100 @@
 
 All notable changes are documented here.
 
+## [1.19.0] — 2026-06-05
+
+### Changed
+
+- **7 oversized skills split into hub + references/ for progressive disclosure.** Per CLAUDE.md's 500-line guideline, the following skills exceeded the safe operating limit and have been split: `tp-mcp/skills/mcp-server-implement` (661 → 89), `tp-mcp/skills/mcp-server-design` (526 → 73), `tp-mcp/skills/mcp-tool-surface` (498 → 100), `tp-rust/skills/rust-quality` (487 → 98), `tp-rust/skills/rust-release` (370 → 93), `tp-rust/skills/rust-workspace` (349 → 80), `tp-rust/skills/rust-scaffold` (319 → 86). Each skill's `SKILL.md` is now a pure router (frontmatter + when-to-fire + CONTRAST + reference index + handoffs + anti-patterns + key sources), with the mechanism content in 2-4 focused `references/*.md` files. The new references are imperatively cited from the hub per CLAUDE.md rule 3, and follow the chicken-and-egg rule (pure content, no frontmatter, no loading triggers inside). Total: 13 new reference files; ~2300 lines reorganized into ~600 lines of hub + ~1900 lines of references. Per the prior investigation's BLOCKER finding, this also unlocks the new Rule 4 path: future subagents spawned by these plugins can cite the new references directly.
+
+- **The 5 other marketplace agents that follow the same imperative-citation pattern as the wiki agents** (`tp-session-audit/agents/session-context-analyzer.md`, `tp-session-audit/agents/session-inspector.md`, `tp-session-audit/agents/session-issue-generator.md`, `tp-session-audit/agents/session-meta-reviewer.md`, `core-principled/agents/tp-debug-tracer.md`) get a one-paragraph natural-language steering upgrade. The previous "you MUST read X" paragraphs were terse; the new paragraphs pair the imperative with a steering line that names the contract vs the role-specific content. Same semantic behavior, better steering.
+
+- **Fixed BLOCKER found in 1.18.0 review.** The 1.18.0 critic flagged that `wiki-searcher.md` and `wiki-linter.md` still said "using the algorithm above" — a reference to the disambiguation algorithm that was removed from the agent body and is not in `references/subagent-arguments.md` (only in `references/registry-schema.md`). The stale references are replaced with: "Start from the resolved `wiki_path` the hub passed you."
+
+### Added
+
+- **New script `scripts/check-citations.py`** — durable audit tool that detects three classes of citation problems across the marketplace: (1) cross-skill citation violations (an agent body cites a `references/X.md` from a skill it has NOT loaded); (2) missing-skill preloads (an agent's `skills:` frontmatter lists a skill that does not exist anywhere); (3) broken reference citations (cited file does not exist in any plugin's `references/`). The script is complementary to the marketplace jq schema checks in `regenerate-marketplace.py`. Run it after authoring or modifying any agent definition, after splitting a skill into hub + references/, or after deleting or renaming a reference file. Exit code 0 = clean; 1 = findings. **The script immediately surfaced 7 pre-existing missing-skill preloads** (`rules-creator` referenced by 3 `tp-transcript-rules-*` agents but no such skill exists; `tp-critic` referenced by `git-pr-reviewer` and `session-meta-reviewer`; `tp-researcher` referenced by `session-context-analyzer`; `tp-cc-docs` referenced by `session-issue-generator`) — these are pre-existing issues, NOT introduced by this refactor, and are noted as a follow-up. A separate cleanup PR will either add the missing skills or correct the preloads.
+
+- **13 new reference files** under `plugins/tp-mcp/skills/{mcp-server-implement,mcp-server-design,mcp-tool-surface}/references/` and `plugins/tp-rust/skills/{rust-quality,rust-release,rust-workspace,rust-scaffold}/references/`. Each is pure content (no frontmatter, no loading triggers), named after the topic it teaches (e.g., `rmcp-api.md`, `claude-code-consumption.md`, `ci-template.md`, `workspace-decisions.md`).
+
+### Migration
+
+- **No user action required.** The skill splits are behavior-preserving — same when-to-fire, same CONTRAST, same handoffs, same anti-patterns. The 5 agent upgrades are also behavior-preserving (the steering paragraphs are additive). The new script is opt-in (run it manually or wire it into CI).
+
+- **CI suggestion:** wire `python3 scripts/check-citations.py` into a GitHub workflow that runs on PRs touching `plugins/`. The script has a clean exit-code contract (0 = pass, 1 = findings, 2 = missing dependency) and runs in <2s on the current marketplace.
+
+### Version bumps
+
+- **Marketplace** 0.27.0 → 0.28.0
+- **tp-mcp** 0.1.1 → 0.2.0 (minor: 3 skills restructured, the new Rule 4 unlocks future agent citations)
+- **tp-rust** 0.1.0 → 0.2.0 (minor: 4 skills restructured)
+- **core-principled** 0.18.0 → 0.19.0 (minor: 1 agent (`tp-debug-tracer`) gets the imperative-with-natural-language upgrade)
+
+## [1.18.0] — 2026-06-05
+
+### Changed
+
+- **CLAUDE.md codifies a scoped exception to the "only SKILL.md may cite supporting files" rule.** A new Rule 4 in the "Skill-Internal File References" section states: when a subagent declares a skill in its `skills:` frontmatter, the subagent's body prompt MAY cite that skill's own `references/` files. The citation must be a single natural-language imperative sentence (not a procedural step), and natural-language steering prose is preferred over rigid procedure. Cross-skill citations (citing references from a skill the agent has NOT loaded) remain forbidden. The rule is grounded in the official Claude Code docs: a parent's citation directive is NOT transitive to spawned subagents ([`agent-sdk/subagents.md`](https://code.claude.com/docs/en/agent-sdk/subagents.md#what-subagents-inherit) — "Preloaded skill content, unless listed in `AgentDefinition.skills`" is explicitly excluded from inheritance), so the subagent either needs its own `skills:` entry to receive the parent's body OR an independent citation in its own prompt. The new rule codifies the second path, which the marketplace had already been using in 8 places (4 in `tp-session-audit`, 1 in `core-principled/tp-debug-tracer`, 3 in `tp-wiki`).
+
+- **The chicken-and-egg section gets a cross-reference paragraph** clarifying that the chicken-and-egg rule (no routing logic inside reference files) and the new Rule 4 (who may cite a reference file from outside) govern orthogonal concerns. A reference file remains pure content; a subagent body may still cite it from outside.
+
+- **The 3 tp-wiki agents use the proper imperative shape to cite `references/subagent-arguments.md`.** The previous "Argument expectation" paragraphs pointed at the reference descriptively ("inherited from the `wiki` skill — see its `references/...`"). The new paragraphs open with a single natural-language imperative sentence ("you MUST start by reading the `wiki` skill's `references/subagent-arguments.md`"), followed by a natural-language steering paragraph that names the role-specific argument, identifies the contract as the rules of engagement, and lets the agent decide how to apply what it read. The role-specific arguments (`query` / `mode`+`content` / `directive`), task procedures, rules, output formats, and failure-mode catalogs are unchanged.
+
+### Added
+
+- **No new files.** This change is purely a rule clarification in CLAUDE.md, an imperative upgrade in the 3 wiki agents, a CHANGELOG entry, and version bumps.
+
+### Migration
+
+- **Other marketplace agents following the same pattern need no change.** `tp-session-audit/agents/session-context-analyzer.md`, `tp-session-audit/agents/session-inspector.md`, `tp-session-audit/agents/session-issue-generator.md`, `tp-session-audit/agents/session-meta-reviewer.md`, and `core-principled/agents/tp-debug-tracer.md` already cite references/ files of preloaded skills in imperative form. The new Rule 4 legitimizes the pattern, so no rewrite is needed. A future cleanup pass could give them the same imperative-with-natural-language upgrade that the wiki agents just got, but that's polish, not correctness.
+
+- **No user action required.** No registry migration, no schema change, no skill re-install. The rule change is internal to the marketplace's authoring conventions.
+
+### Version bumps
+
+- **Marketplace** 0.26.1 → 0.27.0
+- **tp-wiki** 0.3.1 → 0.4.0 (minor: agent bodies change in a non-cosmetic way — the `references/subagent-arguments.md` reference becomes load-bearing instead of descriptive)
+
+## [1.17.1] — 2026-06-05
+
+### Changed
+
+- **Subagent argument contract consolidated into a shared reference.** The "Argument expectation" + "Self-discovery fallback" + "Wiki Root Resolution (multi-wiki registry)" preamble was duplicated across the three wiki agents (`wiki-searcher.md`, `wiki-ingester.md`, `wiki-linter.md`) — the same `wiki_path` / `alias` / `multi_wiki` argument definitions, the same last-resort self-discovery policy, and the same registry preamble were explained in three places with only the role-specific orientation tail differing. That shared content now lives once in a new reference at `plugins/tp-wiki/skills/wiki/references/subagent-arguments.md`; each agent body keeps only its own role-specific argument (`query` / `mode`+`content` / `directive`), its own one-paragraph "why orientation matters for you" tail, and its own failure-modes catalog. The hub skill (`SKILL.md`) cites the new reference imperatively; the three agents inherit it transitively via their existing `skills: [wiki]` frontmatter (no new citation needed, preserving the CLAUDE.md rule that only `SKILL.md` cites supporting files).
+
+- **Removed a dangling citation in `plugins/tp-rust/skills/rust-release/SKILL.md`.** Line 368 of the References list pointed at `references/real-world-release-patterns.md`, a file the skill never shipped. The "if shipped" qualifier made the citation optional from the start; the 7 real-world example crates (serde, tokio, axum, cargo, release-plz, cargo-smart-release, gtk-rs, fuel-core) stay inline as references without the broken pointer.
+
+### Added
+
+- **New reference file `plugins/tp-wiki/skills/wiki/references/subagent-arguments.md`** — single source of truth for the argument contract (`wiki_path` / `alias` / `multi_wiki` semantics, self-discovery fallback policy, confirmation-before-mutating policy) and the multi-wiki registry preamble every subagent inherits. Pure content, no frontmatter, with an explicit "What each agent keeps local" section that names the role-specific content (the role-specific argument, the role-specific orientation tail, the failure-modes catalog) so the line between shared and local stays clear.
+
+### Version bumps
+
+- **Marketplace** 0.26.0 → 0.26.1
+- **tp-wiki** 0.3.0 → 0.3.1
+
+## [1.17.0] — 2026-06-05
+
+### Changed
+
+- **`~/.claude/wiki-root.md` is now a TOML manifest.** The flat `WIKI_ROOT_<label>=<path>` registry is replaced by one `[<alias>]` TOML table per wiki, each carrying `path`, `tags` (free-form wiki-level classification used for routing), `what_to_read` (bare filenames the agent walks before any operation), and a ≤1500-char `description` (natural-language steering, front-loaded with routing keywords so the signal survives high-context truncation). Existing user registries must be migrated to TOML; the new format is unambiguously parseable and the description field is the orchestrator's primary signal when the user names a topic rather than a wiki alias.
+
+- **Schema teaching consolidated into one reference file.** The "Wiki Root Resolution (multi-wiki registry)" block previously duplicated across `plugins/tp-wiki/skills/wiki/SKILL.md` and the three wiki agents (~231 total lines) is gone — the schema, parsing algorithm, disambiguation rules, no-registry flow, confirmation-before-mutating policy, and front-load convention now live in a single new reference at `plugins/tp-wiki/skills/wiki/references/registry-schema.md`. `SKILL.md` cites the reference imperatively; the three agents carry only a short natural-language preamble describing operational expectations and inherit the schema teaching transitively through the wiki skill they load (per the CLAUDE.md rule that only `SKILL.md` cites supporting files). Net deletion: ~223 lines of duplicated teaching across four files.
+
+### Added
+
+- **New reference file `plugins/tp-wiki/skills/wiki/references/registry-schema.md`** — pure-content schema reference with no frontmatter (chicken-and-egg anti-pattern). Teaches the TOML format with an annotated canonical example, per-field semantics for all four fields, the parsing algorithm as natural-language prose, a disambiguation table that adds a `tags`-matching row to the existing alias/topic/single-wiki/multi-wiki cascade, the no-registry first-time setup flow, the confirmation-before-mutating policy for INGEST and LINT, the front-load convention for descriptions (first ~200 chars must carry routing keywords), the bare-filename rule for `what_to_read` (no absolute paths, no `$WIKI_ROOT/...` substitution, no `[[wikilinks]]`), and TOML-specific gotchas for LLM readers (triple-double-quote vs triple-single-quote, CRLF leakage, `#` comment scope).
+
+### Migration
+
+- **User action required for personal wikis.** Existing `~/.claude/wiki-root.md` files must be migrated from the flat `WIKI_ROOT_<label>=<path>` format to the new TOML schema. A migrated entry has the shape `[<alias>] / path = "..." / tags = [...] / what_to_read = ["SCHEMA.md", "index.md"] / description = """..."""`. The `tp-wiki` hub will detect the old format and fail to parse, signalling the need to migrate; placeholders for `tags`, `what_to_read`, and `description` are safe starting values that the user fills in over time.
+
+- **Maintainer doc updated.** `knowledge/concepts/llm-wiki-methodology.md` step 1 in the "Initializing a New Wiki" section now teaches the TOML append (`[<alias>]` table) rather than the old `WIKI_ROOT_<label>=<path>` line. Historical CHANGELOG entries that mention `WIKI_ROOT_marketplace=...` (notably 1.15.0) are preserved as-is — they describe the state at the time of writing.
+
+### Version bumps
+
+- **Marketplace** 0.25.1 → 0.26.0 (catalog change for the schema upgrade)
+- **tp-wiki** 0.2.0 → 0.3.0 (new schema, consolidated reference, four files surgically slimmed)
+
 ## [1.16.1] — 2026-06-05
 
 ### Fixed

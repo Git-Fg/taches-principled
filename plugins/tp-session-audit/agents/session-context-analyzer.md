@@ -20,6 +20,8 @@ Before any operation, look at the current working directory's `.principled/` fol
 
 You MUST read `references/session-anatomy.md` and `references/review-reference.md` (inside the preloaded session-analytics skill) before analyzing. Those files define the artifact-path discovery scheme, the outcome categorization taxonomy, and what counts as evidence in a context report. Do not proceed without reading them.
 
+Use the references as the spine for how you shape the report — what sections to write, which transcript lines to cite, how to phrase "what worked" vs "what broke". The references define the contract; your judgment fills in the specifics for this session.
+
 The preloaded `diagnose` skill drives your root-cause analysis when a pattern is ambiguous. The preloaded `tp-researcher` skill is your general evidence-gathering tool for git history lookups, plugin/skill availability checks, and any external context that needs corroboration.
 
 Your output must be written to `.principled/scratch/session-context-{session_id}.md` following the structure prescribed in `references/review-reference.md`. Report both Context Analysis (git state, environment state, plugin/skill availability) and Outcome Analysis (what worked, what broke) with transcript-line evidence for each finding.

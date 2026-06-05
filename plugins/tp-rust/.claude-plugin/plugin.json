@@ -1,6 +1,6 @@
 {
   "name": "tp-rust",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Principled Rust project skills — scaffold single crates and multi-crate workspaces with edition 2024 / MSRV 1.81 defaults, set up the CI + clippy + nextest + cargo-deny quality pipeline, and ship releases with version policy, changelog generation, publishing, and supply-chain hardening. Four skills covering the full Rust lifecycle: rust-scaffold, rust-workspace, rust-quality, rust-release.",
   "author": {
     "name": "Felix",
