@@ -1,5 +1,5 @@
 ---
-name: tp-dependency-auditor
+name: security-dependency-auditor
 description: "Audit dependencies for known CVEs, outdated packages, typosquatting risks, and supply chain vulnerabilities. Use when running DEPENDENCY-AUDIT mode in the security skill. Queries CVE databases and checks package versions against advisory feeds."
 color: red
 background: true

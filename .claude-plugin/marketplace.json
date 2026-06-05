@@ -5,7 +5,7 @@
     "name": "Git-Fg"
   },
   "description": "A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans \u2014 with principle-based guidance that teaches judgment over procedure.",
-  "version": "0.29.1",
+  "version": "0.30.0",
   "plugins": [
     {
       "name": "claude-cli-wrapper",
@@ -30,8 +30,8 @@
     },
     {
       "name": "core-principled",
-      "version": "0.19.1",
-      "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, security audit, test strategy. Live Claude Code/Agent SDK/API docs via tp-cc-docs and /cc-docs slash command.",
+      "version": "0.20.0",
+      "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, test strategy. Live Claude Code/Agent SDK/API docs via tp-cc-docs and /cc-docs slash command. (Security review moved to tp-security in 1.22.0.)",
       "source": "./plugins/core-principled",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
@@ -152,6 +152,31 @@
         "evaluation",
         "subagents",
         "judge"
+      ]
+    },
+    {
+      "name": "tp-security",
+      "version": "1.0.0",
+      "description": "Principled security review skills \u2014 single `security` hub with a `Modes:` directive covering the pre-production security review lifecycle: SAST (static application security testing for injection, auth bypass, SSRF, deserialization, access control), DEPENDENCY-AUDIT (CVE scanning, lockfile drift, typosquatting, supply-chain integrity), SECRETS-DETECTION (API keys, tokens, credentials, private keys via pattern matching and entropy analysis), COMPLIANCE (OWASP ASVS, GDPR, SOC2, PCI-DSS, HIPAA evidence mapping and gap analysis). Five subagents: security-sast-scanner, security-dependency-auditor, security-secrets-detector, security-reviewer, security-compliance-checker.",
+      "source": "./plugins/tp-security",
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "category": "development",
+      "keywords": [
+        "taches-principled",
+        "claude-code",
+        "security",
+        "sast",
+        "dependency-audit",
+        "secrets-detection",
+        "compliance",
+        "owasp",
+        "gdpr",
+        "soc2",
+        "pci-dss",
+        "hipaa",
+        "supply-chain"
       ]
     },
     {

@@ -5,7 +5,7 @@
       "name": "Git-Fg"
     },
     "description": "A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans \u2014 with principle-based guidance that teaches judgment over procedure.",
-    "version": "0.29.1"
+    "version": "0.30.0"
   },
   "core-principled": {
     "source": "./plugins/core-principled",
@@ -168,6 +168,28 @@
       "search",
       "ingest",
       "build"
+    ]
+  },
+  "tp-security": {
+    "source": "./plugins/tp-security",
+    "homepage": "https://github.com/Git-Fg/taches-principled",
+    "repository": "https://github.com/Git-Fg/taches-principled",
+    "license": "MIT",
+    "category": "development",
+    "keywords": [
+      "taches-principled",
+      "claude-code",
+      "security",
+      "sast",
+      "dependency-audit",
+      "secrets-detection",
+      "compliance",
+      "owasp",
+      "gdpr",
+      "soc2",
+      "pci-dss",
+      "hipaa",
+      "supply-chain"
     ]
   }
 }

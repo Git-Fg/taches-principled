@@ -7,6 +7,9 @@ background: true
 skills:
   - rust
   - diagnose
+  # Note: `security` is a cross-plugin preload from `tp-security` (currently in
+  # core-principled; see audit extract 1.22.0). Per CLAUDE.md cross-plugin
+  # preloading rules, this is silently skipped if tp-security is not installed.
   - security
 ---
 

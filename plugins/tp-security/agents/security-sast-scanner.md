@@ -1,5 +1,5 @@
 ---
-name: tp-sast-scanner
+name: security-sast-scanner
 description: "Perform static application security testing — scan code for injection, auth bypass, SSRF, deserialization, and access control vulnerabilities. Use when running SAST mode in the security skill. Returns structured findings with file:line evidence and remediation guidance."
 color: red
 background: true

@@ -1,11 +1,10 @@
 ---
-name: tp-compliance-checker
+name: security-compliance-checker
 description: "Verify implementation against security frameworks and compliance standards (OWASP ASVS, GDPR, SOC2, PCI-DSS, HIPAA). Use when running COMPLIANCE mode in the security skill. Maps evidence to requirements, identifies gaps, and prioritizes remediation."
 color: yellow
 background: true
 skills:
   - security
-  - diagnose
 maxTurns: 15
 memory: local
 ---
