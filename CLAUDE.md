@@ -252,7 +252,7 @@ You MUST read [knowledge/raw/official/plugins/marketplaces.md](knowledge/raw/off
 ```
 plugins/
 ├── core-principled/           # Full dev lifecycle — planning, review, debugging, contract design
-├── claude-cli-wrapper/        # MCP wrapper for the Claude Code CLI (6 tools)
+├── claude-cli-wrapper/        # Skill teaching direct Claude Code CLI usage via Bash
 ├── tp-sadd/                   # Structured agent-driven development
 ├── tp-fpf/                    # First principles reasoning
 ├── tp-git/                    # Git workflow automation

@@ -115,4 +115,4 @@ ADVANCED: Notes in `.git/refs/notes/` + additional working directories
 
 CONTRAST with `tp-sadd` judge pattern: this skill handles git operations; `tp-sadd` evaluates code with judges.
 
-CONTRAST with `claude-cli`: this skill is for git CLI; `claude-cli` wraps the Claude Code CLI as MCP tools.
+CONTRAST with `claude-cli`: this skill teaches git CLI patterns via Bash; `claude-cli` teaches the `claude` CLI via Bash. Both are Bash-tool-first skills in their respective domains.

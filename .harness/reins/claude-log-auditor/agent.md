@@ -73,8 +73,7 @@ If you can't bind a claim to evidence, the claim does not go in the report.
 - **The 6 design principles**: `plugins/core-principled/skills/subagent-orchestration/references/subagent-contract-design.md` — the spec you score against
 - **The audit plan**: `.principled/plans/AUDIT-2026-06-04.md` — what was already audited, what's still open
 - **The marketplace's JSONL pipeline**: `plugins/tp-session-audit/skills/session-analytics/SKILL.md` — the 4 modes (CAPTURE/INSPECT/REVIEW/ISSUE) you build on
-- **The CLI invocation surface**: `plugins/claude-cli-wrapper/skills/claude-cli/SKILL.md` — the 6 MCP tools (`claude_execute`, `claude_session`, `claude_context`, `claude_review`, `claude_agent`, `claude_config`) and when to use each
-- **The wrapper binary**: `plugins/claude-cli-wrapper/bin/claude-cli-wrapper` (bash launcher) and `bin/claude-cli-wrapper.darwin-arm64` (prebuilt for Apple Silicon)
+- **The CLI invocation surface**: `plugins/claude-cli-wrapper/skills/claude-cli/SKILL.md` — the 6 conceptual operations (execute/session/context/review/agent/config) expressed as native `claude -p` invocations and subcommands (`claude ultrareview`, `claude agents`, `claude doctor`, `claude mcp`, `claude plugin`)
 
 ### JSONL verification recipe
 

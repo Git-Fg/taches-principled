@@ -5,12 +5,12 @@
     "name": "Git-Fg"
   },
   "description": "A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans \u2014 with principle-based guidance that teaches judgment over procedure.",
-  "version": "0.30.0",
+  "version": "0.30.1",
   "plugins": [
     {
       "name": "claude-cli-wrapper",
-      "version": "0.2.2",
-      "description": "Optimal MCP wrapper for the Claude Code CLI \u2014 single Rust binary exposing six tools (claude_execute, claude_session, claude_context, claude_review, claude_agent, claude_config) over both MCP stdio and a mcp-tool script fallback. Cross-platform launcher at bin/claude-cli-wrapper resolves to a per-host prebuilt (darwin-arm64 only at present; Linux/Intel fall through to cargo build, ~10-15 min first use). Ideal for any agent that needs to drive Claude Code programmatically.",
+      "version": "0.3.0",
+      "description": "Skill teaching direct `claude` CLI usage via the Bash tool \u2014 six conceptual operations (execute, session, context, review, agent, config) expressed as native `claude -p` invocations and subcommands (`claude ultrareview`, `claude agents`, `claude doctor`, `claude mcp`, `claude plugin`). No binary, no MCP server, no Rust toolchain required. For agents that need to drive Claude Code programmatically without an MCP transport.",
       "source": "./plugins/claude-cli-wrapper",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
@@ -19,18 +19,18 @@
       "keywords": [
         "taches-principled",
         "claude-code",
-        "mcp",
         "cli-wrapper",
+        "bash-pattern",
+        "direct-cli",
+        "headless-invocation",
         "execute",
         "session-management",
-        "code-review",
-        "agent-spawn",
-        "config"
+        "ultrareview"
       ]
     },
     {
       "name": "core-principled",
-      "version": "0.20.0",
+      "version": "0.20.1",
       "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, test strategy. Live Claude Code/Agent SDK/API docs via tp-cc-docs and /cc-docs slash command. (Security review moved to tp-security in 1.22.0.)",
       "source": "./plugins/core-principled",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -73,7 +73,7 @@
     },
     {
       "name": "tp-git",
-      "version": "0.3.5",
+      "version": "0.3.6",
       "description": "Git workflow automation \u2014 conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
       "source": "./plugins/tp-git",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -89,8 +89,8 @@
     },
     {
       "name": "tp-mcp",
-      "version": "0.2.2",
-      "description": "Principled MCP (Model Context Protocol) server skills \u2014 design (equilibrated recursivity, tool decomposition, pass-through, output contract, JSON-RPC error discipline, context budget, annotations, naming, capability negotiation, security), implement (rmcp + schemars + tokio, transport choice, stderr-only logging, error mapping, testing), and tool-surface authoring (JSON Schema 2020-12 constraints, additionalProperties:false discipline, discriminator enums, naming). Three skills covering the full MCP server lifecycle, plus the `claude-cli` skill in the existing `claude-cli-wrapper` plugin as a worked example of the 6-tool decomposition pattern.",
+      "version": "0.2.3",
+      "description": "Principled MCP (Model Context Protocol) server skills \u2014 design (equilibrated recursivity, tool decomposition, pass-through, output contract, JSON-RPC error discipline, context budget, annotations, naming, capability negotiation, security), implement (rmcp + schemars + tokio, transport choice, stderr-only logging, error mapping, testing), and tool-surface authoring (JSON Schema 2020-12 constraints, additionalProperties:false discipline, discriminator enums, naming). Three skills covering the full MCP server lifecycle. The \u00a73 worked example in `mcp-server-design/references/design-decisions.md` uses a synthetic `git-cli` decomposition.",
       "source": "./plugins/tp-mcp",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",

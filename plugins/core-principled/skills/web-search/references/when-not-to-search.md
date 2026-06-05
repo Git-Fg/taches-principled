@@ -14,7 +14,7 @@ If the user supplied the answer inline, do not search. Re-quoting their own word
 
 Questions like "what model are you", "what can you do", "how do you handle X" are about the runtime, not the world. Search the model's own documentation, its skills, or its configuration — not the open web.
 
-**Re-route to**: the relevant plugin/skill (e.g. for capabilities, the `mavis` skill; for runtime config, the `claude-cli-wrapper` MCP).
+**Re-route to**: the relevant plugin/skill (e.g. for capabilities, the `mavis` skill; for runtime config, the `claude-cli` skill plus Read `.claude-plugin/marketplace.json` for the installed catalog).
 
 ### 3. The question requires private or internal context
 
@@ -43,7 +43,7 @@ Some questions LOOK like search queries but should be handled by other skills:
 | "find me a function that does X" | Search inside a codebase | code-search skill |
 | "where is the auth code in this repo" | Local file search | file-search skill |
 | "show me my last 5 sessions" | Internal session history | session-analytics skill |
-| "what plugins do I have installed" | Local config | claude-cli-wrapper MCP |
+| "what plugins do I have installed" | Local config | `claude plugin list` via Bash + Read `.claude-plugin/marketplace.json` |
 | "what is the syntax for Python decorators" | Could be search, but training knowledge is faster and accurate | Answer from training |
 
 ## The "is this a search?" heuristic

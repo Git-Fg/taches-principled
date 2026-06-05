@@ -75,7 +75,7 @@ The following plugins use **alternative persistence** and do NOT participate in 
 | `tp-git` | git itself | Git is the persistence. No additional layer needed. |
 | `tp-mcp` | (none) | Designs are documentation-only. |
 | `tp-rust` | (none) | Cargo project state. |
-| `claude-cli-wrapper` | (none) | Stateless CLI invocations. |
+| `claude-cli-wrapper` | (none) | Stateless CLI invocations via Bash (no in-process state, no binary). |
 
 ## Canonical frontmatter
 

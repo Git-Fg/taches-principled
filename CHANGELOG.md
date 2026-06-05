@@ -2,6 +2,87 @@
 
 All notable changes are documented here.
 
+## [1.22.1] — 2026-06-05
+
+### Changed
+
+- **`claude-cli` skill body rewritten to teach direct `claude` CLI usage via Bash.** The skill (in `plugins/claude-cli-wrapper/skills/claude-cli/SKILL.md`) no longer documents the 6 MCP tools. It now teaches the 6 conceptual operations (execute, session, context, review, agent, config) as native CLI invocations: `claude -p "..." --output-format json`, `claude --resume <uuid>`, `claude ultrareview [target] --json`, `claude --agent <name> -p "..."`, `claude agents --json`, and the per-invocation flags `--model`/`--effort`/`--permission-mode`/`--settings`. New sections cover `--json-schema` for structured output, `claude doctor` for self-diagnostics, `claude --worktree` for isolated workspaces, and the JSON output envelope shape (with `session_id` inside the JSON, not lifted to a top-level field). All flag names verified against `claude --help` and `claude <subcommand> --help` on 2026-06-05. Skill body 631 lines (under the 2,500-token project ceiling).
+
+- **`tp-mcp` case study replaced.** `plugins/tp-mcp/skills/mcp-server-design/references/design-decisions.md` §3 (the `claude-cli-wrapper` 6-tool worked example) is replaced with a synthetic `git-cli` 5-tool decomposition (`git_status`, `git_diff`, `git_commit`, `git_log`, `git_branch`). The synthetic example teaches the same 6 lessons the old case study taught (read/write separation, high-traffic tool gets most params, action-enum reservation, user-verb mirroring, when NOT to use the pattern) without depending on a real plugin. The section title is explicit that the example is "synthetic: `git-cli`" and not a shipped wrapper.
+
+- **9 consumer files updated to remove references to the removed MCP server.** `web-search/references/when-not-to-search.md` re-routes "what plugins do I have installed" from the (gone) `claude-cli-wrapper` MCP to `claude plugin list` via Bash plus Read `.claude-plugin/marketplace.json`. `tp-git/SKILL.md` CONTRAST rephrased to acknowledge that both `git` and `claude-cli` are now Bash-tool-first skills in their respective domains. `.harness/reins/claude-log-auditor/agent.md` drops the "wrapper binary" sources-of-truth line and rephrases the CLI surface reference to the new skill content. `tp-mcp` skill bodies (`mcp-server-design/SKILL.md` × 3, `mcp-server-implement/SKILL.md` × 2, `mcp-tool-surface/SKILL.md` × 2) point at the new `git-cli` case study instead of the `claude-cli` worked example. `knowledge/concepts/persistence-schema.md` updates the `claude-cli-wrapper` row to note "no in-process state, no binary". `CLAUDE.md` directory tree comment updated from "MCP wrapper for the Claude Code CLI (6 tools)" to "Skill teaching direct Claude Code CLI usage via Bash".
+
+- **Marketplace catalog keywords trimmed.** `claude-cli-wrapper` entry in `.claude-plugin/_meta.json` drops `mcp` (no longer an MCP server), `code-review` (no longer a dedicated review tool), `agent-spawn` (no longer a dedicated agent tool), and `config` (no longer a dedicated config tool). Adds `bash-pattern`, `direct-cli`, `headless-invocation`, and `ultrareview` to reflect the new content.
+
+### Removed
+
+- **Inline MCP server for `claude-cli-wrapper`.** The `.mcp.json` that registered the `taches-claude-cli-wrapper` MCP server is deleted. The 6 tool names `mcp__claude-cli-wrapper__claude_execute`, `claude_session`, `claude_context`, `claude_review`, `claude_agent`, `claude_config` are no longer available. Any caller of those tools must switch to direct `claude` CLI invocations via the Bash tool (see Migration below).
+
+- **Rust source tree** at `plugins/claude-cli-wrapper/crates/` deleted (8 `.rs` files + member `Cargo.toml`, ~1,355 lines of Rust). `plugins/claude-cli-wrapper/Cargo.toml` and `Cargo.lock` deleted. The wrapper's value-add (JSON-RPC error code mapping, `WrapperResultEnvelope` output shape, `session_id` lifting, `deny_unknown_fields` validation) is no longer needed — the new skill teaches the raw `claude` CLI directly, accepting the simpler Unix exit-code + JSON-in-stdout contract.
+
+- **Bash launcher and Apple-Silicon prebuilt** at `plugins/claude-cli-wrapper/bin/` deleted (the 50-line `bin/claude-cli-wrapper` script and the 4.25 MB `bin/claude-cli-wrapper.darwin-arm64` prebuilt). The launcher existed only to resolve and invoke the Rust binary.
+
+- **Build artifacts** at `plugins/claude-cli-wrapper/target/` removed (was gitignored, but cleaned up).
+
+- **`.gitignore` and `README.md`** deleted from `plugins/claude-cli-wrapper/` — the gitignore no longer needs to ignore `target/` and `Cargo.lock`; the README documented the launcher and prebuilts.
+
+- **`.DS_Store`** deleted from `plugins/claude-cli-wrapper/` (macOS metadata, was tracked).
+
+### Migration
+
+**Breaking change for any consumer of the 6 `mcp__claude-cli-wrapper__*` tools.** The mapping is:
+
+| Old MCP tool | New Bash invocation |
+|---|---|
+| `mcp__claude-cli-wrapper__claude_execute({prompt: "..."})` | `claude -p "..."` (add `--output-format json` for parseable output) |
+| `mcp__claude-cli-wrapper__claude_session({action: "list"})` | `claude --resume` (no value, interactive picker) or read `~/.claude/sessions/*.jsonl` |
+| `mcp__claude-cli-wrapper__claude_session({action: "resume", session_id: "..."})` | `claude --resume <uuid>` |
+| `mcp__claude-cli-wrapper__claude_session({action: "continue"})` | `claude --continue` |
+| `mcp__claude-cli-wrapper__claude_context({action: "add_directory", directory_path: "..."})` | `claude -p "..." --add-dir <path>` (per-invocation, not sticky) |
+| `mcp__claude-cli-wrapper__claude_review({target: "..."})` | `claude ultrareview <target>` (or `claude ultrareview <target> --json` for structured output) |
+| `mcp__claude-cli-wrapper__claude_agent({action: "spawn", ...})` | `claude -p "..." --agent <name>` or define inline with `--agents '<json>'` |
+| `mcp__claude-cli-wrapper__claude_agent({action: "list"})` | `claude agents --json` |
+| `mcp__claude-cli-wrapper__claude_config({action: "set_model", model_value: "opus"})` | `claude -p "..." --model opus` (per-invocation, no persistent set) |
+
+**No automatic migration is possible** — the MCP transport is gone, the Rust binary is gone, and the Bash tool takes different args than the old MCP tools did. Users with installed `claude-cli-wrapper` instances will need to uninstall and reinstall the plugin (or just keep it — the plugin still ships, the MCP tools just don't).
+
+**External consumers** of `mcp__claude-cli-wrapper__*` outside this marketplace are unknown. If any exist in a downstream consumer's settings (`.mcp.json` or `~/.claude.json`), the consumer must update its references to the new Bash patterns or remove the entry.
+
+### AUDIT
+
+- **Scope**: pre-extraction audit of the `claude-cli-wrapper` plugin, including a comprehensive consumer inventory (35+ references across 20 files) and an adversarial verification of the planned extraction. The audit classified references into A (must-migrate, 9), B (soft reference, 9), and C (documentation, 18) and identified the `tp-mcp` §3 case study as the largest anchor reference.
+- **Per-finding resolution**:
+  - A1-A8 (must-migrate): all 8 files updated or deleted as planned
+  - B1-B9 (soft reference): all 9 citations/handoffs in `tp-mcp`, `tp-git`, `web-search`, and `persistence-schema.md` rephrased
+  - C1-C18 (documentation): CHANGELOG historical entries preserved as-is (per CLAUDE.md convention); CLAUDE.md directory tree updated; `handoff.md` left as historical state
+  - The `tp-mcp` case study was the highest-impact anchor and was replaced with the synthetic `git-cli` example as planned
+- **Flag verification**: before writing the new skill body, all flag names were verified against `claude --help` and `claude <subcommand> --help` (including `claude agents`, `claude ultrareview`, `claude doctor`, `claude mcp`, `claude plugin`). Three of the wrapper's assumed flags (`--list-sessions`, `--session-info`, `--close-session`) do not exist in the current CLI; the skill body documents the actual mechanisms (interactive `--resume` picker, session JSONL files, normal session expiry) instead.
+- **No findings skipped or deferred.**
+
+### Skip notes
+
+- **Historical CHANGELOG entries** (16 prior mentions of `claude-cli-wrapper` across versions 0.15.0 → 1.12.0): preserved as-is per CLAUDE.md convention ("Historical CHANGELOG entries... describe the state at the time of writing"). They document what the wrapper was when shipped; the new entry records its removal.
+
+- **`handoff.md` line 5** ("9 plugins (claude-cli-wrapper, ...)"): historical state, left as-is per the same convention.
+
+### Verification
+
+- `python3 scripts/regenerate-marketplace.py` → clean (catalog updated to 0.30.1; `claude-cli-wrapper` entry kept with new description and trimmed keywords)
+- `python3 scripts/check-citations.py` → `PASS: no citation violations, no missing preloads, no broken references`
+- `jq -e '.plugins | all(. as $p | ([keys[] | select(. == "version")] | length) == 1)' .claude-plugin/marketplace.json` → OK
+- `grep -r "mcp__claude-cli-wrapper__" plugins/ knowledge/ .claude-plugin/ .harness/ CLAUDE.md README.md` → 0 matches
+- `grep -rn "claude-cli-wrapper/bin\|claude-cli-wrapper/crates\|claude-cli-wrapper/target" plugins/ knowledge/ .harness/ CLAUDE.md README.md` → 0 matches
+- `find plugins/claude-cli-wrapper -type f` → exactly 2 files: `.claude-plugin/plugin.json` and `skills/claude-cli/SKILL.md`
+- `wc -l plugins/claude-cli-wrapper/skills/claude-cli/SKILL.md` → 631 lines (under the 2,500-token project ceiling, with headroom for lazy-loaded references if needed later)
+
+### Version bumps
+
+- **Marketplace** 0.30.0 → 0.30.1
+- **claude-cli-wrapper** 0.2.2 → 0.3.0 (minor: complete skill body rewrite)
+- **tp-mcp** 0.2.2 → 0.2.3 (patch: case study replacement, no behavior change)
+- **tp-git** 0.3.5 → 0.3.6 (patch: one CONTRAST line rephrased, no behavior change)
+- **core-principled** 0.20.0 → 0.20.1 (patch: two re-route lines in one reference file updated)
+
 ## [1.22.0] — 2026-06-05
 
 ### Added

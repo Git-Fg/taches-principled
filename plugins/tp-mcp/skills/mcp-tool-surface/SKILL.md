@@ -95,6 +95,6 @@ The schemars attribute cheat-sheet (per-attribute → JSON Schema mapping) lives
 - [5] LeanIX: MCP Tools — https://engineering.leanix.net/blog/mcp-tools/
 - [6] Merge: MCP tool schema — https://www.merge.dev/blog/mcp-tool-schema
 - [7] Model Context Protocol: Architecture overview — https://modelcontextprotocol.io/docs/learn/architecture
-- [8] Tool Design Principles in MCP (the "description is the instruction manual" framing) — derived from community patterns observed in claude-cli-wrapper design doc and MCP server examples
+- [8] Tool Design Principles in MCP (the "description is the instruction manual" framing) — derived from community patterns observed in MCP server examples
 - [9] schemars attribute reference — https://docs.rs/schemars/
-- [10] Worked example: the `claude-cli` skill in this marketplace's `claude-cli-wrapper` plugin (6-tool decomposition)
+- [10] Worked example: the synthetic `git-cli` 5-tool decomposition in `mcp-server-design/references/design-decisions.md` §3
