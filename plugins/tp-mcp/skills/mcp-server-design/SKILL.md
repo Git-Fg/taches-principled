@@ -28,7 +28,7 @@ authoring details, see `mcp-tool-surface`.
 - "MCP capability negotiation"
 - "MCP security checklist"
 - "What makes a Claude-Optimal MCP server"
-- "Wrap a CLI as an MCP server" → this skill + `mcp-server-implement` together; the `claude-cli` skill is a worked example
+- "Wrap a CLI as an MCP server" → this skill + `mcp-server-implement` together; `references/design-decisions.md` §3 has a worked example (synthetic `git-cli` decomposition)
 
 ## CONTRAST
 
@@ -41,7 +41,7 @@ authoring details, see `mcp-tool-surface`.
 
 The mechanism content lives in references/. Read the right one before committing to a design decision. The hub itself is a router — it points you at the right reference, the references carry the mechanism.
 
-You MUST read `references/design-decisions.md` BEFORE committing to a tool decomposition or output contract. It teaches the equilibrated-recursivity thesis (flat schema, deep data via pass-through), the 1-tool vs N-tool decomposition matrix with merge and split signals, the `claude-cli-wrapper` 6-tool case study, the text-with-JSON output contract, the JSON-RPC error code discipline (including the custom `-32xxx` range), the tool annotation discipline (honesty matters, host treats them as untrusted), the pass-through principle, and the 12 KB context budget rule. Do not proceed without reading it.
+You MUST read `references/design-decisions.md` BEFORE committing to a tool decomposition or output contract. It teaches the equilibrated-recursivity thesis (flat schema, deep data via pass-through), the 1-tool vs N-tool decomposition matrix with merge and split signals, a synthetic `git-cli` 5-tool worked example, the text-with-JSON output contract, the JSON-RPC error code discipline (including the custom `-32xxx` range), the tool annotation discipline (honesty matters, host treats them as untrusted), the pass-through principle, and the 12 KB context budget rule. Do not proceed without reading it.
 
 You MUST read `references/operations-discipline.md` BEFORE declaring a server production-ready. It teaches capability negotiation (the `ServerCapabilities` table and the `sampling` / `elicitation` / `roots` server-initiated capabilities), the MUST/SHOULD/MAY security checklist, the tool naming conventions (snake_case, verb_noun, prefix when 5+ tools, action-enum-not-sibling-tools), and the 8-point Claude-Optimal validation checklist. Do not proceed without reading it.
 
@@ -52,7 +52,7 @@ You MUST read `references/claude-code-consumption.md` BEFORE telling a user thei
 - **Schema design (constraints, naming, descriptions, `additionalProperties` discipline)** → `mcp-tool-surface`
 - **Schemars attribute cheat-sheet** (per-attribute → JSON Schema mapping) → `mcp-tool-surface/references/schemars-cheatsheet.md`
 - **Implementation in Rust (rmcp + schemars, transports, server lifecycle)** → `mcp-server-implement`
-- **Worked example: wrapping Claude Code CLI as 6 tools** → `claude-cli` skill
+- **Worked example: synthetic `git-cli` 5-tool decomposition** → `references/design-decisions.md` §3
 - **Quality evaluation** (planned `mcp-server-quality`, uses `tp-sadd` judge pattern) → not yet implemented
 - **MCP client patterns** (when the agent IS the MCP consumer) → not yet implemented
 

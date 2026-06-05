@@ -43,25 +43,33 @@ This is the sweet spot: the agent reasons about simple keys, but the wrapped imp
 - Combining them costs >1 KB of context for rarely-used args
 - One is read-only and the other is destructive (separation helps safety)
 
-## §3. Tool decomposition case study: claude-cli-wrapper
+## §3. Decomposition worked example (synthetic: `git-cli`)
 
-The `claude-cli-wrapper` plugin in this marketplace is a real example. It exposes 6 tools, not 1:
+**This is a hypothetical teaching example, not a shipped wrapper.** It illustrates the same 6-tool decomposition principle that the marketplace's former `claude-cli-wrapper` plugin demonstrated, but uses a well-known CLI (`git`) that every reader has used. The tool names below are illustrative; no plugin in this marketplace ships a `git-cli` wrapper.
 
-| Tool | Operational domain | Approx params |
-|---|---|---|
-| `claude_execute` | Run a prompt, get structured output | 18 |
-| `claude_session` | Lifecycle (resume/continue/fork/list/info/close) | 4 |
-| `claude_context` | Workspace (add dirs, worktrees, doctor) | 5 |
-| `claude_review` | Code review (ultrareview) | 3 |
-| `claude_agent` | Background agent management | 5 |
-| `claude_config` | Runtime tuning (model/effort/permissions/settings) | 6 |
+Suppose we wrap `git` as MCP tools. The natural decomposition is 5 tools, not 1, because each operation is a distinct verb with a distinct safety profile:
 
-Total: ~41 params across 6 tools. Each schema < 2 KB serialized. The wrapper amortizes the context cost of the wrapped CLI (which has 50+ flags) into a manageable per-tool surface.
+| Tool | Operational domain | Approx params | Annotation |
+|---|---|---|---|
+| `git_status` | Working-tree state | 4 | (none) |
+| `git_diff` | Code review (read-only) | 3 | `readOnlyHint: true` |
+| `git_commit` | Snapshot a change (destructive) | 3 | `destructiveHint: true` |
+| `git_log` | History (read-only) | 3 | `readOnlyHint: true` |
+| `git_branch` | Branch management (mostly destructive) | 3 | `destructiveHint: true` |
+
+Total: ~16 params across 5 tools. Compare to a single `git_run` tool exposing the ~150 flags of `git` — that would violate the context budget (≤2 KB per tool schema) and bury the high-traffic operations in rarely-used flag noise.
 
 **Lessons from this decomposition:**
-- The `action` enum is used inside `claude_session` and `claude_config` (6 lifecycle actions in one tool)
-- `claude_execute` is the high-traffic tool, so it gets the most params; the others are kept lean
-- All 6 tools share a `session_id` UUID format (strict regex enforced) for cross-tool continuity
+
+- **Read/write separation drives the safety split.** `git_diff` and `git_log` are read-only — they should carry `readOnlyHint: true` so the MCP host can auto-approve them or restrict them to safer execution contexts. `git_commit` and `git_branch` carry `destructiveHint: true`. This split makes the safety profile of each tool self-documenting.
+
+- **The high-traffic tool gets the most params.** `git_status` is the workhorse (called constantly during development), so it earns 4 params (e.g., `path`, `short`, `branch`, `porcelain`). The rarer operations get 3. The most common tool carries the most context cost; that's the right trade.
+
+- **No `action` enum is needed here.** Each tool has a distinct verb (`status`, `diff`, `commit`, `log`, `branch`), so a discriminator is unnecessary. Reserve the `action` enum pattern for tools where multiple operations share a session/context — for example, a `git_session` tool that wraps `git rebase`, `git merge`, `git rebase --abort`, `git rebase --continue`, `git rebase --skip` would benefit from an `action` enum because all five share the same rebase state.
+
+- **The decomposition mirrors the user's mental model.** A developer thinks of "I want to see the diff" as a single operation, not as a `git_diff` mode inside a `git_query` tool. Mirror the user's verbs in your tool names.
+
+- **When NOT to use this pattern.** If the wrapped CLI has only 1-2 operations, a single tool is correct. Forcing a decomposition on a 1-operation CLI just adds tools the user has to learn. The 5-tool shape above works because `git` has 5 distinct operational domains; the same shape would be wrong for a CLI with 2 operations.
 
 ## §4. Output contract: CallToolResult text+JSON
 

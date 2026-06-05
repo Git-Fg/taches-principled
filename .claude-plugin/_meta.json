@@ -5,7 +5,7 @@
       "name": "Git-Fg"
     },
     "description": "A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans \u2014 with principle-based guidance that teaches judgment over procedure.",
-    "version": "0.30.0"
+    "version": "0.30.1"
   },
   "core-principled": {
     "source": "./plugins/core-principled",
@@ -99,13 +99,13 @@
     "keywords": [
       "taches-principled",
       "claude-code",
-      "mcp",
       "cli-wrapper",
+      "bash-pattern",
+      "direct-cli",
+      "headless-invocation",
       "execute",
       "session-management",
-      "code-review",
-      "agent-spawn",
-      "config"
+      "ultrareview"
     ]
   },
   "tp-rust": {

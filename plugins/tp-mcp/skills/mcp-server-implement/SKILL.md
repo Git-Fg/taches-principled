@@ -53,7 +53,7 @@ You MUST read `references/build-and-test.md` BEFORE shipping the server. It teac
 
 - **Why this design works (tool decomposition, error codes, output contract)** → `mcp-server-design`
 - **How to write a good JSON Schema (constraints, descriptions, `additionalProperties`)** → `mcp-tool-surface`
-- **Worked example: `claude-cli-wrapper` 6-tool decomposition** → `claude-cli` skill
+- **Worked example: synthetic `git-cli` 5-tool decomposition** → `mcp-server-design/references/design-decisions.md` §3
 - **CLI inspector canonical example set** (the `--cli` mode patterns) → `references/build-and-test.md` — also reachable from `mcp-server-design/references/claude-code-consumption.md` §3 (verification commands)
 - **Client-side patterns (calling an MCP server from another agent)** → not yet implemented
 - **Quality evaluation of an existing server** → planned `mcp-server-quality` skill
@@ -87,4 +87,4 @@ You MUST read `references/build-and-test.md` BEFORE shipping the server. It teac
 - [8] HackMD: A Coder's Guide to the Official Rust MCP Toolkit — https://hackmd.io/@Hamze/S1tlKZP0kx
 - [9] mcpcat.io: Build MCP Servers in Rust — https://mcpcat.io/guides/building-mcp-server-rust/
 - [10] schemars docs — https://docs.rs/schemars/
-- [11] Worked example: the `claude-cli` skill in this marketplace's `claude-cli-wrapper` plugin
+- [11] Worked example: the synthetic `git-cli` 5-tool decomposition in `mcp-server-design/references/design-decisions.md` §3
