@@ -1,6 +1,6 @@
 ---
 name: mcp-server-implement
-description: Build an MCP server in Rust — tool attributes, server lifecycle (initialize → capabilities → shutdown), transport choice (stdio vs Streamable HTTP), stderr-only logging, error mapping, and testing with the MCP Inspector. Use when the user says "implement an MCP server in Rust", "build an MCP tool", "Rust MCP server", "transport choice stdio vs HTTP", "MCP server lifecycle".
+description: Build an MCP server in Rust — tool attributes, server lifecycle (initialize → capabilities → shutdown), transport choice (stdio vs Streamable HTTP), stderr-only logging, error mapping, and testing with the MCP Inspector in CLI mode (no browser). Use when the user says "implement an MCP server in Rust", "build an MCP tool", "Rust MCP server", "transport choice stdio vs HTTP", "MCP server lifecycle".
 when_to_use: |
   - "Build me an MCP server in Rust"
   - "Set up rmcp with schemars for tool schemas"
@@ -47,7 +47,7 @@ You MUST read `references/lifecycle-and-transport.md` BEFORE choosing a transpor
 
 You MUST read `references/runtime-contracts.md` BEFORE writing any tool that logs, surfaces errors, or returns structured output. It teaches the stderr-only logging rule (stdout corrupts the JSON-RPC stream), the `rmcp::ErrorData` constructors and the error-code → category mapping, the output construction idioms for text/JSON/multi-content, and the long-output truncation pattern. Do not proceed without reading it.
 
-You MUST read `references/build-and-test.md` BEFORE shipping the server. It teaches the test pyramid (unit / integration with the MCP Inspector / end-to-end with a real client / schema validation), the release build optimization, and the cross-compilation matrix for distribution. Do not proceed without reading it.
+You MUST read `references/build-and-test.md` BEFORE shipping the server. It teaches the test pyramid (unit / integration with the MCP Inspector in CLI mode (no browser) / end-to-end with a real client / schema validation), the release build optimization, and the cross-compilation matrix for distribution. Do not proceed without reading it.
 
 ## §3. Handoff to other skills
 

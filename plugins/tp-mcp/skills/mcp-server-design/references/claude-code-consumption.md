@@ -82,14 +82,18 @@ claude mcp list
 # Get verbose connection + handshake output
 claude mcp get my-server
 
-# Test a tool call without the model in the loop
-npx @modelcontextprotocol/inspector ./bin/my-mcp-server
-# → Inspector speaks JSON-RPC over stdio directly
+# Test a tool call without the model in the loop (use --cli mode; the interactive web UI is for humans)
+npx @modelcontextprotocol/inspector --cli ./bin/my-mcp-server --method tools/list
+npx @modelcontextprotocol/inspector --cli ./bin/my-mcp-server --method tools/call --tool-name mytool --tool-arg key=value
+# → Inspector in --cli mode speaks JSON-RPC over stdio directly
 # → Lets you call tools/list, tools/call with arbitrary args
 # → Shows every request/response frame on the wire
+# → No browser needed — works in any shell, including headless agents
 ```
 
-**The Inspector is the ground truth** for what your schema actually looks
+For more inspector patterns (config files, JSON arguments, remote servers, custom headers, transport selection), see `mcp-server-implement/references/build-and-test.md`.
+
+**The Inspector (`--cli` mode) is the ground truth** for what your schema actually looks
 like on the wire. If the model is calling the tool with wrong args, the
 first debugging step is: does the Inspector show the schema you thought
 you wrote?

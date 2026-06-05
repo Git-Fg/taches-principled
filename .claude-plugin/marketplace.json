@@ -5,7 +5,7 @@
     "name": "Git-Fg"
   },
   "description": "A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans \u2014 with principle-based guidance that teaches judgment over procedure.",
-  "version": "0.28.0",
+  "version": "0.28.1",
   "plugins": [
     {
       "name": "claude-cli-wrapper",
@@ -89,7 +89,7 @@
     },
     {
       "name": "tp-mcp",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "description": "Principled MCP (Model Context Protocol) server skills \u2014 design (equilibrated recursivity, tool decomposition, pass-through, output contract, JSON-RPC error discipline, context budget, annotations, naming, capability negotiation, security), implement (rmcp + schemars + tokio, transport choice, stderr-only logging, error mapping, testing), and tool-surface authoring (JSON Schema 2020-12 constraints, additionalProperties:false discipline, discriminator enums, naming). Three skills covering the full MCP server lifecycle, plus the `claude-cli` skill in the existing `claude-cli-wrapper` plugin as a worked example of the 6-tool decomposition pattern.",
       "source": "./plugins/tp-mcp",
       "homepage": "https://github.com/Git-Fg/taches-principled",

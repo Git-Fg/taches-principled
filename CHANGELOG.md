@@ -2,6 +2,23 @@
 
 All notable changes are documented here.
 
+## [1.19.1] — 2026-06-05
+
+### Changed
+
+- **MCP Inspector guidance in `tp-mcp` is now CLI-mode-first, not interactive-UI-first.** The previous guidance in `mcp-server-implement/references/build-and-test.md` and `mcp-server-design/references/claude-code-consumption.md` described the Inspector as a debug tool, but the only example was the interactive web UI launch (`npx @modelcontextprotocol/inspector ./bin/my-mcp-server`), which an AI agent cannot run without a browser. The new guidance uses the `--cli` mode with 11 concrete examples covering: basic usage, config files, listing tools/resources/prompts, calling tools with positional and JSON args, connecting to remote servers (default SSE, explicit Streamable HTTP), custom headers, and remote tool calls. Both reference files cross-link to the canonical example set so the examples live in one place. The `mcp-server-implement` frontmatter description and hub reference-index paragraph are updated to say "MCP Inspector in CLI mode" so the routing signal is explicit.
+
+- **No behavior change for end users.** The Inspector still has the interactive web UI; this just stops pointing human-curious AI agents at a path that doesn't work for them.
+
+### Migration
+
+- **No user action required.** Pure documentation correction.
+
+### Version bumps
+
+- **Marketplace** 0.28.0 → 0.28.1
+- **tp-mcp** 0.2.0 → 0.2.1 (patch: documentation correction, no skill logic change)
+
 ## [1.19.0] — 2026-06-05
 
 ### Changed

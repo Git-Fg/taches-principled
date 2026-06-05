@@ -18,20 +18,49 @@ mod tests {
 }
 ```
 
-**Integration test with the MCP Inspector (the official debug tool):**
+**Integration test with the MCP Inspector in CLI mode (the official debug tool, no browser needed):**
 ```bash
 # Build your server
 cargo build --release
 
-# Launch the inspector against it
-npx @modelcontextprotocol/inspector ./target/release/my-mcp-server
+# Basic usage
+npx @modelcontextprotocol/inspector --cli node build/index.js
+
+# With config file
+npx @modelcontextprotocol/inspector --cli --config path/to/config.json --server myserver
+
+# List available tools
+npx @modelcontextprotocol/inspector --cli node build/index.js --method tools/list
+
+# Call a specific tool
+npx @modelcontextprotocol/inspector --cli node build/index.js --method tools/call --tool-name mytool --tool-arg key=value --tool-arg another=value2
+
+# Call a tool with JSON arguments
+npx @modelcontextprotocol/inspector --cli node build/index.js --method tools/call --tool-name mytool --tool-arg 'options={"format": "json", "max_tokens": 100}'
+
+# List available resources
+npx @modelcontextprotocol/inspector --cli node build/index.js --method resources/list
+
+# List available prompts
+npx @modelcontextprotocol/inspector --cli node build/index.js --method prompts/list
+
+# Connect to a remote MCP server (default is SSE transport)
+npx @modelcontextprotocol/inspector --cli https://my-mcp-server.example.com
+
+# Connect to a remote MCP server (with Streamable HTTP transport)
+npx @modelcontextprotocol/inspector --cli https://my-mcp-server.example.com --transport http --method tools/list
+
+# Connect to a remote MCP server (with custom headers)
+npx @modelcontextprotocol/inspector --cli https://my-mcp-server.example.com --transport http --method tools/list --header "X-API-Key: your-api-key"
+
+# Call a tool on a remote server
+npx @modelcontextprotocol/inspector --cli https://my-mcp-server.example.com --method tools/call --tool-name remotetool --tool-arg param=value
+
+# List resources from a remote server
+npx @modelcontextprotocol/inspector --cli https://my-mcp-server.example.com --method resources/list
 ```
 
-The inspector:
-- Connects via stdio (or HTTP if you set the URL)
-- Lists your tools
-- Lets you call each tool with arbitrary args
-- Shows the JSON-RPC messages on the wire
+The inspector in `--cli` mode is the ground truth for what your schema actually looks like on the wire. It speaks JSON-RPC over stdio (or HTTP if you set the URL), lists your tools/resources/prompts, lets you call each tool with arbitrary args, and shows every request/response frame on the wire — all without a web browser. **AI agents should default to `--cli` mode**; the interactive web UI is for human inspection only.
 
 **End-to-end test with a real client:**
 Use a real MCP host (Claude Code, Cline, Continue) and try the user's actual workflows. This catches tool-selection accuracy problems that unit tests miss.
