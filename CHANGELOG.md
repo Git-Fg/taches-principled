@@ -2,6 +2,27 @@
 
 All notable changes are documented here.
 
+## [1.21.0] — 2026-06-05
+
+### Changed
+
+- **Rust plugin restructured: 4 skills → 1 hub + 4 subagents.** The four separate skills (`rust-scaffold`, `rust-workspace`, `rust-quality`, `rust-release`) are merged into a single `rust` hub with a `Modes:` directive (SCAFFOLD / WORKSPACE / QUALITY / RELEASE), matching the pattern shipped for `tp-sadd`, `tp-fpf`, `tp-git`, and `ddd`. All 12 reference files (mode-prefixed names: `references/scaffold-*.md`, `references/workspace-*.md`, `references/quality-*.md`, `references/release-*.md`) move to `plugins/tp-rust/skills/rust/references/` with content preserved verbatim. 4 new subagents under `plugins/tp-rust/agents/`: `rust-cargo-reviewer` (Cargo.toml & workspace structure review, blue, foreground), `rust-pipeline-auditor` (CI / clippy / nextest / dev-experience audit, yellow, background), `rust-supply-chain-auditor` (den.toml / vet / RUSTSEC / Dependabot audit, red, background), `rust-publish-reviewer` (pre-publish semver / changelog / version review, yellow, background). All 4 subagents follow CLAUDE.md frontmatter rules: no `tools:` (inherit), no `model:` (inherit), `background: true` on the 3 long-running reviewers, `skills:` array with the `rust` hub preloaded plus `diagnose` (all 4) + `security` (2) + `refine` (1) cross-skill preloads per role.
+
+- **8 cross-cites inside references fixed (Rule 3 compliance).** 4 reference files (`scaffold-cargo-and-features.md`, `scaffold-lib-bin-rustdoc.md`, `release-versioning-and-changelog.md`, `release-publishing-and-deps.md`, `workspace-decisions.md`) had 8 cross-references to sibling skills by name (e.g., "the MSRV job pattern lives in the `rust-quality` skill's CI reference"). All 8 replaced with self-contained prose that names the parent skill or inlines the relevant content, per CLAUDE.md Rule 3 (references must not cross-cite other references — the SKILL.md is the sole, centralized router).
+
+- **Hub SKILL.md body ~1670 tokens, well under the 2500-token project ceiling.** Frontmatter total (description + when_to_use) is 808 chars, well under the 1536-char limit. The 4-mode `Modes:` directive, the consolidated `## Anti-patterns` section (32 patterns grouped by mode, no duplicates), the per-mode `**Spawn Directives:**` lines, and the `## Subagent Index` table are new. The original 4 SKILL.md files' CONTRAST cross-citation web dissolves into a single short CONTRAST in the hub listing only external skills (`fpf`, `diagnose`, `refine`).
+
+- **CLAUDE.md merge-criteria table updated.** The `| Hub Skill | Skills Merged | Rationale |` table gains a `rust` row documenting the consolidation (plan: `.principled/plans/rust-hub-merger-ROADMAP.md`).
+
+### Migration
+
+- **No user action required.** The new `rust` skill fires on the same triggers the 4 old skills fired on, but with a single description field (no risk of under-triggering because the user said "scaffold" instead of "rust-scaffold"). Existing references to "use rust-quality for CI" inside any cross-skill handoff text should be read as "use rust QUALITY mode". The 4 subagents are dispatched by the hub modes automatically; users do not invoke them directly.
+
+### Version bumps
+
+- **Marketplace** 0.28.3 → 0.29.0
+- **tp-rust** 0.2.1 → 0.3.0
+
 ## [1.20.1] — 2026-06-05
 
 ### Fixed

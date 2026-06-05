@@ -41,7 +41,7 @@ Use this when you want downstream users to commit to your crate but you still wa
 
 **Tools:**
 - Document MSRV in `[package].rust-version` (advisory, but consumers respect it)
-- CI-test the MSRV (the MSRV job pattern lives in the `rust-quality` skill's CI reference)
+- CI-test the MSRV (the `msrv` job is part of the canonical 6-job CI workflow: format → test → lint → doc → audit → msrv)
 - Use `cargo +1.81 update` (or whatever your MSRV is) to ensure dep tree stays MSRV-compatible
 
 ## §4. Workspace lockstep versioning
@@ -53,7 +53,7 @@ When all members of a workspace share a version (the cargo, tokio, axum pattern)
 version = "0.5.0"   # all members inherit via version.workspace = "true"
 ```
 
-Bump one number; all members publish together. The release tool (`release-plz`, `cargo-release`) coordinates the version bump + tag + publish across all members. See `rust-workspace` for the full workspace pattern.
+Bump one number; all members publish together. The release tool (`release-plz`, `cargo-release`) coordinates the version bump + tag + publish across all members. The full workspace versioning + inheritance pattern is in the WORKSPACE mode's `references/workspace-decisions.md`.
 
 ## §5. Changelog tooling decision
 

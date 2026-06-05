@@ -5,7 +5,7 @@ Reference for publishing a crate to crates.io (first publish + ongoing) and the 
 ## §1. First publish
 
 ```bash
-# 1. Make sure metadata is set (see rust-scaffold §3)
+# 1. Make sure metadata is set (see the Cargo.toml template in the SCAFFOLD mode's `references/scaffold-cargo-and-features.md` §2)
 # 2. Verify it builds clean
 cargo build --release
 cargo test --all-features --locked
@@ -53,4 +53,4 @@ replace-with = "vendored-sources"
 cargo vendor
 ```
 
-Use for: air-gapped builds, reproducible CI without network, license compliance (you ship the vendored deps with the source). Most projects don't need it; the cargo-deny → cargo-vet → Dependabot supply-chain ladder (initial setup lives in the `rust-quality` skill) is the lighter-weight alternative.
+Use for: air-gapped builds, reproducible CI without network, license compliance (you ship the vendored deps with the source). Most projects don't need it; the cargo-deny → cargo-vet → Dependabot supply-chain ladder (initial setup is in the QUALITY mode's `references/quality-supply-chain-ladder.md`) is the lighter-weight alternative.

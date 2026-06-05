@@ -74,7 +74,7 @@ pub fn foo(n: u32) -> Result<u32, MyError> { ... }
 #![forbid(unsafe_code)]   # if you're safe-Rust
 ```
 
-**DO NOT use `#![deny(warnings)]`** — it breaks on transitive-dep warnings and you cannot opt out. Use `RUSTFLAGS="-D warnings"` in CI for your crate only (the per-crate clippy configuration lives in the `rust-quality` skill's lint reference).
+**DO NOT use `#![deny(warnings)]`** — it breaks on transitive-dep warnings and you cannot opt out. Use `RUSTFLAGS="-D warnings"` in CI for your crate only, and configure per-crate clippy via `clippy.toml` (the lints reference covers MSRV-aware lints, the disallowed-types list, and the library-vs-binary lint group selection).
 
 ## §3. Examples & tests directory
 

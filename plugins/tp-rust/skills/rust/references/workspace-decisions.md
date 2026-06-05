@@ -6,7 +6,7 @@ Reference for the single-crate vs workspace decision, the three workspace templa
 
 ```
 Are you a single binary with no reuse need?
-├─ YES → single crate (use rust-scaffold)
+├─ YES → single crate (use the SCAFFOLD mode in the `rust` hub)
 └─ NO
    ├─ Do you have a binary + library split, OR multiple binaries, OR
    │  shared types used by 2+ crates, OR feature-flag complexity?

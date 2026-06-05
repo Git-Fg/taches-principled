@@ -221,6 +221,7 @@ description: Routes tasks to domain specialists. Use for any pharmacology, diagn
 | `git` (tp-git) | `git-ship` + `git-review` + `git-issues` + `git-advanced` | All git workflow automation |
 | `fpf` (tp-fpf) | `fpf-propose` + `fpf-maintenance` + `fpf-read` | All first-principles reasoning |
 | `ddd` (tp-ddd) | `code-architecture` + `code-quality` + `code-transparency` + `code-api` | All domain-driven design |
+| `rust` (tp-rust) | `rust-scaffold` + `rust-workspace` + `rust-quality` + `rust-release` | All Rust project lifecycle (init → structure → quality → release); see `.principled/plans/rust-hub-merger-ROADMAP.md` |
 
 Hub-and-spoke consolidation target: 22-28 skills. Run `find plugins -name SKILL.md | wc -l` for current inventory.
 
@@ -243,7 +244,7 @@ plugins/
 ├── tp-fpf/                    # First principles reasoning
 ├── tp-git/                    # Git workflow automation
 ├── tp-mcp/                    # MCP server design, implementation, tool-surface
-├── tp-rust/                   # Rust project lifecycle (scaffold, workspace, quality, release)
+├── tp-rust/                   # Rust project lifecycle (single hub, 4 modes, 4 subagents)
 ├── tp-session-audit/          # Session meta-review and behavioral analysis
 └── tp-wiki/                   # Personal wiki tools (search, lint, ingest)
 

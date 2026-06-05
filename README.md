@@ -41,7 +41,7 @@ Each plugin is independently installable and extends the core with specialized c
 | **tp-session-audit** | Session meta-review, behavioral analysis, and sanitized GitHub issue reporting |
 | **claude-cli-wrapper** | MCP wrapper for the Claude Code CLI — six focused tools for executing, reviewing, and managing sessions programmatically |
 | **tp-mcp** | MCP server design and implementation — three skills covering the full server lifecycle |
-| **tp-rust** | Rust project skills — scaffold, workspace, quality pipeline, and release management |
+| **tp-rust** | Rust project skills — single hub with SCAFFOLD / WORKSPACE / QUALITY / RELEASE modes, 4 subagents covering the full Rust lifecycle |
 | **tp-wiki** | Personal wiki search, lint, and ingest — backed by wiki-searcher, wiki-linter, and wiki-ingester agents |
 
 ## Installation
