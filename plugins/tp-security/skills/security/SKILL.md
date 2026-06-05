@@ -48,10 +48,10 @@ This skill runs as **an orchestration script** — a multi-modal sweep with adve
 
 ## Decision Router
 
-IF scanning for injection, auth, or access control patterns in code → **SAST** mode — ALWAYS spawn `tp-sast-scanner` per OWASP category. You MUST read `references/sast-patterns.md` BEFORE proceeding. Do not make assumptions without reading this file.
-IF checking for vulnerable or outdated dependencies → **DEPENDENCY-AUDIT** mode — ALWAYS spawn `tp-dependency-auditor` per package manager. You MUST read `references/dependency-audit.md` BEFORE proceeding. Do not make assumptions without reading this file.
-IF finding exposed API keys, tokens, or credentials in code → **SECRETS-DETECTION** mode — ALWAYS spawn `tp-secrets-detector` per secret type. You MUST read `references/secrets-detection.md` BEFORE proceeding. Do not make assumptions without reading this file.
-IF verifying compliance with security standards or certifications → **COMPLIANCE** mode — ALWAYS spawn `tp-compliance-checker` for each regulation. You MUST read `references/compliance-checklists.md` BEFORE proceeding. Do not make assumptions without reading this file.
+IF scanning for injection, auth, or access control patterns in code → **SAST** mode — ALWAYS spawn `security-sast-scanner` per OWASP category. You MUST read `references/sast-patterns.md` BEFORE proceeding. Do not make assumptions without reading this file.
+IF checking for vulnerable or outdated dependencies → **DEPENDENCY-AUDIT** mode — ALWAYS spawn `security-dependency-auditor` per package manager. You MUST read `references/dependency-audit.md` BEFORE proceeding. Do not make assumptions without reading this file.
+IF finding exposed API keys, tokens, or credentials in code → **SECRETS-DETECTION** mode — ALWAYS spawn `security-secrets-detector` per secret type. You MUST read `references/secrets-detection.md` BEFORE proceeding. Do not make assumptions without reading this file.
+IF verifying compliance with security standards or certifications → **COMPLIANCE** mode — ALWAYS spawn `security-compliance-checker` for each regulation. You MUST read `references/compliance-checklists.md` BEFORE proceeding. Do not make assumptions without reading this file.
 IF ambiguous → ask: "Are you scanning code patterns, dependencies, exposed secrets, or compliance standards?"
 
 ---

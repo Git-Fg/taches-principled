@@ -2,6 +2,55 @@
 
 All notable changes are documented here.
 
+## [1.22.0] — 2026-06-05
+
+### Added
+
+- **`tp-security` plugin (1.0.0)** — new domain-specific plugin extracted from `core-principled`. Single `security` hub with a `Modes:` directive covering the pre-production security review lifecycle: SAST (static application security testing — injection, auth bypass, SSRF, deserialization, access control), DEPENDENCY-AUDIT (CVE scanning, lockfile drift, typosquatting, supply-chain integrity), SECRETS-DETECTION (API keys, tokens, credentials, private keys via pattern matching and entropy analysis), COMPLIANCE (OWASP ASVS, GDPR, SOC2, PCI-DSS, HIPAA evidence mapping and gap analysis). Five subagents: `security-sast-scanner`, `security-dependency-auditor`, `security-secrets-detector`, `security-reviewer`, `security-compliance-checker`. Hub skill body and 4 reference files (`sast-patterns.md`, `dependency-audit.md`, `secrets-detection.md`, `compliance-checklists.md`) ported verbatim from `core-principled`; agent bodies ported verbatim. Agent frontmatter per marketplace conventions: no `tools:` (inherit), no `model:` (inherit), `background: true` on all 5 (long-running scanners), `skills: [security]` on all 5 (single-hub preload). All 5 agents inherit the `security` hub skill via the `skills:` array — no cross-plugin dependency.
+
+- **Sub-plugin agent naming convention applied** — all 5 moved agents renamed from the legacy `core-principled` `tp-*` prefix to the sub-plugin `security-*` prefix in both filename and frontmatter `name:` field. `tp-sast-scanner` → `security-sast-scanner`, `tp-dependency-auditor` → `security-dependency-auditor`, `tp-secrets-detector` → `security-secrets-detector`, `tp-security-reviewer` → `security-reviewer` (drops the redundant "security" — implied by the plugin), `tp-compliance-checker` → `security-compliance-checker`. Matches the 1.4.0 `tp-sadd`/`tp-fpf` rename pattern and the CLAUDE.md rule that sub-plugin agents use the sub-plugin prefix. The 4 spawn directives in `security/SKILL.md` and the 1 spawn reference in `refine/SKILL.md:141` are updated to the new names.
+
+### Changed
+
+- **`security` skill and 5 agents removed from `core-principled`** (core-principled 0.19.1 → 0.20.0). The `security` skill + 4 reference files + 5 agent definitions now live in `plugins/tp-security/`. `core-principled` description updated to note the move. `core-principled` keywords retain `security` because security is a cross-cutting concern in `refine`'s spawn list and the new `tp-rust/agents/rust-supply-chain-auditor.md` preloads `security` from the new plugin (see Hardened below).
+
+- **`rust-supply-chain-auditor` cross-plugin `security` preload documented** (tp-rust, no version bump — pre-existing cross-plugin preload). The agent's `skills: [rust, diagnose, security]` declaration now carries a 3-line YAML comment noting that `security` is a cross-plugin preload from `tp-security` (extracted from `core-principled` in this release). Per CLAUDE.md's cross-plugin preloading rules, the preload is silently skipped if `tp-security` is not installed — the agent still works, just without the `security` skill's references in scope.
+
+- **`security-compliance-checker` cross-wire removed** (tp-security 1.0.0). The `diagnose` entry in the agent's `skills:` array was residual from when compliance work was treated as a diagnose subagent. The agent's body is purely compliance work; the `diagnose` preload was unnecessary. Dropped before the move.
+
+- **`refine` SKILL.md:141 spawn reference updated** to `security-reviewer` (from `tp-security` plugin). The 6-reviewer fan-out in `refine` MODE:REVIEW retained all 5 other agents; only the security reviewer's name and plugin origin changed.
+
+### Hardened
+
+- **Plugin name `tp-security` is free and unambiguous.** No directory or marketplace entry existed before this release; the slot is claimed cleanly. Following the established `tp-rust`/`tp-sadd`/`tp-fpf`/`tp-git`/`tp-mcp`/`tp-session-audit`/`tp-wiki` naming convention.
+
+- **Hub SKILL.md is pure router.** The 4-mode `Modes:` directive, the `Decision Router` section with 4 explicit IF→spawn directives, the `Mode Relationships` table, and the `Failure Signal` catalog are all preserved from the `core-principled` original. Hub body ~350 tokens — well under the 500-token router ceiling.
+
+- **Agent `tools:` discipline preserved.** None of the 5 agents carry a `tools:` field (per CLAUDE.md Rule 1 — the restriction is not the point for these long-running scanners; they inherit the full tool pool). `background: true` on all 5 (typical scanner runtime >30s).
+
+### Migration
+
+- **No user action required for the extraction itself.** Users who already have `core-principled` installed get the security capability from the same skill name; the routing signal is identical. Users who want to drop `core-principled` and keep just `tp-security` can do so — all 5 subagents and the hub now ship in the new plugin.
+
+- **If `tp-security` is not installed and `rust-supply-chain-auditor` is invoked**, the agent still works — the `security` skill preload is silently skipped per the cross-plugin preloading rules. The agent's body does not require `security` to be loaded to do supply-chain work; the preload is for richer reference context when available.
+
+- **The 4 `security` reference files** (`sast-patterns.md`, `dependency-audit.md`, `secrets-detection.md`, `compliance-checklists.md`) move with the hub to `plugins/tp-security/skills/security/references/`. No content changes.
+
+### Verification
+
+- `python3 scripts/regenerate-marketplace.py` → clean (catalog updated to 10 plugins: core-principled, tp-sadd, tp-fpf, tp-git, tp-session-audit, claude-cli-wrapper, tp-rust, tp-mcp, tp-wiki, tp-security)
+- `python3 scripts/check-citations.py` → `PASS: no citation violations, no missing preloads, no broken references`
+- `jq -e '.plugins | all(. as $p | ([keys[] | select(. == "version")] | length) == 1)' .claude-plugin/marketplace.json` → OK
+- All 5 new agents parse cleanly under PyYAML `safe_load`; the new `name:` fields match the filenames
+- No stale `tp-sast-scanner` / `tp-dependency-auditor` / `tp-secrets-detector` / `tp-security-reviewer` / `tp-compliance-checker` references remain in the marketplace (grep returns 0 matches outside `plugins/tp-security/`)
+- Audit: pre-extraction cluster analysis + adversarial verification produced a REVISE verdict with 3 required fixes (compliance-checker cross-wire, rust cross-plugin comment, ranking scope). All 3 fixes applied before the move.
+
+### Version bumps
+
+- **Marketplace** 0.29.1 → 0.30.0
+- **tp-security** (new) 1.0.0
+- **core-principled** 0.19.1 → 0.20.0 (minor: 1 skill + 5 agents removed)
+
 ## [1.21.1] — 2026-06-05
 
 ### Added

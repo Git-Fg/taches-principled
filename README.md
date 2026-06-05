@@ -1,6 +1,6 @@
 # TACHES Principled
 
-**Version:** marketplace 0.25.1 · project 1.16.1
+**Version:** marketplace 0.30.0 · project 1.22.0
 
 A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans — with principle-based guidance that teaches judgment over procedure.
 
@@ -11,7 +11,7 @@ A Claude Code plugin marketplace for building skills, subagents, hooks, and proj
 claude plugin marketplace add Git-Fg/taches-principled
 
 # Install plugins (run once per plugin)
-for p in core-principled tp-sadd tp-fpf tp-git tp-session-audit claude-cli-wrapper tp-mcp tp-rust tp-wiki; do
+for p in core-principled tp-sadd tp-fpf tp-git tp-session-audit claude-cli-wrapper tp-mcp tp-rust tp-wiki tp-security; do
   claude plugin install "$p@taches-principled" -y
 done
 ```
@@ -43,6 +43,7 @@ Each plugin is independently installable and extends the core with specialized c
 | **tp-mcp** | MCP server design and implementation — three skills covering the full server lifecycle |
 | **tp-rust** | Rust project skills — single hub with SCAFFOLD / WORKSPACE / QUALITY / RELEASE modes, 5 subagents covering the full Rust lifecycle |
 | **tp-wiki** | Personal wiki search, lint, and ingest — backed by wiki-searcher, wiki-linter, and wiki-ingester agents |
+| **tp-security** | Security review skills — single hub with SAST / DEPENDENCY-AUDIT / SECRETS-DETECTION / COMPLIANCE modes, 5 subagents covering the pre-production security review lifecycle |
 
 ## Installation
 
@@ -61,13 +62,14 @@ claude plugin install claude-cli-wrapper@taches-principled -y # MCP CLI wrapper
 claude plugin install tp-mcp@taches-principled -y          # MCP server skills
 claude plugin install tp-rust@taches-principled -y         # Rust project skills
 claude plugin install tp-wiki@taches-principled -y         # Personal wiki tools
+claude plugin install tp-security@taches-principled -y     # Security review skills
 ```
 
 ### Reinstall / Reset
 
 ```bash
 # Uninstall all plugins
-for p in core-principled tp-sadd tp-fpf tp-git tp-session-audit claude-cli-wrapper tp-mcp tp-rust tp-wiki; do
+for p in core-principled tp-sadd tp-fpf tp-git tp-session-audit claude-cli-wrapper tp-mcp tp-rust tp-wiki tp-security; do
   claude plugin uninstall "$p@taches-principled" -y
 done
 
