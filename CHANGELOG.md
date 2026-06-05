@@ -2,6 +2,21 @@
 
 All notable changes are documented here.
 
+## [1.20.1] — 2026-06-05
+
+### Fixed
+
+- **Removed chicken-and-egg routing logic from `session-anatomy.md`.** The reference file at `plugins/tp-session-audit/skills/session-analytics/references/session-anatomy.md:71` had a "When to read which file" table that pointed readers at other reference files in the same skill — a textbook chicken-and-egg violation per CLAUDE.md ("Reference files must be pure content — no frontmatter, no loading triggers, no 'When to read' sections, no conditional loading paragraphs"). The table is removed from the reference and relocated as a new `## Reference routing` section in the parent `session-analytics/SKILL.md` (right after the existing `## Reference Index` section), which is the proper home for routing logic per Rule 3. The relocated table preserves the original 6 entries (find sessions, parse event stream, diagnose subagent, audit permissions, reproduce headless run, see hook tools) and adds a 7th entry for the new cross-analyze workflow. A short paragraph above the table notes that the per-mode sections (CAPTURE, INSPECT, REVIEW, ISSUE, CROSS-ANALYZE, ADJUDICATE) remain the authoritative entry points and that this table is the secondary lookup. `session-anatomy.md` is now pure content (on-disk artifact map, encoded-CWD scheme, hook input field reference, and one-liners — its actual job).
+
+### Migration
+
+- **No user action required.** Pure content reorganization; the routing knowledge is preserved, just in the right file. Readers who followed the old "When to read which file" table in session-anatomy.md should follow the mode sections in the parent SKILL.md first and consult the new `## Reference routing` table as a secondary lookup.
+
+### Version bumps
+
+- **Marketplace** 0.28.2 → 0.28.3
+- **tp-session-audit** 0.3.4 → 0.3.5 (patch: chicken-and-egg cleanup in one reference file)
+
 ## [1.20.0] — 2026-06-05
 
 ### Fixed

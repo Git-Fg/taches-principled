@@ -67,14 +67,3 @@ Recover the original cwd from a session file (no encoding ambiguity):
 ```bash
 head -1 ~/.claude/projects/<encoded-cwd>/<sessionId>.jsonl | jq -r .cwd
 ```
-
-## When to read which file
-
-| If you need to… | Read |
-|------------------|------|
-| Find sessions for this project | One-liner above; this file |
-| Parse a session's event stream | `references/inspect-reference.md` (INSPECT mode) |
-| Diagnose why a subagent went wrong | `references/claude-headless.md` + the subagent's `.jsonl` |
-| Audit permission/hook decisions | `~/.claude/captures/<UUID>.debug.log` |
-| Reproduce a headless run | `references/claude-headless.md` (the `claude -p` capture protocol) |
-| See what tools a hook fired on | `transcript_path` field in hook input → main session JSONL |

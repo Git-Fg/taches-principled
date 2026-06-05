@@ -360,6 +360,29 @@ IF performing context and outcome analysis → spawn **`session-context-analyzer
 IF performing privacy audit and issue body construction (ISSUE) → spawn **`session-issue-generator`**
 IF performing forensic log analysis (CROSS-ANALYZE) → spawn **`session-inspector`**
 
+## Reference routing
+
+This skill ships seven reference files. The mode sections above already
+imperatively cite the ones they require; this table consolidates the
+"if you need X, read Y" mapping for quick lookup. References here are
+file names within this skill's `references/` directory; session-anatomy
+itself is the on-disk artifact map and is cited from the per-mode
+sections for path discovery.
+
+| If you need to… | Read |
+|------------------|------|
+| Find sessions for this project | `references/session-anatomy.md` (one-liners section) |
+| Parse a session's event stream | `references/inspect-reference.md` (INSPECT mode) |
+| Diagnose why a subagent went wrong | `references/claude-headless.md` + the subagent's `.jsonl` |
+| Audit permission/hook decisions | `~/.claude/captures/<UUID>.debug.log` (the debug-log event categories) |
+| Reproduce a headless run | `references/claude-headless.md` (the `claude -p` capture protocol) |
+| See what tools a hook fired on | `transcript_path` field in hook input → main session JSONL |
+| Run an evidence-validated cross-analyze | `references/cross-analyze-protocol.md` + `references/adjudicate-protocol.md` |
+
+The mode sections above (CAPTURE, INSPECT, REVIEW, ISSUE, CROSS-ANALYZE,
+ADJUDICATE) are the authoritative entry points — read those first; this
+table is the secondary lookup for the per-reference scope of each file.
+
 ## Cross-plugin dependencies
 
 This skill is part of the `tp-session-audit` plugin and depends on
