@@ -2,6 +2,97 @@
 
 All notable changes are documented here.
 
+## [1.22.5] — 2026-06-06
+
+### Changed
+
+- **4 skills migrated to `context: fork`** to honor the blackbox contract defined in `.claude/rules/context-fork-blackbox.md`. Each migrated skill now declares `context: fork`, `agent: general-purpose`, an explicit `argument-hint`, named `arguments`, a role statement at the top of the body, an explicit "Produce:" output spec, and a concrete `## I/O Example` section. Forked subagents receive only the skill's body and the user's arguments — no main-conversation history — so the body must be self-contained.
+  - `core-principled/skills/plan-lifecycle` — PLAN/EXECUTE orchestrator. PLAN mode writes ROADMAP.md + PLAN.md; EXECUTE mode spawns worker+critic subagents per phase and writes an execution report.
+  - `tp-fpf/skills/fpf` — first-principles reasoning orchestrator. PROPOSE writes a Design Rationale Record; MAINTAIN writes an evidence-freshness report; QUERY prints a search results table.
+  - `tp-sadd/skills/sadd` — competitive-generation orchestrator. COMPETE/EXECUTE/JUDGE/EXPLORE modes all write their outputs to `.principled/sadd/{problem-id}/`.
+  - `core-principled/skills/task-lifecycle` — task pipeline orchestrator. CAPTURE/REFINE/IMPLEMENT/DOCUMENT modes write to `.principled/tasks/{drafts,specs,implemented}/`.
+- **`tp-mcp/skills/mcp-quality-evaluate` body enhanced** with a `## I/O Example` section containing a concrete worked-out markdown report (header, summary table, per-dimension findings). Closes the 2/5 axis-5 gap from the original audit. Frontmatter and contract were already compliant.
+
+### Notes
+
+- **`mcp-expertise` is intentionally NOT forked.** The already-forked `mcp-quality-evaluate` orchestrator depends on the mcp-expertise hub's content via reference citations; double-fork is unsupported. The hub stays inline so the QUALITY orchestrator can read its references directly.
+- **13 other fork candidates stay inline** (mcp schema/impl, security, ideation, etc.). The migration pattern is now established and any of these can be migrated case-by-case when concrete defects emerge.
+
+## [1.22.4] — 2026-06-06
+
+### Added
+
+- **5 new gotcha-prevention rules** in `.claude/rules/` (extending the original 7), each authored from a real defect surfaced by the 1.22.3 code-review:
+  - `cross-skill-references.md` — bare `references/X.md` paths in an orchestrator or subagent resolve within the containing skill's directory, NOT the sibling skill's. Cite cross-skill references with the skill-name prefix (`mcp-expertise/references/X.md`). Defends against the broken 8-judge spawn pattern that shipped in 1.22.3.
+  - `hub-router-budget.md` — hub SKILL.md MUST stay under 500 tokens; mode bodies are one-paragraph descriptions + imperative reference citations, not procedural workflows. Multi-step branches and pre-conditions belong in `references/`, not the hub router.
+  - `context-fork-blackbox.md` — skills with `context: fork` run in an isolated subagent whose context starts empty (no main-conversation history). Frontmatter + body are the only contract. Description MUST front-load the output format (not just trigger phrases), body MUST start with a role statement + output spec, and `argument-hint` MUST be set when the skill expects structured input. The forked subagent is a blackbox (input → output); what is not in the frontmatter or body cannot be inferred.
+  - `cross-plugin-citations.md` — references to another plugin's pattern/file/concept cite the SEMANTIC ROLE only ("a parallel-judge pattern"), NEVER the plugin identifier (`tp-sadd`) or its file paths. The marketplace must remain installable plugin-by-plugin.
+  - `ground-truth-citations.md` — an agent's "Ground truth (P6)" section contains the rule only, no volatile provenance (issue numbers, PR numbers, file paths from a specific PR, contributor names). Provenance belongs in commit messages and CHANGELOG, not artifacts shipped to end users.
+
+### Changed
+
+- **CLAUDE.md self-check list** (Before Any Commit section) gains 5 new items, one per new rule. Each new check has a one-line description and a link to its rule file. The 7 original rule files are unchanged.
+
+### Why these rules
+
+Each rule encodes a defect that already shipped at least once in 1.22.3 and was caught only by post-hoc code review. The rules exist to make the code-review unnecessary for the same defect class — a maintainer following the self-check list will catch the gotcha at PR time, not at audit time.
+
+## [1.22.3] — 2026-06-06
+
+### Added
+
+- **3 subagents** for the `tp-mcp` plugin (new `plugins/tp-mcp/agents/` directory — first agents for this plugin):
+  - `mcp-server-builder` (IMPLEMENT-heavy, color: green, background: true) — full Rust MCP server implementation from tool decomposition and schema set, using rmcp 0.3 + schemars + MCP Inspector test pyramid. Body ~200 words, single coherent paragraph + 4 imperative `references/implement-*.md` citations. Cites: `implement-rmcp-api.md`, `implement-transport.md`, `implement-runtime.md`, `implement-testing.md`.
+  - `mcp-quality-judge` (QUALITY leaf, color: yellow, background: true) — single-dimension judge for the Claude-Optimal 8-dimension rubric; one of 8 parallel judges spawned by the orchestrator. Body ~130 words + a "## Ground truth" section (P6 rule from `tp-sadd/agents/sadd-judge.md`). Cites: `quality-rubric.md`, `quality-judge-pattern.md`.
+  - `mcp-schema-author` (SCHEMA-focused, color: blue, background: false) — JSON Schema authoring with `additionalProperties: false` discipline, constraint catalog, discriminator enum vs oneOf, and pitfalls catalog. Body ~190 words + 3 imperative `references/schema-*.md` citations + cross-mode citation to `implement-rmcp-api.md` Appendix A. Cites: `schema-foundation.md`, `schema-styling.md`, `schema-pitfalls.md`, `implement-rmcp-api.md` (Appendix A only).
+- **QUALITY orchestrator skill** `mcp-quality-evaluate` at `plugins/tp-mcp/skills/mcp-quality-evaluate/SKILL.md` — first `context: fork` skill in the marketplace. Spawns 8 `mcp-quality-judge` subagents in parallel (one per dimension), reads their JSON outputs, applies the tiebreak rule on >1-tier disagreements, synthesizes a markdown report per `quality-judge-pattern.md` §5. Pattern follows the canonical form documented in `plugins/core-principled/skills/skill-authoring/references/frontmatter-complete.md` §`context`.
+
+### Changed
+
+- **Hub QUALITY mode body** (`plugins/tp-mcp/skills/mcp-expertise/SKILL.md` lines 92-100) now delegates to `mcp-quality-evaluate` for full 8-dimension evaluation. Retains direct rubric reference for ad-hoc single-dimension spot-checks.
+
+### Verification
+
+- All 4 new files parse cleanly (YAML, no invalid frontmatter fields)
+- No `tools:` or `model:` fields in the 3 subagents (Rule 1 and Rule 2 of CLAUDE.md Agent Frontmatter Best Practices)
+- `background: true` on mcp-server-builder and mcp-quality-judge; `background: false` on mcp-schema-author
+- `skills: [mcp-expertise]` declared in all 3 subagents (per CLAUDE.md Skills Preloading Principle)
+- `context: fork` + `agent: general-purpose` correctly set on the orchestrator
+- 8-dimension routing test deferred to a follow-up entry that ships the Phase 3 JSONL trace verification (requires a live test server; out of scope for this commit)
+
+### Version bumps
+
+- **Marketplace** 0.30.2 → 0.31.0
+- **tp-mcp** 0.3.0 → 0.4.0 (minor: 3 subagents added, QUALITY orchestrator skill added)
+
+## [1.22.2] — 2026-06-06
+
+### Changed
+
+- **`tp-mcp` 3 skills consolidated into a single `mcp-expertise` hub** (tp-mcp 0.2.3 → 0.3.0). The 3 spoke skills `mcp-server-design`, `mcp-tool-surface`, and `mcp-server-implement` are deleted; their content is merged into a new 5-mode hub `mcp-expertise` (DESIGN, SCHEMA, IMPLEMENT, CLIENT, QUALITY). DESIGN/SCHEMA/IMPLEMENT are pure consolidations of the 3 prior skills' content; CLIENT and QUALITY are new modes addressing the "client patterns" and "quality evaluation" gaps the prior skills explicitly flagged as "not yet implemented" / "planned". The 11 prior reference files are moved/renamed into a flat `references/` folder with `{mode}-{subtopic}.md` prefix naming (`design-decomposition.md`, `design-operations.md`, `design-consumption.md`, `schema-foundation.md`, `schema-styling.md`, `schema-pitfalls.md`, `implement-rmcp-api.md`, `implement-transport.md`, `implement-runtime.md`, `implement-testing.md`). The schemars cheatsheet is merged into `implement-rmcp-api.md` as "Appendix A: Schemars → JSON Schema Attribute Mapping" (it belongs in the implementation layer, not the schema-authoring layer). Hub SKILL.md is a pure router (~130 lines, well under the 500-token hub ceiling; the actual content lives in 14 reference files totaling ~2,300 lines). All 9 cross-references in `plugins/claude-cli-wrapper/skills/claude-cli/SKILL.md` are updated to point at the new hub (mode-qualified for DESIGN/SCHEMA/IMPLEMENT handoffs; generic `mcp-expertise` for the high-level pointer at line 17; the §13 file-path reference for the worked example now points at `mcp-expertise/references/design-decomposition.md` §3). Plugin description and `_meta.json` keywords updated to reflect the 5-mode structure; old skill names removed from the `mcp-server-design`/`mcp-server-implement`/`mcp-tool-surface` keyword list. `tp-mcp` is now a 1-plugin / 1-skill / 14-references layout, matching the hub consolidation target in CLAUDE.md.
+
+- **4 new reference files authored under `plugins/tp-mcp/skills/mcp-expertise/references/`**: `client-usage.md` (agent-as-MCP-consumer framing, the 4 installation paths, the `tools/call` calling pattern, consumer-side debugging, session continuity, cross-server tool disambiguation), `client-rmcp-client.md` (rmcp 0.3 `client` feature flag, `ClientHandler` trait, stdio client that spawns a server subprocess, Streamable HTTP client, `CallToolResult` handling for `is_error: true` vs transport errors), `quality-rubric.md` (the 8-dimension Claude-Optimal rubric — tool discovery, single-shot argument accuracy, context efficiency, pass-through integrity, session continuity, headless reliability, error distinction, schema hygiene — with the EXEMPLARY/PASS/PARTIAL/FAIL scoring scale and concrete evidence requirements per dimension), `quality-judge-pattern.md` (the parallel-judge pattern modeled on `tp-sadd` — one judge per dimension, judge contract `{ score, evidence, recommendation }`, tiebreak rule on >1-tier disagreements, markdown-table report format). The 8-point Claude-Optimal validation checklist in `design-operations.md` §4 is the seed for the QUALITY mode's rubric; the `tp-sadd` judge approach is the seed for the parallel-judge execution pattern.
+
+### Removed
+
+- **3 tp-mcp spoke skills deleted**: `plugins/tp-mcp/skills/mcp-server-design/`, `plugins/tp-mcp/skills/mcp-tool-surface/`, `plugins/tp-mcp/skills/mcp-server-implement/`. Their 11 reference files are preserved (moved/renamed/merged) at `plugins/tp-mcp/skills/mcp-expertise/references/`. Any consumer, agent, or skill that referenced the 3 old skill names by spawn target (e.g. `Agent(name="mcp-server-design", ...)`) must update to the new hub. The only known external reference was in `claude-cli/SKILL.md` (9 sites), all updated in this release.
+
+### Verification
+
+- `python3 scripts/regenerate-marketplace.py` → clean (catalog updated; tp-mcp version 0.3.0; keywords include `mcp-expertise`, `mcp-client`, `mcp-quality`)
+- `jq empty .claude-plugin/marketplace.json` → passes
+- `jq -e '.plugins | all(. as $p | ([keys[] | select(. == "version")] | length) == 1)' .claude-plugin/marketplace.json` → passes (no duplicate `version` keys)
+- `grep -rn "mcp-server-design\|mcp-tool-surface\|mcp-server-implement" plugins/ .claude-plugin/ --include="*.md" --include="*.json"` → no matches (clean in operational files)
+- The historical CHANGELOG entries (1.22.1, 1.20.0, 1.19.0, 0.15.0, 0.14.0, 0.13.0, 0.12.0) still mention the 3 old skill names — these describe past releases and are correct historical record, not stale references
+- `ls plugins/tp-mcp/skills/mcp-expertise/references/` → 14 files (10 migrated + 4 new), totaling ~2,300 lines
+- `wc -l plugins/tp-mcp/skills/mcp-expertise/SKILL.md` → 131 lines (under the 150-line hub target)
+- Routing test deferred to a follow-up 1.23.0 entry that ships the JSONL trace analysis (per CLAUDE.md 3-phase test methodology, Phase 2 routing verification requires fresh Claude instances to be available, which is outside the scope of this commit)
+
+### Version bumps
+
+- **Marketplace** 0.30.1 → 0.30.2
+- **tp-mcp** 0.2.3 → 0.3.0 (minor: 3 skills consolidated into 1 hub, 2 new modes)
+
 ## [1.22.1] — 2026-06-05
 
 ### Changed

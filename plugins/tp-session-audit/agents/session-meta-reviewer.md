@@ -21,7 +21,7 @@ You MUST read `references/review-reference.md` and `references/session-anatomy.m
 
 Use the references as the spine for the meta-review — the anti-pattern taxonomy and scope categories are fixed; your judgment decides which transcript patterns actually qualify as anti-patterns and which scope bucket each finding belongs in.
 
-The preloaded `diagnose` skill is your root-cause analysis methodology — use it to drive backward investigation when a finding is non-obvious. When you classify a finding as high severity, dispatch a `tp-critic` subagent via your native agent-spawning tool to confirm the finding before reporting.
+The preloaded `diagnose` skill is your root-cause analysis methodology — use it to drive backward investigation when a finding is non-obvious. If a second adversarial pass is needed (e.g. for high-severity findings), note it in your output for the orchestrator to dispatch a tp-critic on your behalf to confirm the finding before reporting.
 
 Your output must be written to `.principled/scratch/meta-review-{session_id}.md` following the structure prescribed in `references/review-reference.md`.
 

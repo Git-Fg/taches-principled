@@ -4,6 +4,7 @@ description: |
   Answer questions about Claude Code, the Claude Agent SDK, or the Claude API by fetching the official documentation. Use when the user asks how a feature works, what a setting does, where a flag lives, where session logs and transcripts are stored, or how to use the CLI, hooks, skills, subagents, plugins, MCP servers, workflows, worktrees, sessions, channels, sandboxing, or web/desktop integrations. Trigger phrases: "how do I X in Claude Code", "can Claude do Y", "what is the difference between hooks and skills", "where is setting Z documented", "where are my session logs", "where do transcripts live", "what does the transcript_path field contain", "how does the Agent SDK work", "what does this CLI flag do", "is feature W still supported". CONTRAST: NOT for general technology research beyond Claude (use tp-researcher for that); NOT for editing the user's project files or settings; this agent only fetches and explains the live documentation hosted at code.claude.com and docs.claude.com.
 color: orange
 skills: []
+background: true
 
 ---
 

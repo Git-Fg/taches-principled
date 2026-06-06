@@ -1,6 +1,6 @@
 # Consuming MCP Servers in Claude Code
 
-The schema design work in the hub and the `design-decisions` reference is producer-side. This reference is the consumer-side view: once your server ships, **how does Claude Code actually discover, present, and use your tools?** Most of the design decisions show up here as observed behavior.
+The schema design work in the hub and the `design-decomposition` reference is producer-side. This reference is the consumer-side view: once your server ships, **how does Claude Code actually discover, present, and use your tools?** Most of the design decisions show up here as observed behavior.
 
 ## §1. Installation paths
 
@@ -91,7 +91,7 @@ npx @modelcontextprotocol/inspector --cli ./bin/my-mcp-server --method tools/cal
 # → No browser needed — works in any shell, including headless agents
 ```
 
-For more inspector patterns (config files, JSON arguments, remote servers, custom headers, transport selection), see the `mcp-server-implement` skill's testing reference (the parent SKILL.md's reference index routes you there).
+For more inspector patterns (config files, JSON arguments, remote servers, custom headers, transport selection), see the IMPLEMENT mode's testing reference at `references/implement-testing.md`.
 
 **The Inspector (`--cli` mode) is the ground truth** for what your schema actually looks
 like on the wire. If the model is calling the tool with wrong args, the
@@ -102,7 +102,7 @@ you wrote?
 
 The model sees:
 - Each tool's `name` and `description` verbatim
-- The full `inputSchema` as compact JSON (this is the 12 KB context cost from the design-decisions reference)
+- The full `inputSchema` as compact JSON (this is the 12 KB context cost from the design-decomposition reference)
 - The server's `instructions` once per session
 - Annotations indirectly (the host's safety layer reads them; the model itself doesn't see them as text)
 
@@ -123,7 +123,7 @@ The model does NOT see:
 | Model sends a hallucinated field | Missing `additionalProperties: false` / `deny_unknown_fields` | Add both |
 | Model calls a "destructive" tool without confirmation | `destructiveHint` is missing or `false` | Add `annotations(destructive_hint = true)` |
 | Server returns content but model ignores it | Output format is `String` where a typed envelope would be better | Return a JSON envelope; see `claude-cli-wrapper` tools for the pattern |
-| Random disconnects mid-session | `println!` somewhere in your tool impl | Replace with `tracing` to stderr (the stderr-only logging rule lives in the `mcp-server-implement` skill's runtime-contracts reference) |
+| Random disconnects mid-session | `println!` somewhere in your tool impl | Replace with `tracing` to stderr (the stderr-only logging rule lives in the IMPLEMENT mode's runtime reference at `references/implement-runtime.md`) |
 
 > **Iterative loop:** change the schema → rebuild → restart Claude Code
 > (or use a plugin dev mode that hot-reloads) → repeat the same prompt →

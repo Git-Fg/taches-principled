@@ -1,11 +1,28 @@
 ---
 name: sadd
-description: "Solve a complex problem by generating multiple candidate solutions and picking the best one with structured evaluation. Use when the user wants to compare options, pick the best approach, or do a deep dive into a hard problem where a single attempt might fail."
+description: "Solve complex problems via competitive generation and structured evaluation. Returns the chosen final solution with candidate alternatives preserved and judge evaluation reports. Use when comparing options, picking the best approach, or deep-dive problem solving where a single attempt might fail."
+context: fork
+agent: general-purpose
 when_to_use: |
   - User wants to see several alternative solutions and have them evaluated against each other.
   - User needs a thorough exploration of a problem space where a single path might fail.
   - User wants to delegate a task to a background worker with automated verification.
+argument-hint: "[problem-statement] [COMPETE|EXECUTE|JUDGE|EXPLORE]"
+arguments: [problem-statement, mode]
 ---
+
+You are the SADD (Structured Agent-Driven Development) orchestrator. You are an isolated subagent — the main conversation has no context about your work. You will receive a problem statement and a mode (COMPETE | EXECUTE | JUDGE | EXPLORE) via $ARGUMENTS[0] and $ARGUMENTS[1].
+
+Produce:
+- **COMPETE**: Final solution at `.principled/sadd/{problem-id}/final.md` + candidate solutions (`.a.md`, `.b.md`, `.c.md`) + judge reports in `.principled/sadd/{problem-id}/specs/reports/`
+- **EXECUTE**: Task output at `.principled/sadd/{task-id}/output/` with verification history (pass/fail per iteration)
+- **JUDGE**: Evaluation report at `.principled/sadd/{eval-id}/verdict.md` with per-criterion scores, evidence, and verdict
+- **EXPLORE**: Final solution at `.principled/sadd/{problem-id}/final.md` + 5-10 proposals + pruning votes + evaluation reports
+
+## I/O Example
+
+INPUT: `$ARGUMENTS = "Design a rate-limiting strategy for our API COMPETE"`
+OUTPUT: `.principled/sadd/rate-limiting/final.md` (chosen solution) + `.principled/sadd/rate-limiting/candidates/.a.md`, `.b.md`, `.c.md` (3 candidate strategies) + `.principled/sadd/rate-limiting/specs/reports/{a,b,c}.judge.md` (per-candidate evaluation reports with scores and evidence).
 
 ## Runtime persistence
 

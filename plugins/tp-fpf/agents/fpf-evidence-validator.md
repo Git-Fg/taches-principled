@@ -6,6 +6,7 @@ color: green
 skills:
   - fpf
   - diagnose
+background: true
 ---
 
 ## Ground truth (P6)

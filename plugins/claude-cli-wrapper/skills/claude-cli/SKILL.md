@@ -1,6 +1,6 @@
 ---
 name: claude-cli
-description: "Drive the Claude Code CLI from the Bash tool — headless invocations, multi-turn sessions, model/effort/permission control, structured output, and the code-review subcommand. Use when an agent needs to spawn a headless Claude session, continue a previous session, request structured JSON output from Claude, run a cloud code review, or control the Claude CLI's runtime flags. Not for direct user-driven Claude Code use and not for designing/building MCP servers."
+description: "Drive the Claude Code CLI from Bash — headless sessions, structured output, model/permission control, and code reviews. Use when an agent needs to run Claude programmatically."
 when_to_use: |
   - "Spawn a headless Claude session to run a task"
   - "Continue or resume a previous Claude Code session"
@@ -14,7 +14,7 @@ when_to_use: |
 
 The `claude` CLI is the same binary that powers interactive Claude Code. With `-p` (print) it runs headlessly, accepts a prompt, and writes the response to stdout. This skill teaches the flags and patterns for driving it from the Bash tool — covering the six conceptual operations the marketplace has used historically (execute, session, context, review, agent, config), now expressed as native CLI flags rather than as wrapper-tool calls.
 
-For MCP design/implementation/schema patterns (i.e., *building* MCP servers, not *using* the `claude` CLI), see `tp-mcp`'s `mcp-server-design`, `mcp-server-implement`, and `mcp-tool-surface` skills.
+For MCP design/implementation/schema patterns (i.e., *building* MCP servers, not *using* the `claude` CLI), see `tp-mcp`'s `mcp-expertise` skill (modes: DESIGN, SCHEMA, IMPLEMENT, CLIENT, QUALITY).
 
 ---
 
@@ -32,16 +32,16 @@ For MCP design/implementation/schema patterns (i.e., *building* MCP servers, not
 
 **DO NOT use this skill for:**
 
-- "How do I design an MCP server" → `tp-mcp` `mcp-server-design`
-- "How do I implement an MCP server in Rust" → `tp-mcp` `mcp-server-implement`
-- "How do I write a good JSON Schema" → `tp-mcp` `mcp-tool-surface`
+- "How do I design an MCP server" → `tp-mcp` `mcp-expertise` DESIGN mode
+- "How do I implement an MCP server in Rust" → `tp-mcp` `mcp-expertise` IMPLEMENT mode
+- "How do I write a good JSON Schema" → `tp-mcp` `mcp-expertise` SCHEMA mode
 - "How do I use the Bash tool" → Claude Code's built-in docs
 - "How do I run Claude Code interactively" → Claude Code's built-in docs (not headless)
 
 ## CONTRAST
 
 - NOT for: spawning in-process subagents within the current Claude Code session — use subagent-orchestration
-- NOT for: designing an MCP server from scratch — use `mcp-server-design`
+- NOT for: designing an MCP server from scratch — use `mcp-expertise` DESIGN mode
 - NOT for: writing a single Claude Code hook — see the official hooks docs
 - NOT for: managing installed plugins/MCP servers — use `claude plugin list` / `claude mcp list` directly in Bash
 
@@ -615,9 +615,9 @@ claude --resume "$SESSION_ID" -p "Drill into the auth findings"
 
 ## §12. Handoff
 
-- **MCP design principles** (why some tools decompose the way they do) → `tp-mcp` `mcp-server-design`
-- **MCP implementation in Rust with rmcp + schemars** → `tp-mcp` `mcp-server-implement`
-- **JSON Schema authoring details** → `tp-mcp` `mcp-tool-surface`
+- **MCP design principles** (why some tools decompose the way they do) → `tp-mcp` `mcp-expertise` DESIGN mode
+- **MCP implementation in Rust with rmcp + schemars** → `tp-mcp` `mcp-expertise` IMPLEMENT mode
+- **JSON Schema authoring details** → `tp-mcp` `mcp-expertise` SCHEMA mode
 - **Subagent orchestration patterns** (parallel dispatch, scratchpad, critic loops) → `subagent-orchestration`
 - **Session analytics and behavioral review** → `tp-session-audit`
 
@@ -626,6 +626,6 @@ claude --resume "$SESSION_ID" -p "Drill into the auth findings"
 ## §13. Key sources
 
 - [1] Claude Code CLI documentation — https://docs.claude.com/en/docs/claude-code
-- [2] Decomposition patterns (why 6 tools vs 1) — `tp-mcp/skills/mcp-server-design/references/design-decisions.md` §3
+- [2] Decomposition patterns (why 6 tools vs 1) — the mcp-expertise hub's design-decomposition.md reference (DESIGN mode)
 - [3] Structured output with `--json-schema` — official Claude Code docs on JSON Schema validation
 - [4] Marketplace entry — `.claude-plugin/marketplace.json` in this repo

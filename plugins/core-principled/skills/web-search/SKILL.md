@@ -1,6 +1,6 @@
 ---
 name: web-search
-description: "Find, verify, and evaluate information on the open web. Use when the user wants to look something up, find the latest on a topic, research a question, fact-check a claim, evaluate whether a statement is true, or asks 'is this true?', 'where did this number come from?', or 'what do experts say?'. Covers query reformulation, source hierarchy, cross-reference verification, and the discipline of stopping when an answer is unfindable. Triggers on 'find X', 'look up Y', 'what is the latest Z', 'is this claim true', 'verify that', 'search for', 'research', 'current data on', 'best source for', 'I want a second opinion on X', 'is this real'."
+description: "Find and verify information on the web. Use when user wants to look something up, fact-check a claim, research a topic, or evaluate a statement's accuracy."
 when_to_use: |
   Use when the user asks to find, look up, verify, fact-check, or research
   on the open web, or doubts a factual claim. Tool-agnostic — teaches the

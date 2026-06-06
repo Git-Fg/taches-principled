@@ -301,7 +301,7 @@ is a historical artifact, not a flaw to be smoothed out — do not
 | Plugin | Agent name prefix | Skill name prefix | Examples |
 |---|---|---|---|
 | `core-principled` (the legacy meta-plugin) | `tp-*` | (no prefix) | `tp-critic`, `tp-explorer`, `tp-bug-hunter`; skills like `refine`, `diagnose`, `plan-lifecycle` |
-| `tp-sadd`, `tp-fpf`, `tp-git`, `tp-mcp`, `tp-rust`, `tp-session-audit` (the newer sub-plugins) | `<plugin-name-without-tp-prefix>-*` | `<plugin-name-without-tp-prefix>-*` | `sadd-judge`, `fpf-evidence-validator`, `git-pr-reviewer`, `mcp-server-implement` |
+| `tp-sadd`, `tp-fpf`, `tp-git`, `tp-mcp`, `tp-rust`, `tp-session-audit` (the newer sub-plugins) | `<plugin-name-without-tp-prefix>-*` | `<plugin-name-without-tp-prefix>-*` | `sadd-judge`, `fpf-evidence-validator`, `git-pr-reviewer`, `mcp-expertise` |
 
 **Why the asymmetry exists:** `core-principled` was the first plugin
 and the `tp-` prefix (short for "taches-principled") was a
@@ -826,6 +826,11 @@ Create feature branches, commit with conventional messages, push, and create PRs
 - [ ] **No hardcoded drift targets**: Replace specific counts/versions with references or filesystem queries
 - [ ] **Discovery over enumeration**: Use filesystem queries over reimplemented enumerations
 - [ ] **MCP naming check**: If plugin exposes MCP servers, verify server names are namespaced as `taches-{domain}`, tool names are domain-specific verbs, and tool count per server is 5–15.
+- [ ] **Cross-skill reference path check**: A SKILL.md or agent citing a sibling skill's `references/X.md` MUST prefix the path with the sibling skill name (e.g. `mcp-expertise/references/X.md`). Bare `references/X.md` only resolves within the containing skill. See [`.claude/rules/cross-skill-references.md`](.claude/rules/cross-skill-references.md).
+- [ ] **Hub router budget check**: Hub SKILL.md body MUST be under 500 tokens (~30 lines). Mode bodies are one-paragraph descriptions + imperative reference citations. Procedural logic (multi-step workflows, conditional branches, pre-conditions) belongs in `references/`, not the hub. See [`.claude/rules/hub-router-budget.md`](.claude/rules/hub-router-budget.md).
+- [ ] **context:fork blackbox check**: A SKILL.md with `context: fork` frontmatter MUST document its blackbox contract: output format in the first 200 chars of `description`, explicit role statement + output spec in the body, input/output examples when arguments are non-trivial, and `argument-hint` set if the skill expects structured input. The forked subagent has no main-conversation history — frontmatter + body are the only contract. See [`.claude/rules/context-fork-blackbox.md`](.claude/rules/context-fork-blackbox.md).
+- [ ] **Cross-plugin citation check**: References to another plugin's pattern, file, or concept MUST cite by semantic role only (e.g. "a parallel-judge pattern", "a judge subagent"). NEVER name another plugin by identifier or cite its file paths. See [`.claude/rules/cross-plugin-citations.md`](.claude/rules/cross-plugin-citations.md).
+- [ ] **Ground truth citation check**: An agent's "Ground truth" / "P6" section MUST contain the rule only — no issue numbers, PR numbers, file paths from a specific PR, contributor names, or dates. Volatile provenance belongs in commit messages and CHANGELOG. See [`.claude/rules/ground-truth-citations.md`](.claude/rules/ground-truth-citations.md).
 
 ### README Hygiene
 
@@ -980,6 +985,7 @@ These are maintainer-only methodology and template files. Cited where relevant i
 | Doc | When to Read |
 |-----|-------------|
 | [SCHEMA.md](knowledge/SCHEMA.md) | Before adding or modifying any wiki-format page (frontmatter shape, tag taxonomy, page-size budget) |
+| [knowledge-base-design.md](knowledge/concepts/knowledge-base-design.md) | Before adding, moving, or removing any `knowledge/` file |
 | [contributing.md](knowledge/concepts/contributing.md) | Before modifying skills, subagents, hooks, or plugins (3-phase testing, 6 design principles, marketplace regeneration) |
 | [intent-format.md](knowledge/concepts/intent-format.md) | Before representing user-task intent in a structured form |
 | [llm-wiki-methodology.md](knowledge/concepts/llm-wiki-methodology.md) | Before authoring a wiki-methodology skill or applying LLM-as-wiki patterns |

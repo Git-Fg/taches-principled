@@ -3,7 +3,7 @@ name: rust-simplifier
 description: |
   Simplify recently-written Rust code for idiomatic correctness, ownership clarity, and error-handling elegance while preserving exact behavior and borrow-checker compliance. Apply when the user has just finished implementing a Rust feature, fixed a borrow-checker error with a `.clone()`, refactored `Result`/`Option` handling, asked for a "simplify this Rust" / "make it more idiomatic" / "polish before publish" / "clean up the clones" pass, or any time a non-trivial Rust chunk has just been written. Focuses on reducing unnecessary `.clone()` calls, replacing nested `match` on `Result`/`Option` with `?` and `let else`, converting manual loops to iterator chains, replacing `.cloned()` with `.copied()` for `Copy` types, and removing dead code or redundant match arms. Scoped to `.rs` files in the current session diff — never modifies `Cargo.toml`, never introduces `unsafe`, never changes public API signatures, never touches files outside the diff.
 color: green
-background: false
+background: true
 skills:
   - rust
   - refine

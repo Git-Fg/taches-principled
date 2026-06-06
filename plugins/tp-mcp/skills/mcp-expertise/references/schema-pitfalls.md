@@ -1,6 +1,6 @@
 # MCP Outputs and Pitfalls Catalog
 
-Reference for output schemas and the curated catalog of common schema pitfalls. Read it before declaring a schema ready to ship.
+Reference for output schemas and the curated catalog of common schema pitfalls. Read before declaring a schema ready to ship.
 
 ## §1. Schemas for outputs (outputSchema)
 
@@ -24,7 +24,7 @@ The tool can declare an `outputSchema` describing its return type. This is optio
 }
 ```
 
-**Why most tools skip it:** the `text` content is what the LLM sees; the schema is for typed clients. If your tool returns a JSON envelope in text (the text-with-JSON pattern from `mcp-server-design`), an `outputSchema` lets the host parse it for the user.
+**Why most tools skip it:** the `text` content is what the LLM sees; the schema is for typed clients. If your tool returns a JSON envelope in text (the text-with-JSON pattern from `references/design-decomposition.md` §4), an `outputSchema` lets the host parse it for the user.
 
 ## §2. Common pitfalls catalog
 

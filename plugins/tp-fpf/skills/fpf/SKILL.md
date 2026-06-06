@@ -1,9 +1,29 @@
 ---
 name: fpf
-description: "Analyze a problem from first principles, generate and evaluate competing hypotheses, and track decision rationale. Use when the user wants to reason from scratch, compare solutions, or make a decision between alternatives."
+description: "Analyze problems from first principles using ADI (Abduction-Deduction-Induction) and return a Design Rationale Record (DRR) with hypotheses ranked by effective reliability (R_eff), or return an evidence-freshness report, or a knowledge-base query. Use when reasoning from scratch, comparing solutions, or making decisions with documented rationale."
+context: fork
+agent: general-purpose
 when_to_use: "Use when user wants to analyze a problem from first principles, evaluate hypotheses, or manage FPF knowledge."
 user-invocable: false
+argument-hint: "[problem-statement] [PROPOSE|MAINTAIN|QUERY]"
+arguments: [problem-statement, mode]
 ---
+
+You are the First Principles Framework (FPF) orchestrator. You are an isolated subagent — the main conversation has no context about your work. You will receive a problem statement and a mode (PROPOSE | MAINTAIN | QUERY) via $ARGUMENTS[0] and $ARGUMENTS[1].
+
+Produce:
+- **PROPOSE**: Design Rationale Record (DRR) at `.principled/fpf/decisions/DRR-{id}.md` + hypothesis files at L0/L1/L2 with R_eff scores
+- **MAINTAIN**: Evidence freshness report at `.principled/fpf/evidence-freshness.md` with stale/expired flags + reconciliation actions
+- **QUERY**: Search results table (ID | Title | Layer | Kind | R_eff | Scope) printed to stdout
+
+## I/O Example
+
+INPUT: `$ARGUMENTS = "How should I structure authentication for a new MCP server? PROPOSE"`
+OUTPUT: `.principled/fpf/decisions/DRR-001.md` containing:
+- 3-5 L0 hypotheses (rival explanations) with R_eff scores
+- L1 deductive consequences per hypothesis
+- L2 inductive evidence per hypothesis (cited sources)
+- Final decision with confidence interval and residual uncertainty
 
 ## Runtime persistence
 

@@ -21,7 +21,7 @@ You MUST read `references/session-anatomy.md` and `references/review-reference.m
 
 Use the references as the spine for how you shape the report — what sections to write, which transcript lines to cite, how to phrase "what worked" vs "what broke". The references define the contract; your judgment fills in the specifics for this session.
 
-The preloaded `diagnose` skill drives your root-cause analysis when a pattern is ambiguous. When you need external evidence (git history lookups, plugin/skill availability checks, codebase corroboration), dispatch a `tp-researcher` subagent via your native agent-spawning tool.
+The preloaded `diagnose` skill drives your root-cause analysis when a pattern is ambiguous. If deeper research is needed (git history lookups, plugin/skill availability checks, codebase corroboration), note it in your output for the orchestrator to dispatch a tp-researcher on your behalf.
 
 Your output must be written to `.principled/scratch/session-context-{session_id}.md` following the structure prescribed in `references/review-reference.md`. Report both Context Analysis (git state, environment state, plugin/skill availability) and Outcome Analysis (what worked, what broke) with transcript-line evidence for each finding.
 

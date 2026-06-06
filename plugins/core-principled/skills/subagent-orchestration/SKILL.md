@@ -71,6 +71,10 @@ Agents exist at five scopes with priority: Managed (org-wide, highest), Session 
 
 **Architecture design:** IF designing multi-agent architectures (supervisor vs swarm vs hierarchical), IF selecting coordination patterns, or IF sizing contexts for parallel agents → BEFORE designing read `references/patterns-reference.md`. Do not proceed or make assumptions without reading this file.
 
+**Framework comparisons:** IF evaluating LangGraph, AutoGen, CrewAI, or other orchestration frameworks → BEFORE comparing read `references/frameworks.md`. Do not proceed or make assumptions without reading this file.
+
+**Tool design for agents:** IF designing tool interfaces that agents will call, IF debugging tool-selection failures, or IF standardizing tool conventions across a codebase → BEFORE writing tool descriptions read `references/tool-design.md`. Do not proceed or make assumptions without reading this file.
+
 ### Frontmatter Fields
 
 | Field | Type | Description |

@@ -1,13 +1,32 @@
 ---
 name: task-lifecycle
-description: "Track and build features from initial idea to implementation. Use when the user wants to add a new feature, add a task, refine an idea, build something, or turn a rough description into a detailed technical spec."
+description: "Track features from idea to implementation — return a draft task file (CAPTURE), a detailed spec (REFINE), implemented code with a verification report (IMPLEMENT), or updated documentation (DOCUMENT). Use when adding a feature, refining a spec, building a task, or updating documentation."
+context: fork
+agent: general-purpose
 when_to_use: |
   - User wants to capture a new requirement, feature, or task idea as a draft.
   - User needs to turn a rough task description into a detailed technical specification.
   - User is ready to implement a refined task and wants automated verification.
   - User wants to update documentation to reflect completed work.
-argument-hint: "[subcommand] [task-title-or-path] [--flags]"
+argument-hint: "[CAPTURE|REFINE|IMPLEMENT|DOCUMENT] [task-title-or-path]"
+arguments: [subcommand, task-ref]
 ---
+
+You are the task-lifecycle orchestrator. You are an isolated subagent — the main conversation has no context about your work. You will receive a subcommand (CAPTURE | REFINE | IMPLEMENT | DOCUMENT) and a task title or path via $ARGUMENTS[0] and $ARGUMENTS[1].
+
+Produce:
+- **CAPTURE**: Draft task file at `.principled/tasks/drafts/{task-title}.md` with the user's description verbatim + initial context
+- **REFINE**: Detailed spec at `.principled/tasks/specs/{task-title}.md` with acceptance criteria, implementation plan, verification steps
+- **IMPLEMENT**: Implemented code + verification report at `.principled/tasks/implemented/{task-title}/`
+- **DOCUMENT**: Updated documentation files at the paths specified in the task
+
+## I/O Example
+
+INPUT: `$ARGUMENTS = "REFINE .principled/tasks/drafts/add-oauth2-support.md"`
+OUTPUT: `.principled/tasks/specs/add-oauth2-support.md` with sections: context, requirements, API surface, acceptance criteria, implementation phases, verification commands, and rollout plan.
+
+INPUT: `$ARGUMENTS = "IMPLEMENT add-oauth2-support"`
+OUTPUT: code changes + `.principled/tasks/implemented/add-oauth2-support/verification.md` with pass/fail status per acceptance criterion.
 
 ## Runtime persistence
 
@@ -43,6 +62,8 @@ IF user wants to update documentation after code changes → DOCUMENT
 Create a draft task specification file from user intent. Preserves the original user prompt verbatim.
 Process: Document intent, classify task type, generate filename, persist to draft folder.
 
+You MUST read `references/stages.md` BEFORE classifying a task's lifecycle stage. Do not proceed without reading this file.
+
 ---
 
 # REFINE Mode
@@ -50,6 +71,7 @@ Process: Document intent, classify task type, generate filename, persist to draf
 Refine a draft task specification through a coordinated multi-phase workflow (Analysis, Architecture, Decomposition, Parallelization, Verification).
 
 You MUST read `references/refine-workflow.md` BEFORE executing any REFINE commands. Do not make assumptions without reading this file.
+You MUST read `references/patterns.md` BEFORE choosing an implementation pattern (Simple Step, Critical Step, or Multi-Item Step). Do not proceed without reading this file.
 
 ---
 
@@ -67,6 +89,7 @@ Update documentation after code changes — READMEs, guides, API docs. Preserves
 
 You MUST read `references/document-workflow.md` BEFORE executing DOCUMENT mode.
 You MUST read `references/document-templates.md` BEFORE executing documentation multi-agent flows.
+You MUST read `references/documentation.md` BEFORE updating any README, API docs, or guides. Do not proceed without reading this file.
 
 ---
 

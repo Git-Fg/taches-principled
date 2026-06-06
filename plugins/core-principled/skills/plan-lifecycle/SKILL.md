@@ -1,10 +1,29 @@
 ---
 name: plan-lifecycle
-description: "Plan or run a project end-to-end — PLAN mode creates executable PLAN.md roadmaps with checkpoints; EXECUTE mode runs a plan with worker + critic subagents. Use when the user wants to add a new feature, start a new project, break down work into phases, run a plan, or build something non-trivial."
+description: "Plan projects with executable ROADMAP.md + PLAN.md files (PLAN mode) or run a plan with worker+critic subagents and return an execution report (EXECUTE mode). Use when adding a new feature, starting a new project, breaking work into phases, running a plan, or building something non-trivial."
+context: fork
+agent: general-purpose
 allowed-tools: Read, Write, Bash, Grep
 when_to_use: "Use for multi-phase projects, feature breakdowns, running PLAN.md files, or building out planned phases. Examples: 'plan this project', 'add a feature', 'where do I start', 'run the plan', 'build it'."
 argument-hint: "<PLAN|EXECUTE> [path|--phase N]"
+arguments: [mode, plan-path]
+skills:
+  - subagent-orchestration
 ---
+
+You are the plan-lifecycle orchestrator. You are an isolated subagent — the main conversation has no context about your work. You will receive a mode (PLAN | EXECUTE) and an optional plan path or phase flag via $ARGUMENTS[0] and $ARGUMENTS[1].
+
+Produce:
+- **PLAN**: ROADMAP.md + initial PLAN.md per phase, written to `.principled/plans/`
+- **EXECUTE**: Phase-by-phase execution report with task outcomes, critic findings, and a deviation log, written to `.principled/plans/{plan-name}/execution-report.md`
+
+## I/O Example
+
+INPUT: `$ARGUMENTS = "PLAN /Users/alice/myproject"`
+OUTPUT: `.principled/plans/ROADMAP.md` (project-wide phases) + `.principled/plans/phase-1/PLAN.md` (first phase plan with tasks, workers, and critic checkpoints)
+
+INPUT: `$ARGUMENTS = "EXECUTE /Users/alice/myproject --phase 2"`
+OUTPUT: `.principled/plans/myproject/phase-2/execution-report.md` with task outcomes, critic findings, deviation log, and next-phase recommendations
 
 ## Runtime persistence
 
@@ -43,6 +62,7 @@ Create executable project plans and roadmaps with structured task decomposition.
 **Plan formatting:** You MUST read `references/plan-format.md` BEFORE writing any plan file.
 **Scope estimation:** You MUST read `references/scope-estimation.md` BEFORE sizing phases.
 **Checkpoints:** You MUST read `references/checkpoints.md` BEFORE adding execution gates.
+**Milestone and greenfield/brownfield planning:** You MUST read `references/milestone-management.md` BEFORE planning post-v1.0 phases or brownfield extensions.
 
 ---
 
@@ -59,6 +79,9 @@ Executes PLAN.md files using intelligent strategies based on checkpoint types.
 
 **Execution strategies:** You MUST read `references/execution-strategies.md` BEFORE starting execution.
 **Evaluation protocol:** You MUST read `references/evaluation-protocol.md` BEFORE scoring artifacts.
+**Phase execution workflow:** You MUST read `references/execute-phase.md` BEFORE running a phase prompt. Do not proceed without reading this file.
+**Deviation handling:** You MUST read `references/deviation-rules.md` BEFORE encountering unplanned work during execution.
+**CLI and API automation:** You MUST read `references/cli-automation.md` BEFORE automating deployment, CI/CD, or infrastructure tasks during execution.
 
 ### Strategy A: Fully Autonomous
 
@@ -82,9 +105,13 @@ Executes PLAN.md files using intelligent strategies based on checkpoint types.
 | PLAN | `references/plan-format.md` | Required formatting and structure |
 | PLAN | `references/scope-estimation.md` | Context budgets and sizing |
 | PLAN | `references/checkpoints.md` | Execution gate types |
+| PLAN | `references/milestone-management.md` | Post-v1.0 and brownfield planning |
 | EXECUTE | `references/execution-strategies.md` | Strategy A/B/C selection |
 | EXECUTE | `references/evaluation-protocol.md` | Judge/critic rules |
 | EXECUTE | `references/anti-patterns.md` | Execution failure modes |
+| EXECUTE | `references/execute-phase.md` | Phase prompt execution workflow |
+| EXECUTE | `references/deviation-rules.md` | Handling unplanned work during execution |
+| EXECUTE | `references/cli-automation.md` | CLI/API automation for deployment and CI/CD |
 
 ## Template Index
 

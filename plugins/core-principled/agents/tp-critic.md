@@ -8,6 +8,7 @@ skills:
   - diagnose
 maxTurns: 15
 memory: local
+background: true
 
 ---
 

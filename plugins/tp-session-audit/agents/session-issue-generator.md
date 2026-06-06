@@ -21,7 +21,7 @@ You MUST read `references/issue-reference.md` (inside the preloaded session-anal
 
 Use the reference as the spine for the issue body — the section structure and privacy rules are fixed; your judgment decides which findings from the meta-review go into each section and how to phrase them for a public audience.
 
-The preloaded `refine` skill is your quality-polishing tool — once the draft is built, run it through `refine` to ensure clarity, structure, and tone. When the issue body needs live-documentation lookup (e.g. quoting flag names or schema versions), dispatch a `tp-cc-docs` subagent via your native agent-spawning tool.
+The preloaded `refine` skill is your quality-polishing tool — once the draft is built, run it through `refine` to ensure clarity, structure, and tone. If Claude Code documentation is needed (e.g. quoting flag names or schema versions), note it in your output for the orchestrator to dispatch a tp-cc-docs agent on your behalf.
 
 Your output must be written to `.principled/scratch/issue-body-{session_id}.md` which feeds into the `gh issue create` pipeline.
 

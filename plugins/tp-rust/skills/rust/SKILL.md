@@ -1,6 +1,6 @@
 ---
 name: rust
-description: "Scaffold, structure, harden, and ship a Rust project — lib/bin decision tree, Cargo.toml template (edition 2024, MSRV 1.81), feature flag design, workspace inheritance, CI/clippy/nextest/cargo-deny pipeline, versioning, publishing, and supply-chain maintenance. Use when the user says 'Rust', 'Cargo', 'crate', 'workspace', 'MSRV', 'edition 2024', 'cargo publish', 'cargo-deny', 'cargo-vet', 'nextest', 'clippy', or 'supply-chain'."
+description: "Manage the full Rust project lifecycle — scaffold, workspace setup, CI/quality gates, and publishing. Use when user mentions Rust, Cargo, crate, workspace, clippy, or cargo publish."
 when_to_use: |
   - User wants to scaffold a new Rust crate or workspace
   - User wants to set up CI, clippy, nextest, coverage, or cargo-deny

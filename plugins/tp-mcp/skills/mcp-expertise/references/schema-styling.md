@@ -1,6 +1,6 @@
 # MCP Schema Styling: Naming, Nesting, Defaults, Tool Names
 
-Reference for the stylistic choices that make a schema feel right to an LLM: property naming, when to nest vs flatten, defaults that help, and tool name conventions. Read it after `schema-foundation.md` to round out the schema design.
+Reference for the stylistic choices that make a schema feel right to an LLM: property naming, when to nest vs flatten, defaults that help, and tool name conventions. Read after `schema-foundation.md` to round out the schema design.
 
 ## §1. Property naming
 
@@ -19,7 +19,7 @@ Reference for the stylistic choices that make a schema feel right to an LLM: pro
 
 ## §2. Nested objects: avoid when possible
 
-**Default: flat.** Two levels of nesting maximum. Anything deeper should be passed through as a serialized string (the wrapper validates syntax, not semantics — see the parent `mcp-server-design` skill for the full pass-through rationale).
+**Default: flat.** Two levels of nesting maximum. Anything deeper should be passed through as a serialized string (the wrapper validates syntax, not semantics — see `references/design-decomposition.md` §7 for the full pass-through rationale).
 
 **Why flat wins:**
 - The LLM has to reason about each field position
@@ -91,4 +91,4 @@ The tool can declare an `outputSchema` describing its return type. This is optio
 }
 ```
 
-**Why most tools skip it:** the `text` content is what the LLM sees; the schema is for typed clients. If your tool returns a JSON envelope in text (the text-with-JSON pattern from `mcp-server-design`), an `outputSchema` lets the host parse it for the user.
+**Why most tools skip it:** the `text` content is what the LLM sees; the schema is for typed clients. If your tool returns a JSON envelope in text (the text-with-JSON pattern from `references/design-decomposition.md` §4), an `outputSchema` lets the host parse it for the user.
