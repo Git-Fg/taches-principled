@@ -1,6 +1,6 @@
 ---
 name: mcp-expertise
-description: "Design, build, and evaluate MCP servers end-to-end — tool decomposition, JSON Schema authoring, Rust implementation (rmcp + schemars), client patterns (agent as MCP consumer), and quality evaluation. Use for MCP server design, MCP schema, MCP tools, MCP implementation, MCP client, MCP quality."
+description: "Design, build, and evaluate MCP servers end-to-end. Use when user says 'design an MCP server', 'decompose MCP tools', 'write a tool schema', 'implement an MCP server in Rust', 'call an MCP server from an agent', or 'evaluate MCP quality'. Five modes: DESIGN (decomposition, contracts), SCHEMA (JSON Schema), IMPLEMENT (Rust + rmcp), CLIENT (agent as consumer), QUALITY (8-dimension rubric)."
 when_to_use: |
   - DESIGN: "design an MCP server", "decompose MCP tools", "1 tool vs N tools", "MCP output contract", "MCP error codes", "MCP security checklist", "capability negotiation", "Claude-Optimal validation"
   - SCHEMA: "write a tool schema", "JSON Schema for MCP", "LLM-friendly schema", "constraint discipline", "enum vs oneOf", "additionalProperties false", "property naming", "tool description writing"

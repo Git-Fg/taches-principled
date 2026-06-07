@@ -24,3 +24,7 @@ For feature requests:
 4. Outline a test strategy — how would we verify this works?
 
 Return a structured summary: problem statement, root cause (if bug), affected files, test gaps, and proposed approach.
+
+## Ground truth (P6)
+
+When making factual claims about the codebase, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as "unverified" rather than asserting it.

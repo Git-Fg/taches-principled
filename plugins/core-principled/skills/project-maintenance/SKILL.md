@@ -170,12 +170,12 @@ To apply a `keep_newest` resolution: the older file is moved via MEMORY-ARCHIVE 
 
 ```
 Duplicate Group: 3 files, similarity 87%
-- ~/.claude/projects/foo/memory/MEMORY.md (updated 2025-05-15)
-- ~/.claude/agent-memory/critic/MEMORY.md (updated 2025-05-20)
-- .principled/scratch/context.md (updated 2025-05-28)
+- ~/.claude/projects/foo/memory/MEMORY.md (updated YYYY-MM-DD)
+- ~/.claude/agent-memory/critic/MEMORY.md (updated YYYY-MM-DD)
+- .principled/scratch/context.md (updated YYYY-MM-DD)
 
 Recommendation: Keep newest (context.md), archive older
-Action: Move older to ~/.claude/archive/memory/projects/2025-05/
+Action: Move older to ~/.claude/archive/memory/projects/YYYY-MM/
 ```
 
 ---
@@ -199,13 +199,13 @@ Archive stale memory entries. Use when AUDIT reports entries older than the thre
 ### Manifest Format
 
 ```yaml
-archived: 2025-05-28T10:00:00Z
+archived: YYYY-MM-DDTHH:MM:SSZ
 entries:
   - original: ~/.claude/projects/old-project/memory/MEMORY.md
-    archived: ~/.claude/archive/memory/projects/2025-05/old-project-memory.md
+    archived: ~/.claude/archive/memory/projects/YYYY-MM/old-project-memory.md
     reason: project deleted
   - original: ~/.claude/agent-memory/deprecated-agent/
-    archived: ~/.claude/archive/memory/agents/2025-05/deprecated-agent/
+    archived: ~/.claude/archive/memory/agents/YYYY-MM/deprecated-agent/
     reason: agent no longer used
 ```
 

@@ -1,6 +1,6 @@
 # TACHES Principled
 
-**Version:** marketplace 0.30.0 · project 1.22.0
+**Version:** marketplace 0.31.1 · project 1.22.6
 
 A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans — with principle-based guidance that teaches judgment over procedure.
 
@@ -19,12 +19,12 @@ done
 ### Try These First
 
 ```bash
-/debug <issue>     # Debug a problem systematically
+/trace <issue>      # Debug a problem systematically
 /cc-docs <question> # Ask a Claude Code / Agent SDK / Claude API question
-/refine             # Improve any artifact — simplify, review, critique, polish
+/whats-next         # Get prioritized next-step recommendations
 ```
 
-Most skills load automatically when their description matches your task. Only `/debug` and `/cc-docs` are explicit slash commands.
+Most skills (refine, diagnose, fpf, sadd, plan-lifecycle, etc.) load automatically when their description matches your task. Only `/trace`, `/cc-docs`, and `/whats-next` are explicit slash commands.
 
 ## What You Get
 
@@ -39,8 +39,8 @@ Each plugin is independently installable and extends the core with specialized c
 | **tp-fpf** | First Principles Framework — hypothesis generation, evidence validation, auditable decisions |
 | **tp-git** | Git workflow automation — conventional commits, PRs, issues, worktrees, inline review |
 | **tp-session-audit** | Session meta-review, behavioral analysis, and sanitized GitHub issue reporting |
-| **claude-cli-wrapper** | MCP wrapper for the Claude Code CLI — six focused tools for executing, reviewing, and managing sessions programmatically |
-| **tp-mcp** | MCP server design and implementation — three skills covering the full server lifecycle |
+| **claude-cli-wrapper** | Direct Claude Code CLI usage via Bash — execute, session, review, agent, and config operations as native `claude` invocations (no MCP server, no Rust binary) |
+| **tp-mcp** | MCP server expertise — single `mcp-expertise` hub with DESIGN, SCHEMA, IMPLEMENT, CLIENT, and QUALITY modes covering the full server lifecycle |
 | **tp-rust** | Rust project skills — single hub with SCAFFOLD / WORKSPACE / QUALITY / RELEASE modes, 5 subagents covering the full Rust lifecycle |
 | **tp-wiki** | Personal wiki search, lint, and ingest — backed by wiki-searcher, wiki-linter, and wiki-ingester agents |
 | **tp-security** | Security review skills — single hub with SAST / DEPENDENCY-AUDIT / SECRETS-DETECTION / COMPLIANCE modes, 5 subagents covering the pre-production security review lifecycle |
@@ -58,8 +58,8 @@ claude plugin install tp-sadd@taches-principled -y        # Structured agent-dri
 claude plugin install tp-fpf@taches-principled -y         # First principles reasoning
 claude plugin install tp-git@taches-principled -y         # Git workflow automation
 claude plugin install tp-session-audit@taches-principled -y # Session meta-review
-claude plugin install claude-cli-wrapper@taches-principled -y # MCP CLI wrapper
-claude plugin install tp-mcp@taches-principled -y          # MCP server skills
+claude plugin install claude-cli-wrapper@taches-principled -y # Direct Claude Code CLI
+claude plugin install tp-mcp@taches-principled -y          # MCP server expertise hub
 claude plugin install tp-rust@taches-principled -y         # Rust project skills
 claude plugin install tp-wiki@taches-principled -y         # Personal wiki tools
 claude plugin install tp-security@taches-principled -y     # Security review skills

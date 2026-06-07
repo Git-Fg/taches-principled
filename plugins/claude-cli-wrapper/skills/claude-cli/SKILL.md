@@ -14,7 +14,7 @@ when_to_use: |
 
 The `claude` CLI is the same binary that powers interactive Claude Code. With `-p` (print) it runs headlessly, accepts a prompt, and writes the response to stdout. This skill teaches the flags and patterns for driving it from the Bash tool — covering the six conceptual operations the marketplace has used historically (execute, session, context, review, agent, config), now expressed as native CLI flags rather than as wrapper-tool calls.
 
-For MCP design/implementation/schema patterns (i.e., *building* MCP servers, not *using* the `claude` CLI), see `tp-mcp`'s `mcp-expertise` skill (modes: DESIGN, SCHEMA, IMPLEMENT, CLIENT, QUALITY).
+For MCP design/implementation/schema patterns (i.e., *building* MCP servers, not *using* the `claude` CLI), see the marketplace's MCP expertise skill (modes: DESIGN, SCHEMA, IMPLEMENT, CLIENT, QUALITY).
 
 ---
 
@@ -31,10 +31,9 @@ For MCP design/implementation/schema patterns (i.e., *building* MCP servers, not
 - "Drive Claude Code programmatically"
 
 **DO NOT use this skill for:**
-
-- "How do I design an MCP server" → `tp-mcp` `mcp-expertise` DESIGN mode
-- "How do I implement an MCP server in Rust" → `tp-mcp` `mcp-expertise` IMPLEMENT mode
-- "How do I write a good JSON Schema" → `tp-mcp` `mcp-expertise` SCHEMA mode
+- "How do I design an MCP server" → the marketplace's MCP expertise skill, DESIGN mode
+- "How do I implement an MCP server in Rust" → the marketplace's MCP expertise skill, IMPLEMENT mode
+- "How do I write a good JSON Schema" → the marketplace's MCP expertise skill, SCHEMA mode
 - "How do I use the Bash tool" → Claude Code's built-in docs
 - "How do I run Claude Code interactively" → Claude Code's built-in docs (not headless)
 
@@ -223,8 +222,8 @@ The CLI does not have a dedicated `close-session` flag. Sessions are closed by:
 
 ```bash
 claude --from-pr                    # interactive picker
-claude --from-pr 123                # session linked to PR #123
-claude --from-pr https://github.com/owner/repo/pull/123
+claude --from-pr <pr-number>        # session linked to the given PR
+claude --from-pr https://github.com/<owner>/<repo>/pull/<pr-number>
 ```
 
 Resumes a session that was started in the context of a specific PR. The session picker accepts an optional search term.
@@ -269,7 +268,7 @@ claude doctor
 
 Runs health checks on the Claude Code auto-updater. Reports whether updates are available, and whether the installation is healthy. The workspace trust dialog is skipped; stdio servers from `.mcp.json` are spawned for health checks. Use only in directories you trust.
 
-For deeper diagnostics (session analytics, hook events), use the `tp-session-audit` plugin.
+For deeper diagnostics (session analytics, hook events), use the marketplace's session-analytics skill.
 
 ---
 
@@ -288,9 +287,9 @@ Reviews the current branch's diff against the default branch. Prints findings to
 ### Review a specific PR
 
 ```bash
-claude ultrareview 123                  # PR number
-claude ultrareview https://github.com/owner/repo/pull/123   # PR URL
-claude ultrareview feature-branch       # branch name (compared to default branch)
+claude ultrareview <pr-number>                              # PR number
+claude ultrareview https://github.com/<owner>/<repo>/pull/<pr-number>   # PR URL
+claude ultrareview feature-branch                           # branch name (compared to default branch)
 ```
 
 ### Get structured findings (JSON)
@@ -385,7 +384,7 @@ The CLI does not have a `--kill-agent` flag. To terminate a background agent:
 - From a script: send the process a signal. The session is a regular OS process; `kill <pid>` works but is unclean. Prefer the interactive view or letting the agent complete naturally.
 - Set a max budget with `--max-budget-usd` so the agent stops itself at the spend cap.
 
-For agent-runtime semantics (subagent orchestration, parallel dispatch, etc.), see `subagent-orchestration`. The CLI flags here are the surface; the orchestration pattern is the marketplace's separate concern.
+For agent-runtime semantics (subagent orchestration, parallel dispatch, etc.), see the marketplace's subagent-orchestration skill. The CLI flags here are the surface; the orchestration pattern is the marketplace's separate concern.
 
 ---
 
@@ -556,7 +555,7 @@ claude agents --json | jq '.[] | {name: .name, status: .status}'
 **Workflow 4: Code review of a PR**
 
 ```bash
-claude ultrareview 123 --json | jq '.findings[]'
+claude ultrareview <pr-number> --json | jq '.findings[]'
 ```
 
 **Workflow 5: Structured output for downstream parsing**
@@ -615,11 +614,11 @@ claude --resume "$SESSION_ID" -p "Drill into the auth findings"
 
 ## §12. Handoff
 
-- **MCP design principles** (why some tools decompose the way they do) → `tp-mcp` `mcp-expertise` DESIGN mode
-- **MCP implementation in Rust with rmcp + schemars** → `tp-mcp` `mcp-expertise` IMPLEMENT mode
-- **JSON Schema authoring details** → `tp-mcp` `mcp-expertise` SCHEMA mode
-- **Subagent orchestration patterns** (parallel dispatch, scratchpad, critic loops) → `subagent-orchestration`
-- **Session analytics and behavioral review** → `tp-session-audit`
+- **MCP design principles** (why some tools decompose the way they do) → the marketplace's MCP expertise skill, DESIGN mode
+- **MCP implementation in Rust with rmcp + schemars** → the marketplace's MCP expertise skill, IMPLEMENT mode
+- **JSON Schema authoring details** → the marketplace's MCP expertise skill, SCHEMA mode
+- **Subagent orchestration patterns** (parallel dispatch, scratchpad, critic loops) → the marketplace's subagent-orchestration skill
+- **Session analytics and behavioral review** → the marketplace's session-analytics skill
 
 ---
 

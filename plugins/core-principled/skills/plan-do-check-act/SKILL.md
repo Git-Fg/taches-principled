@@ -1,6 +1,6 @@
 ---
 name: plan-do-check-act
-description: "Execute evidence-based experimentation cycles to test hypotheses and measure the results of a change."
+description: "Run a Plan-Do-Check-Act (PDCA) cycle to test a hypothesis with measurable success criteria. Use when user says 'run a PDCA cycle', 'test this hypothesis', 'A/B test this change', 'validate the improvement worked', or 'standardize this change'."
 when_to_use: "Use for proof-of-concepts, A/B tests, and validating improvements before standardization. Do NOT use for debugging (use diagnose) or code style (use refine)."
 argument-hint: "[improvement goal or problem to address] [--cycle N]"
 ---

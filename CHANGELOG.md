@@ -2,6 +2,81 @@
 
 All notable changes are documented here.
 
+## [1.22.6] — 2026-06-07
+
+### Fixed
+
+- **12 skills audited and refined** to honor the 5 gotcha rules introduced in 1.22.4 (cross-skill-references, hub-router-budget, context-fork-blackbox, cross-plugin-citations, ground-truth-citations). The audit was 26 skills wide; 12 received surgical edits, 1 had a known false positive left in place, and 5 were flagged for a 1.23.x follow-up. Files: `plugins/claude-cli-wrapper/skills/claude-cli/SKILL.md` (6 cross-plugin identifiers → role-semantic, 3 volatile URLs/dates → placeholders), `plugins/core-principled/skills/plan-do-check-act/SKILL.md` (front-load trigger phrases in description), `plugins/core-principled/skills/project-maintenance/SKILL.md` (7 volatile dates → `YYYY-MM-DD` placeholders in MEMORY-DEDUP/MEMORY-ARCHIVE examples), `plugins/core-principled/skills/refine/SKILL.md` (2 cross-plugin identifiers → role-semantic, sibling-skill ref path canonicalized to `subagent-orchestration/references/subagent-contract-design.md`), `plugins/core-principled/skills/skill-authoring/SKILL.md` (CONTRAST section added), `plugins/core-principled/skills/task-lifecycle/SKILL.md` (front-load trigger phrases), `plugins/core-principled/skills/test-orchestration/SKILL.md` (front-load trigger phrases), `plugins/tp-fpf/skills/fpf/SKILL.md` (front-load trigger phrases), `plugins/tp-git/skills/git/SKILL.md` (3 cross-plugin identifiers → role-semantic), `plugins/tp-mcp/skills/mcp-expertise/SKILL.md` (front-load trigger phrases), `plugins/tp-mcp/skills/mcp-quality-evaluate/SKILL.md` (sibling-skill ref path canonicalized, volatile date → placeholder, CONTRAST section added), `plugins/tp-session-audit/skills/session-analytics/SKILL.md` (front-load trigger phrases, 6 cross-plugin identifiers → role-semantic).
+
+- **41 subagent contracts refined** to honor the 3 agent frontmatter rules (no `tools:` except `wiki-searcher`, no `model:` field, `background: true` for long-running/parallel) and the 6 P1–P6 contract design principles. The audit was 55 agents wide; 12 had volatile "Issue #36/38" provenance removed from existing P6 sections, 26 had the canonical P6 "Ground truth" section added across two passes (21 judge/verifier/auditor + 5 factual-claim including `tp-bug-hunter`, `tp-critic`, `wiki-ingester`, `wiki-linter`, `wiki-searcher`), 1 had `background: true` added (`tp-explorer`), and 2 had role statements prepended (`tp-pdca-synthesizer`, `fpf-evidence-validator`). The 12 synthesis/generation agents that remain without a P6 section are correct per the design doc — P6 does not apply to opinion/synthesis agents. The single `tools:` allowlist in the marketplace (`wiki-searcher`'s read-only `[Read, Glob, Grep]`) is the canonical exception and is preserved. Audit script: `/tmp/agent-audit.sh` (re-runnable). Full per-agent table: `.mavis/plans/agents-audit-report.md`.
+
+- **README.md hygiene (6 line-level defects fixed).** Stale version banner (0.30.0/1.22.0 → 0.31.1/1.22.6), wrong slash command name (`/debug` → `/trace`, the actual command name in `plugins/core-principled/commands/debug.md` frontmatter is `trace`), `/refine` removed from the slash-command example (refine is a skill, not a command; replaced with `/whats-next` and the explanatory line reworded to distinguish skills from slash commands), stale `claude-cli-wrapper` description (was "MCP wrapper … six focused tools" — replaced with the post-1.22.1 Bash-driven description), stale `tp-mcp` description (was "three skills" — replaced with the post-1.22.2 "single `mcp-expertise` hub with 5 modes" description), and 2 stale inline comments in the per-plugin install snippet. No hardcoded counts in headers. Full per-fix table: `.mavis/plans/docs-audit-report.md`.
+
+- **`plugins/core-principled/skills/refine/SKILL.md` line 36 — cross-skill reference path canonicalized.** The line said *"the preloaded subagent-orchestration skill's `references/subagent-contract-design.md`"* in conversational prose. The new `cross-skill-references` rule (1.22.4) requires sibling-skill citations to use the canonical `sibling-skill/references/X.md` path form. Reworded to lead with the canonical `subagent-orchestration/references/subagent-contract-design.md` path. This was a real defect (not a false positive) flagged by the docs audit.
+
+### AUDIT
+
+- **Scope:** four parallel audits — skills (26 SKILL.md files), agents (55 subagent definitions), catalog + scripts (build script + regenerated `marketplace.json` + `scripts/check-citations.py`), docs (README, CHANGELOG, CLAUDE.md, `.claude/rules/`, knowledge/ paths). Per the CLAUDE.md "Subagent-First Execution Contract" and the 3-phase methodology, each track was a separate branch session running concurrently, with results consolidated here.
+- **Catalog/scripts audit:** green. `scripts/regenerate-marketplace.py` is idempotent (no diff on re-run after 1.22.5). All 10 per-plugin `plugin.json` versions match the catalog. All 10 `source` paths resolve. `scripts/check-citations.py` exits 0 with 0 findings. `jq -e '.plugins | all(... [keys[] | select(. == "version")] | length) == 1)'` (the 1.14.0 regression-class check) passes. Per-fix table: `.mavis/plans/catalog-scripts-audit-report.md`.
+- **Per-finding resolution:**
+  - **Fixed** — 12 skills, 41 agents, 7 README/skills cross-doc defects, 0 catalog defects
+  - **Skipped (false positives)** — 1 skill-authoring file (intentional WRONG/RIGHT pedagogical examples inside the rubric body); 4 agents with "When the hub spawns you" prose (D4 false positives — the agent describes its own context, not delegation instructions); 20–30 false-positive `references/X.md` cites inside fenced code blocks (template/illustrative, not navigation pointers)
+  - **Deferred (follow-up 1.23.x or maintainer policy)** — 5 hub-router-budget items (11 hubs over the 500-token ceiling, ranging from 1.4× to 8.9× over; structural refactor, scoped for a minor release), 1 mcp-quality-evaluate "Produce:" section shape (1-line edit, low priority), 1 `claude-cli` body split (4,969 tokens; substantial refactor), 1 skill-authoring body deduplication vs CLAUDE.md (4,453 tokens; pedagogical vs token-economy trade-off), 1 cross-plugin skill-name citation form (rule clarification), 18 D7 markdown-in-body agents (marketplace-wide policy decision on list vs prose), 1 `mcp-schema-author` `background: true` recommendation (runtime measurement), `handoff.md` staleness (3 options: keep / move to `knowledge/concepts/` / delete — maintainer's call per the 1.22.1 convention).
+
+### Skip notes
+
+- **`core-principled/skills/skill-authoring/SKILL.md` WRONG/RIGHT example references (`references/file.md`, `references/format.md`, `references/patterns.md`, `references/X.md`).** These appear at lines 335, 342, 343, 344, 401, 407 inside pedagogical `> WRONG:` quote blocks. The paths are intentionally fictional — they illustrate the difference between passive and imperative citations. The audit's grep does not distinguish "WRONG:" examples from real citations. Removing or renaming the placeholder paths would weaken the pedagogy. The rule being taught is the very rule the audit enforces.
+
+- **4 agents with "When the hub spawns you" or "you are an agent executing a delegated task" prose** (`core-principled/agents/tp-global-implementer.md`, `tp-wiki/agents/wiki-ingester.md`, `tp-wiki/agents/wiki-linter.md`, `tp-wiki/agents/wiki-searcher.md`). These describe the agent's own context (the hub spawning it), NOT the agent delegating to other agents. The orchestration-contracts rule forbids "spawn, fan-out, or delegation instructions" — these bodies do not instruct the agent to spawn anything. The audit's regex caught the literal "spawn … subagent" pattern, but the semantic intent is opposite. No semantic defect.
+
+### Out of scope
+
+- **5 hub-router-budget items (11 of 15 hubs exceed the 500-token hub ceiling).** Smallest over: `task-lifecycle` 1.4× (690 tokens). Largest: `skill-authoring` 8.9× (4,453 tokens). The marketplace pattern is "mode body inlines procedural logic rather than deferring to `references/`"; the rubric says "procedure belongs in `references/`." Resolving this contradiction requires extracting mode bodies from 11 hubs into hub + N reference files. Each hub needs a careful split without losing routing clarity. Effort: ~2–3 days of focused refactor across 11 skills. When: 1.23.x minor release, paired with the `mcp-quality-evaluate` "Produce:" section shape and the `claude-cli` body split.
+
+- **`mcp-quality-evaluate/SKILL.md` Produce: section shape.** Documents the output format in `## I/O Example` (`OUTPUT: a markdown report with this exact structure:`) rather than a literal `Produce:` heading. The description front-loads the format. The contract is complete from the caller's perspective. Effort: 1 line of edit (rename the `## I/O Example` heading or add an explicit `## Produce`). When: 1.23.0 cleanup batch.
+
+- **`claude-cli/SKILL.md` body token count (4,969 tokens).** The 12-section reference manual covers all CLI flags exhaustively. Splitting into hub + 6 reference files would let a user pay for only the conceptual operation they need (one of 6). Effort: ~half-day refactor (split into hub + 6 per-operation references, rewrite the in-text cite-as-you-go into a "see references/<op>.md for the full flag set" pattern). When: 1.23.x paired with the hub-router-budget work.
+
+- **`skill-authoring/SKILL.md` body deduplication vs CLAUDE.md (4,453 tokens).** The body duplicates content from `~/.mavis/skills/skill-authoring/references/*.md` and from CLAUDE.md itself. Externalizing to references/ would drop the per-load cost to ~500 tokens but the skill would no longer be self-contained. Pedagogically useful as-is. Effort: depends on the resolution chosen (extract mode bodies / accept the cost / hybrid). When: 1.23.x paired with the hub-router-budget work.
+
+- **Cross-plugin skill-name citations rule clarification.** `claude-cli/SKILL.md` line 388 says "see the marketplace's subagent-orchestration skill" — the `subagent-orchestration` skill lives in `core-principled`, a different plugin. The strict reading of the cross-plugin-citations rule would prefer a role-only phrasing like "see the in-process subagent orchestrator skill". The "marketplace's X skill" form is more explicit and preserves navigability but cites a skill name in another plugin. Document the chosen form in `.claude/rules/cross-plugin-citations.md` as canonical. Effort: ~10 lines of doc + a few sentence rephrasings. When: 1.23.x docs cleanup.
+
+- **18 agents with markdown-in-body (D7).** Both pure-prose (tp-critic, tp-grader, tp-debug-tracer) and list-based (tp-bug-hunter, security-*, session-audit-*) patterns coexist in the marketplace. The design doc says "no markdown" but list-based agents work in practice for category enumeration. Decide on a marketplace-wide policy and codify. Effort: depends on the policy (if "all-prose", 18 agents need rewriting; if "lists are fine for category enumeration", ~30 lines of design doc + reference doc updates). When: maintainer policy decision required before refactor.
+
+- **`mcp-schema-author` `background: true` recommendation.** Schema authoring for complex MCP servers can exceed 30s. Currently `background:` is not set; the heuristic recommended `true`. Maintainer should measure actual runtime in the wild. Effort: 1 line of frontmatter. When: next time `mcp-schema-author` is invoked and runtime is measured.
+
+- **`handoff.md` staleness.** Dated 2026-06-04, describes state at that time (9 plugins, marketplace 0.23.0, 3 open issues). Current state (2026-06-07) is 10 plugins, marketplace 0.31.1, several sessions have run. CHANGELOG 1.22.1 codified the convention to preserve historical `handoff.md` as-is. Maintainer may want to (a) leave as historical archive, (b) move to `knowledge/concepts/handoff-2026-06-04.md`, (c) delete. Effort: 0–10 minutes depending on choice. When: maintainer decision.
+
+### Verification
+
+- `python3 scripts/check-citations.py` → `PASS: no citation violations, no missing preloads, no broken references` (exit 0)
+- `jq -e '.plugins | all(. as $p | ([keys[] | select(. == "version")] | length) == 1)' .claude-plugin/marketplace.json` → `true` (no duplicate `version` keys per plugin entry)
+- `jq -e 'has("name") and has("owner") and has("plugins") and (.plugins | type == "array")' .claude-plugin/marketplace.json` → `true` (top-level schema)
+- `jq -e '.plugins | all(has("name") and has("version") and has("description") and has("source") and has("keywords"))' .claude-plugin/marketplace.json` → `true` (per-plugin required + extended fields)
+- `jq -e '.plugins | all(has("name") and has("source"))' .claude-plugin/marketplace.json` → `true` (official schema required fields)
+- `python3 scripts/regenerate-marketplace.py` → exit 0, marketplace.json regenerated from `_meta.json` + per-plugin `plugin.json`
+- Every per-plugin `plugin.json` version matches the regenerated `marketplace.json` entry
+- Every per-plugin keywords list in `marketplace.json` matches `_meta.json`
+- Every per-plugin `source` path resolves to a real directory under `plugins/`
+
+### Migration
+
+- **No user action required.** This is a pure housekeeping release — the marketplace is in compliance with the 1.22.4 gotcha rules. Skill descriptions trigger correctly under the new front-load pattern. Subagent contracts are uniform. The `wiki-searcher` allowlist exception is preserved as the only `tools:` field in the marketplace. The 5 new gotcha rule files (`.claude/rules/{cross-skill-references,hub-router-budget,context-fork-blackbox,cross-plugin-citations,ground-truth-citations}.md`) are unchanged from 1.22.4; this release brings the marketplace's content into compliance with them.
+
+### Version bumps
+
+- **Marketplace** 0.31.0 → 0.31.1
+- **claude-cli-wrapper** 0.3.0 → 0.3.1 (patch: 1 skill cross-plugin citation + 3 volatile placeholders)
+- **core-principled** 0.20.1 → 0.20.2 (patch: 19 agents P6/role + 6 skills description/cross-plugin/refs + 1 README)
+- **tp-fpf** 0.4.0 → 0.4.1 (patch: 3 agents P6 + 1 skill description)
+- **tp-git** 0.3.6 → 0.3.7 (patch: 2 agents P6 + 1 skill cross-plugin citations)
+- **tp-mcp** 0.4.0 → 0.4.1 (patch: 2 skills description/cross-plugin ref/CONTRAST)
+- **tp-rust** 0.3.1 → 0.3.2 (patch: 4 agents P6)
+- **tp-sadd** 0.4.0 → 0.4.1 (patch: 3 agents P6)
+- **tp-security** 1.0.0 → 1.0.1 (patch: 5 agents P6)
+- **tp-session-audit** 0.3.5 → 0.3.6 (patch: 1 skill description + cross-plugin)
+- **tp-wiki** 0.4.0 → 0.4.1 (patch: 3 agents P6)
+
 ## [1.22.5] — 2026-06-06
 
 ### Changed

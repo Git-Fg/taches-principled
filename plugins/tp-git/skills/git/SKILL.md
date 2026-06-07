@@ -107,12 +107,12 @@ ADVANCED: Notes in `.git/refs/notes/` + additional working directories
 ## §CONTRAST
 
 **DO NOT use this skill for:**
-- "Plan a project / feature / phase end-to-end" → `plan-lifecycle` (or `/plan` slash command in core-principled)
-- "Review my code for design / architecture" → `refine` REVIEW mode
-- "Investigate a bug / root cause" → `diagnose`
-- "Write a security audit of a project" → `security` skill
-- "Run a multi-phase task from a spec" → `task-lifecycle`
+- "Plan a project / feature / phase end-to-end" → the marketplace's plan-lifecycle skill (or `/plan` slash command)
+- "Review my code for design / architecture" → the marketplace's refine skill, REVIEW mode
+- "Investigate a bug / root cause" → the marketplace's diagnose skill
+- "Write a security audit of a project" → the marketplace's security skill
+- "Run a multi-phase task from a spec" → the marketplace's task-lifecycle skill
 
-CONTRAST with `tp-sadd` judge pattern: this skill handles git operations; `tp-sadd` evaluates code with judges.
+CONTRAST with the marketplace's multi-judge evaluation pattern: this skill handles git operations; the multi-judge pattern evaluates code with judges.
 
-CONTRAST with `claude-cli`: this skill teaches git CLI patterns via Bash; `claude-cli` teaches the `claude` CLI via Bash. Both are Bash-tool-first skills in their respective domains.
+CONTRAST with the marketplace's `claude-cli` skill: this skill teaches git CLI patterns via Bash; the `claude-cli` skill teaches the `claude` CLI via Bash. Both are Bash-tool-first skills in their respective domains.

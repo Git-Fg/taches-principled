@@ -1,6 +1,6 @@
 ---
 name: task-lifecycle
-description: "Track features from idea to implementation — return a draft task file (CAPTURE), a detailed spec (REFINE), implemented code with a verification report (IMPLEMENT), or updated documentation (DOCUMENT). Use when adding a feature, refining a spec, building a task, or updating documentation."
+description: "Add a feature, refine a spec, implement it, and update docs through a 4-stage task lifecycle. Use when user says 'add a feature', 'refine this spec', 'implement the task', 'build a feature', 'update the docs', or names a draft / spec path. Modes: CAPTURE (draft), REFINE (spec), IMPLEMENT (code + verify), DOCUMENT (docs)."
 context: fork
 agent: general-purpose
 when_to_use: |

@@ -1,6 +1,6 @@
 ---
 name: session-analytics
-description: "Analyze session transcripts to extract data, diagnose anti-patterns, and generate GitHub issues from findings."
+description: "Analyze Claude Code session transcripts to extract metrics, diagnose behavioral anti-patterns, and file GitHub issues from findings. Use when user says 'parse session log', 'session metrics', 'review session for anti-patterns', 'capture a session', 'cross-analyze artifacts', or 'create a meta-issue'. Modes: CAPTURE, INSPECT, REVIEW, ISSUE, CROSS-ANALYZE, ADJUDICATE."
 allowed-tools: Read, Glob, Grep, Bash, Agent
 when_to_use: "Use for session metrics, anti-pattern review, or creating issues from findings. Examples: \"parse debug log\", \"analyze hooks\". CONTRAST: No code analysis (use refine); no general project bugs (use meta-issue)."
 argument-hint: "<inspect|review|issue> [session-id|--dry-run] [--filter errors|tools|cost|skills] [--full|--summary]"
@@ -314,8 +314,8 @@ The user can override with explicit confirmation.
 1. **Collect findings** from cross-analyze output (passed as file path argument or previous session-inspect output)
 
 2. **Parallel validation per finding** — for each finding, spawn two agents concurrently:
-   - **tp-fpf:fpf-evidence-validator** ← the finding + the JSONL artifact → "evidence supports" or "L1-speculative"
-   - **tp-sadd:sadd-judge** ← the finding → try to refute it (refuted=true if uncertain)
+   - **an FPF evidence-validator subagent** ← the finding + the JSONL artifact → "evidence supports" or "L1-speculative"
+   - **a sadd-judge subagent** ← the finding → try to refute it (refuted=true if uncertain)
 
    Use `background: true` for all spawns. Spawn all evidence-validators and all adversarial challengers concurrently.
 
@@ -344,7 +344,7 @@ The user can override with explicit confirmation.
    }
    ```
 
-**Note:** If `tp-fpf:fpf-evidence-validator` is not available (partial install), skip evidence validation and note it. If `tp-sadd:sadd-judge` is not available, use `core-principled:tp-critic` as fallback adversarial agent.
+**Note:** If an FPF evidence-validator subagent is not available (partial install), skip evidence validation and note it. If a sadd-judge subagent is not available, use a marketplace critic subagent (such as a single-pass critic) as fallback adversarial agent.
 
 ---
 
@@ -385,17 +385,17 @@ table is the secondary lookup for the per-reference scope of each file.
 
 ## Cross-plugin dependencies
 
-This skill is part of the `tp-session-audit` plugin and depends on
+This skill is part of the session-analytics plugin and depends on
 **optional** agents from other plugins. Each is a soft dependency —
 the skill works without it, falling back to the noted substitute.
 
-| Agent | Source plugin | Used in | Fallback if absent |
+| Agent role | Source | Used in | Fallback if absent |
 |---|---|---|---|
 | `tp-debug-tracer` | *(not yet published in this marketplace)* | `CROSS-ANALYZE` mode, for backward call-chain root-cause from debug logs | `session-inspector` on the debug log (single-agent path) |
-| `tp-fpf:fpf-evidence-validator` | `tp-fpf` | `CROSS-ANALYZE` evidence validation stage | Skip the validation stage and note it in the report |
-| `tp-sadd:sadd-judge` | `tp-sadd` | `CROSS-ANALYZE` adversarial-check pass | `core-principled:tp-critic` (a single critic instead of a judge panel) |
+| FPF evidence-validator | the marketplace's FPF skill | `CROSS-ANALYZE` evidence validation stage | Skip the validation stage and note it in the report |
+| sadd-judge | the marketplace's sadd skill | `CROSS-ANALYZE` adversarial-check pass | a single critic subagent (instead of a judge panel) |
 
-Why these aren't hard dependencies: `tp-session-audit` ships
+Why these aren't hard dependencies: the session-analytics skill ships
 standalone — a user who only wants session analytics should be
 able to install just this plugin. The optional cross-plugin agents
 add depth (judge panels, evidence validation, stack-trace

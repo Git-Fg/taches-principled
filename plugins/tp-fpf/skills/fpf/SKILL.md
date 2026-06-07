@@ -1,6 +1,6 @@
 ---
 name: fpf
-description: "Analyze problems from first principles using ADI (Abduction-Deduction-Induction) and return a Design Rationale Record (DRR) with hypotheses ranked by effective reliability (R_eff), or return an evidence-freshness report, or a knowledge-base query. Use when reasoning from scratch, comparing solutions, or making decisions with documented rationale."
+description: "Reason from first principles, compare solutions, or query the FPF knowledge base. Use when user says 'reason from first principles', 'compare solutions', 'make a decision with rationale', 'FPF', 'evaluate hypotheses', 'check evidence freshness', or 'query the FPF knowledge base'. Returns a Design Rationale Record (DRR), an evidence-freshness report, or a search-results table. Modes: PROPOSE, MAINTAIN, QUERY."
 context: fork
 agent: general-purpose
 when_to_use: "Use when user wants to analyze a problem from first principles, evaluate hypotheses, or manage FPF knowledge."

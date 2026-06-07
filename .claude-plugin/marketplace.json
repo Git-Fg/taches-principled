@@ -5,11 +5,11 @@
     "name": "Git-Fg"
   },
   "description": "A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans \u2014 with principle-based guidance that teaches judgment over procedure.",
-  "version": "0.31.0",
+  "version": "0.31.1",
   "plugins": [
     {
       "name": "claude-cli-wrapper",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "description": "Skill teaching direct `claude` CLI usage via the Bash tool \u2014 six conceptual operations (execute, session, context, review, agent, config) expressed as native `claude -p` invocations and subcommands (`claude ultrareview`, `claude agents`, `claude doctor`, `claude mcp`, `claude plugin`). No binary, no MCP server, no Rust toolchain required. For agents that need to drive Claude Code programmatically without an MCP transport.",
       "source": "./plugins/claude-cli-wrapper",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -30,7 +30,7 @@
     },
     {
       "name": "core-principled",
-      "version": "0.20.1",
+      "version": "0.20.2",
       "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, test strategy. Live Claude Code/Agent SDK/API docs via tp-cc-docs and /cc-docs slash command. (Security review moved to tp-security in 1.22.0.)",
       "source": "./plugins/core-principled",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -56,7 +56,7 @@
     },
     {
       "name": "tp-fpf",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "description": "First Principles Framework \u2014 structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
       "source": "./plugins/tp-fpf",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -73,7 +73,7 @@
     },
     {
       "name": "tp-git",
-      "version": "0.3.6",
+      "version": "0.3.7",
       "description": "Git workflow automation \u2014 conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
       "source": "./plugins/tp-git",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -89,7 +89,7 @@
     },
     {
       "name": "tp-mcp",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "description": "Principled MCP (Model Context Protocol) expertise hub \u2014 a single skill `mcp-expertise` with five modes covering the full MCP server lifecycle: DESIGN (tool decomposition, output contract, JSON-RPC error discipline, capability negotiation, security checklist, naming, Claude-Optimal validation), SCHEMA (JSON Schema 2020-12 authoring, additionalProperties:false discipline, discriminator enums, constraint discipline, description writing, pitfalls catalog, schemars cheatsheet), IMPLEMENT (Rust with rmcp 0.3 + schemars + tokio, transport choice stdio vs Streamable HTTP, stderr-only logging, error mapping via rmcp::ErrorData, testing with MCP Inspector CLI mode), CLIENT (agent as MCP consumer \u2014 the four installation paths, JSON-RPC discovery flow, calling pattern, consumer-side debugging, rmcp client SDK for stdio and Streamable HTTP), and QUALITY (8-dimension Claude-Optimal rubric via 8 parallel mcp-quality-judge subagents orchestrated by mcp-quality-evaluate). The \u00a73 worked example in `mcp-expertise/references/design-decomposition.md` uses a synthetic `git-cli` decomposition. Hub is a pure router; mechanism lives in `references/`. Includes 3 subagents: mcp-server-builder (IMPLEMENT, background, green), mcp-quality-judge (QUALITY leaf, background, yellow), and mcp-schema-author (SCHEMA, foreground, blue). The QUALITY orchestrator is the `mcp-quality-evaluate` skill \u2014 first `context: fork` skill in the marketplace.",
       "source": "./plugins/tp-mcp",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -117,7 +117,7 @@
     },
     {
       "name": "tp-rust",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "description": "Principled Rust project skills \u2014 single `rust` hub with a `Modes:` directive covering the full Rust lifecycle: SCAFFOLD (lib/bin decision, Cargo.toml template edition 2024, MSRV 1.81, feature flag design, lib+bin code layout, rustdoc, edition migration), WORKSPACE (when to split, virtual workspace template, workspace inheritance, Cargo.lock policy, MSRV coordination, cross-crate patterns, workspace publishing), QUALITY (canonical 6-job CI, clippy + rustfmt policy, cargo-nextest, coverage, supply-chain ladder, dev-experience tooling), RELEASE (Cargo semver, changelog tooling, cargo publish playbook, supply-chain maintenance, feature deprecation). Five subagents: rust-cargo-reviewer, rust-pipeline-auditor, rust-supply-chain-auditor, rust-publish-reviewer, rust-simplifier.",
       "source": "./plugins/tp-rust",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -143,7 +143,7 @@
     },
     {
       "name": "tp-sadd",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "description": "Structured agent-driven development with multi-pattern evaluation \u2014 judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
       "source": "./plugins/tp-sadd",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -160,7 +160,7 @@
     },
     {
       "name": "tp-security",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "description": "Principled security review skills \u2014 single `security` hub with a `Modes:` directive covering the pre-production security review lifecycle: SAST (static application security testing for injection, auth bypass, SSRF, deserialization, access control), DEPENDENCY-AUDIT (CVE scanning, lockfile drift, typosquatting, supply-chain integrity), SECRETS-DETECTION (API keys, tokens, credentials, private keys via pattern matching and entropy analysis), COMPLIANCE (OWASP ASVS, GDPR, SOC2, PCI-DSS, HIPAA evidence mapping and gap analysis). Five subagents: security-sast-scanner, security-dependency-auditor, security-secrets-detector, security-reviewer, security-compliance-checker.",
       "source": "./plugins/tp-security",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -185,7 +185,7 @@
     },
     {
       "name": "tp-session-audit",
-      "version": "0.3.5",
+      "version": "0.3.6",
       "description": "Session analytics \u2014 CAPTURE (headless behavioral artifact collection), INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue reporting). One hub skill, four modes.",
       "source": "./plugins/tp-session-audit",
       "homepage": "https://github.com/Git-Fg/taches-principled",
@@ -207,7 +207,7 @@
     },
     {
       "name": "tp-wiki",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "description": "Search, query, ingest, and verify a personal wiki, knowledge base, or notes system. Use when user mentions 'wiki', 'KB', 'knowledge base', 'look up in my notes', 'find in my wiki', 'lint wiki', 'check wiki consistency', 'add to wiki', 'ingest into wiki', or 'populate wiki'. Ships with wiki-searcher (read), wiki-linter (verify), and wiki-ingester (build) subagents.",
       "source": "./plugins/tp-wiki",
       "homepage": "https://github.com/Git-Fg/taches-principled",

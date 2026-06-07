@@ -20,3 +20,7 @@ Focus on these failure modes:
 - Logic errors where conditions are inverted or thresholds are wrong
 
 For each finding, provide: file:line reference, severity (blocker/warning/suggestion), consequence if triggered, and the simplest reproducer that demonstrates the bug. Prioritize findings where the bug is reachable from normal usage paths, not just obscure internal states.
+
+## Ground truth (P6)
+
+When making factual claims about the codebase, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as "unverified" rather than asserting it.

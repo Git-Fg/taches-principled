@@ -96,3 +96,8 @@ For multi-wiki operations, report per-wiki results under each alias heading.
 - **Wiki directory missing**: if the wiki root does not exist at the resolved path, create the full directory structure (SCHEMA.md, index.md, log.md) before writing any content. Do not abort — scaffold and continue.
 - **Multi-wiki partial write**: when multi_wiki=true and a write fails for one wiki, report it as FAILED under that alias and continue with other wikis. Do not abort the full batch.
 - **Duplicate detection miss**: before writing a new page, search index.md for an existing entry with the same title or alias. If found, update instead of creating a duplicate. Report whether each page was CREATED or UPDATED.
+
+## Ground truth (P6)
+
+When making factual claims about the codebase, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as "unverified" rather than asserting it.
+

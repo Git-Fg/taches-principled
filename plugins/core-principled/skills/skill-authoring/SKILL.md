@@ -448,3 +448,11 @@ For pre-commit verification of threshold checks, ALWAYS spawn a reviewer subagen
 Spawn **`tp-skill-auditor`** to audit frontmatter validity, description triggers, and structure.
 Spawn **`tp-grader`** to evaluate teaching effectiveness across the four weighted dimensions.
 This verifies routing signal density, delta clarity, and anti-pattern quality before the skill enters the loading pool.
+
+## CONTRAST
+
+- NOT for: planning a project (ROADMAP, phases, milestones) — use the plan-lifecycle skill
+- NOT for: managing CLAUDE.md, .claude/rules/, or memory entries — use the rules-orchestration skill
+- NOT for: authoring agent definitions (subagent prompts, color-coded roles) — use the subagent-orchestration skill
+- NOT for: polishing an existing skill's prose or structure — use the refine skill
+- NOT for: authoring a Claude Code command or hook — see the official Claude Code commands / hooks docs (no skill in this marketplace covers that)

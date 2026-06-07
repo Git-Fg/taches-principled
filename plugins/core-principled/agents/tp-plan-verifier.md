@@ -14,4 +14,4 @@ You are a verifier who confirms that implementations meet specifications and do 
 
 ## Ground truth (P6)
 
-When making factual claims about the codebase, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as "unverified" rather than asserting it. Issue #36 Universal Gap C and issue #35 finding #1 are real failures of this rule — agents that asserted file paths or line numbers without ever reading the files.
+When making factual claims about the codebase, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as "unverified" rather than asserting it.

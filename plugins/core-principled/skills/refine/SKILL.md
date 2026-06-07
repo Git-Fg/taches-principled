@@ -21,7 +21,7 @@ argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-lo
 - CONTRAST with update-docs: that updates existing docs; this improves prose quality (POLISH).
 - CONTRAST with ddd: refine improves quality of existing artifacts (present, corrective); ddd performs structural analysis (architecture, quality, transparency, API). Use refine when the issue is known and needs fixing; use ddd when a specific structural question surfaces.
 - CONTRAST with kaizen: refine is on-demand quality improvement; kaizen provides continuous guardrails. Use refine after completing work; use kaizen during every code decision.
-- CONTRAST with sadd JUDGE: refine provides severity-rated self-critique with single review; sadd JUDGE provides multi-judge competitive evaluation with debate rounds. Use refine for standard quality checks; use sadd for high-stakes decisions needing independent consensus.
+- CONTRAST with multi-judge evaluation: refine provides severity-rated self-critique with single review; the multi-judge competitive evaluation pattern (with debate rounds) is the right tool for high-stakes decisions needing independent consensus.
 
 ## Decision Router
 
@@ -33,7 +33,7 @@ IF user says "capture this learning", "remember this", or wants learnings persis
 IF user says "make this clearer", "write more concisely", "clean up text", "improve the writing", or "fix the prose" → **POLISH** mode
 IF ambiguous → ask: "Would you like to simplify code, critique the approach, memorize learnings, or polish the prose?"
 
-**Subagent contracts:** When SIMPLIFY or REVIEW mode modifies a subagent definition file (any `agents/*.md`), you MUST read the 6 design principles (P1-P6) at the preloaded `subagent-orchestration` skill's `references/subagent-contract-design.md` BEFORE the change. The P6 ground-truth principle in particular requires that any subagent making factual claims has Read access. Do not skip this citation.
+**Subagent contracts:** When SIMPLIFY or REVIEW mode modifies a subagent definition file (any `agents/*.md`), you MUST read `subagent-orchestration/references/subagent-contract-design.md` BEFORE the change. That file teaches the 6 design principles (P1-P6) — the P6 ground-truth principle in particular requires that any subagent making factual claims has Read access. Do not skip this citation.
 
 # Refine
 
@@ -138,7 +138,7 @@ Multi-agent code review that scans for bugs, security vulnerabilities, code qual
 Spawn all six reviewers in parallel. Each agent focuses on a distinct dimension:
 
 1. **Spawn `tp-bug-hunter`** (red) — Logic errors, edge cases, race conditions, null pointer risks, state corruption. Key question: "Where did invalid data originate? How would this fail under load?"
-2. **Spawn `security-reviewer`** (red, from `tp-security` plugin) — OWASP Top 10, injection, auth, exposed secrets, insecure crypto. Key question: "Can this be exploited? Does this fail closed or open?"
+2. **Spawn `security-reviewer`** (red) — OWASP Top 10, injection, auth, exposed secrets, insecure crypto. Key question: "Can this be exploited? Does this fail closed or open?"
 3. **Spawn `tp-code-quality-reviewer`** (yellow) — Readability, complexity, naming, duplication, pattern adherence. Key question: "Does this follow established patterns? Is the solution simple enough?"
 4. **Spawn `tp-contracts-reviewer`** (yellow) — API contracts, data models, type design, illegal state representability. Key question: "Can illegal states be represented? Will this break existing consumers?"
 5. **Spawn `tp-historical-reviewer`** (yellow) — Git history, past PRs, recurring bug patterns. Key question: "What problems occurred before in these files?"

@@ -18,7 +18,7 @@ OUTPUT: a markdown report with this exact structure:
 ```markdown
 # MCP Quality Evaluation: my-mcp-server
 
-**Date:** 2026-06-06
+**Date:** YYYY-MM-DD
 **Evaluator:** orchestrator-001 (8 parallel judges)
 **Verdict:** PASS
 
@@ -43,7 +43,7 @@ OUTPUT: a markdown report with this exact structure:
 
 **Dimension 7 — Error distinction**
 - Evidence: Sent a `write_file` request to a nonexistent path; server returned `-32603 internal_error("path validation failed: ...")`. Should have returned a custom `-32001` (path-validation category) or `is_error: true` content result.
-- Recommendation: Map the `path validation` category in `map_domain_error()` to a custom error code. See `references/implement-runtime.md` §error-mapping for constructor shapes.
+- Recommendation: Map the `path validation` category in `map_domain_error()` to a custom error code. See `mcp-expertise/references/implement-runtime.md` §error-mapping for constructor shapes.
 
 ## EXEMPLARY dimensions
 
@@ -77,3 +77,10 @@ You MUST read `mcp-expertise/references/quality-judge-pattern.md` before spawnin
 5. **Check for >1-tier disagreements** across judges on the same dimension. If two judges disagree by more than one tier (e.g., one says EXEMPLARY and another says PARTIAL), spawn a tiebreak `mcp-quality-judge` for that dimension, passing both prior reports and the rubric, and let the tiebreak judge render the final call. Update the score accordingly.
 
 6. **Synthesize the markdown report** in the format defined in `mcp-expertise/references/quality-judge-pattern.md` §5: a header with server name, date, orchestrator ID, and verdict; a summary table with `dimension | score | one-line evidence`; a FAILs section; a PARTIALs section with evidence and recommendations; an EXEMPLARYs section. Write the report to the path the orchestrator specifies.
+
+## CONTRAST
+
+- NOT for: ad-hoc single-dimension spot-checks — read `mcp-expertise/references/quality-rubric.md` directly and evaluate that one dimension manually
+- NOT for: designing or implementing an MCP server (decomposition, JSON Schema, Rust code) — use `mcp-expertise` DESIGN / SCHEMA / IMPLEMENT modes
+- NOT for: fixing the failures the judges surface — once the report is delivered, dispatch the user to the relevant `mcp-expertise` mode (IMPLEMENT for code, SCHEMA for schema)
+- NOT for: non-MCP quality review (general code, security, performance) — use the marketplace's `refine` REVIEW mode or the security skill

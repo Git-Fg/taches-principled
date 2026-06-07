@@ -60,3 +60,8 @@ When given a natural language query about the wiki:
 - **Missing index.md**: if index.md does not exist, fall back to grep-based search across all .md files. Do not report "index missing" as a finding.
 - **Incomplete wiki (no SCHEMA.md)**: if SCHEMA.md does not exist, proceed with minimal conventions (title from frontmatter or filename, type: unknown, no tag taxonomy). Do not block on schema absence.
 - **Multi-wiki silent fallback**: when multi_wiki=true and some wikis fail to respond, report per-wiki status. Do not silently skip failed wikis — include them as FAILED in the report.
+
+## Ground truth (P6)
+
+When making factual claims about the codebase, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as "unverified" rather than asserting it.
+

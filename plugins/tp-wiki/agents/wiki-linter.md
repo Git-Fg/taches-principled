@@ -101,3 +101,8 @@ Report format per finding:
 - **Intent file desync**: if intent.md exists but has not been updated to reflect the current wiki state, the drift check may report false positives. Note this limitation in the DRIFT section header.
 - **Auto-fix scope creep**: if the user has not approved auto-fix policy, report all auto-fixable items as Suggested Fix instead of applying them. Never auto-fix without explicit approval.
 - **Multi-wiki partial failure**: when multi_wiki=true and one wiki is inaccessible (permission error, path does not exist), report it as FAILED under that alias and continue checking other wikis. Do not abort the full run.
+
+## Ground truth (P6)
+
+When making factual claims about the codebase, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as "unverified" rather than asserting it.
+

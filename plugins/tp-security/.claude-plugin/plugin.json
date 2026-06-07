@@ -1,6 +1,6 @@
 {
   "name": "tp-security",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Principled security review skills — single `security` hub with a `Modes:` directive covering the pre-production security review lifecycle: SAST (static application security testing for injection, auth bypass, SSRF, deserialization, access control), DEPENDENCY-AUDIT (CVE scanning, lockfile drift, typosquatting, supply-chain integrity), SECRETS-DETECTION (API keys, tokens, credentials, private keys via pattern matching and entropy analysis), COMPLIANCE (OWASP ASVS, GDPR, SOC2, PCI-DSS, HIPAA evidence mapping and gap analysis). Five subagents: security-sast-scanner, security-dependency-auditor, security-secrets-detector, security-reviewer, security-compliance-checker.",
   "author": {
     "name": "Felix",

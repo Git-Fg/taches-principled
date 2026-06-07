@@ -1,6 +1,6 @@
 ---
 name: test-orchestration
-description: "Plan test strategies and execute test-driven development cycles, including coverage addition and test repair."
+description: "Plan test strategy and run test-driven cycles, including coverage addition and test repair. Use when user says 'plan tests', 'run TDD', 'red-green-refactor', 'write tests first', 'add coverage', 'fix failing tests', or 'mock strategy'. Modes: STRATEGY (what to test), EXECUTE (write and fix)."
 when_to_use: "Use for planning test suites, mocking, or TDD cycles. Triggers: coverage strategy, red-green-refactor, write tests first, add coverage, or fix broken tests."
 argument-hint: "[mode] [target]"
 ---
