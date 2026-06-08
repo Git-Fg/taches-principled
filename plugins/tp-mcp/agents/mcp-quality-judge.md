@@ -1,7 +1,7 @@
 ---
 name: mcp-quality-judge
 description: |
-  Evaluate one dimension of an MCP server against the Claude-Optimal 8-dimension rubric — tool discovery, single-shot accuracy, context efficiency, pass-through integrity, session continuity, headless reliability, error distinction, schema hygiene. One of 8 parallel judges. Invoked automatically by the mcp-quality-evaluate orchestrator. Use when the orchestrator says "judge dimension N", "evaluate [dimension name]", "score this server on [dimension]", "run the quality judge". Background: parallel-by-design (orchestrator spawns 8 in parallel).
+  Evaluate one dimension of an MCP server against the Claude-Optimal 8-dimension rubric — tool discovery, single-shot accuracy, context efficiency, pass-through integrity, session continuity, headless reliability, error distinction, schema hygiene. One of 8 parallel judges. Invoked automatically by the QUALITY mode orchestrator within mcp-expertise. Use when the orchestrator says "judge dimension N", "evaluate [dimension name]", "score this server on [dimension]", "run the quality judge". Background: parallel-by-design (orchestrator spawns 8 in parallel).
 color: yellow
 background: true
 skills:

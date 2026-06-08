@@ -148,7 +148,6 @@
       "mcp-quality",
       "mcp-server-builder",
       "mcp-quality-judge",
-      "mcp-quality-evaluate",
       "mcp-schema-author",
       "json-schema",
       "rmcp",

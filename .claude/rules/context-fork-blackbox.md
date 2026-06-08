@@ -125,27 +125,27 @@ Then check:
 **Bad:** A forked skill that looks like a normal skill:
 ```
 ---
-name: mcp-quality-evaluate
+name: quality-evaluate
 description: "Run a full quality evaluation of an MCP server. Use when the user says 'evaluate my MCP server'."
 context: fork
 agent: general-purpose
 ---
 
-You are the QUALITY orchestrator for the mcp-expertise hub. Your job is to run a full 8-dimension Claude-Optimal quality evaluation of an MCP server by spawning 8 mcp-quality-judge subagents in parallel, reading their JSONL trace outputs, applying the tiebreak rule, and synthesizing a markdown report.
+You are a quality orchestrator. Your job is to run a full 8-dimension evaluation of an MCP server by spawning 8 judge subagents in parallel, reading their outputs, applying the tiebreak rule, and synthesizing a markdown report.
 ```
-The description is user-vocabulary only — no output format. The body says "your job is to ..." but does not say "produce a markdown report with these sections". The forked subagent has no role anchor ("You are the QUALITY orchestrator for mcp-expertise" presupposes context the subagent does not have) and no output spec. The main agent receives whatever prose the subagent invents.
+The description is user-vocabulary only — no output format. The body says "your job is to ..." but does not say "produce a markdown report with these sections". The forked subagent has no role anchor ("a quality orchestrator" presupposes context the subagent does not have) and no output spec. The main agent receives whatever prose the subagent invents.
 
 **Good:** A forked skill that documents its blackbox contract:
 ```
 ---
-name: mcp-quality-evaluate
+name: quality-evaluate
 description: "Spawn subagents to fan out a full 8-dimension quality evaluation of an MCP server. Returns a markdown report with per-dimension scores, evidence, and verdict. Use when the user says 'evaluate my MCP server', 'audit MCP quality', or 'run quality judge'."
 context: fork
 agent: general-purpose
 argument-hint: "[server-path]"
 ---
 
-You are the QUALITY orchestrator for the mcp-expertise hub. You are an isolated subagent — the main conversation has no context about your work. You will receive the path to an MCP server via $ARGUMENTS (or as a literal in the conversation). Produce a markdown report with these sections:
+You are a quality orchestrator. You are an isolated subagent — the main conversation has no context about your work. You will receive the path to an MCP server via $ARGUMENTS (or as a literal in the conversation). Produce a markdown report with these sections:
 
 1. **Header**: server name, date, verdict (PASS/FAIL)
 2. **Summary table**: `| dimension | score | evidence |`

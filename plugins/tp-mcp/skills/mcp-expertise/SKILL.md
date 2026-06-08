@@ -1,6 +1,6 @@
 ---
 name: mcp-expertise
-description: "Design, build, and evaluate MCP servers end-to-end. Use when user says 'design an MCP server', 'decompose MCP tools', 'write a tool schema', 'implement an MCP server in Rust', 'call an MCP server from an agent', or 'evaluate MCP quality'. Five modes: DESIGN (decomposition, contracts), SCHEMA (JSON Schema), IMPLEMENT (Rust + rmcp), CLIENT (agent as consumer), QUALITY (8-dimension rubric)."
+description: "Design, build, and evaluate MCP servers end-to-end. Use when user says 'design an MCP server', 'decompose MCP tools', 'write a tool schema', 'implement an MCP server in Rust', 'call an MCP server from an agent', or 'evaluate MCP quality'. Five modes: DESIGN (decomposition, contracts), SCHEMA (JSON Schema), IMPLEMENT (Rust + rmcp), CLIENT (agent as consumer), QUALITY (8-dimension rubric, forked orchestrator spawns 8 parallel judge subagents)."
 when_to_use: |
   - DESIGN: "design an MCP server", "decompose MCP tools", "1 tool vs N tools", "MCP output contract", "MCP error codes", "MCP security checklist", "capability negotiation", "Claude-Optimal validation"
   - SCHEMA: "write a tool schema", "JSON Schema for MCP", "LLM-friendly schema", "constraint discipline", "enum vs oneOf", "additionalProperties false", "property naming", "tool description writing"
@@ -91,13 +91,22 @@ You MUST read `references/client-rmcp-client.md` BEFORE building an MCP client w
 
 # Mode: QUALITY
 
-Quality evaluation via the 8-dimension Claude-Optimal rubric. Server must already be implemented (IMPLEMENT mode) before evaluation.
+Quality evaluation of an existing MCP server via the 8-dimension Claude-Optimal rubric. Server must already be implemented (IMPLEMENT mode) before evaluation.
 
 You MUST read `references/quality-rubric.md` BEFORE running any evaluation. It teaches the 8-dimension rubric, the FAIL/PARTIAL/PASS/EXEMPLARY scoring scale, the pass threshold, and the per-dimension evidence requirements. Do not proceed without reading it.
 
-You MUST read `references/quality-judge-pattern.md` BEFORE running the full orchestrator. It teaches the parallel-judge pattern, the judge contract, the tiebreak rule, and the report format. Do not proceed without reading it.
+You MUST read `references/quality-judge-pattern.md` BEFORE spawning judges. It teaches the parallel-judge pattern (8 judges, one per dimension), the judge contract (JSON output with score/evidence/recommendation), the tiebreak rule (>1-tier disagreement triggers a tiebreak judge), the pass threshold (any FAIL = overall FAIL; >2 PARTIALs = overall FAIL), and the report format. Do not proceed without reading it.
 
-For the full 8-dimension evaluation, load the `mcp-quality-evaluate` skill — it is the orchestrator that spawns 8 `mcp-quality-judge` subagents in parallel.
+## Orchestration
+
+Spawn the 8-dimension evaluation as an isolated forked subagent. The forked subagent:
+
+1. **Establishes server artifacts** — source, compiled binary, .mcp.json entry, README
+2. **Spawns exactly 8 `mcp-quality-judge` subagents in parallel**, one per dimension, each writing its JSON result to a dedicated temp file
+3. **Reads all 8 JSON results**, applies the pass threshold and tiebreak logic
+4. **Synthesizes a markdown report** with per-dimension scores, evidence, and overall PASS/FAIL verdict
+
+The forked subagent's output is the complete markdown evaluation report. When the report returns, route PARTIALs and FAILs to IMPLEMENT mode (code fixes) or SCHEMA mode (schema fixes).
 
 ---
 

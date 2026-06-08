@@ -37,7 +37,7 @@ Move all such content to a reference file. The hub body for that mode becomes: "
 
 **Bad:** A QUALITY mode body in a 135-line hub reads:
 ```
-**Full 8-dimension evaluation:** Load the `mcp-quality-evaluate` skill — it is the orchestrator that spawns 8 `mcp-quality-judge` subagents in parallel (one per dimension), reads the JSONL traces, applies the tiebreak rule, and synthesizes the markdown report. This replaces the manual routing described in prior versions.
+**Full 8-dimension evaluation:** Spawn 8 `mcp-quality-judge` subagents in parallel (one per dimension), read the JSONL traces, apply the tiebreak rule, and synthesize the markdown report. This replaces the manual routing described in prior versions.
 
 **Pre-condition:** Ensure the server is fully implemented (IMPLEMENT mode) before running the orchestrator. The judges score produced artifacts — code, schemas, runtime behavior — not abstract intent.
 
@@ -47,11 +47,13 @@ The hub is 5× over the 500-token ceiling; the mode body is procedural, not rout
 
 **Good:** The QUALITY mode body is two short paragraphs:
 ```
-Quality evaluation via the 8-dimension Claude-Optimal rubric. Server must already be implemented (IMPLEMENT mode) before evaluation.
+Quality evaluation of an existing MCP server via the 8-dimension Claude-Optimal rubric. Server must already be implemented (IMPLEMENT mode) before evaluation.
 
 You MUST read `references/quality-rubric.md` BEFORE running any evaluation. It teaches the 8-dimension rubric, the FAIL/PARTIAL/PASS/EXEMPLARY scoring scale, the pass threshold, and the per-dimension evidence requirements. Do not proceed without reading it.
 
-You MUST read `references/quality-judge-pattern.md` BEFORE running the full orchestrator. It teaches the parallel-judge pattern, the judge contract, the tiebreak rule, and the report format. Do not proceed without reading it.
+You MUST read `references/quality-judge-pattern.md` BEFORE spawning judges. It teaches the parallel-judge pattern (8 judges, one per dimension), the judge contract, the tiebreak rule, and the report format. Do not proceed without reading it.
 
-For the full 8-dimension evaluation, load the `mcp-quality-evaluate` skill — it is the orchestrator that spawns 8 `mcp-quality-judge` subagents in parallel.
+## Orchestration
+
+Spawn the 8-dimension evaluation as an isolated forked subagent...
 ```

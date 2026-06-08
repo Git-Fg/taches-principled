@@ -89,8 +89,8 @@
     },
     {
       "name": "tp-mcp",
-      "version": "0.4.1",
-      "description": "Principled MCP (Model Context Protocol) expertise hub \u2014 a single skill `mcp-expertise` with five modes covering the full MCP server lifecycle: DESIGN (tool decomposition, output contract, JSON-RPC error discipline, capability negotiation, security checklist, naming, Claude-Optimal validation), SCHEMA (JSON Schema 2020-12 authoring, additionalProperties:false discipline, discriminator enums, constraint discipline, description writing, pitfalls catalog, schemars cheatsheet), IMPLEMENT (Rust with rmcp 0.3 + schemars + tokio, transport choice stdio vs Streamable HTTP, stderr-only logging, error mapping via rmcp::ErrorData, testing with MCP Inspector CLI mode), CLIENT (agent as MCP consumer \u2014 the four installation paths, JSON-RPC discovery flow, calling pattern, consumer-side debugging, rmcp client SDK for stdio and Streamable HTTP), and QUALITY (8-dimension Claude-Optimal rubric via 8 parallel mcp-quality-judge subagents orchestrated by mcp-quality-evaluate). The \u00a73 worked example in `mcp-expertise/references/design-decomposition.md` uses a synthetic `git-cli` decomposition. Hub is a pure router; mechanism lives in `references/`. Includes 3 subagents: mcp-server-builder (IMPLEMENT, background, green), mcp-quality-judge (QUALITY leaf, background, yellow), and mcp-schema-author (SCHEMA, foreground, blue). The QUALITY orchestrator is the `mcp-quality-evaluate` skill \u2014 first `context: fork` skill in the marketplace.",
+      "version": "0.5.0",
+      "description": "Principled MCP (Model Context Protocol) expertise hub \u2014 a single skill `mcp-expertise` with five modes covering the full MCP server lifecycle: DESIGN (tool decomposition, output contract, JSON-RPC error discipline, capability negotiation, security checklist, naming, Claude-Optimal validation), SCHEMA (JSON Schema 2020-12 authoring, additionalProperties:false discipline, discriminator enums, constraint discipline, description writing, pitfalls catalog, schemars cheatsheet), IMPLEMENT (Rust with rmcp 0.3 + schemars + tokio, transport choice stdio vs Streamable HTTP, stderr-only logging, error mapping via rmcp::ErrorData, testing with MCP Inspector CLI mode), CLIENT (agent as MCP consumer \u2014 the four installation paths, JSON-RPC discovery flow, calling pattern, consumer-side debugging, rmcp client SDK for stdio and Streamable HTTP), and QUALITY (8-dimension Claude-Optimal rubric, forked orchestrator spawns 8 parallel mcp-quality-judge subagents). The \u00a73 worked example in `mcp-expertise/references/design-decomposition.md` uses a synthetic `git-cli` decomposition. Hub is a pure router; mechanism lives in `references/`. Includes 3 subagents: mcp-server-builder (IMPLEMENT, background, green), mcp-quality-judge (QUALITY leaf, background, yellow), and mcp-schema-author (SCHEMA, foreground, blue).",
       "source": "./plugins/tp-mcp",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
@@ -107,7 +107,6 @@
         "mcp-quality",
         "mcp-server-builder",
         "mcp-quality-judge",
-        "mcp-quality-evaluate",
         "mcp-schema-author",
         "json-schema",
         "rmcp",

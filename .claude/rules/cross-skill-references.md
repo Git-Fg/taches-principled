@@ -24,7 +24,7 @@ If the file does not exist at that path, check whether the reference is from a s
 
 ## Bad / Good
 
-**Bad:** An orchestrator at `plugins/tp-mcp/skills/mcp-quality-evaluate/SKILL.md` cites `references/quality-rubric.md` bare — the file lives in `mcp-expertise/references/`, not in `mcp-quality-evaluate/references/`. The orchestrator has no `references/` directory; the path silently fails.
+**Bad:** An agent or orchestrator cites `references/quality-rubric.md` bare without naming the owning skill — the path silently fails unless the owning skill is preloaded. The orchestrator has no `references/` directory of its own.
 **Good:** The orchestrator writes "see `references/quality-rubric.md` from `mcp-expertise`". The skill name makes ownership explicit; the bare path is what the model looks up within the preloaded skill's context.
 
 **Bad:** An orchestrator cites `mcp-expertise/references/quality-rubric.md` — a filesystem path that constructs the sibling skill's tree. This couples to the file layout and breaks if the skill reorganizes.
