@@ -33,7 +33,7 @@ IF user says "capture this learning", "remember this", or wants learnings persis
 IF user says "make this clearer", "write more concisely", "clean up text", "improve the writing", or "fix the prose" → **POLISH** mode
 IF ambiguous → ask: "Would you like to simplify code, critique the approach, memorize learnings, or polish the prose?"
 
-**Subagent contracts:** When SIMPLIFY or REVIEW mode modifies a subagent definition file (any `agents/*.md`), you MUST read `subagent-orchestration/references/subagent-contract-design.md` BEFORE the change. That file teaches the 6 design principles (P1-P6) — the P6 ground-truth principle in particular requires that any subagent making factual claims has Read access. Do not skip this citation.
+**Subagent contracts:** When SIMPLIFY or REVIEW mode modifies a subagent definition file (any `agents/*.md`), you MUST read `references/subagent-contract-design.md` from `subagent-orchestration` BEFORE the change. That file teaches the 6 design principles (P1-P6) — the P6 ground-truth principle in particular requires that any subagent making factual claims has Read access. Do not skip this citation.
 
 # Refine
 

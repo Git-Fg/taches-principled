@@ -62,11 +62,6 @@ Never implement a change without knowing how you will measure success. Never con
 - Collect data throughout — include unexpected observations
 - Write execution log to `.principled/pdca/[cycle]-do.md`
 
-1. Implement the change at small scale first
-2. Document what was actually done and any deviations from plan
-3. Collect data throughout — include unexpected observations
-4. **Verification:** The experiment ran as designed (deviations are documented, not hidden)
-
 ### Phase 3: Check
 
 **ALWAYS spawn a verification agent to evaluate results against success criteria.** The verification agent should:
@@ -75,12 +70,6 @@ Never implement a change without knowing how you will measure success. Never con
 - Determine whether the hypothesis held with objective evidence
 - Identify why the hypothesis failed if it did not hold
 - Write evaluation to `.principled/pdca/[cycle]-check.md`
-
-1. Measure results against success criteria
-2. Compare to baseline: before vs. after
-3. Did the hypothesis hold? If not, why?
-4. Document learnings and insights, not just data
-5. **Verification:** Analysis is objective — success or failure of the hypothesis, not judgment on effort
 
 ### Phase 4: Act
 

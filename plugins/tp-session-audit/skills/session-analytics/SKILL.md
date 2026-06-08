@@ -262,7 +262,7 @@ The user can override with explicit confirmation.
 1. **Detect artifact paths** from the capture session:
    - If user provides a capture UUID → construct paths from `~/.claude/captures/<UUID>*` and `~/.claude/projects/<encoded-cwd>/<UUID>.jsonl`
    - If user provides paths directly → use those paths
-   - If no capture found → error with `{"status": "failed", "reason": "no-capture", "remediation": "Run /tp-session-audit:capture first"}`
+   - If no capture found → error with `{"status": "failed", "reason": "no-capture", "remediation": "Run /capture first"}`
 
 2. **Fan out three parallel specialists** (spawn all three concurrently with background=true):
    - **`session-inspector`** (**`--full`** mode) ← stream-json output → structured event list
