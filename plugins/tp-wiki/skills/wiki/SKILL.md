@@ -49,6 +49,8 @@ You MUST read `references/registry-schema.md` BEFORE any wiki operation. Do not 
 
 You MUST read `references/subagent-arguments.md` BEFORE spawning any subagent. Do not proceed without reading it. It defines the argument contract (what `wiki_path`, `alias`, `multi_wiki` mean, what the self-discovery fallback does), the registry preamble every subagent inherits, and the confirmation-before-mutating policy the hub must enforce before spawning a writing subagent. The three wiki agents inherit this contract transitively via their `skills: [wiki]` frontmatter — do not re-explain it in the spawn directive, and do not paste it into a spawn prompt.
 
+Any subagent that intends to use `qmd` (Quick Markdown Search by Tobi Lütke, v2.5.3) for vector or keyword search MUST read `references/qmd-integration.md` BEFORE running any qmd command. It documents the collection-per-wiki contract, the full qmd command table (search/vsearch/query/embed/etc.), the two-flag rule (`-c <alias>` + `--json`), known critical bugs (CJK BM25 zero hits, ghost document Issue #585, path staleness), BM25 internals, default embedding models, and the MCP vs Bash tradeoff guidance. Subagents that do not use qmd can ignore this reference — it is strictly additive to the core wiki contract.
+
 ## Decision Router
 
 Classify the user's intent, then spawn the matching subagent. When in doubt, ask the user to disambiguate ("Do you want to search the wiki, or add something to it?").
@@ -110,6 +112,39 @@ This skill is part of the `tp-wiki` plugin and depends on **optional** MCP tools
 **Why these aren't hard dependencies:** `tp-wiki` ships standalone — a user who only wants wiki management should be able to install just this plugin. The MCP tools are accelerators (faster, RAG-ranked), not requirements. The fallback path uses Claude Code's built-in `WebFetch`.
 
 **No marketplace-plugin dependencies.** This plugin does not import any other `tp-*` plugin. It is self-contained.
+
+## qmd Cron Health Check (optional, recommended)
+
+Any wiki that uses `qmd` for vector or BM25 search should be monitored
+periodically with `qmd status` to catch index drift, collection
+removal, or broken embeddings before they degrade retrieval quality.
+
+**Recommended cron expression (local time):**
+```bash
+57 9 * * 1-5 qmd status >> ~/.cache/qmd/health.log 2>&1
+```
+
+**Alert conditions — grep the log after each run:**
+- `Unknown command` → qmd binary broken or wrong version
+- `error` (anywhere in the line) → qmd itself is failing
+- A collection missing from the list → it was accidentally removed
+- File count changed >10% since the last known-good run → ghost
+  documents or bulk add/remove
+
+**What each signal means and how to fix it:**
+
+| Signal | Likely cause | Fix |
+|---|---|---|
+| Collection gone | `qmd collection remove` ran accidentally | Re-add: `qmd collection add <path> --name <alias> --mask "**/*.md"` then `qmd embed -c <alias>` |
+| Files decreased | Ghost docs not cleaned, or missed new files | `qmd update -c <alias>` then re-check |
+| Files increased | New wiki pages added | Normal; index will catch up |
+| Vectors decreased | Embedding job interrupted | `qmd embed -c <alias>` |
+| `Pending: N` shown | New/updated files waiting for vectors | `qmd embed -c <alias>` |
+
+**Log rotation:** Keep last 30 entries. `tail -30 ~/.cache/qmd/health.log`
+covers ~6 weeks of daily runs. Any trend in file counts is a drift signal.
+For the full qmd integration reference (commands, two-flag rule, known bugs),
+read `references/qmd-integration.md`.
 
 ## Anti-patterns
 
