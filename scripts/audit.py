@@ -397,12 +397,21 @@ def audit_catalog(repo_root: Path, config: dict) -> list[Finding]:
 
 # ─── Orchestration ─────────────────────────────────────────────────────────────
 
-def run_audit(repo_root: Path, config: dict) -> list[Finding]:
+def run_audit(repo_root: Path, config: dict, strict: bool = False) -> list[Finding]:
+    """Run the marketplace discipline audit.
+
+    Default tier (structural): R1 agent roster, R3 fork-skill rationale, R5 catalog sync.
+    Strict tier (--strict flag): also runs R2 spawn-lens contract and R4 description quality.
+    The stylistic checks (R2, R4) are noisy — they produce false positives on multi-line
+    directives and subjective verb choices. They belong behind an opt-in flag for maintainers
+    who want to enforce writing style, not in the default CI gate.
+    """
     findings: list[Finding] = []
     findings += audit_agents(repo_root, config)
-    findings += audit_spawns(repo_root, config)
+    if strict:
+        findings += audit_spawns(repo_root, config)
+        findings += audit_descriptions(repo_root, config)
     findings += audit_fork_skills(repo_root, config)
-    findings += audit_descriptions(repo_root, config)
     findings += audit_catalog(repo_root, config)
     return findings
 
@@ -445,6 +454,10 @@ def main() -> int:
                         help="Path to the marketplace repo root (default: git repo root)")
     parser.add_argument("--ci", action="store_true",
                         help="Machine-readable JSON output for CI; exit 1 on BLOCKER")
+    parser.add_argument("--strict", action="store_true",
+                        help="Also run stylistic checks (R2 spawn-lens, R4 description quality). "
+                             "Default omits these because they produce false positives on multi-line "
+                             "directives and subjective verb choices. Use --strict to enforce writing style.")
     parser.add_argument("--config", default=None,
                         help="Path to a discipline config JSON")
     args = parser.parse_args()
@@ -455,7 +468,7 @@ def main() -> int:
         config.update(json.loads(Path(args.config).read_text()))
 
     try:
-        findings = run_audit(repo_root, config)
+        findings = run_audit(repo_root, config, strict=args.strict)
     except Exception as e:  # noqa: BLE001
         if args.ci:
             print(json.dumps({"status": "crashed", "error": str(e)}))

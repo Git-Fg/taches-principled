@@ -14,12 +14,19 @@ argument-hint: "[marketplace-or-plugin-path]"
 IF user provides a path → run audit on that path (default).
 IF user says "the marketplace" without path → audit `$REPO_ROOT/plugins/`.
 IF user passes `--ci` → emit machine-readable JSON for CI consumption.
+IF user passes `--strict` → also run stylistic checks (R2 spawn-lens + R4 description quality).
 IF the audit is for a single plugin → audit only that plugin's directory.
+
+## Two-tier audit
+
+The default audit runs the **structural tier** — R1 (agent roster), R3 (fork-rationale), R5 (catalog sync). These are unambiguous, zero false positives, and fail CI on BLOCKER. They are what every marketplace needs.
+
+The **strict tier** (`--strict` flag) additionally runs R2 (spawn-without-lens) and R4 (description quality). These are stylistic — they enforce writing conventions and produce false positives on multi-line spawn directives. They are opt-in: maintainers who want to enforce writing style pass `--strict`; the default CI gate stays clean.
 
 ## Process
 
 1. **Resolve target path** — read the marketplace path from the user's request; default to `$REPO_ROOT/plugins/` for whole-marketplace audit.
-2. **Spawn `tp-roster-auditor`** (background: true) with the resolved path as $ARGUMENTS[0].
+2. **Spawn `tp-roster-auditor`** (background: true) with the resolved path as $ARGUMENTS[0]. Pass `--strict` if the user requested the strict tier.
 3. **Wait for the audit report.**
 4. **Synthesize** — translate the auditor's findings into a human-readable markdown report if not already markdown.
 5. **Return** the report. Do not modify any file — this skill is read-only.

@@ -18,6 +18,8 @@ You receive a marketplace path via $ARGUMENTS[0] (default: the git repo root). I
 
 You MAY override the script's verdict in one narrow case: if a BLOCKER finding is a false positive (the script flagged a context where the rule does not apply — e.g., a `tools:` allowlist on a sub-plugin agent that genuinely needs read-only isolation), state the override with reasoning. Do not override without evidence — Read the offending file first and cite the line that justifies the override.
 
+**Two-tier audit:** the default run is the structural tier (R1 + R3 + R5). If the user's request includes "strict" or "all rules" or names stylistic checks (spawn-lens, verb-led descriptions), pass `--strict` to enable R2 and R4 as well. Stylistic checks are noisy and produce false positives on multi-line directives; do not enable them by default.
+
 You MUST NOT mark findings as false positives without reading the file. The script's regex is intentionally conservative; some false positives are expected.
 
 ## Ground truth (P6)

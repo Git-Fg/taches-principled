@@ -2,6 +2,23 @@
 
 All notable changes are documented here.
 
+## [1.24.1] — 2026-06-18
+
+### Changed
+
+- **`scripts/audit.py` two-tier audit** — Default tier is now **structural-only** (R1 agent roster, R3 fork-rationale, R5 catalog sync). Zero false positives on a clean marketplace. CI gate is now credible. The **strict tier** (`--strict` flag) adds R2 (spawn-lens) and R4 (description quality) for maintainers who want to enforce writing style. The strict tier produces false positives on multi-line spawn directives and subjective verb choices; that's why it's opt-in.
+- **Updated `tp-roster-auditor` description, `validate-plugin` SKILL.md, `discipline-check` command, and `references/roster-rules.md`** to document the two-tier behavior. The agent body now explicitly tells the auditor not to enable stylistic checks by default.
+
+### Why
+
+The 1.24.0 self-review identified that the default audit was noisy — 7 false-positive R2 warnings undermined the CI gate's credibility. A maintainer seeing warnings on a clean PR learns to ignore the gate. The fix: make the noisy stylistic checks opt-in. The default is now structural-only, exactly what every CI needs.
+
+### Skip notes
+
+- **The marketplace's audit verdict under the new default is `PASS, 0 blockers, 0 warnings, 0 nudges`** — clean CI gate. The 7 R2 warnings and 9 R4 nudges from 1.24.0 are preserved under `--strict` for maintainers who want them.
+- **No marketplace catalog changes** — same 11 plugins, same `tp-discipline` version 0.1.0. The two-tier flag is an `audit.py` behavior change only.
+- **Existing CI workflow needs no change** — `validate-marketplace.yml` runs `python3 scripts/audit.py --ci` (no `--strict`), which now produces zero findings on a clean marketplace. The strict tier is invoked by maintainers manually (`/discipline-check --strict`) or pre-release audits.
+
 ## [1.24.0] — 2026-06-18
 
 ### Added

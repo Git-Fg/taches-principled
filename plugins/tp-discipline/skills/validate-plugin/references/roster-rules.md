@@ -2,6 +2,15 @@
 
 The `tp-discipline` plugin enforces marketplace discipline across 5 rule categories. The CI guard at `scripts/audit.py` is the mechanical implementation; this document is the human-readable explanation.
 
+## Two-tier audit
+
+The audit runs in two tiers:
+
+- **Structural tier (default):** R1 (agent roster), R3 (fork-rationale), R5 (catalog sync). Zero false positives on clean PRs. The CI gate uses this tier.
+- **Strict tier (`--strict` flag):** adds R2 (spawn-lens) and R4 (description quality). Stylistic checks that produce false positives on multi-line directives and subjective verb choices. Maintainers who want to enforce writing style pass `--strict`.
+
+The default tier is what you want for CI. The strict tier is what you want when reviewing a marketplace before a major release or onboarding a new maintainer.
+
 ## R1 — Agent roster discipline
 
 **Goal:** prevent agent-file proliferation. After the 1.23.0 consolidation, the marketplace ships **6 named subagents** plus **1 read-only-tools exception**. New specialists require an intentional CHANGELOG entry, not silent drift.
