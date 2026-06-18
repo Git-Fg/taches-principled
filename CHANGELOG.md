@@ -2,6 +2,37 @@
 
 All notable changes are documented here.
 
+## [1.24.0] — 2026-06-18
+
+### Added
+
+- **`tp-discipline` plugin (0.1.0)** — marketplace discipline enforcement via a single `validate-plugin` skill + `tp-roster-auditor` agent (the second allowed `tools:` restriction, `[Read, Glob, Grep, Bash]`) + `scripts/audit.py` CI guard + `/discipline-check` slash command. Audits any Claude Code marketplace for the 5-rule discipline set established by 1.23.0 + 1.23.1:
+  - **R1 — Agent roster discipline:** count cap (default 6 + 1 read-only-tools exception), no `model:` locks, every agent has a `## Ground truth` section.
+  - **R2 — Spawn discipline:** every `spawn tp-critic|tp-explorer|tp-researcher` has a `lens:`/`scope:`/`question:` argument within 400 chars.
+  - **R3 — Fork-skill discipline:** every `context: fork` skill has a `references/fork-rationale.md` citing its isolation value.
+  - **R4 — Description quality:** ≤1536 chars, verb-led first 200, CONTRAST section in body or `when_to_use`.
+  - **R5 — Catalog discipline:** `plugin.json` `version` matches `marketplace.json`; description mentions agent roster.
+- **`scripts/audit.py`** — pure-Python audit script. JSON output for CI (`--ci`), Markdown for humans (default). Exit code: 0 = no BLOCKER, 1 = BLOCKER present, 2 = crashed. Configurable via `--config discipline.json`.
+- **`.github/workflows/validate-marketplace.yml` new step** — runs `python3 scripts/audit.py --ci` as the last step of the existing validate job. Triggers on changes to `scripts/audit.py`, `plugins/*/agents/*.md`, `plugins/*/skills/*/SKILL.md`, `plugins/*/commands/*.md`. BLOCKER findings fail the PR.
+- **`references/roster-rules.md`** + **`references/fork-rationale.md`** — the human-readable explanations of the 5 rules and the fork-rationale template, cited imperatively by the `validate-plugin` skill.
+
+### Changed
+
+- **`.github/workflows/validate-marketplace.yml` paths** expanded to include the discipline-audit inputs (audit.py, agents, skills, commands). Push-to-main now also runs the audit.
+- **Marketplace version** 1.23.1 → 1.24.0 (new plugin added).
+
+### Why
+
+The 1.23.0 + 1.23.1 consolidation shipped a brand-new orchestration model (6-keeper roster, lens-prompt pattern, isolation-justifies-a-file test). The model was in the rule files as text, but no automated check enforced it. The 4 soft spots identified in the post-1.23.1 audit (doctrine-young with no CI check, fork-skill architectural ambiguity, `tp-critic` creep risk, pedagogical CONTRAST vs grep cleanliness) all stemmed from the same root: **the doctrine was text, not enforcement**. `tp-discipline` makes it mechanical. Any future marketplace can adopt the same plugin and inherit the same guard.
+
+### Skip notes
+
+- **`tp-discipline` does not auto-fix.** The auditor returns findings; the orchestrator decides whether to fix. This keeps the role clean (read-only) and avoids the auditor accidentally clobbering intent. The fix recipes in `references/roster-rules.md` are the manual remediation guide.
+
+- **The audit script's regex is intentionally conservative.** Some false positives are expected (the script can't catch every phrasing). The `tp-roster-auditor` agent uses judgment when the script flags a finding, and may override with file:line evidence. The audit report surfaces the override.
+
+- **Audit findings in the 1.24.0 initial state:** the self-audit flagged 11 WARNINGs (mostly R2 spawn-without-arg and R3 fork-rationale) and 11 NUDGEs. These pre-existed and are not blockers — they are candidates for the 1.24.x follow-up to add the lens-arguments and fork-rationale files. The marketplace ships at PASS-blocking level (1 BLOCKER resolved by adding `tp-discipline` to the catalog) so the 1.24.0 release is shippable as-is.
+
 ## [1.23.1] — 2026-06-18
 
 ### Changed

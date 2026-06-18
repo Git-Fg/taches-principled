@@ -27,12 +27,20 @@ on:
       - '.claude-plugin/_meta.json'
       - 'plugins/*/.claude-plugin/plugin.json'
       - 'scripts/regenerate-marketplace.py'
+      - 'scripts/audit.py'
+      - 'plugins/*/agents/*.md'
+      - 'plugins/*/skills/*/SKILL.md'
+      - 'plugins/*/commands/*.md'
   pull_request:
     paths:
       - '.claude-plugin/marketplace.json'
       - '.claude-plugin/_meta.json'
       - 'plugins/*/.claude-plugin/plugin.json'
       - 'scripts/regenerate-marketplace.py'
+      - 'scripts/audit.py'
+      - 'plugins/*/agents/*.md'
+      - 'plugins/*/skills/*/SKILL.md'
+      - 'plugins/*/commands/*.md'
   workflow_dispatch: {}
 
 permissions:
@@ -190,3 +198,23 @@ jobs:
             exit 1
           fi
           echo "Official schema shape intact."
+
+      - name: Run tp-discipline audit (5-rule discipline enforcement)
+        run: |
+          set -e
+          python3 scripts/audit.py --ci > /tmp/audit.json
+          VERDICT=$(jq -r '.verdict' /tmp/audit.json)
+          BLOCKER=$(jq -r '.summary.blocker' /tmp/audit.json)
+          WARNING=$(jq -r '.summary.warning' /tmp/audit.json)
+          NUDGE=$(jq -r '.summary.nudge' /tmp/audit.json)
+          echo "## tp-discipline audit: $VERDICT (${BLOCKER} blocker, ${WARNING} warning, ${NUDGE} nudge)"
+          if [ "$VERDICT" = "FAIL" ]; then
+            echo ""
+            echo "### BLOCKER findings"
+            jq -r '.findings[] | select(.severity == "BLOCKER") | "- **\(.rule)** @ `\(.file)`:\(.line // "") — \(.detail)\n  - fix: \(.fix)"' /tmp/audit.json
+            echo ""
+            echo "### All findings (BLOCKER + WARNING + NUDGE)"
+            jq -r '.findings[] | "- [\(.severity)] **\(.rule)** @ `\(.file)`:\(.line // "") — \(.detail)"' /tmp/audit.json
+            exit 1
+          fi
+          echo "Discipline audit passed."

@@ -1,7 +1,7 @@
 {
   "name": "claude-cli-wrapper",
   "version": "0.3.3",
-  "description": "Skill teaching direct `claude` CLI usage via the Bash tool — six conceptual operations (execute, session, context, review, agent, config) expressed as native `claude -p` invocations and subcommands (`claude ultrareview`, `claude agents`, `claude doctor`, `claude mcp`, `claude plugin`). No binary, no MCP server, no Rust toolchain required. For agents that need to drive Claude Code programmatically without an MCP transport.",
+  "description": "Skill teaching direct `claude` CLI usage via the Bash tool — six conceptual operations (execute, session, context, review, agent, config) expressed as native `claude -p` invocations and subcommands (`claude ultrareview`, `claude agents`, `claude doctor`, `claude mcp`, `claude plugin`). No binary, no MCP server, no Rust toolchain required. For agents that need to drive Claude Code programmatically without an MCP transport. No specialist subagents — this plugin ships one skill and zero agents.",
   "author": {
     "name": "Felix",
     "email": "https://github.com/Git-Fg/taches-principled/issues"

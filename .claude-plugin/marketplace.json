@@ -5,12 +5,12 @@
     "name": "Git-Fg"
   },
   "description": "A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans \u2014 with principle-based guidance that teaches judgment over procedure.",
-  "version": "1.23.1",
+  "version": "1.24.0",
   "plugins": [
     {
       "name": "claude-cli-wrapper",
       "version": "0.3.3",
-      "description": "Skill teaching direct `claude` CLI usage via the Bash tool \u2014 six conceptual operations (execute, session, context, review, agent, config) expressed as native `claude -p` invocations and subcommands (`claude ultrareview`, `claude agents`, `claude doctor`, `claude mcp`, `claude plugin`). No binary, no MCP server, no Rust toolchain required. For agents that need to drive Claude Code programmatically without an MCP transport.",
+      "description": "Skill teaching direct `claude` CLI usage via the Bash tool \u2014 six conceptual operations (execute, session, context, review, agent, config) expressed as native `claude -p` invocations and subcommands (`claude ultrareview`, `claude agents`, `claude doctor`, `claude mcp`, `claude plugin`). No binary, no MCP server, no Rust toolchain required. For agents that need to drive Claude Code programmatically without an MCP transport. No specialist subagents \u2014 this plugin ships one skill and zero agents.",
       "source": "./plugins/claude-cli-wrapper",
       "homepage": "https://github.com/Git-Fg/taches-principled",
       "repository": "https://github.com/Git-Fg/taches-principled",
@@ -52,6 +52,28 @@
         "security",
         "web-research",
         "rules"
+      ]
+    },
+    {
+      "name": "tp-discipline",
+      "version": "0.1.0",
+      "description": "Marketplace discipline enforcement \u2014 single `validate-plugin` skill + `tp-roster-auditor` agent + `scripts/audit.py` CI guard. Audits any Claude Code marketplace for the 5-rule discipline set: agent roster cap (default 6 keepers + 1 read-only-tools exception), spawn-lens contract (`lens:`/`scope:`/`question:` within 200 chars), fork-skill rationale (every `context: fork` skill has `references/fork-rationale.md`), description quality (\u22641536 chars, verb-led first 200, CONTRAST vs adjacent), and catalog discipline (`plugin.json` version matches marketplace + description mentions roster). Use when user says 'audit my marketplace', 'check discipline', 'roster check', 'validate before commit', 'discipline-check'. NOT for: marketplace schema validation (use `claude plugin validate`); NOT for: implementation work (use the relevant domain skill).",
+      "source": "./plugins/tp-discipline",
+      "homepage": "https://github.com/Git-Fg/taches-principled",
+      "repository": "https://github.com/Git-Fg/taches-principled",
+      "license": "MIT",
+      "category": "development",
+      "keywords": [
+        "taches-principled",
+        "claude-code",
+        "discipline",
+        "audit",
+        "roster",
+        "ci",
+        "linter",
+        "marketplace-validation",
+        "fork-rationale",
+        "spawn-contract"
       ]
     },
     {

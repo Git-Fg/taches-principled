@@ -1,0 +1,9 @@
+{
+  "name": "tp-discipline",
+  "version": "0.1.0",
+  "description": "Marketplace discipline enforcement — single `validate-plugin` skill + `tp-roster-auditor` agent + `scripts/audit.py` CI guard. Audits any Claude Code marketplace for the 5-rule discipline set: agent roster cap (default 6 keepers + 1 read-only-tools exception), spawn-lens contract (`lens:`/`scope:`/`question:` within 200 chars), fork-skill rationale (every `context: fork` skill has `references/fork-rationale.md`), description quality (≤1536 chars, verb-led first 200, CONTRAST vs adjacent), and catalog discipline (`plugin.json` version matches marketplace + description mentions roster). Use when user says 'audit my marketplace', 'check discipline', 'roster check', 'validate before commit', 'discipline-check'. NOT for: marketplace schema validation (use `claude plugin validate`); NOT for: implementation work (use the relevant domain skill).",
+  "author": {
+    "name": "Felix",
+    "email": "https://github.com/Git-Fg/taches-principled/issues"
+  }
+}
