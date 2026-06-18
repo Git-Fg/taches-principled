@@ -1,6 +1,6 @@
 ---
 name: kaizen
-description: "Apply four design-time guardrails to every code decision: incremental improvement, error-proofing, standardization, and avoid over-engineering. Use when the user says 'apply YAGNI', 'avoid over-engineering', 'design this carefully', 'is this too complex', 'simplify this design', or 'should I add this'. Background guardrails applied to every code change; pair with `ddd` for deep structural analysis."
+description: "Apply four design-time guardrails to every code decision: incremental improvement, error-proofing, standardization, and avoid over-engineering. Use when the user asks 'should I add this feature', 'is this too complex', 'apply YAGNI', 'avoid over-engineering', 'design this carefully', 'simplify this design', or 'is this premature optimization'. Background guardrails applied before writing code; pair with `ddd` for deep structural analysis. NOT for: improving an existing artifact (use `refine`); NOT for: deciding whether a piece of code is correct (use `diagnose`)."
 when_to_use: "Use when user wants to avoid over-engineering, apply YAGNI, or make architectural and code design decisions. Background guardrails applied to every code change; pair with the ddd skill for deep structural analysis."
 argument-hint: Applied automatically when implementing, refactoring, designing, or handling errors
 user-invocable: false

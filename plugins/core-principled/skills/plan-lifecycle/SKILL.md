@@ -1,6 +1,6 @@
 ---
 name: plan-lifecycle
-description: "Plan a project end-to-end — break work into phases, write executable PLAN.md files with checkpoints (PLAN mode), or run a plan and return an execution report (EXECUTE mode). Use when the user says 'plan this project', 'add a new feature', 'start a new project', 'break down work into phases', 'run a plan', 'build something non-trivial'. NOT for: adding a single small feature (use `task-lifecycle`); NOT for: brainstorming options (use `ideation`)."
+description: "Plan a multi-phase project end-to-end — break work into phases, write executable PLAN.md files with checkpoints (PLAN mode), or run a plan and return an execution report (EXECUTE mode). Use when the user says 'plan this project', 'start a new project', 'break down work into phases', 'run a plan', 'build something non-trivial', or 'this is a big change'. NOT for: adding a single small feature with one-shot edits (use `task-lifecycle`); NOT for: brainstorming options (use `ideation`)."
 context: fork
 agent: general-purpose
 allowed-tools: Read, Write, Bash, Grep

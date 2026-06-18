@@ -1,6 +1,6 @@
 ---
 name: git
-description: "Version control tasks — commit changes, review pull requests, manage issues and branches, advanced git operations. Use when the user says 'commit this', 'open a PR', 'review this PR', 'create a branch', 'create an issue', 'merge this', 'git notes', 'worktree'. Four modes: SHIP, REVIEW, ISSUES, ADVANCED. NOT for: running pre-flight validation checks (use `git-preflight-checker`); NOT for: managing git worktrees (use `git-worktree-manager`)."
+description: "Version control tasks — commit changes, review pull requests, manage issues and branches, advanced git operations. Use when the user says 'commit this', 'open a PR', 'review this PR', 'create a branch', 'create an issue', 'merge this', or 'git notes'. Four modes: SHIP, REVIEW, ISSUES, ADVANCED. NOT for: running pre-flight validation checks (use `git-preflight-checker`); NOT for: managing git worktrees (use `git-worktree-manager`); NOT for: general code review of a PR's contents (use `refine` REVIEW)."
 allowed-tools: Bash(git *), Bash(gh *)
 when_to_use: |
   - User wants to commit code with conventional messages or publish a PR.

@@ -1,6 +1,6 @@
 ---
 name: subagent-orchestration
-description: "Design multi-agent architectures, author agent definitions, or spawn reviewers in parallel for code reviews. Use when delegating work to a fresh-context reviewer, defining a custom agent, or running parallel reviews of a code change."
+description: "Design multi-agent architectures or author agent definitions. Use when the user asks 'design a multi-agent system', 'define a custom agent', 'what coordinator pattern fits', or 'supervisor vs swarm vs hierarchical'. NOT for: running parallel code reviews on a diff (use `refine` REVIEW — it spawns `tp-critic` instances directly); NOT for: orchestrating a single skill's internal work (the skill itself is the orchestrator)."
 when_to_use: "Use when user asks to spawn subagents, run reviews in parallel, define custom agents, or manage background workers."
 ---
 

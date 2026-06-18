@@ -1,6 +1,6 @@
 ---
 name: web-search
-description: "Find and verify information on the web — web search, fact-checking, source evaluation, claim verification. Use when the user says 'find X on the web', 'look up Y', 'is this claim true', 'where did this number come from', 'verify this statement', 'research this topic', 'what do experts say about Z', 'I want a second opinion on X', 'is this real'. NOT for: reading the local codebase (use `tp-explorer`); NOT for: research that requires deep source traversal (use `tp-researcher`)."
+description: "Find and verify information on the web — web search, fact-checking, source evaluation, claim verification. Use when the user says 'find X on the web', 'look up Y', 'is this claim true', 'where did this number come from', 'verify this statement', 'research this topic', 'what do experts say about Z', 'is this real', 'fact-check', or 'look up the official docs'. NOT for: reading the local codebase (use `tp-explorer`); NOT for: research that requires deep source traversal (use `tp-researcher`); NOT for: evaluating competing design alternatives (use `sadd` JUDGE)."
 when_to_use: |
   Use when the user asks to find, look up, verify, fact-check, or research
   on the open web, or doubts a factual claim. Tool-agnostic — teaches the
