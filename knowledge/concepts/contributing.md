@@ -31,8 +31,9 @@ running anything.
 ### Phase 2: Real Invocation
 
 Spawn the subagent (or invoke the skill) in a controlled condition and
-observe behavior. For a real-condition test, the audit ran `fpf-hypothesis-generator`
-on a synthetic input and captured the JSONL trace.
+observe behavior. For a real-condition test, the audit ran a subagent
+whose contract claimed file I/O on a synthetic input and captured the
+JSONL trace.
 
 - **Subagent tools: contract test**: spawn the subagent with a task that
   requires each tool listed in its `tools:` field. Verify the JSONL
@@ -79,7 +80,7 @@ This is the maintainer's checklist when writing a new agent.
 | **P3** | Ordered operations with verification | Multi-step contracts state the order and what success looks like at each step. The trace must show that order. |
 | **P4** | Explicit link resolution algorithm | If the contract references files, IDs, or URLs, the body states how the agent finds them. No "go look it up." |
 | **P5** | Failure-mode footer on every contract | The last paragraph of every agent body lists the failure modes and what the agent does in each. If a mode isn't listed, the agent improvises. |
-| **P6** | Ground truth | Subagents that make factual claims about the codebase MUST have Read access. The body MUST state that the agent Reads/Grabs the relevant files before making claims. **This principle was added in CHANGELOG 1.14.0** in response to a `fpf-hypothesis-generator` run that asserted file paths and line numbers without ever reading any files. |
+| **P6** | Ground truth | Subagents that make factual claims about the codebase MUST have Read access. The body MUST state that the agent Reads/Grabs the relevant files before making claims. **This principle was added in CHANGELOG 1.14.0** in response to a marketplace subagent run that asserted file paths and line numbers without ever reading any files. |
 
 ---
 
@@ -100,7 +101,7 @@ exceptional — only when a tool boundary is the enforcement mechanism.
 | **Default: no `tools:` field** | Most subagents. Agent inherits the full tool pool from the host environment. | 43 of 47 marketplace agents currently use this (wiki-searcher is the exception). |
 | **Explicit full list** | Agent has a NEVER-do-X boundary requiring all listed tools (e.g., a generator whose body says "NEVER run destructive Bash"). | Rare — the marketplace has zero current examples. |
 | **Explicit restricted list** | Agent is a focused read-only tool where the boundary enforces "NEVER write" (e.g., `wiki-searcher`). | `tools: [Read, Glob, Grep]` for `tp-wiki:wiki-searcher` only. |
-| **`tools: []` with orchestrator handling** | Agent's output is text-only; any file I/O is the orchestrator's job. | `sadd-expander`, `sadd-explorer`, `sadd-meta-judge`. |
+| **`tools: []` with orchestrator handling** | Agent's output is text-only; any file I/O is the orchestrator's job. | Historical `sadd-*` examples (pre-1.23.0). The 1.23.0 consolidation removed all such agents; current keepers return rich output, not text-only. |
 
 **Only add `tools:` when the body says "NEVER do X" and the tool boundary
 is the enforcement layer.** The restriction cost is real: the agent
@@ -134,8 +135,7 @@ Trigger a full re-audit when any of these change:
 1. A new plugin is added
 2. A plugin's `tools:` list changes (re-test with Phase 2)
 3. A new CHANGELOG entry documents a "skip notes" rationale that
-   contradicts a previous entry (e.g. the 1.11.0 vs 1.12.0 contradiction
-   on `tp-cc-docs` skills preloading — see CHANGELOG Skip notes)
+   contradicts a previous entry (see CHANGELOG Skip notes sections)
 4. A subagent makes a factual claim that turns out to be wrong (the
    P6 ground-truth failure mode)
 

@@ -5,7 +5,7 @@ description: The P6 / Ground Truth rule applies to all agents. Volatile provenan
 
 # Rule: MUST keep agent bodies free of volatile provenance; the P6 verification rule is universal
 
-**Why:** Agents ship to end users. The P6 / "Ground truth" rule ("Read or Grep the relevant files first; do not assert specific file paths, line numbers, function names, or content based on speculation") is a marketplace-wide pattern. When an agent body adds attribution to the rule — "(Adapted from `tp-sadd/agents/sadd-judge.md`'s P6 rule — Issue #36 Universal Gap C and issue #35 finding #1 are real failures of this rule.)" — it bakes volatile provenance (issue numbers, file paths from a specific PR) into the artifact. When the issues close, the file moves, or the rules refactor, the attribution becomes a dead link that the end user can never verify. Worse, the P6 rule itself forbids citing specific file paths without reading them — the attribution violates the rule it is documenting.
+**Why:** Agents ship to end users. The P6 / "Ground truth" rule ("Read or Grep the relevant files first; do not assert specific file paths, line numbers, function names, or content based on speculation") is a marketplace-wide pattern. When an agent body adds attribution to the rule — for example, "(Adapted from a marketplace subagent's P6 rule — see audit issue and finding for the original failure mode.)" — it bakes volatile provenance (issue numbers, file paths from a specific PR) into the artifact. When the issues close, the file moves, or the rules refactor, the attribution becomes a dead link that the end user can never verify. Worse, the P6 rule itself forbids citing specific file paths without reading them — the attribution violates the rule it is documenting.
 
 ## Rule
 
@@ -34,7 +34,7 @@ Any match is volatile provenance that belongs in a commit message, not the agent
 
 ## Bad / Good
 
-**Bad:** An agent's Ground truth section reads "When making claims about a server, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as 'unverified' rather than asserting it. (Adapted from `tp-sadd/agents/sadd-judge.md`'s P6 rule — Issue #36 Universal Gap C and issue #35 finding #1 are real failures of this rule.)"
+**Bad:** An agent's Ground truth section reads "When making claims about a server, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as 'unverified' rather than asserting it. (Adapted from a marketplace subagent's P6 rule — see historical audit issue and finding for the original failure mode.)"
 
 The trailing parenthetical bakes issue numbers, a file path, and historical context into the agent body. When issues close, this becomes a dead reference. The parenthetical also violates the P6 rule it documents (it cites a file path that the agent itself is not reading).
 

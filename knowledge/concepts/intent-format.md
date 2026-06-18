@@ -18,8 +18,8 @@ No page should be older than 6 months without a review
 Every comparison page must cite at least 2 sources
 ```
 
-## How wiki-linter Uses It
-1. wiki-linter reads `.wiki/intent.md` on each run
+## How the lint process uses it
+1. The lint pass reads `.wiki/intent.md` on each run
 2. Parses each non-comment, non-blank line as an intent statement
 3. Evaluates the wiki against each statement
 4. Reports gaps — pages that violate or don't satisfy an intent
@@ -27,5 +27,5 @@ Every comparison page must cite at least 2 sources
 6. Flags structural violations for manual review
 
 ## Creating an Intent File
-The user (or wiki-linter) can create `.wiki/intent.md` at the wiki root.
-wiki-linter will detect it and incorporate it into verification automatically.
+The user (or the lint pass) can create `.wiki/intent.md` at the wiki root.
+The lint pass will detect it and incorporate it into verification automatically.

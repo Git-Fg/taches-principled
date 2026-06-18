@@ -31,12 +31,12 @@ contradictions: [other-page-slug]  # optional
 ## Wikilinks
 - Use `[[pagename]]` to link between pages
 - Minimum 2 outbound links per page
-- Orphan pages (no inbound links) are flagged by wiki-linter
+- Orphan pages (no inbound links) are flagged by the wiki's lint process
 
 ## Tag Rules
 - Every tag on a page must appear in the taxonomy in SCHEMA.md
 - New tags: add to SCHEMA.md first, then use
-- Tag audit is part of wiki-linter verification
+- Tag audit is part of the wiki's lint verification
 
 ## Provenance
 On pages synthesizing 3+ sources, append `^[raw/articles/source.md]` to paragraphs

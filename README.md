@@ -41,9 +41,9 @@ Each plugin is independently installable and extends the core with specialized c
 | **tp-session-audit** | Session meta-review, behavioral analysis, and sanitized GitHub issue reporting |
 | **claude-cli-wrapper** | Direct Claude Code CLI usage via Bash — execute, session, review, agent, and config operations as native `claude` invocations (no MCP server, no Rust binary) |
 | **tp-mcp** | MCP server expertise — single `mcp-expertise` hub with DESIGN, SCHEMA, IMPLEMENT, CLIENT, and QUALITY modes covering the full server lifecycle |
-| **tp-rust** | Rust project skills — single hub with SCAFFOLD / WORKSPACE / QUALITY / RELEASE modes, 5 subagents covering the full Rust lifecycle |
-| **tp-wiki** | Personal wiki search, lint, and ingest — backed by wiki-searcher, wiki-linter, and wiki-ingester agents |
-| **tp-security** | Security review skills — single hub with SAST / DEPENDENCY-AUDIT / SECRETS-DETECTION / COMPLIANCE modes, 5 subagents covering the pre-production security review lifecycle |
+| **tp-rust** | Rust project skills — single hub with SCAFFOLD / WORKSPACE / QUALITY / RELEASE modes covering the full Rust lifecycle |
+| **tp-wiki** | Personal wiki search, lint, and ingest — single hub; QUERY dispatches the read-only `wiki-searcher` subagent, INGEST and LINT run inline |
+| **tp-security** | Security review skills — single hub with SAST / DEPENDENCY-AUDIT / SECRETS-DETECTION / COMPLIANCE modes; each mode spawns `tp-critic` w/ a domain lens |
 
 ## Installation
 

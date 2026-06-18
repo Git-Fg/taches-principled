@@ -51,7 +51,7 @@ Execute complete First Principles Framework cycle with ADI (Abduction-Deduction-
 ## Process
 
 1. **Initialize:** Set up `.principled/fpf/` structure and document context.
-2. **Capture Scope:** If the scope is large enough that capturing it inline would flood your context, spawn a `tp-researcher` with scope "capture the problem's scope and goals into `.principled/fpf/context.md`". Otherwise capture inline.
+2. **Capture Scope:** If the scope is large enough that capturing it inline would flood your context, spawn a `tp-researcher` with question "read this transcript/context and extract conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge as structured findings". Otherwise capture inline.
 3. **Generate Hypotheses:** Author competing hypotheses inline (you are the orchestrator; reasoning in-context is the whole point of the forked isolation). Write each to `.principled/fpf/knowledge/L0/` as it stabilizes.
 4. **L1 Logic Verification:** For each L0 hypothesis, spawn `tp-critic` with lens "verify internal logic consistency, surface hidden assumptions, find circular reasoning, check falsifiability" — the isolated critic is independent of your reasoning biases. Valid logic promotes to `.principled/fpf/knowledge/L1/`. Invalid logic moves to `.principled/fpf/knowledge/invalid/`.
 5. **L2 Evidence Validation:** For each L1 hypothesis, spawn `tp-explorer` with scope "cross-reference this hypothesis with the codebase and knowledge base — find supporting AND refuting evidence" — the explorer's isolated context absorbs the cross-reference file reads. Confirmed evidence promotes to `.principled/fpf/knowledge/L2/`. Gaps or refutations stay at L1 or move to invalid.

@@ -10,7 +10,7 @@ ddd changes how you respond when code structure, layering, API contracts, or beh
 
 | Concern | Default behavior | ddd behavior |
 |---------|-----------------|--------------|
-| Architecture | Suggest a refactor; hope for the best | Map structure with `tp-explorer`, emit a Failure Signal, dispatch to `implement` |
+| Architecture | Suggest a refactor; hope for the best | Map structure with `tp-explorer` (scope: "map the module structure under src/ and identify layering violations"), emit a Failure Signal, dispatch to `implement` |
 | API design | Sketch endpoints from intuition | Spawn `tp-critic` w/ lens "REST API contract audit (resource modeling, HTTP semantics, versioning)", produce a contract failure signal, dispatch to `refine` |
 | Transparency | Note CQS violations in passing | Audit Command/Query boundaries explicitly; classify as pure/impure |
 | Quality | Catch obvious smells | Apply library-first threshold (30 lines), error-as-vocabulary, naming idioms |
@@ -36,7 +36,7 @@ ddd and kaizen are complementary, not redundant. They operate at different layer
 
 ## Decision Router
 
-IF code structure or layering issue → ARCHITECTURE mode — ALWAYS spawn a **`tp-explorer`** subagent to map structure
+IF code structure or layering issue → ARCHITECTURE mode — ALWAYS spawn a `tp-explorer` subagent (scope: "map the module structure under src/ and identify layering violations") to map structure
 IF naming or error handling issue → QUALITY mode
 IF behavior visibility or data flow issue → TRANSPARENCY mode
 IF REST API contract design, resource modeling, or versioning issue → API mode — ALWAYS spawn a **`tp-critic`** subagent (lens: "REST API contract audit — resource modeling, HTTP semantics, versioning, breaking-change signal") to review contracts
@@ -47,7 +47,7 @@ IF REST API contract design, resource modeling, or versioning issue → API mode
 
 Structure code for maintainability through layered architecture and functional core principles.
 
-**ALWAYS spawn a `tp-explorer` subagent to map structure and identify layering violations.**
+**ALWAYS spawn a `tp-explorer` subagent (scope: "map the module structure under src/ and identify layering violations") to map structure and identify layering violations.**
 
 ### Failure Signal Schema
 
@@ -187,5 +187,5 @@ You MUST read `references/api-design.md` BEFORE designing or auditing REST endpo
 
 ## Reference Index
 
-IF mapping code structure or layering → spawn **`tp-explorer`**
+IF mapping code structure or layering → spawn **`tp-explorer`** (scope: "map the module structure under src/ and identify layering violations")
 IF auditing REST API contracts or resource modeling → spawn **`tp-critic`** (lens: "REST API contract audit")

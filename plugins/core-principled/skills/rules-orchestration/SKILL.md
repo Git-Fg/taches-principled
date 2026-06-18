@@ -42,7 +42,7 @@ After conversation or skill execution with discoverable conventions, anti-patter
 
 1. **Capture context** — Read from `.principled/scratch/` or conversation summary. Determine the source: recent skill execution output, session transcript, or explicit user request.
 
-2. **Extract insights** — Analyze the context inline (or spawn a `tp-researcher` subagent with scope "read this transcript/context and extract conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge as structured findings") when the source material is large and would flood your context. Write findings to `.principled/scratch/rules-analysis-{timestamp}.md`.
+2. **Extract insights** — Analyze the context inline (or spawn a `tp-researcher` subagent with question "read this transcript/context and extract conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge as structured findings") when the source material is large and would flood your context. Write findings to `.principled/scratch/rules-analysis-{timestamp}.md`.
 
 3. **Synthesize proposals** — Read the analysis output. Convert raw insights into structured proposals with:
    - **Category**: TECHNICAL | PROCESS | PATTERN | ANTI-PATTERN | DECISION

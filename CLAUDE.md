@@ -465,10 +465,7 @@ report" UX.
 **Why this matters:** Background lets the orchestrator
 proceed with the next step while the agent works. The user
 can issue another command instead of staring at a spinner.
-For competitive generation (sadd-generator in COMPETE mode,
-fanned-out file reviewers in `git-pr-reviewer`), background
-is the only way to get parallelism without explicit
-`TaskOutput` coordination.
+For competitive generation (parallel `sadd-judge` instances scoring one candidate from different angles), background is the only way to get parallelism without explicit `TaskOutput` coordination.
 
 **Anti-pattern:** leaving every agent foreground because
 "the user might want to see the result inline". For ops
