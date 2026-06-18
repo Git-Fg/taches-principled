@@ -1,6 +1,6 @@
 ---
 name: diagnose
-description: "Investigate and find the root cause of complex bugs, recurring failures, or unexpected behavior. Use when the user says 'why is this happening', 'find the bug', 'analyze the failure', 'what broke', 'regression', 'incident analysis'. Four modes: A3 (structured root-cause doc), FIVE-WHYS (single causal chain), FISHBONE (multi-factor), STACK-TRACE (call-chain tracing). NOT for: general code improvement (use `refine`); NOT for: design/architecture issues (use `ddd`)."
+description: "Investigate and find the root cause of complex bugs, recurring failures, or unexpected behavior. Use when the user says 'why is this happening', 'find the bug', 'analyze the failure', 'what broke', 'regression', 'incident analysis', or 'debug this'. Four modes: A3 (structured root-cause doc), FIVE-WHYS (single causal chain), FISHBONE (multi-factor), STACK-TRACE (call-chain tracing). NOT for: general code improvement (use `refine`); NOT for: design/architecture issues (use `ddd`)."
 allowed-tools: Read, Write
 when_to_use: |
   - User is dealing with a bug that has a long call chain or is hard to reproduce.
