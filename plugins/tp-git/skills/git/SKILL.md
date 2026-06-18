@@ -1,6 +1,6 @@
 ---
 name: git
-description: "Handle version control tasks: commit changes, review pull requests, and manage issues or branches. Use when user says 'commit', 'PR', 'issue', or 'branch'."
+description: "Version control tasks — commit changes, review pull requests, manage issues and branches, advanced git operations. Use when the user says 'commit this', 'open a PR', 'review this PR', 'create a branch', 'create an issue', 'merge this', 'git notes', 'worktree'. Four modes: SHIP, REVIEW, ISSUES, ADVANCED. NOT for: running pre-flight validation checks (use `git-preflight-checker`); NOT for: managing git worktrees (use `git-worktree-manager`)."
 allowed-tools: Bash(git *), Bash(gh *)
 when_to_use: |
   - User wants to commit code with conventional messages or publish a PR.
@@ -55,7 +55,7 @@ You MUST read `references/review-commands.md` BEFORE executing PR reviews to use
 Group related comments into one review to reduce notification noise. Review events: COMMENT, APPROVE, REQUEST_CHANGES.
 
 **Spawn Directives:**
-- **ALWAYS fan out `git-pr-reviewer` agents to review each changed file in parallel — spawn one `git-pr-reviewer` per changed file, main agent synthesizes findings**
+- **ALWAYS fan out `tp-critic` instances to review each changed file in parallel — one `tp-critic` (lens: "review this diff for bug, security, and contract errors; file-by-file") per changed file, main agent synthesizes findings**
 
 ---
 
@@ -79,7 +79,7 @@ Load all open issues from GitHub and create structured technical specifications.
 Bug fixes: emphasize test plan and reproduction. Features: emphasize technical approach.
 
 **Spawn Directives:**
-- **ALWAYS spawn parallel `git-issue-analyzer` agents when loading multiple issues — one `git-issue-analyzer` per issue**
+- **ALWAYS spawn parallel `tp-explorer` instances when loading multiple issues — one `tp-explorer` (scope: "analyze this GitHub issue and create a structured technical specification with problem statement, technical approach, implementation plan") per issue**
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: plan-do-check-act
-description: "Run a Plan-Do-Check-Act (PDCA) cycle to test a hypothesis with measurable success criteria. Use when user says 'run a PDCA cycle', 'test this hypothesis', 'A/B test this change', 'validate the improvement worked', or 'standardize this change'."
+description: "Run a Plan-Do-Check-Act (PDCA) cycle to test a hypothesis with measurable success criteria. Use when user says 'run a PDCA cycle', 'test this hypothesis', 'A/B test this change', 'validate the improvement worked', 'standardize this change', 'experiment with X'. Four phases: PLAN (design the experiment), DO (implement small-scale), CHECK (measure results against success criteria), ACT (standardize or refine). NOT for: planning a multi-phase project (use `plan-lifecycle`); NOT for: continuous experimentation at scale (use `subagent-orchestration`)."
 when_to_use: "Use for proof-of-concepts, A/B tests, and validating improvements before standardization. Do NOT use for debugging (use diagnose) or code style (use refine)."
 argument-hint: "[improvement goal or problem to address] [--cycle N]"
 ---
@@ -56,7 +56,7 @@ Never implement a change without knowing how you will measure success. Never con
 
 ### Phase 2: Do
 
-**ALWAYS spawn an implementer agent to execute the change.** The implementer should:
+**Implement the change inline.** The change's files are already in your context. Execute it at small scale first:
 - Implement the change at small scale first
 - Document what was actually done and any deviations from plan
 - Collect data throughout — include unexpected observations
@@ -64,7 +64,7 @@ Never implement a change without knowing how you will measure success. Never con
 
 ### Phase 3: Check
 
-**ALWAYS spawn a verification agent to evaluate results against success criteria.** The verification agent should:
+**Spawn a `tp-critic` subagent (lens: "evaluate results against the success criteria; measure numerically, compare before vs. after with specific data points, and determine with objective evidence whether the hypothesis held") for an isolated-context evaluation.** The isolated context matters here: a fresh critic evaluating the data is not biased by having run the experiment. It should:
 - Measure results numerically against the hypothesis metrics
 - Compare before vs. after with specific data points
 - Determine whether the hypothesis held with objective evidence
@@ -73,7 +73,7 @@ Never implement a change without knowing how you will measure success. Never con
 
 ### Phase 4: Act
 
-**ALWAYS spawn a synthesizer agent to document the cycle outcome and next steps.** The synthesizer should:
+**Document the cycle outcome inline.** Based on the Check evaluation:
 - If successful: Document the standardized change, update relevant documentation, create monitoring/automation notes
 - If unsuccessful: Document the refined hypothesis and planned adjustments for cycle N+1
 - If partially successful: Document what was standardized and what remains for next cycle
@@ -101,7 +101,7 @@ Phase 2 always begins at small scale. Full rollout only after the Check phase co
 
 ## Agent Spawn Map
 
-IF designing PDCA experiment (Plan) → spawn **`tp-plan-architect`**
-IF executing PDCA change (Do) → spawn **`tp-global-implementer`**
-IF evaluating PDCA results (Check) → spawn **`tp-plan-verifier`**
-IF synthesizing PDCA outcome (Act) → spawn **`tp-pdca-synthesizer`**
+IF designing PDCA experiment (Plan) → design the experiment inline (or spawn a `tp-critic` with lens "challenge this experiment design" for an isolated pre-critique)
+IF executing PDCA change (Do) → implement inline
+IF evaluating PDCA results (Check) → spawn **`tp-critic`** with lens "evaluate results against the success criteria"
+IF synthesizing PDCA outcome (Act) → document inline

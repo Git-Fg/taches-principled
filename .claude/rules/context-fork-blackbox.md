@@ -52,6 +52,9 @@ Use `context: fork` when the skill:
 - Has side effects the user wants sandboxed (e.g. `disable-model-invocation: true` + `context: fork` for deploys)
 - Must not see the main conversation's state (TDD: don't let the implementation context see what the tests expect)
 - Produces a clean final artifact (a report, a verdict, a transformed file) the main conversation can use directly
+- Performs long multi-step reasoning the main conversation should not carry (e.g. `plan-lifecycle`, `sadd`, `task-lifecycle`, `fpf`)
+
+For the long-reasoning fork skills: implement inline within the fork. The fork preserves isolation between the user's session and the long reasoning chain; within the fork, the orchestrator implements the work itself and spawns only `tp-critic` (and the 1-2 other marketplace keepers) for isolated review. This is the canonical "main agent implements; subagent self-reviews against plan/ref/doc/search" model.
 
 Do NOT use `context: fork` when:
 - The skill is a one-line lookup

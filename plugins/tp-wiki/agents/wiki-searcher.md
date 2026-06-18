@@ -1,6 +1,7 @@
 ---
 name: wiki-searcher
-description: "Retrieve and synthesize information from a markdown wiki or knowledge base. Use when user wants to query, search, look up, find, or read something from their wiki / KB / notes — 'find in my wiki', 'search my notes', 'look up in my KB', 'what does my wiki say about X', 'do I have notes on Y', 'query the wiki'."
+description: |
+  Search the user's notes, query a wiki, look up something in their personal knowledge base, find previously written notes on a topic. Read-only — never modifies files. Use for "find in my wiki", "search my notes", "what does my KB say about X", "do I have notes on Y", "look up Z". The single marketplace agent with `tools:` restricted to `[Read, Glob, Grep]` — read-only enforcement is load-bearing. NOT for: adding content to the wiki (use the `wiki` skill's INGEST path inline), linting, or external research.
 color: blue
 background: true
 skills:

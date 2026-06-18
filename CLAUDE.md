@@ -52,67 +52,71 @@ High trust means: write descriptions that route correctly, then stop. Don't add 
 
 ## Orchestration Model
 
-**Costly main agent** (Sonnet/Opus) owns cognition — planning, decomposition, routing, aggregation, synthesis. **Cheap subagents** (Haiku or fast Sonnet) own execution — exploration, research, implementation, verification, critique. Run in parallel with critique loops: spawn a critic subagent after each milestone, loop until no HIGH findings remain.
+**The main agent implements. Subagents self-review.** The costly main agent (Sonnet/Opus) owns cognition AND implementation. Subagents are isolated-context workers — primarily reviewers that judge the main agent's work free of its accumulated biases, plus explorers/researchers that absorb large exploration tokens the main agent shouldn't carry.
 
-### Subagent-First Execution Contract
+The marketplace ships **6 named subagents**: `tp-critic` (universal reviewer, parameterized by a lens), `tp-explorer` (universal codebase mapper, parameterized by a scope), `tp-researcher` (universal external researcher), `mcp-quality-judge` (the MCP-server exemplar), `sadd-judge` (candidate scoring), and `wiki-searcher` (the single read-only-tools exception). All "specialized reviewer" roles — what used to be 50+ thin agents like `tp-bug-hunter`, `security-reviewer`, `rust-cargo-reviewer` — collapse into `tp-critic` with a one-sentence lens in the spawn prompt. Implementation, integration, edits, and trivial work run inline.
 
-**Default to subagents. Inline execution is the exception, not the norm.** Claude's default mode is inline — it requires less cognitive effort and activates automatically. Override this default by making subagent spawning the path of least resistance.
+**The decision axis is context isolation, not task size.** Spawn a subagent when (a) the task burns ≥10k intermediate tokens, (b) the return is a small summary vs a huge journey, AND (c) the parent benefits from not carrying that journey. Fail any one → fold into inline work.
+
+### Subagent-First Execution Contract (revised)
+
+**Default: inline implementation. Spawn for isolated-context review.** The marketplace no longer defaults to "spawn subagents for everything." A specialized reviewer is now a one-sentence lens passed to `tp-critic`, not a separate agent file. Implementation lives in the main agent unless the files are not in its context.
 
 The contract has two axes: **what kind of work** is being done (work-type table) and **what scale** the work is at (task-scale table). Pick the answer from both tables; the stricter of the two wins.
 
 #### Work-type axis
 
-| Work Type | Default Mode | Exception (inline allowed) |
-|-----------|-------------|---------------------------|
-| Exploration | Spawn explorer subagent(s) | Directory listing of <5 files |
-| Implementation | Spawn implementer subagent(s) | 1-file edit with <10 lines |
-| Research | Spawn researcher subagent(s) | Single web search query |
-| Verification | Spawn verification subagent(s) | Running a single test command |
-| Critique/Review | Spawn critic subagent(s) | Glance-check of trivial output |
-| Brainstorm/Ideate | Spawn ideation subagent(s) | Never — always parallel |
-| Debate/Compare | Spawn competing subagent(s) | Never — always parallel |
-| Reflection | Spawn critic subagent(s) | Never — always after artifact |
+| Work Type | Default Mode | Exception (inline always) |
+|-----------|--------------|----------------------------|
+| Implementation | **Inline** (main agent edits) | Files not in main context → spawn `tp-critic` w/ lens "audit the implementation" for isolated review |
+| Exploration | Spawn `tp-explorer` w/ scope | Directory listing of <5 files |
+| Research | Spawn `tp-researcher` w/ question | Single web search query |
+| Verification (read-only checks) | **Inline** (run the command) | Large log dump → spawn `tp-explorer` w/ scope to parse |
+| Critique/Review | Spawn `tp-critic` w/ lens (parameterized) | Glance-check of trivial output |
+| Brainstorm/Ideate | **Inline** (generate inline; optionally spawn `tp-critic` to stress-test) | Multi-perspective adversarial scoring |
+| Debate/Compare | Spawn multiple `tp-critic` w/ different lenses | Never inline |
+| Reflection | Spawn `tp-critic` w/ lens "audit this decision" | Never inline |
 
 #### Task-scale axis
 
 | Task scale | Right primitive | Why |
 |---|---|---|
 | Trivial — 1 file, <10 lines, or single search | Inline | Setup overhead exceeds task complexity |
-| Non-trivial single-context — 3–10 files, single methodology, side task | Subagents | Result returns and is synthesized in this conversation; orchestration shape is one-off |
-| Multi-stage with fan-out → verify → synthesize | Orchestration script | Repeatable shape worth codifying; structured-output schemas; adversarial verification across N independent agents |
-| Codebase-wide, many-file, multi-methodology | Orchestration script with explicit phase structure | Coordination outgrows what a handful of subagent spawns per turn can manage |
+| Non-trivial single-context — 3–10 files, single methodology, side task | Inline + `tp-critic` w/ lens for review | Main agent has the context; isolated review earns its cost |
+| Multi-stage with fan-out → verify → synthesize | Multiple `tp-critic` w/ different lenses + inline work | Same isolation benefit, no specialized agent proliferation |
+| Codebase-wide, many-file, multi-methodology | `tp-explorer` w/ scope for the map + inline implementation + `tp-critic` w/ lens for review | The 6-agent roster covers it |
 | Long-running with external triggers | Orchestration script + recurring checks + push channels | Reacts to CI, alerts, scheduled events; survives idle time |
 
 **The rule: If the skill loaded, the work is non-trivial by definition — pick the mode from the task-scale table.** The skill exists precisely because the task exceeds trivial inline execution. Trust the skill's own existence as the signal.
 
-Agent definitions under each plugin's `agents/` directory are the durable role library. Both inline subagent spawns and orchestration-script spawns dispatch to them by name.
+The 6 named subagents under each plugin's `agents/` directory are the durable role library. Both inline spawns and orchestration-script spawns dispatch to them by name. Specialized reviewer roles that previously required new agent files now pass a lens prompt to `tp-critic` at the call site.
 
 **Spawn pattern for skill bodies:**
 ```
 ## Execution Mode
 
-**Default: subagent delegation.** For [exploration/implementation/research/etc.],
-spawn a [role] subagent with the task scope below. The main agent synthesizes
-results; it never performs the work inline.
+**Default: inline implementation, isolated-context review.** Implement the work directly; spawn [role] subagents only when the review/exploration earns its isolation cost.
 
-**Spawn pattern:**
-- Scope: [specific files/questions to address]
-- Role: [explorer/implementer/researcher/critic/etc.]
-- Model: [haiku/sonnet based on complexity]
-- Output: [what the subagent must return]
+**Spawn pattern (when spawning is justified):**
+- Lens (for tp-critic): "[specific review angle]"
+- Scope (for tp-explorer): "[specific exploration question]"
+- Question (for tp-researcher): "[specific external research question]"
+- Output: [what the subagent must return — bounded summary, not raw exploration]
 
-After subagent returns: synthesize findings, then spawn follow-up subagents
-for verification and critique. Loop until no HIGH findings.
+After subagent returns: synthesize, then optionally spawn another [role] subagent
+for verification. Loop until no HIGH findings.
 ```
 
-Anti-pattern: "If the task is complex, consider using subagents." Use declarative language: "Spawn subagents for [task type]."
+Anti-pattern: "If the task is complex, consider using subagents." Use declarative language: "Spawn `tp-critic` w/ lens Y for isolated review."
 
 ### When the Main Agent Acts Directly
 
-- Lightweight edits (1-2 files, trivial change)
+- Implementation: edits to files in the main context
 - Reading and synthesizing subagent output from scratchpad
 - Making judgment calls between competing subagent recommendations
 - Final aggregation, summary writing, and commit
+- Verification: running a single test command, reading the output
+- Wiki ingest and lint (inline operations on the resolved wiki path)
 
 ### Transformer Mandate
 
@@ -257,7 +261,7 @@ plugins/
 ├── tp-fpf/                    # First principles reasoning
 ├── tp-git/                    # Git workflow automation
 ├── tp-mcp/                    # MCP server design, implementation, tool-surface
-├── tp-rust/                   # Rust project lifecycle (single hub, 4 modes, 4 subagents)
+├── tp-rust/                   # Rust project lifecycle (single hub, 4 modes; reviews via `tp-critic` w/ lens, polish inline)
 ├── tp-session-audit/          # Session meta-review and behavioral analysis
 └── tp-wiki/                   # Personal wiki tools (search, lint, ingest)
 
@@ -292,16 +296,23 @@ The pattern: cite the skill or role by name, not the file inside it.
 
 ## Agent and Skill Naming Convention
 
-Naming is **asymmetric by design** and predates this guide. The convention
-is a historical artifact, not a flaw to be smoothed out — do not
-"fix" it by renaming 28 core-principled agents in a sweep.
+Naming is **asymmetric by design**. After the 55→6 subagent consolidation (see `CHANGELOG`), the marketplace ships **6 named subagents**:
 
-**The rule, as it ships today:**
+| Plugin | Agent | Role |
+|---|---|---|
+| `core-principled` | `tp-critic` | Universal isolated-context reviewer (lens-prompted) |
+| `core-principled` | `tp-explorer` | Universal isolated-context codebase mapper (scope-prompted) |
+| `core-principled` | `tp-researcher` | Universal isolated-context external researcher (question-prompted) |
+| `tp-mcp` | `mcp-quality-judge` | MCP-server domain exemplar; preloads `mcp-expertise` |
+| `tp-sadd` | `sadd-judge` | Candidate scoring against a rubric |
+| `tp-wiki` | `wiki-searcher` | Read-only wiki query (the single allowed `tools:` exception) |
+
+**The naming rule, as it ships today:**
 
 | Plugin | Agent name prefix | Skill name prefix | Examples |
 |---|---|---|---|
-| `core-principled` (the legacy meta-plugin) | `tp-*` | (no prefix) | `tp-critic`, `tp-explorer`, `tp-bug-hunter`; skills like `refine`, `diagnose`, `plan-lifecycle` |
-| `tp-sadd`, `tp-fpf`, `tp-git`, `tp-mcp`, `tp-rust`, `tp-session-audit` (the newer sub-plugins) | `<plugin-name-without-tp-prefix>-*` | `<plugin-name-without-tp-prefix>-*` | `sadd-judge`, `fpf-evidence-validator`, `git-pr-reviewer`, `mcp-expertise` |
+| `core-principled` (the legacy meta-plugin) | `tp-*` | (no prefix) | `tp-critic`, `tp-explorer`, `tp-researcher`; skills like `refine`, `diagnose`, `plan-lifecycle` |
+| `tp-sadd`, `tp-fpf`, `tp-git`, `tp-mcp`, `tp-rust`, `tp-session-audit`, `tp-wiki` (the newer sub-plugins) | `<plugin-name-without-tp-prefix>-*` | `<plugin-name-without-tp-prefix>-*` | `sadd-judge`, `mcp-quality-judge`, `wiki-searcher` |
 
 **Why the asymmetry exists:** `core-principled` was the first plugin
 and the `tp-` prefix (short for "taches-principled") was a
@@ -313,17 +324,14 @@ redundant — the plugin name itself is the namespace.
 
 **New agents/skills MUST follow the sub-plugin rule:** if you add
 an agent or skill to `core-principled`, use `tp-*`; if you add one
-to `tp-sadd`/`tp-fpf`/etc., use the sub-plugin prefix. Do not
-"unify" the legacy `core-principled` `tp-*` names — that would
-break every skill/command/agent that hardcodes the name as a
-spawn target.
+to `tp-sadd`/`tp-fpf`/etc., use the sub-plugin prefix.
+
+**Before adding a new specialized reviewer agent, ask: "Could this be a one-sentence lens passed to `tp-critic` instead?"** If yes, do not add an agent file. The 55→6 consolidation removed ~50 thin wrapper agents; the lens-prompt pattern is the canonical way to specialize review without file proliferation.
 
 **Why we don't rename in a sweep:** every hardcoded spawn (e.g.,
-`Agent(name="tp-critic", prompt=...)` or the `tp-bug-hunter`
-invocation in `git-pr-reviewer`) is a maintenance contract. A
-mechanical rename is a breaking change to the skill surface that
-ships in the marketplace. The cost outweighs the consistency
-benefit.
+`Agent(name="tp-critic", prompt=...)`) is a maintenance contract. The
+6 keepers each have hardcoded spawns across multiple plugins; mechanical
+renames are breaking changes.
 
 When documenting a new agent in body text or commit messages,
 spell the full name once (e.g., "`tp-critic`") and then use
@@ -467,6 +475,8 @@ is the only way to get parallelism without explicit
 >30s, the user has gone back to another tab. Foreground
 just blocks the orchestrator for no benefit and serializes
 work that could be parallel.
+
+For the 6 marketplace keepers: `tp-critic`, `tp-explorer`, `tp-researcher` are typically short-lived (foreground). `mcp-quality-judge`, `sadd-judge`, `wiki-searcher` may be parallel-by-design depending on call site.
 
 ### How the three rules interact
 
@@ -814,12 +824,13 @@ Create feature branches, commit with conventional messages, push, and create PRs
 
 ### Skill Quality Checks
 
-- [ ] **Subagent spawn check**: Every skill that explores, implements, researches, or creates has explicit spawn instructions in its body — not optional tips, not conditional recommendations
+- [ ] **Spawn-when-isolated check**: Skills that need isolated-context review (adversarial judgment, exploration of many files, external research) name the spawn target (`tp-critic` w/ lens, `tp-explorer` w/ scope, `tp-researcher` w/ question). Skills whose work is inline (implementation, single-command verification, file edits in main context) do NOT need spawn instructions.
+- [ ] **No-specialized-agent check**: Before adding a new specialized reviewer agent, ask "could this be a one-sentence lens passed to `tp-critic` instead?" If yes, do not add an agent file. The marketplace ships 6 named subagents; specialization lives in lens prompts.
 - [ ] **Subagent contract check**: For any new or modified agent, the `tools:` field matches the operations stated in the contract body. 6 design principles (P1-P6) at `plugins/core-principled/skills/subagent-orchestration/references/subagent-contract-design.md` apply. Test with the 3-phase methodology (static read → real invocation → JSONL trace) per [knowledge/concepts/contributing.md](knowledge/concepts/contributing.md) — read it BEFORE authoring or modifying an agent.
-- [ ] **Critique loop check**: Every skill that produces artifacts ends with "spawn critic subagent, loop until no HIGH findings" or equivalent
+- [ ] **Critique loop check**: Every skill that produces artifacts ends with "spawn `tp-critic` w/ lens Y, loop until no HIGH findings" or equivalent
 - [ ] **Skill budget check**: Run `/context` and `/doctor` — verify no skills dropped or descriptions truncated. Calculate: hub (<500 tokens) + active domains (<2,000 each) + references/ (unlimited). If total loaded SKILL.md content approaches 10k, truncate or move to references/.
 - [ ] **Description length check**: Combined `description` + `when_to_use` ≤1,536 chars; front-load trigger phrases in the first 200 chars
-- [ ] **Tool field check**: Agent definitions use `tools:` (allowlist). Skills use `allowed-tools:` (pre-approval). Commands use `allowed-tools:` (pre-approval). Never confuse these semantics. Remember: `allowed-tools` in `.mcp.json` is IGNORED (confirmed bug) — use CLI flags or PreToolUse hooks for real restriction.
+- [ ] **Tool field check**: Agent definitions use `tools:` (allowlist) ONLY when the restriction is the point (currently only `wiki-searcher`). Skills use `allowed-tools:` (pre-approval). Commands use `allowed-tools:` (pre-approval). Never confuse these semantics. Remember: `allowed-tools` in `.mcp.json` is IGNORED (confirmed bug) — use CLI flags or PreToolUse hooks for real restriction.
 - [ ] **Routing mutual exclusivity check**: Each skill's description trigger set is mutually exclusive from all others. If two descriptions can be paraphrased to mean the same thing, they will misroute.
 - [ ] **CONTRAST section check**: For any skill with adjacent-domain overlap, a CONTRAST section explicitly states what the skill does NOT cover.
 - [ ] **Orchestration separation**: Skill body describes outcomes/roles; agent prompt describes execution only

@@ -1,7 +1,7 @@
 {
   "name": "tp-sadd",
-  "version": "0.4.1",
-  "description": "Structured agent-driven development with multi-pattern evaluation — judge, sequential, parallel, competitive, and tree-of-thoughts execution with meta-judge verification.",
+  "version": "0.5.1",
+  "description": "Structured agent-driven development with multi-judge evaluation — runs a single solution in an isolated forked context with self-critique, and scores it via parallel isolated-context judges. EXECUTE mode (implement + verify) and JUDGE mode (multi-judge debate). One specialist subagent (`sadd-judge` for rubric-based candidate scoring).",
   "author": {
     "name": "Felix",
     "email": "https://github.com/Git-Fg/taches-principled/issues"

@@ -1,6 +1,6 @@
 ---
 name: ddd
-description: "Restructure tangled files, untangle mixed layers, fix business logic in the wrong place, audit an API contract, or resolve deeply nested code. Use when architectural decisions have grown irreversible, layers are backward, or responsibilities are scattered."
+description: "Restructure tangled files, untangle mixed layers, fix business logic in the wrong place, audit an API contract, or resolve deeply nested code. Use when the user says 'this file is a mess', 'logic is in the wrong place', 'API contract is unclear', 'too much nesting', 'function does too much', 'business logic in controllers', 'restructure this', 'untangle this'. NOT for: incremental code cleanup (use `refine`); NOT for: runtime bugs (use `diagnose`)."
 when_to_use: "Use when tangled files, wrong-layer logic, messy API contracts, or deeply nested code appear. Trigger symptoms: 'this file is a mess', 'logic is in the wrong place', 'API contract is unclear', 'too much nesting', 'function does too much', 'business logic in controllers'."
 ---
 
@@ -11,7 +11,7 @@ ddd changes how you respond when code structure, layering, API contracts, or beh
 | Concern | Default behavior | ddd behavior |
 |---------|-----------------|--------------|
 | Architecture | Suggest a refactor; hope for the best | Map structure with `tp-explorer`, emit a Failure Signal, dispatch to `implement` |
-| API design | Sketch endpoints from intuition | Spawn `tp-endpoint-auditor`, produce a contract failure signal, dispatch to `refine` |
+| API design | Sketch endpoints from intuition | Spawn `tp-critic` w/ lens "REST API contract audit (resource modeling, HTTP semantics, versioning)", produce a contract failure signal, dispatch to `refine` |
 | Transparency | Note CQS violations in passing | Audit Command/Query boundaries explicitly; classify as pure/impure |
 | Quality | Catch obvious smells | Apply library-first threshold (30 lines), error-as-vocabulary, naming idioms |
 
@@ -39,7 +39,7 @@ ddd and kaizen are complementary, not redundant. They operate at different layer
 IF code structure or layering issue → ARCHITECTURE mode — ALWAYS spawn a **`tp-explorer`** subagent to map structure
 IF naming or error handling issue → QUALITY mode
 IF behavior visibility or data flow issue → TRANSPARENCY mode
-IF REST API contract design, resource modeling, or versioning issue → API mode — ALWAYS spawn a **`tp-endpoint-auditor`** subagent to review contracts
+IF REST API contract design, resource modeling, or versioning issue → API mode — ALWAYS spawn a **`tp-critic`** subagent (lens: "REST API contract audit — resource modeling, HTTP semantics, versioning, breaking-change signal") to review contracts
 
 ---
 
@@ -135,7 +135,7 @@ You MUST read `references/transparency-patterns.md` BEFORE analyzing behavior vi
 
 Design REST API contracts with proper resource modeling, HTTP semantics, and versioning strategies.
 
-**ALWAYS spawn a `tp-endpoint-auditor` subagent to review contracts.**
+**ALWAYS spawn a `tp-critic` subagent (lens: "audit REST API contracts — resource modeling, HTTP semantics, versioning") to review contracts.**
 
 ### Failure Signal Schema
 
@@ -188,4 +188,4 @@ You MUST read `references/api-design.md` BEFORE designing or auditing REST endpo
 ## Reference Index
 
 IF mapping code structure or layering → spawn **`tp-explorer`**
-IF auditing REST API contracts or resource modeling → spawn **`tp-endpoint-auditor`**
+IF auditing REST API contracts or resource modeling → spawn **`tp-critic`** (lens: "REST API contract audit")

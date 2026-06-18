@@ -18,8 +18,8 @@ Findings from CROSS-ANALYZE output (passed as file path argument or previous ses
 **Phase 2 — Parallel validation per finding:**
 
 For each finding, spawn two agents concurrently with `background: true`:
-- **`tp-fpf:fpf-evidence-validator`** ← finding + JSONL artifact → "evidence supports" or "L1-speculative"
-- **`tp-sadd:sadd-judge`** ← finding → try to refute it (refuted=true if uncertain)
+- **`tp-explorer`** (scope: "cross-reference this finding with the JSONL artifact; find direct supporting AND contradicting evidence") ← finding + JSONL artifact → "evidence supports" or "L1-speculative"
+- **`sadd-judge`** ← finding → try to refute it (refuted=true if uncertain)
 
 Spawn all evidence-validators and all adversarial challengers concurrently.
 
@@ -56,12 +56,12 @@ Spawn all evidence-validators and all adversarial challengers concurrently.
 
 ## Fallback Agents
 
-- If `tp-fpf:fpf-evidence-validator` is not available (partial install) → skip evidence validation and note it
-- If `tp-sadd:sadd-judge` is not available → use `core-principled:tp-critic` as fallback adversarial agent
+- If the first-pass exploration is too narrow, re-spawn `tp-explorer` with a broader scope
+- If `sadd-judge` is not available → use `tp-critic` (lens "try to refute this finding; refuted=true if uncertain") as fallback adversarial agent
 
 ## Evidence Validation Procedure
 
-The `tp-fpf:fpf-evidence-validator` agent:
+The `tp-explorer` subagent:
 1. Reads the finding text
 2. Reads the associated JSONL artifact
 3. Searches for direct evidence supporting the claim
@@ -70,7 +70,7 @@ The `tp-fpf:fpf-evidence-validator` agent:
 
 ## Adversarial Challenge Procedure
 
-The `tp-sadd:sadd-judge` agent:
+The `sadd-judge` agent:
 1. Reads the finding text
 2. Actively seeks reasons the finding might be wrong, misattributed, or overstated
 3. Returns: "not_refuted" (no strong counter-evidence found) or "refuted" (significant doubt cast)

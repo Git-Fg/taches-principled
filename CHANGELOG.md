@@ -2,6 +2,93 @@
 
 All notable changes are documented here.
 
+## [1.23.1] — 2026-06-18
+
+### Changed
+
+- **Description optimization pass** across all routing signals injected into agent context (descriptions, when_to_use, plugin.json descriptions). The user's framing: descriptions are the preliminary risk/element injected into every agent's context at startup, so they must front-load triggers, mutually exclude adjacent skills, and carry CONTRAST to prevent misrouting. Optimized for the `.claude/rules/routing-signal.md` rules: first 200 chars front-load trigger phrases; total ≤1,536 chars; CONTRAST for skills in adjacent domains; no jargon ("subagent", "isolated context", "fork"); verb-led first sentence.
+
+- **6 keeper agent descriptions tightened** (all 511-595 chars). `tp-critic` now front-loads "Review code, designs, and decisions through any lens — adversarial stress-test, correctness check, OWASP scan, API contract audit, test coverage gap, compliance, security review, performance, code quality, or any custom angle". `tp-explorer` / `tp-researcher` / `mcp-quality-judge` / `sadd-judge` / `wiki-searcher` similarly. All 5 generic keepers gained CONTRAST-vs-adjacent-roles to prevent misrouting.
+
+- **25 SKILL.md descriptions rewritten** with user-vocabulary triggers in the first 200 chars and CONTRAST clauses that distinguish from adjacent-domain skills:
+  - `core-principled/diagnose` — "why is this happening / find the bug / analyze the failure" + NOT for `refine` / `ddd`
+  - `core-principled/ideation` — "think through / explore possibilities / generate ideas" + NOT for `sadd` JUDGE / `fpf`
+  - `core-principled/refine` — "review this PR / simplify this code / polish this doc" + NOT for `diagnose` / `task-lifecycle` / `ddd`
+  - `core-principled/rules-orchestration` vs `project-maintenance` — explicit CONTRAST both ways to prevent misroute
+  - `core-principled/kaizen` — "apply YAGNI / avoid over-engineering / simplify this design"
+  - `core-principled/ddd` — "this file is a mess / logic is in the wrong place / untangle this"
+  - `core-principled/skill-authoring` — "create a skill / optimize this skill's routing / audit this skill"
+  - `core-principled/web-search` — "find X on the web / is this claim true / verify this statement"
+  - `core-principled/subagent-orchestration` — "Design multi-agent architectures... or spawn reviewers in parallel"
+  - `core-principled/plan-lifecycle` — removed "subagent" jargon ("worker+critic subagents" → "workers and reviewers")
+  - `tp-mcp/mcp-expertise` — removed "forked orchestrator spawns 8 parallel judge subagents" jargon → "parallel quality judges in isolated contexts"
+  - `tp-sadd/sadd` — "compare these options / pick the best approach / which solution is right" + NOT for `diagnose` / `ideation`
+  - `tp-rust/rust` — "Rust / Cargo / new crate / cargo publish / cargo-deny / MSRV / edition 2024" + NOT for `fpf` / `diagnose`
+  - `tp-git/git` vs `git-preflight-checker` vs `git-worktree-manager` — explicit 3-way CONTRAST
+  - `tp-security/security` — "security audit / dependency scan / find secrets / OWASP" + NOT for `refine` / `rust`
+  - `tp-session-audit/session-analytics` — "parse session log / session metrics / review this session" + NOT for `diagnose` / `refine` / `rules-orchestration`
+  - `tp-wiki/wiki` — "wiki / KB / look up in my notes / find in my wiki" + NOT for `web-search` / `tp-researcher`
+  - `tp-fpf/fpf` — "reason from first principles / compare solutions / R_eff / WLNK" + NOT for `ideation` / `ddd`
+  - `claude-cli-wrapper/claude-cli` — "spawn a headless Claude session / run a cloud code review / continue a previous session"
+
+- **17 command descriptions audited and 3 tightened** (`critique`, `implement`, `orchestrate`) with CONTRAST for mutual exclusivity.
+
+- **9 plugin.json descriptions synced** with the 1.23.0 agent-roster state. Previously-stale references to deleted agents (`security-sast-scanner`, `rust-cargo-reviewer`, `mcp-server-builder`, `wiki-ingester`, etc.) removed; replaced with the new `tp-critic` / `tp-explorer` lens-prompt pattern narrative.
+
+- **CHANGELOG entry added** documenting the description optimization pass.
+
+### Plugin version bumps (patch, per marketplace rules)
+
+- `core-principled` 0.21.0 → 0.21.1
+- `tp-sadd` 0.5.0 → 0.5.1
+- `tp-fpf` 0.5.0 → 0.5.1
+- `tp-git` 0.4.0 → 0.4.1
+- `tp-rust` 0.4.0 → 0.4.1
+- `tp-security` 1.1.0 → 1.1.1
+- `tp-session-audit` 0.4.0 → 0.4.1
+- `tp-wiki` 0.5.0 → 0.5.1
+- `claude-cli-wrapper` 0.3.2 → 0.3.3
+- Marketplace version 1.23.0 → 1.23.1
+
+## [1.23.0] — 2026-06-18
+
+### Changed
+
+- **Architectural refactor — subagent roster reduced from 55 to 6 named agents.** The marketplace shipped 55 thin subagent definitions that differed only in their first 1-2 sentences (a 12-line "you are a `<role>`… your context starts fresh… return results…" template). Per the official Claude Code docs and the spawn-vs-inline economics in the web research ("the subagent does that work in its own context and returns only the summary"), a named subagent earns its file only when the task burns large intermediate tokens AND returns a small summary AND the parent benefits from not carrying that journey. Most of the 55 failed this test. **The new doctrine: main agent implements inline; subagents self-review against a lens/scope/question prompt.**
+
+- **6 named subagents remain**: `tp-critic` (universal isolated-context reviewer, lens-prompted), `tp-explorer` (universal isolated-context codebase mapper, scope-prompted), `tp-researcher` (universal isolated-context external researcher, question-prompted), `mcp-quality-judge` (MCP-server domain exemplar; preloads `mcp-expertise`), `sadd-judge` (candidate scoring against a rubric), `wiki-searcher` (read-only wiki query, the single allowed `tools:` exception). All "specialized reviewer" roles that previously existed — `tp-bug-hunter`, `tp-code-quality-reviewer`, `tp-contracts-reviewer`, `tp-historical-reviewer`, `tp-test-coverage-reviewer`, `tp-debug-tracer`, `tp-skill-auditor`, `tp-plan-verifier`, `tp-grader`, `tp-transcript-rules-*`, `tp-endpoint-auditor`, `tp-ideation-anchor`, `tp-ideation-tail`, `tp-cc-docs`, `tp-plan-architect`, `tp-test-strategist`, `tp-pdca-synthesizer`, the 5 `security-*` reviewers, the 5 `rust-*` reviewers, `mcp-schema-author`, `mcp-server-builder`, the 4 `fpf-*` agents, the 4 `session-*` agents, `sadd-generator`, `sadd-expander`, `sadd-meta-judge`, `sadd-synthesizer`, `sadd-explorer`, `wiki-ingester`, `wiki-linter`, `git-issue-analyzer`, `git-pr-reviewer`, `tp-global-implementer` — collapse into `tp-critic` w/ a one-sentence lens prompt or into inline work in the orchestrator.
+
+- **49 skill bodies updated to use the lens-prompt pattern** at spawn sites. The `refine REVIEW` 6-reviewer fan-out is now 6× `tp-critic` w/ distinct lenses (logic errors, OWASP Top 10, readability, API contracts, git history, test coverage). The `security` skill's 5 modes spawn 5× `tp-critic` w/ distinct lenses (SAST, dependency, secrets, compliance, generic). The `rust` skill's 4 reviewer agents and the `sadd` skill's 6 pipeline stages all fold into `tp-critic`/`tp-explorer`/inline. `plan-lifecycle` (EXECUTE mode), `sadd` (EXECUTE/COMPETE), `task-lifecycle`, and `fpf` (the 4 fork skills) now implement inline within the fork and spawn only `tp-critic` for isolated milestone review. The `sadd` COMPETE mode's parallel 3-generator architecture is removed in favor of one inline-generated candidate reviewed by 3 parallel `sadd-judge` instances — preserves the isolation benefit, drops the parallel-implementation cost.
+
+- **Orchestration doctrine flipped in 3 rule files + CLAUDE.md.** `.claude/rules/orchestration-contracts.md` Bad/Good canonical example changed from "main spawns explorer + critic" to "main implements inline; spawn `tp-critic` w/ lens Y for isolated review when the review would burn tokens the main context shouldn't carry." Added the isolation-justifies-a-file test and the spawn-vs-inline decision matrix (7-signal table). `.claude/rules/agent-contracts.md` now documents the 6-agent roster and explicitly forbids adding new specialized reviewer files when a one-sentence lens would do. `.claude/rules/context-fork-blackbox.md` clarifies that the 4 fork skills implement inline within the fork. CLAUDE.md Orchestration Model + Subagent-First Execution Contract sections rewritten.
+
+- **`subagent-orchestration` skill (the canonical teaching skill) rewritten.** New body teaches the isolation-first model, the 6-agent roster, the lens-prompt pattern, and the spawn-vs-inline decision matrix. References (`subagent-contract-design.md`, etc.) updated to use the new keepers; volatile provenance (issue numbers #35–#38 from the audit) removed from `subagent-contract-design.md` per the `ground-truth-citations.md` rule.
+
+### Removed
+
+- **49 cut agent files deleted** (pre-deletion grep gate verified zero remaining references outside `agents/` directories and the historical note in `rust-idiom-polish.md`). The `plugins/tp-rust/skills/rust/references/rust-simplifier-spawn.md` reference was renamed to `rust-idiom-polish.md` (now an inline polish checklist, not a spawn template). `core-principled/agents/tp-bug-hunter.md`, `tp-global-implementer.md`, etc. — all gone. Agent count: `find plugins -path '*/agents/*.md' | wc -l` returns 6.
+
+### AUDIT
+
+- **Scope:** full marketplace agent + skill audit. 55 agent definitions audited for role (IMPLEMENTER / REVIEWER / RESEARCHER / EXPLORER / HYBRID), frontmatter discipline (tools:/model:/background:), inline-spawn violations, and P6 ground-truth sections. 25 SKILL.md bodies audited for spawn instruction sites (130 total spawn sites classified as IMPLEMENT-DELEGATE / REVIEW-DELEGATE / RESEARCH-DELEGATE / EXPLORATION-DELEGATE / FORK-DELEGATE). 3 orchestration rule files audited for doctrine alignment. 1 user-research pass via web search (Claude Code official docs + zivtech "Agent Tradeoff" + kspl "Spawn vs Inline") to ground the isolation-justifies-a-file test.
+- **Per-finding resolution:**
+  - **Fixed** — 55→6 agent consolidation (49 deletions + 6 keeper rewrites); ~30 skill bodies updated to use lens prompts; 3 rule files rewritten; CLAUDE.md Orchestration Model section rewritten; `subagent-orchestration` skill + reference rewrites; plugin version bumps (10 plugins); marketplace.json regenerated; CHANGELOG entry written
+  - **Skipped** — `wiki-searcher`'s `tools: [Read, Glob, Grep]` allowlist preserved (the single allowed `tools:` restriction per `agent-contracts.md`, since read-only enforcement is load-bearing)
+  - **Deferred** — none for this refactor; the existing 1.22.6 "out of scope" backlog (hub-router-budget items, `claude-cli` body split, `skill-authoring` deduplication, D7 markdown-in-body, etc.) is independent of this refactor and remains in the 1.22.6 entry's "Out of scope" section
+
+### Skip notes
+
+- **`sadd` COMPETE mode loses parallel solution writers.** Under the new model the orchestrator implements one solution inline; the competitive evaluation is preserved via 3 parallel `sadd-judge` instances in isolated contexts (one solution → 3 independent lens reviews). The parallel-writers advantage is dropped; the multi-judge isolation benefit is preserved. If a future session needs parallel solution generation, that belongs in a separate, larger architectural change — not a 1.23 patch.
+
+- **Inline Rust idiom-polish is a checklist, not a subagent.** The deprecated `rust-simplifier` agent's body was a list of polish operations (clone elimination, `?` over nested `match`, iterator chains, etc.). Under the new model these run inline in the orchestrator; the file `rust-idiom-polish.md` is the checklist. The simplification is genuine (one less subagent dispatch per session) but the orchestrator must remember to apply the checklist — there is no longer a subagent doing it for you.
+
+- **2 forked skills (out of 4) no longer match the marketplace's "isolation-first" narrative as cleanly.** `plan-lifecycle` and `sadd` were designed for parallel worker subagents; their EXECUTE modes now implement inline within the fork. The fork's value is preserved (long-reasoning isolation from the user's session), but the worker-machinery inside the fork is gone. If the marketplace needs worker-orchestration-in-fork semantics later, that's a follow-up — not 1.23.
+
+### Out of scope
+
+- **Hub-router-budget refactor of the 11 hubs over the 500-token ceiling** (deferred from 1.22.6) — independent of the agent consolidation; the lens-prompt pattern actually *reduces* hub body size in some cases (the removed "spawn X reviewer" lines) but no hub specifically exceeds the ceiling because of this refactor.
+- **D7 markdown-in-body agents (marketplace-wide policy decision on list vs prose)** — 18 agents, none of which are keepers (most were cut); the policy question is moot for the 6 keepers, all of which use prose bodies.
+
 ## [1.22.6] — 2026-06-07
 
 ### Fixed

@@ -1,7 +1,7 @@
 {
   "name": "core-principled",
-  "version": "0.20.2",
-  "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, test strategy. Live Claude Code/Agent SDK/API docs via tp-cc-docs and /cc-docs slash command. (Security review moved to tp-security in 1.22.0.)",
+  "version": "0.21.1",
+  "description": "Principled Claude Code plugin for the dev lifecycle: plan, review, debug, refactor, multi-agent orchestration, ideation, spec-driven work, test strategy. Live Claude Code/Agent SDK/API docs via the `/cc-docs` slash command (which dispatches `tp-researcher`). (Security review moved to tp-security in 1.22.0. Subagent roster reduced to 3 universal keepers in 1.23.0: `tp-critic` for review, `tp-explorer` for codebase mapping, `tp-researcher` for external research — specialized reviewer roles use lens prompts at the call site.)",
   "author": {
     "name": "Felix",
     "email": "https://github.com/Git-Fg/taches-principled/issues"

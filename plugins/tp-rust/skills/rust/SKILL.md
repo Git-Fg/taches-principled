@@ -1,6 +1,6 @@
 ---
 name: rust
-description: "Manage the full Rust project lifecycle — scaffold, workspace setup, CI/quality gates, and publishing. Use when user mentions Rust, Cargo, crate, workspace, clippy, or cargo publish."
+description: "Manage the full Rust project lifecycle — scaffold a new crate or workspace, configure CI/clippy/nextest, audit dependencies with cargo-deny, publish to crates.io, harden the supply chain. Use when the user says 'Rust', 'Cargo', 'new crate', 'cargo publish', 'cargo-deny', 'cargo-vet', 'cargo nextest', 'clippy', 'MSRV', or 'edition 2024'. Four modes: SCAFFOLD, WORKSPACE, QUALITY, RELEASE. NOT for: design / architecture reasoning across competing options (use `fpf`); NOT for: investigating a runtime bug (use `diagnose`)."
 when_to_use: |
   - User wants to scaffold a new Rust crate or workspace
   - User wants to set up CI, clippy, nextest, coverage, or cargo-deny
@@ -45,8 +45,8 @@ You MUST read `references/scaffold-cargo-and-features.md` BEFORE writing a new `
 You MUST read `references/scaffold-lib-bin-rustdoc.md` BEFORE designing the code layout or writing rustdoc. It teaches the lib+bin pattern (logic in `src/lib.rs`, thin `src/main.rs`, ripgrep/bat/fd/cargo precedent), the feature-gated binary pattern (bat's `application` feature), rustdoc conventions (Examples → Errors → Panics → Safety, module-level `//!`, `#![warn(missing_docs)]`), the examples-vs-tests directory structure, and the edition-2021-to-2024 migration playbook (`cargo fix --edition` + sharp edges: `gen` keyword, `expr_2021`, lifetime capture rules).
 
 **Spawn Directives:**
-- ALWAYS spawn `rust-cargo-reviewer` to verify the draft `Cargo.toml` against the lib/bin choice, edition 2024, MSRV, feature flag playbook, and `publish = false` discipline for internal crates.
-- Spawn `rust-simplifier` when the user finishes a non-trivial chunk of code in the scaffolded layout — see `references/rust-simplifier-spawn.md`.
+- ALWAYS spawn `tp-critic` with lens "audit this draft `Cargo.toml` against the lib/bin choice, edition 2024, MSRV, feature flag playbook, and `publish = false` discipline for internal crates" to verify the draft `Cargo.toml`.
+- Apply Rust idiomatic-polish inline after non-trivial chunks of code in the scaffolded layout — see `references/rust-idiom-polish.md` (the inline polish checklist).
 
 ## Output
 
@@ -70,7 +70,7 @@ You MUST read `references/workspace-decisions.md` BEFORE splitting a project int
 You MUST read `references/workspace-lockfile-and-cross-crate.md` BEFORE publishing a workspace or adding a member crate. It teaches the `Cargo.lock` commit policy (commit for apps/binaries, don't commit for pure libraries), the MSRV coordination across members, the internal features pattern (`__` prefix, the reqwest pattern), the path-dependency auto-detection, the shared dev-dependencies inheritance, the feature unification behavior, and the workspace publishing policy (Cargo 1.90+ native `cargo publish --workspace`, internal-only crates with `publish = false`).
 
 **Spawn Directives:**
-- ALWAYS spawn `rust-cargo-reviewer` to verify the workspace `Cargo.toml` against the inheritance pattern, the `additive-defaults` pitfall, and shared dev-deps policy.
+- ALWAYS spawn `tp-critic` with lens "verify the workspace `Cargo.toml` against the inheritance pattern, the `additive-defaults` pitfall, and shared dev-deps policy" to verify the workspace `Cargo.toml`.
 
 ## Output
 
@@ -101,9 +101,9 @@ You MUST read `references/quality-supply-chain-ladder.md` BEFORE publishing a cr
 You MUST read `references/quality-dev-experience.md` BEFORE optimizing local dev loops or adding more tooling. It teaches the bacon file-watcher, the `.cargo/config.toml` build-speed tweaks (mold, sccache), the `rust-toolchain.toml` pinning, the CI cache, and the consolidated tool matrix.
 
 **Spawn Directives:**
-- ALWAYS fan out `rust-pipeline-auditor` (one per `.github/workflows/*.yml` file) to audit CI for missing jobs, cache config, concurrency rules, and lint discipline.
-- ALWAYS spawn `rust-supply-chain-auditor` to verify `deny.toml` against the 0.19+ schema and assess the project's stage on the supply-chain ladder.
-- After CI is in place and the user has written substantive code, spawn `rust-simplifier` as a pre-commit polish step — see `references/rust-simplifier-spawn.md`.
+- ALWAYS spawn `tp-critic` with lens "audit this CI configuration for missing jobs, cache config, concurrency rules, and lint discipline — check the canonical 6-job CI (format → test → lint → doc → audit → msrv), `RUSTFLAGS=-D warnings` discipline, and dev-experience tooling" (one per `.github/workflows/*.yml` file, in parallel).
+- ALWAYS spawn `tp-critic` with lens "verify `deny.toml` against the 0.19+ schema, scan `Cargo.lock` for known RUSTSEC advisories, check cargo vet audit coverage, verify Dependabot config, and check `.cargo/config.toml` for the MSRV-aware resolver (`incompatible-rust-versions = 'fallback'`); report the project's stage on the supply-chain ladder" for supply-chain audit.
+- Apply Rust idiomatic-polish inline after non-trivial chunks — see `references/rust-idiom-polish.md`.
 
 ## Output
 
@@ -129,8 +129,8 @@ You MUST read `references/release-publishing-and-deps.md` BEFORE your first `car
 You MUST read `references/release-supply-chain-maintenance.md` BEFORE changing a dep policy or deprecating a feature. It teaches the cargo-vet certification workflow, the Dependabot config, the RUSTSEC monitoring channels, the bump-vs-replace-vs-live-with decision, the 3-step feature deprecation cycle (post-1.0), the `#[deprecated]` syntax, the pre-1.0 vs post-1.0 discipline, the rustc unstable-feature pattern, and the ADD-vs-REMOVE decision for features.
 
 **Spawn Directives:**
-- ALWAYS spawn `rust-supply-chain-auditor` to re-verify the supply-chain position (deny.toml + RUSTSEC + Dependabot) before any version bump tagged as a security release.
-- ALWAYS spawn `rust-publish-reviewer` to run pre-publish review (semver check, CHANGELOG, version, breaking-change signal) before `cargo publish` on 1.x crates.
+- ALWAYS spawn `tp-critic` with lens "re-verify the supply-chain position (deny.toml + RUSTSEC + Dependabot) and identify gaps blocking the next stage" before any version bump tagged as a security release.
+- ALWAYS spawn `tp-critic` with lens "run pre-publish review: mental `cargo semver-checks` against the public API delta, verify CHANGELOG matches new version, check Cargo.toml version + edition + MSRV + workspace lockstep, surface breaking-change signal" before `cargo publish` on 1.x crates.
 
 ## Output
 
@@ -176,11 +176,11 @@ A new published version with a CHANGELOG entry, a git tag, a `cargo publish` log
 
 ## Subagent Index
 
-- **rust-cargo-reviewer** — `SCAFFOLD` and `WORKSPACE` modes. Reviews a `Cargo.toml` (single crate or workspace root) against the lib/bin decision, edition 2024, MSRV, feature flag playbook, workspace inheritance, the `additive-defaults` pitfall, and shared dev-deps policy. Returns findings with file:line, severity, consequence, and a concrete fix.
-- **rust-pipeline-auditor** — `QUALITY` mode. Audits `.github/workflows/*.yml` + `clippy.toml` + `rustfmt.toml` + `.config/nextest.toml` for the 6-job canonical CI, `RUSTFLAGS=-D warnings` discipline, nextest adoption criteria, and dev-experience tooling. Fan out one agent per CI workflow file in parallel.
-- **rust-supply-chain-auditor** — `QUALITY` (initial setup) and `RELEASE` (ongoing maintenance) modes. Audits `deny.toml` against the 0.19+ schema, `Cargo.lock` for RUSTSEC advisories, `cargo vet` audit coverage, Dependabot config, and `.cargo/config.toml` for the MSRV-aware resolver. Returns the stage (0-3) the project is at on the supply-chain ladder with the gaps blocking promotion.
-- **rust-publish-reviewer** — `RELEASE` mode. Pre-publish review: runs a mental `cargo semver-checks` against the public API delta, checks CHANGELOG for the new version, verifies `Cargo.toml` version + edition + MSRV + workspace lockstep, surfaces breaking-change signal.
-- **rust-simplifier** — `SCAFFOLD` and `QUALITY` modes. Post-implementation cleanup of recently-written `.rs` code for idiomatic Rust (ownership/borrowing, error handling, iterator chains, clone elimination) without changing behavior or borrow-checker compliance. Scope: current session diff only, `.rs` files only. Spawn guidance: see `references/rust-simplifier-spawn.md`.
+- **tp-critic, lens "audit Cargo.toml"** — `SCAFFOLD` and `WORKSPACE` modes. Reviews a `Cargo.toml` (single crate or workspace root) against the lib/bin decision, edition 2024, MSRV, feature flag playbook, workspace inheritance, the `additive-defaults` pitfall, and shared dev-deps policy. Returns findings with file:line, severity, consequence, and a concrete fix.
+- **tp-critic, lens "audit CI configuration"** — `QUALITY` mode. Audits `.github/workflows/*.yml` + `clippy.toml` + `rustfmt.toml` + `.config/nextest.toml` for the 6-job canonical CI, `RUSTFLAGS=-D warnings` discipline, nextest adoption criteria, and dev-experience tooling. Fan out one tp-critic per CI workflow file in parallel.
+- **tp-critic, lens "audit supply chain"** — `QUALITY` (initial setup) and `RELEASE` (ongoing maintenance) modes. Audits `deny.toml` against the 0.19+ schema, `Cargo.lock` for RUSTSEC advisories, `cargo vet` audit coverage, Dependabot config, and `.cargo/config.toml` for the MSRV-aware resolver. Returns the stage (0-3) the project is at on the supply-chain ladder with the gaps blocking promotion.
+- **tp-critic, lens "pre-publish review"** — `RELEASE` mode. Pre-publish review: runs a mental `cargo semver-checks` against the public API delta, checks CHANGELOG for the new version, verifies `Cargo.toml` version + edition + MSRV + workspace lockstep, surfaces breaking-change signal.
+- **Inline Rust idiom-polish** — `SCAFFOLD` and `QUALITY` modes. Post-implementation cleanup of recently-written `.rs` code for idiomatic Rust (ownership/borrowing, error handling, iterator chains, clone elimination) without changing behavior or borrow-checker compliance. Apply inline; see `references/rust-idiom-polish.md` for the checklist.
 
 ---
 

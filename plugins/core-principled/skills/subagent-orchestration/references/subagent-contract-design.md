@@ -147,28 +147,24 @@ Subagent contracts end at "Output Format" with no self-awareness. The model has 
 
 ---
 
-## P6 — Subagents that produce factual claims MUST have Read access to ground truth (NEW)
+## P6 — Subagents that produce factual claims MUST have Read access to ground truth
 
 **Rule:** If the contract says "summarize what happened", "validate against the codebase", "find supporting evidence", or any other factual claim about prior behavior or external state, the subagent must have a path to Read the source of truth.
 
-**Anti-pattern (verified in issue #38):**
+**Anti-pattern (illustrative):** A subagent declares `tools: []` and is asked to "generate a hypothesis about the wiki ingest failure". It has no Read access to the wiki's JSONL trace, so it guesses at the Glob pattern. Its guess is wrong but plausible — it asserts the pattern confidently, not as speculation.
 
-`fpf-hypothesis-generator` declared `tools: []` and was asked to "generate a hypothesis about the wiki ingest failure". It had no Read access to the wiki's JSONL trace, so it guessed at the Glob pattern. Its guess was wrong but plausible — it asserted the pattern confidently, not as speculation.
-
-**Pattern:**
-
-> `fpf-evidence-validator` declares `tools: [Read, Grep, Glob, Bash]` AND has a contract clause: "When making factual claims about the codebase, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as 'unverified' rather than asserting it."
+**Pattern:** The subagent inherits the full tool pool (no `tools:` field) AND has a contract clause: "When making factual claims about the codebase, you MUST Read or Grep the relevant files first. Do not assert specific file paths, line numbers, function names, or content based on speculation. If you cannot verify a claim with the available tools, mark the claim as 'unverified' rather than asserting it." This is the standard `## Ground truth` (or `## Ground truth (P6)`) section in the marketplace's keeper agents (`tp-critic`, `tp-explorer`, `tp-researcher`, `mcp-quality-judge`, `sadd-judge`, `wiki-searcher`).
 
 **Two-part check:**
 
-1. **Tool list check:** if the subagent makes factual claims, the `tools:` list must include at least `Read` (or another tool that gives access to the source of truth).
+1. **Tool list check:** if the subagent makes factual claims, the inherited tool pool must include `Read` (which it does unless `tools:` restricts). Single allowed exception: `wiki-searcher` (`tools: [Read, Glob, Grep]`) — read-only is the point.
 2. **Contract clause check:** the body should have an explicit "verify before asserting" rule. Without it, the model will fabricate confidently.
 
 **What to check when auditing:**
 
 For every subagent, ask:
-- Does the contract ask the subagent to make any factual claim about external state? (Yes for evidence-validators, log-analyzers, codebase-inspectors, behavior-reviewers. No for opinion/synthesis agents.)
-- If yes: does the `tools:` list include Read?
+- Does the contract ask the subagent to make any factual claim about external state?
+- If yes: does the `tools:` list include Read (i.e., is there NO restriction that strips it)?
 - If yes: is there a "verify before asserting" clause in the body?
 
 If the answer to the first is yes and either of the next two is no, the subagent is in the failure mode.
@@ -177,15 +173,15 @@ If the answer to the first is yes and either of the next two is no, the subagent
 
 ## Application: the 4 marketplace tool-source patterns
 
-From issue #36 (Universal Gap B), there are 4 distinct patterns in the marketplace for how a subagent gets its tools. **Patterns 1 and 2 are exceptional — only use them when a NEVER policy requires the tool boundary as enforcement.** Patterns 3 and 4 (no `tools:` field at all) are the actual defaults.
+There are 4 distinct patterns in the marketplace for how a subagent gets its tools. **Patterns 1 and 2 are exceptional — only use them when a NEVER policy requires the tool boundary as enforcement.** Patterns 3 and 4 (no `tools:` field at all) are the actual defaults.
 
 | Pattern | When to use | Example |
 |---|---|---|
-| **Default: no `tools:` field** | Most subagents. Agent inherits the full tool pool. | 43 of 47 marketplace agents currently use this. |
-| **A. Explicit full tool list** | ONLY when body says "NEVER do X" and the boundary enforces it (e.g., must have Write but not Bash). | Zero current marketplace examples — only add when a NEVER policy demands it. |
-| **B. Explicit restricted tool list** | ONLY when body says "NEVER do X" and the tool boundary is the enforcement layer. The tool list is a *guarantee*, not a suggestion. | `tp-wiki:wiki-searcher` (`tools: [Read, Glob, Grep]`) is the **only** current example. |
-| **C. `tools: []` with implicit orchestrator handling** | Subagent returns text output. The orchestrator writes to disk on its behalf. **Only valid when the contract is text-only.** | `tp-sadd:sadd-meta-judge` (YAML output as text) |
-| **D. `tools: []` inheriting from skill `allowed-tools`** | Partial; harness inheritance is undocumented. **Avoid.** The marketplace is moving away from this. | `tp-session-audit:session-inspector` (Bash missing despite skill allowing it) |
+| **Default: no `tools:` field** | Most subagents. Agent inherits the full tool pool. | 5 of 6 marketplace agents currently use this (`tp-critic`, `tp-explorer`, `tp-researcher`, `mcp-quality-judge`, `sadd-judge`). |
+| **A. Explicit full tool list** | ONLY when body says "NEVER do X" and the boundary enforces it. | Zero current marketplace examples — only add when a NEVER policy demands it. |
+| **B. Explicit restricted tool list** | ONLY when body says "NEVER do X" and the tool boundary is the enforcement layer. | `wiki-searcher` (`tools: [Read, Glob, Grep]`) is the **only** current example. |
+| **C. `tools: []` with implicit orchestrator handling** | Subagent returns text output. The orchestrator writes to disk on its behalf. **Only valid when the contract is text-only.** | No current marketplace example — all keeper agents return rich output, not text-only. |
+| **D. `tools: []` inheriting from skill `allowed-tools`** | Partial; harness inheritance is undocumented. **Avoid.** | No current marketplace example. |
 
 **The decision rule:**
 
@@ -204,7 +200,7 @@ The tool boundary is not a way to scope down an agent's capabilities for hygiene
 
 **Worked example — the canonical case:**
 
-`tp-wiki:wiki-searcher` has body text: "NEVER write or modify any wiki file." Its frontmatter declares:
+`wiki-searcher` has body text: "NEVER write or modify any wiki file." Its frontmatter declares:
 ```yaml
 tools: [Read, Glob, Grep]
 ```
@@ -225,8 +221,6 @@ Do not add `tools:` when:
 - The body says "produce a solution" or "generate output" with no restrictions — this is a DO policy, not a NEVER policy, and the agent should inherit the full tool pool
 - The body references file I/O but the orchestrator handles it — use Pattern C instead
 - The rationale is "least privilege" or "security hygiene" without a specific NEVER policy — this is imaginary security that costs real capability
-
-The 7 agents that were incorrectly updated in June 2026 (`fpf-hypothesis-generator`, `fpf-evidence-validator`, `fpf-logic-verifier`, `fpf-trust-auditor`, `sadd-generator`, `sadd-judge`, `sadd-synthesizer`) had `tools:` added based on a misreading of issues #37 and #38. Their bodies have no NEVER policies — they have DO policies ("generate", "validate", "judge"). They correctly inherit the full tool pool.
 
 ---
 
@@ -300,13 +294,6 @@ skills:
 
 ## References
 
-- Issue #35 (tp-wiki 6 findings + 5 design principles): https://github.com/Git-Fg/taches-principled/issues/35
-- Issue #36 (cross-plugin umbrella + P6 + scoring matrix): https://github.com/Git-Fg/taches-principled/issues/36
-- Issue #37 (tp-sadd 3 subagents with file I/O but `tools: []`): https://github.com/Git-Fg/taches-principled/issues/37
-- Issue #38 (tp-fpf 4 subagents with file I/O but `tools: []`): https://github.com/Git-Fg/taches-principled/issues/38
-- Local audit: `.principled/plans/AUDIT-2026-06-04.md`
-- JSONL evidence (per #35):
-  - tp-wiki ingester: `agent-ae20033c085c8b7ea.jsonl`
-  - tp-wiki linter: `agent-*.jsonl` (6 traces)
-  - sadd-meta-judge: `agent-a7a65781a8f51e8e3.jsonl`
-  - fpf-hypothesis-generator: `agent-a0a86b88086618af3.jsonl`
+- Marketplace audit history: `.principled/plans/` (search for `AUDIT-*.md`)
+- The P6 rule itself: a subagent that makes factual claims must have Read access to the source of truth, must verify with tool calls, and must mark unverified claims as such. See the `## Ground truth (P6)` sections in the keeper agents for the canonical wording.
+- Volatile provenance (issue numbers, PR numbers, file paths from specific PRs, contributor names, dates) belongs in commit messages and CHANGELOG entries — not in this reference doc.

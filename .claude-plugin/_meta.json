@@ -4,8 +4,8 @@
     "owner": {
       "name": "Git-Fg"
     },
-    "description": "A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans \u2014 with principle-based guidance that teaches judgment over procedure.",
-    "version": "0.31.1"
+    "description": "A Claude Code plugin marketplace for building skills, subagents, hooks, and project plans — with principle-based guidance that teaches judgment over procedure.",
+    "version": "1.23.1"
   },
   "core-principled": {
     "source": "./plugins/core-principled",
@@ -146,9 +146,7 @@
       "mcp-expertise",
       "mcp-client",
       "mcp-quality",
-      "mcp-server-builder",
       "mcp-quality-judge",
-      "mcp-schema-author",
       "json-schema",
       "rmcp",
       "schemars",

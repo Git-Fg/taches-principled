@@ -56,4 +56,4 @@ When a generated input causes a failure, the test framework tries smaller inputs
 
 ## Integration with EXECUTE
 
-ALWAYS spawn a tp-test-strategist subagent for complex test suite planning. Property-based tests complement TDD: use TDD for known cases and edge cases you can anticipate; use property-based for combinatorial exploration. A complete test suite has both.
+ALWAYS design the test strategy inline for complex test suites — author the strategy, the property list, the shrinkage heuristics, and the integration boundaries yourself, then iterate against `tp-critic` w/ lens "challenge this test strategy for coverage gaps, false-failure risk, and integration blind spots". Property-based tests complement TDD: use TDD for known cases and edge cases you can anticipate; use property-based for combinatorial exploration. A complete test suite has both.

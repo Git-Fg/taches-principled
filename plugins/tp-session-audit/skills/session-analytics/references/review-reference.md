@@ -4,7 +4,7 @@ Diagnoses behavioral anti-patterns in Claude Code session transcripts.
 
 ## Privacy Protocol
 
-The session-meta-reviewer agent must strip from output:
+The `tp-critic` subagent spawned for this work MUST receive a privacy scrub directive in its spawn prompt — strip from output:
 - File contents from the user's workspace
 - User prompts verbatim — paraphrase intent only
 - Project directory paths
@@ -32,18 +32,15 @@ Output contains only: behavioral patterns, tool names, error categories, and sug
 ## REVIEW Mode Process
 
 1. **Discover session** — locate `~/.claude/sessions/{uuid}/raw-transcript.jsonl`
-2. **Spawn session-meta-reviewer agent** with:
-   - Session transcript path
-   - Any user-specified concern (`--concern` argument)
-   - Mode: REVIEW (single-pass diagnostic)
-3. **Agent reads full JSONL** — identifies anti-patterns using the session-meta-reviewer agent definition
-4. **Agent writes findings** to `.principled/scratch/meta-review-{session_id}.md`
+2. **Spawn a `tp-critic` subagent** with the lens "diagnose behavioral anti-patterns in this Claude Code session transcript — tool misuse, skill routing failures, skipped verifications, instruction-following failures, error recovery failures; classify each by severity (HIGH/MEDIUM/LOW) and scope (PLUGIN/USER-FILE/ENVIRONMENT/MODEL); extract what went well; produce a scope verdict". Include the privacy scrub directive and the output path.
+3. **Critic reads full JSONL** — identifies anti-patterns in its isolated context.
+4. **Critic writes findings** to `.principled/scratch/meta-review-{session_id}.md`
 5. **Main agent reads output** — summarizes for user with scope verdict
 
-### Session-Meta-Reviewer Agent Prompt
+### Critic Spawn Prompt
 
 ```
-You are a diagnostic agent reviewing a Claude Code session transcript.
+You are a `tp-critic` subagent reviewing a Claude Code session transcript.
 
 Your task:
 1. Read the full transcript at {transcript_path}
@@ -56,6 +53,8 @@ Your task:
 3. Classify each finding by severity (HIGH/MEDIUM/LOW) and scope (PLUGIN/USER-FILE/ENVIRONMENT/MODEL)
 4. Extract what went well — positive patterns observed
 5. Produce a scope verdict: is this reportable to plugin maintainers?
+
+Privacy scrub: strip workspace file contents, user prompts verbatim (paraphrase intent), project directory paths, environment variables, tokens, credentials. Output contains only: behavioral patterns, tool names, error categories, suggestions.
 
 Write your findings to {output_path} in this format:
 
@@ -87,13 +86,13 @@ For deep investigation of structural or recurring failures:
 1. **Discover session** — same as REVIEW
 2. **Spawn 2 parallel subagents**:
 
-   **Diagnostic agent** (session-meta-reviewer):
+   **Diagnostic agent** (`tp-critic` w/ lens "identify anti-patterns; classify by severity and scope"):
    ```
    Read {transcript_path}, identify anti-patterns, classify by severity and scope.
    Write to {output_dir}/diagnostic.md
    ```
 
-   **Context & Outcome agent** (session-context-analyzer):
+   **Context & Outcome agent** (`tp-explorer` w/ scope "analyze git state, environment, and behavioral outcomes — what worked vs what broke"):
    ```
    Analyze git state, environment, and behavioral outcomes (what worked vs what broke).
    Write to {output_dir}/context-outcome.md
@@ -112,8 +111,8 @@ For deep investigation of structural or recurring failures:
 
 ## INVESTIGATE Fan-Out Rationale
 
-Three parallel agents avoid cross-contamination in findings:
-- Each agent reads the transcript independently
+Two parallel isolated-context agents avoid cross-contamination in findings:
+- Each agent reads the transcript independently in its own disposable context
 - No agent influences another agent's interpretation
 - Synthesis happens after independent analysis
 - Reduces false positives from single-agent bias

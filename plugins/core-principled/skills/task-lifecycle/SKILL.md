@@ -1,6 +1,6 @@
 ---
 name: task-lifecycle
-description: "Add a feature, refine a spec, implement it, and update docs through a 4-stage task lifecycle. Use when user says 'add a feature', 'refine this spec', 'implement the task', 'build a feature', 'update the docs', or names a draft / spec path. Modes: CAPTURE (draft), REFINE (spec), IMPLEMENT (code + verify), DOCUMENT (docs)."
+description: "Add a feature, refine a spec, implement it, and update docs through a 4-stage task lifecycle. Use when user says 'add a feature', 'refine this spec', 'implement the task', 'build a feature', 'update the docs', or names a draft / spec path. Modes: CAPTURE (draft), REFINE (spec), IMPLEMENT (code + verify), DOCUMENT (docs). NOT for: planning a multi-phase project from scratch (use `plan-lifecycle`); NOT for: small bug fixes or refactors (do inline)."
 context: fork
 agent: general-purpose
 when_to_use: |

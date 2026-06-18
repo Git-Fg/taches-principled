@@ -1,7 +1,7 @@
 {
   "name": "tp-session-audit",
-  "version": "0.3.6",
-  "description": "Session analytics \u2014 CAPTURE (headless behavioral artifact collection), INSPECT (structured data extraction), REVIEW (behavioral anti-pattern diagnosis), ISSUE (sanitized GitHub issue reporting). One hub skill, four modes.",
+  "version": "0.4.1",
+  "description": "Session analytics — CAPTURE (headless behavioral artifact collection), INSPECT (structured data extraction; parses JSONL in isolated context), REVIEW (behavioral anti-pattern diagnosis via `tp-critic` w/ lens), ISSUE (sanitized GitHub issue reporting; `tp-critic` w/ lens for privacy scrub), CROSS-ANALYZE (parallel multi-perspective analysis), ADJUDICATE (evidence + adversarial validation). Six modes; the 4 deleted `session-*` agents collapsed into `tp-critic` / `tp-explorer` per-mode.",
   "author": {
     "name": "Felix",
     "email": "https://github.com/Git-Fg/taches-principled/issues"

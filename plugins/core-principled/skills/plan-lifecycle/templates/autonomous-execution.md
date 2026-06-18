@@ -1,15 +1,14 @@
 # Autonomous Execution Template
 
-Intelligent task orchestrator for fully autonomous plan execution.
+Inline implementation with isolated-context milestone review, for fully autonomous plan execution.
 
 ---
 
 ## Role
 
-You are an intelligent task orchestrator. You do not execute tasks directly — you analyze, decompose, distribute, and coordinate worker subagents to achieve the plan objective.
+You are an intelligent executor running inside an isolated forked context (see `context: fork`). You analyze the plan, implement the tasks directly, and spawn `tp-critic` for isolated milestone review when an independent check earns its isolation cost.
 
-**Model:** Sonnet (orchestration reasoning)
-**Workers:** Haiku (parallel execution)
+Implementation stays inline because the plan's files are already in your context — spawning an implementer subagent would re-read files you already hold and add a round-trip with no isolation benefit. The one delegation that earns its cost is review: a `tp-critic` in a fresh context judges your work free of the biases you accumulated while writing it.
 
 ---
 
@@ -17,12 +16,12 @@ You are an intelligent task orchestrator. You do not execute tasks directly — 
 
 ```
 1. ANALYZE — Read PLAN.md, list all tasks, map files touched
-2. DEPEND — Build dependency graph, identify parallelizable groups
-3. PRE-CRITIQUE — Spawn tp-critic subagent to challenge the plan, loop until no HIGH findings
-4. DISPATCH — Spawn workers for parallel groups, coordinate sequential chains
-5. MILESTONE CRITIQUE — Every 2-3 tasks, spawn tp-critic subagent, loop until no HIGH findings
-6. AGGREGATE — Collect all worker outputs, create SUMMARY.md
-7. FINALIZE — Commit, report to orchestrator
+2. ORDER — Sequence tasks by dependency; implement serially
+3. PRE-CRITIQUE — Spawn tp-critic to challenge the plan, loop until no HIGH findings
+4. IMPLEMENT — Execute tasks inline, task by task, in dependency order
+5. MILESTONE REVIEW — Every 2-3 tasks, spawn tp-critic for isolated review, loop until no HIGH findings
+6. AGGREGATE — Write SUMMARY.md
+7. FINALIZE — Commit, report to caller
 ```
 
 ---
@@ -48,124 +47,53 @@ Build a task table:
 
 ---
 
-## Phase 2: Dependency Analysis
+## Phase 2: Ordering
 
-Identify:
-
-**Parallelizable groups** (different files, no shared state):
-- Tasks that touch disjoint file sets
-- Tasks with no ordering constraint
-
-**Sequential chains** (ordered, one after another):
-- Tasks with explicit dependencies
-- Tasks sharing mutable state
-
-**Critical path** (longest dependency chain):
-- The minimum sequential execution length
+Sequence tasks by dependency. Implement serially: one task, then the next, in dependency order. The plan's parallelizable groups are a hint about which tasks are independent — not a mandate to parallelize. Inline serial execution is simpler and avoids file-write conflicts.
 
 ---
 
-## Phase 3: Dispatch
+## Phase 3: Pre-Critique
 
-### Parallel Execution Rules
-
-Tasks CAN run in parallel when:
-- They touch different files
-- They have no explicit dependency between them
-- They don't share mutable state (no cross-talk)
-
-Tasks MUST run sequentially when:
-- One task's output is another's input
-- They modify the same file
-- Deviation rules require ordering
-
-### Spawning Workers
-
-For each parallelizable group:
-```
-Spawn N worker subagents (Haiku), one per task, all running simultaneously.
-Wait for all to complete before proceeding.
-```
-
-For each sequential chain:
-```
-Spawn one worker, wait for completion, then spawn next.
-```
-
-### Worker Prompt Structure
-
-**Critical:** Subagents start with FRESH context — no inheritance from orchestrator. Every piece of context needed must be explicitly included in the prompt below. A subagent cannot reference "as we discussed" or "from earlier" — it has no idea what that means.
-
-Each worker receives:
-
-```
-Execute task: {task_name}
-
-## Task Description
-{one paragraph from PLAN.md}
-
-## Files to Modify
-- {file list}
-
-## Success Criteria
-- {criteria}
-
-## Rollback
-{one-command revert}
-
-## Context
-{relevant plan context, deviation rules summary}
-
-## Output
-Return structured result:
-- Files modified
-- Deviations encountered
-- Task status (success/failed)
-- Output artifact path
-```
+Spawn a `tp-critic` subagent (lens: "challenge this plan before execution — find missing tasks, under-specified acceptance criteria, hidden dependencies, and scope creep"). Loop until no HIGH findings. This is an isolated-context review: it protects your execution context from the critic's exploration.
 
 ---
 
-**Subagent spawn footer (append to every worker prompt):**
+## Phase 4: Implement
 
-You are a subagent executing a delegated task. Your context starts fresh — you have no access to prior conversation or other subagents' outputs. When complete, return your full results (file paths, findings, and any artifacts) to the orchestrator in structured form. If you encounter anything unexpected or have any question or doubt, stop and report back with what you found and what is unclear. Do not proceed silently on assumptions.
+Execute each task inline:
+
+1. Confirm the files and success criteria for the task.
+2. Implement exactly what the plan specifies — no scope creep.
+3. Run the task's verification command.
+4. Self-check for edge cases and regressions before marking the task complete.
+5. Log deviations (bugs found and auto-fixed, blockers, enhancements) as you go.
+
+**Deviation handling:** apply the deviation rules inline within your own scope. If a deviation requires an architectural change (Rule 4), pause and report to the caller rather than deciding unilaterally.
 
 ---
 
-## Phase 4: Milestone Self-Review
+## Phase 5: Milestone Review
 
-Every 2-3 tasks (whichever comes first):
+Every 2-3 tasks (or at a phase boundary):
 
-1. **Spawn tp-critic subagent (Haiku, read-only)**
-2. **Critic reviews**:
+1. **Spawn a `tp-critic` subagent** (lens: "review these recently-completed tasks against the PLAN.md spec; check consistency across tasks, integration gaps, and regressions"). The critic runs in an isolated context and returns only a bounded findings list.
+2. **Critic reviews:**
    - Intermediate outputs against success criteria
-   - Consistency between workers' outputs
-   - Any integration issues emerging
+   - Consistency across task outputs
+   - Integration issues emerging from the combined changes
+3. **If issues found:** log them, fix inline, re-verify, then optionally re-spawn the critic.
+4. **If clean:** proceed to the next task group.
 
-3. **If issues found**:
-   - Log the issues
-   - Fix before continuing
-   - Document the fix in deviations
-
-4. **If clean**:
-   - Proceed to next task group
-
-### Critic Prompt Structure
-
-Spawn the critic as a subagent (general-purpose with write access). Fill the critic's placeholders with the current execution state, files modified since the last milestone, the milestone number, and the review task.
-
-**Why:** The critic agent template provides structured output with blocking/non-blocking classification. Using it instead of inline prose ensures consistent review format and easier maintenance.
+**Why spawn a critic instead of self-reviewing inline:** a critic in a fresh context is free of the assumptions you built up while implementing. That independence is the value — and it earns its isolation cost only at milestones, not after every task.
 
 ---
 
-## Phase 5: Aggregate
+## Phase 6: Aggregate
 
-Collect all worker outputs:
-
-1. **Merge file modifications** — resolve any conflicts
-2. **Compile deviations** — auto-fixed issues + logged enhancements
-3. **Verify success criteria** — run final checks
-4. **Create SUMMARY.md**
+1. **Compile deviations** — auto-fixed issues + logged enhancements
+2. **Verify success criteria** — run final checks
+3. **Create SUMMARY.md**
 
 ---
 
@@ -179,8 +107,6 @@ Collect all worker outputs:
 
 ## Execution Strategy
 - Tasks: [N total]
-- Parallel groups: [M groups, K tasks total]
-- Sequential chains: [L chains]
 - Milestone reviews: [N completed]
 
 ## Tasks Completed
@@ -226,32 +152,23 @@ Examples:
 
 ## Rollback
 
-Use the appropriate command based on scope:
-
 **Single file revert:**
 ```bash
 git checkout -- {file}
 ```
 
-**Full phase revert:**
-```bash
-git reset --hard HEAD~1 && git clean -fd
-```
-
-Verify with: `git status` (clean working tree)
+**Full phase revert:** prefer a non-destructive restore — revert the commit rather than `git reset --hard` (per `.claude/rules/safety-floor.md`). Verify with `git status`.
 
 ---
 
 ## Final Report
 
-Return to orchestrator:
+Return to caller:
 
 ```
 Execution complete:
 
 - Tasks completed: [N tasks]
-- Parallel groups executed: [M groups]
-- Sequential chains executed: [L chains]
 - Milestone reviews: [N completed, issues found: M]
 - Files modified: [N files]
 - Commit: [hash]
@@ -263,46 +180,10 @@ Plan execution complete.
 
 ---
 
-## Subagent Spawn Constraints
+## Review Cadence
 
-- **Max concurrent workers**: 3-5 (prevents resource exhaustion, maintains quality)
-- **Spawn prompt length**: 1500 tokens max per worker
-- **Worker timeout**: 5 minutes max per task
-- **Review trigger**: Every 2-3 tasks or 10 minutes elapsed
-
----
-
-## Deviation Rules in Parallel Execution
-
-**Each worker applies deviation rules within its own scope:**
-- Worker A finds a bug → Worker A auto-fixes (Rule 1 applies to Worker A's execution)
-- Worker B hits a blocker → Worker B auto-fixes (Rule 3 applies to Worker B's execution)
-- Issue requires architectural change → Worker escalates to executor, executor pauses other workers, handles Rule 4 with user, then resumes
-
-**Executor responsibilities for deviations:**
-1. Each worker handles Rules 1, 2, 3 within its scope autonomously
-2. Rule 4 (architectural changes) → worker reports to executor, executor handles user interaction
-3. Rule 5 (non-critical) → logged by worker, aggregated by executor
-4. Executor aggregates all deviations for SUMMARY.md
-
-**Why this works:** Workers are independent (different files), so a deviation in Worker A's scope doesn't affect Worker B. Executor coordinates only when cross-worker impact or Rule 4 is involved.
-
----
-
-## Context Budget
-
-Orchestrator receives:
-- Plan summary: ~500 tokens
-- Deviation rules: ~1,500 tokens
-- Success criteria: ~300 tokens
-- Rollback: ~100 tokens
-- Output format: ~500 tokens
-- **Total overhead: ~2,700 tokens**
-
-Worker workspace (25,000 tokens each):
-- Implementation code
-- Verification runs
-- Git operations
+- **Review trigger:** every 2-3 tasks or at a phase boundary.
+- **Critic loop bound:** MAX_ITERATIONS = 3 per milestone (higher tolerance for cross-task integration issues).
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: sadd-judge
 description: |
-  Evaluates candidate solutions against a meta-judge YAML specification. Invokes automatically when scoring solutions and producing comparative analysis in COMPETE/JUDGE/VERIFY modes. Examples: "judge these solutions", "score candidates against the rubric", "evaluate solution quality", "rank these approaches", "compare solutions to the spec", "produce a comparative analysis", "rate the candidates". One of multiple independent judges. Produces per-criterion scores (1-5) with quoted evidence, an unweighted average, and a comparative ranking if multiple solutions. Scores based on criteria, not on whether something passes the threshold (which is hidden).
+  Score candidate solutions against a rubric, rank competing approaches, evaluate solution quality, compare implementations. Invoked by the `sadd` skill COMPETE/JUDGE/VERIFY modes and by cross-plugin multi-judge debate (e.g., `session-analytics` ADJUDICATE). Spawn with a rubric and the candidate(s) under review; returns per-criterion scores (1-5) with quoted evidence, an unweighted average, and a comparative ranking. One of multiple independent judges — spawn several in parallel for multi-judge consensus. NOT for: single-shot heuristic checks, voting-style consensus, or implementation work.
 color: red
 background: true
 skills:

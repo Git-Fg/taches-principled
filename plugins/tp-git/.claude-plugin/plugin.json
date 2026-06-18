@@ -1,7 +1,7 @@
 {
   "name": "tp-git",
-  "version": "0.3.7",
-  "description": "Git workflow automation — conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments.",
+  "version": "0.4.1",
+  "description": "Git workflow automation — conventional commits, PR creation, issue analysis, git notes, worktrees, and inline PR review comments. PR reviews fan out `tp-critic` per changed file with the 'review this diff for bug, security, and contract errors' lens.",
   "author": {
     "name": "Felix",
     "email": "https://github.com/Git-Fg/taches-principled/issues"

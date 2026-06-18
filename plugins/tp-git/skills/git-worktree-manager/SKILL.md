@@ -1,6 +1,6 @@
 ---
 name: git-worktree-manager
-description: "Manage git worktrees: create, list, remove, prune, and audit worktree state. Use when setting up parallel development environments, isolating branches for review, or managing multi-branch workflows."
+description: "Manage git worktrees — create, list, remove, prune, and audit worktree state. Use when the user says 'create a git worktree', 'list worktrees', 'remove a worktree', 'prune stale references', 'audit worktree state', 'set up parallel development environments', 'isolate branches for review'. Pure git-worktree plumbing; release and review are separate (use the `git` skill). NOT for: PR review of changes in a worktree (use `git` skill REVIEW mode or `refine` REVIEW)."
 when_to_use: |
   - "Create a git worktree"
   - "List worktrees"
@@ -18,7 +18,7 @@ for the exact git invocations, not a subagent.
 ## CONTRAST
 
 - NOT for: commit / push / branch / merge — use the `git` skill
-- NOT for: PR review of changes in a worktree — use `git-pr-reviewer`
+- NOT for: PR review of changes in a worktree — use `refine` REVIEW or spawn `tp-critic` (lens: "review this diff for bug, security, and contract errors")
 - NOT for: persistent session isolation — worktrees are git-level, not session-level
 - This skill is purely for git-worktree plumbing; release and review are separate
 

@@ -1,6 +1,6 @@
 ---
 name: refine
-description: "Review a PR, simplify complex code, polish prose, or capture a project learning. Use when the user wants to improve the quality of an artifact (code, doc, PR) or consolidate insights into memory. Do NOT use for bug diagnosis or for creating new features."
+description: "Review a PR, simplify complex code, polish prose, or capture a project learning. Use when the user says 'review this PR', 'simplify this code', 'polish this doc', 'improve this artifact', 'is this good enough', 'what could be better', 'capture this learning'. Three modes: REVIEW (multi-reviewer parallel fan-out), CRITIQUE (single- or multi-judge), MEMORIZE (consolidate insights). NOT for: bug diagnosis (use `diagnose`), creating new features (use `task-lifecycle`), or restructuring code (use `ddd`)."
 allowed-tools: Read, Edit, Write
 when_to_use: "Use for PR reviews, simplifying complex logic, or capturing project learnings. Do NOT use for bug diagnosis (use diagnose) or creating new features (use task-lifecycle)."
 argument-hint: "[mode] [focus-area] [--min-impact critical|high|medium|medium-low|low]"
@@ -131,23 +131,25 @@ Do NOT simplify:
 
 ## REVIEW Mode
 
-Multi-agent code review that scans for bugs, security vulnerabilities, code quality issues, contract violations, and test coverage gaps. Uses 6 specialized review agents running in parallel.
+Code review that scans for bugs, security vulnerabilities, code quality issues, contract violations, and test coverage gaps. Fans out 6 isolated-context reviews in parallel, each through a distinct lens.
 
 ### Agent Spawning
 
-Spawn all six reviewers in parallel. Each agent focuses on a distinct dimension:
+Spawn 6 `tp-critic` instances in parallel, each with a distinct **lens** in its spawn prompt. The lens is the only thing that differs; the agent is the same:
 
-1. **Spawn `tp-bug-hunter`** (red) — Logic errors, edge cases, race conditions, null pointer risks, state corruption. Key question: "Where did invalid data originate? How would this fail under load?"
-2. **Spawn `security-reviewer`** (red) — OWASP Top 10, injection, auth, exposed secrets, insecure crypto. Key question: "Can this be exploited? Does this fail closed or open?"
-3. **Spawn `tp-code-quality-reviewer`** (yellow) — Readability, complexity, naming, duplication, pattern adherence. Key question: "Does this follow established patterns? Is the solution simple enough?"
-4. **Spawn `tp-contracts-reviewer`** (yellow) — API contracts, data models, type design, illegal state representability. Key question: "Can illegal states be represented? Will this break existing consumers?"
-5. **Spawn `tp-historical-reviewer`** (yellow) — Git history, past PRs, recurring bug patterns. Key question: "What problems occurred before in these files?"
-6. **Spawn `tp-test-coverage-reviewer`** (yellow) — Missing tests, untested edge cases, coverage gaps. Key question: "Would this test catch the bug we found? What error paths are untested?"
+1. **`tp-critic`, lens:** "Logic errors, edge cases, race conditions, null pointer risks, state corruption. Key question: where did invalid data originate? How would this fail under load?"
+2. **`tp-critic`, lens:** "OWASP Top 10, injection, auth bypass, exposed secrets, insecure crypto. Key question: can this be exploited? Does this fail closed or open?"
+3. **`tp-critic`, lens:** "Readability, complexity, naming, duplication, pattern adherence. Key question: does this follow established patterns? Is the solution simple enough?"
+4. **`tp-critic`, lens:** "API contracts, data models, type design, illegal-state representability. Key question: can illegal states be represented? Will this break existing consumers?"
+5. **`tp-critic`, lens:** "Git history, past PRs, recurring bug patterns in these files. Key question: what problems occurred before here?"
+6. **`tp-critic`, lens:** "Missing tests, untested edge cases, coverage gaps. Key question: would the existing tests catch the bug? What error paths are untested?"
+
+Each `tp-critic` runs in its own isolated context and returns only a bounded findings list (severity, file:line, consequence, fix) — the exploration never enters the main context.
 
 ### Process
 
 1. **Preparation** — Identify change set (git diff or PR diff), check review scope against `--min-impact`
-2. **Multi-Agent Issue Detection** — Spawn applicable review agents in parallel. Each produces issues with impact score (0-100), confidence, and evidence (file:line)
+2. **Multi-Agent Issue Detection** — Spawn applicable `tp-critic` instances in parallel (each with its lens). Each returns issues with impact score (0-100), confidence, and evidence (file:line)
 3. **Consolidation** — Deduplicate by file:line:issue-text, filter to threshold, skip if >500 lines (focus on architecture + security)
 
 ### PR Review
@@ -179,13 +181,13 @@ Independent judges with cross-examination and consensus.
 #### Process
 
 1. **Context Gathering** — Identify scope, capture requirements, modified files, decisions, constraints
-2. **Independent Judge Reviews** — Spawn 2-3 judges simultaneously:
+2. **Independent Judge Reviews** — Spawn 2-3 `tp-critic` instances simultaneously, each with a distinct lens:
 
-| Role | Evaluates | Best For |
+| Lens | Evaluates | Best For |
 |------|-----------|----------|
-| Requirements Validator | Alignment with original requirements | Feature implementation |
-| Solution Architect | Technical approach and design decisions | Architecture changes |
-| Code Quality Reviewer | Implementation quality and refactoring | Code changes |
+| Requirements alignment | Does the work meet the original requirements? | Feature implementation |
+| Solution architecture | Technical approach and design decisions | Architecture changes |
+| Implementation quality | Code quality, refactoring, clarity | Code changes |
 
 3. **Cross-Examination & Consensus** — Synthesize: agreement areas, contradictions, gaps. If disagreement, facilitate debate.
 4. **Report** — Structured findings with quality score, prioritized issues, consensus/debate areas, action items, verdict.

@@ -1,6 +1,6 @@
 ---
 name: plan-lifecycle
-description: "Plan projects with executable ROADMAP.md + PLAN.md files (PLAN mode) or run a plan with worker+critic subagents and return an execution report (EXECUTE mode). Use when adding a new feature, starting a new project, breaking work into phases, running a plan, or building something non-trivial."
+description: "Plan a project end-to-end — break work into phases, write executable PLAN.md files with checkpoints (PLAN mode), or run a plan and return an execution report (EXECUTE mode). Use when the user says 'plan this project', 'add a new feature', 'start a new project', 'break down work into phases', 'run a plan', 'build something non-trivial'. NOT for: adding a single small feature (use `task-lifecycle`); NOT for: brainstorming options (use `ideation`)."
 context: fork
 agent: general-purpose
 allowed-tools: Read, Write, Bash, Grep
@@ -74,7 +74,7 @@ Executes PLAN.md files using intelligent strategies based on checkpoint types.
 
 1. **Intake** — load the plan and execution context.
 2. **Strategy Selection** — analyze checkpoints to pick Strategy A (Autonomous), B (Segmented), or C (Sequential).
-3. **Orchestration** — spawn workers (tp-global-implementer) and critics (tp-critic).
+3. **Implementation** — execute the tasks inline (the files are already in your context; implementation on files you are editing stays inline). Spawn `tp-critic` only for isolated milestone review.
 4. **Validation** — run verification commands and milestone reviews.
 
 **Execution strategies:** You MUST read `references/execution-strategies.md` BEFORE starting execution.
@@ -89,11 +89,11 @@ Executes PLAN.md files using intelligent strategies based on checkpoint types.
 
 **Milestone critique loop:**
 - Every 2-3 tasks completed, or at phase boundary.
-- Spawn a tp-critic subagent (general-purpose with write access).
+- Spawn a `tp-critic` subagent (lens: "verify this milestone against the PLAN.md spec; find regressions, scope creep, and integration gaps") for an isolated-context review that doesn't pollute your execution context.
 - Loop until no HIGH findings or 3 iterations exhausted.
 
 **Parallel execution rules:**
-- Max parallel workers: 3-5 (prevents resource contention).
+- Tasks execute inline in sequence within the forked context; spawn `tp-critic` (different lens per task type) when an isolated review earns its isolation cost.
 - Sequential chains execute in order.
 
 ---

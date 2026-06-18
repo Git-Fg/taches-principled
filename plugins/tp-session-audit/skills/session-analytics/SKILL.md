@@ -1,6 +1,6 @@
 ---
 name: session-analytics
-description: "Analyze Claude Code session transcripts to extract metrics, diagnose behavioral anti-patterns, and file GitHub issues from findings. Use when user says 'parse session log', 'session metrics', 'review session for anti-patterns', 'capture a session', 'cross-analyze artifacts', or 'create a meta-issue'. Modes: CAPTURE, INSPECT, REVIEW, ISSUE, CROSS-ANALYZE, ADJUDICATE."
+description: "Analyze Claude Code session transcripts to extract metrics, diagnose behavioral anti-patterns, and file GitHub issues from findings. Use when user says 'parse session log', 'session metrics', 'review session for anti-patterns', 'capture a session', 'cross-analyze artifacts', or 'create a meta-issue'. Modes: CAPTURE, INSPECT, REVIEW, ISSUE, CROSS-ANALYZE, ADJUDICATE. NOT for: bug diagnosis in source code (use `diagnose`); NOT for: improving an artifact (use `refine`); NOT for: managing CLAUDE.md/rules (use `rules-orchestration`)."
 allowed-tools: Read, Glob, Grep, Bash, Agent
 when_to_use: "Use for session metrics, anti-pattern review, or creating issues from findings. Examples: \"parse debug log\", \"analyze hooks\". CONTRAST: No code analysis (use refine); no general project bugs (use meta-issue)."
 argument-hint: "<inspect|review|issue> [session-id|--dry-run] [--filter errors|tools|cost|skills] [--full|--summary]"
@@ -155,11 +155,11 @@ If no session ID provided and latest session is empty or still running, try the 
 
 ### Execution
 
-**Default: subagent delegation.** For structured extraction, spawn a **`session-inspector`** subagent with the session path and requested mode. The subagent reads the JSONL, applies the privacy scrub, and writes structured output to `.principled/scratch/session-inspect-{uuid}.{json|md}`.
+**Default: subagent delegation.** For structured extraction, spawn a `tp-explorer` subagent with scope "parse this session JSONL, apply the privacy scrub, and write structured output" and mode (SUMMARY / FULL / FILTER). The subagent reads the JSONL in its own disposable context — the raw transcript never enters the main conversation — and writes the parsed output to `.principled/scratch/session-inspect-{uuid}.{json|md}`.
 
 **Spawn pattern:**
 - Scope: session transcript at `~/.claude/sessions/{uuid}/raw-transcript.jsonl`
-- Role: **`session-inspector`** (data extraction)
+- Role: **`tp-explorer`** (data extraction; privacy scrub applied in spawn prompt)
 - Output: `.principled/scratch/session-inspect-{uuid}.json` (FULL) or `.principled/scratch/session-inspect-{uuid}.md` (SUMMARY)
 - Mode: SUMMARY / FULL / FILTER as specified by user flags
 
@@ -178,7 +178,7 @@ Reviews Claude Code session transcripts for behavioral anti-patterns and investi
 ### Process (REVIEW mode)
 
 1. **Discover session** — find the target transcript
-2. **Spawn `session-meta-reviewer` subagent** — reads full JSONL, produces behavioral analysis
+2. **Spawn a `tp-critic` subagent** (lens: "examine this session transcript for behavioral anti-patterns") — reads full JSONL in its isolated context, produces behavioral analysis
 3. **Present findings** — anti-patterns (PLUGIN scope only), what went well, scope verdict
 4. **Next step suggestion** — if actionable findings exist, suggest running ISSUE mode
 
@@ -186,23 +186,23 @@ Reviews Claude Code session transcripts for behavioral anti-patterns and investi
 
 1. **Discover session** — same as REVIEW
 2. **Spawn 2 parallel subagents**:
-   - **Diagnostic subagent** (**`session-meta-reviewer`**): reads transcript, identifies anti-patterns and root cause scope
-   - **Context & Outcome subagent** (**`session-context-analyzer`**): analyzes git state, environment, and behavioral outcomes (what worked vs what broke)
+   - **Diagnostic subagent** (`tp-critic` with lens "examine this session transcript for behavioral anti-patterns — diagnose root cause and scope"): reads transcript, identifies anti-patterns and root cause scope
+   - **Context & Outcome subagent** (`tp-explorer` with scope "analyze this session's git state, environment, and behavioral outcomes — what worked vs what broke"): analyzes git state, environment, and behavioral outcomes
 3. **Synthesize** — merge findings, cross-reference with git state, deduplicate, assign severity
 4. **Scope gate** — check if findings are PLUGIN scope (reportable) or USER-FILE/ENVIRONMENT scope (excluded)
 5. **Write unified report** to `.principled/scratch/meta-review-{session_id}.md`
 
 ### Privacy
 
-The **`session-meta-reviewer`** agent strips: file contents from workspace, user prompts verbatim (paraphrases intent only), project directory paths, environment variables, tokens, credentials.
+The privacy scrub (file contents from workspace, user prompts verbatim, project directory paths, environment variables, tokens, credentials) MUST be specified in the spawn prompt for any subagent that reads session data — it is no longer a property of a dedicated agent.
 
 ### Execution
 
-**Default: subagent delegation.** For REVIEW, spawn one **`session-meta-reviewer`** subagent. For INVESTIGATE, spawn 2 parallel subagents. The main agent synthesizes results; it never performs transcript analysis inline.
+**Default: subagent delegation.** For REVIEW, spawn one `tp-critic` subagent (lens: "examine this session transcript for behavioral anti-patterns"). For INVESTIGATE, spawn 2 parallel subagents as detailed in the INVESTIGATE process above. The main agent synthesizes results; it never performs transcript analysis inline.
 
 **Spawn pattern:**
 - Scope: session transcript at `~/.claude/sessions/{uuid}/raw-transcript.jsonl`
-- Role: **`session-meta-reviewer`** (diagnostic), **`session-context-analyzer`** (context & outcome analysis)
+- Role: **`tp-critic`** (diagnostic, anti-pattern review), **`tp-explorer`** (context & outcome analysis)
 - Output: `.principled/scratch/meta-review-{session_id}.md`
 
 ---
@@ -244,11 +244,11 @@ The user can override with explicit confirmation.
 
 ### Execution
 
-**Default: subagent delegation.** For privacy audit and body construction, spawn an **`session-issue-generator`** subagent. For issue creation, use the Bash tool directly with `gh issue create`.
+**Default: subagent delegation.** For privacy audit and body construction, spawn a `tp-critic` subagent (lens: "audit these findings for privacy compliance — strip workspace file contents, verbatim user prompts, project paths, environment variables, tokens, and credentials; then construct a public-friendly GitHub issue body"). For issue creation, use the Bash tool directly with `gh issue create`.
 
 **Spawn pattern:**
 - Scope: `.principled/scratch/meta-review-{session_id}.md`
-- Role: **`session-issue-generator`** (privacy audit, body construction)
+- Role: **`tp-critic`** (privacy audit, body construction)
 - Output: issue body file → `gh issue create`
 
 ---
@@ -265,12 +265,12 @@ The user can override with explicit confirmation.
    - If no capture found → error with `{"status": "failed", "reason": "no-capture", "remediation": "Run /capture first"}`
 
 2. **Fan out three parallel specialists** (spawn all three concurrently with background=true):
-   - **`session-inspector`** (**`--full`** mode) ← stream-json output → structured event list
-   - **`session-meta-reviewer`** (custom subagent) ← persisted JSONL → anti-pattern list
-   - **`tp-debug-tracer`** (custom subagent, if available) ← debug log → root-cause traces
-     - **Note:** `tp-debug-tracer` is also used by `diagnose` STACK-TRACE mode for backward call-chain debugging.
+   - **`tp-explorer`** with scope "parse stream-json output → structured event list" (FULL mode)
+   - **`tp-critic`** with lens "examine persisted JSONL for behavioral anti-patterns" ← persisted JSONL → anti-pattern list
+   - **`tp-explorer`** with scope "extract root-cause traces from debug log" ← debug log → root-cause traces
+     - **Note:** debug-log root-cause tracing is also used by `diagnose` STACK-TRACE mode.
 
-   - If **`tp-debug-tracer`** is not available, use the **`session-inspector`** on the debug log instead
+   - All three agents use the same privacy-scrub directive applied via the spawn prompt.
 
 3. **Wait for all three** (TaskOutput with block=true for all three)
 
@@ -293,7 +293,7 @@ The user can override with explicit confirmation.
   "findings": [
     {
       "finding": "<description>",
-      "analysts": ["session-meta-reviewer", "debug-tracer"],
+      "analysts": ["critic", "debug-explorer"],
       "convergence": "high",
       "severity": "HIGH",
       "evidence": { "file": "<path>", "line": <n>, "text": "..." }
@@ -353,12 +353,11 @@ NOT for diagnose (session patterns vs code bugs), NOT for code-review (workflow 
 
 ## Reference Index
 
-IF performing structured data extraction (INSPECT) → spawn **`session-inspector`**
-IF performing behavioral diagnosis (REVIEW) → spawn **`session-meta-reviewer`**
-IF performing deep investigation (INVESTIGATE) → spawn **`session-meta-reviewer`** and **`session-context-analyzer`**
-IF performing context and outcome analysis → spawn **`session-context-analyzer`**
-IF performing privacy audit and issue body construction (ISSUE) → spawn **`session-issue-generator`**
-IF performing forensic log analysis (CROSS-ANALYZE) → spawn **`session-inspector`**
+IF performing structured data extraction (INSPECT) → spawn **`tp-explorer`** (scope: "parse JSONL with privacy scrub → structured output")
+IF performing behavioral diagnosis (REVIEW) → spawn **`tp-critic`** (lens: "examine session transcript for behavioral anti-patterns")
+IF performing deep investigation (INVESTIGATE) → spawn **`tp-critic`** (anti-pattern diagnosis) + **`tp-explorer`** (scope: "analyze git state, environment, behavioral outcomes")
+IF performing privacy audit and issue body construction (ISSUE) → spawn **`tp-critic`** (lens: "sanitize for public GitHub issue creation")
+IF performing forensic log analysis (CROSS-ANALYZE) → spawn **`tp-explorer`** (scopes: stream-json parsing + debug-log root-cause tracing) + **`tp-critic`** (lens: anti-pattern review of persisted JSONL)
 
 ## Reference routing
 
@@ -391,9 +390,9 @@ the skill works without it, falling back to the noted substitute.
 
 | Agent role | Source | Used in | Fallback if absent |
 |---|---|---|---|
-| `tp-debug-tracer` | *(not yet published in this marketplace)* | `CROSS-ANALYZE` mode, for backward call-chain root-cause from debug logs | `session-inspector` on the debug log (single-agent path) |
-| FPF evidence-validator | the marketplace's FPF skill | `CROSS-ANALYZE` evidence validation stage | Skip the validation stage and note it in the report |
-| sadd-judge | the marketplace's sadd skill | `CROSS-ANALYZE` adversarial-check pass | a single critic subagent (instead of a judge panel) |
+| `tp-explorer` (debug-log scope) | the marketplace's shared `tp-explorer` | `CROSS-ANALYZE` mode, for backward call-chain root-cause from debug logs | the same `tp-explorer` with a narrower scope on the debug log (single-agent path) |
+| FPF evidence-validator | the marketplace's shared `tp-explorer` (cross-reference scope) | `CROSS-ANALYZE` evidence validation stage | Skip the validation stage and note it in the report |
+| sadd-judge | the marketplace's sadd skill | `CROSS-ANALYZE` adversarial-check pass | a single `tp-critic` instance (instead of a judge panel) |
 
 Why these aren't hard dependencies: the session-analytics skill ships
 standalone — a user who only wants session analytics should be

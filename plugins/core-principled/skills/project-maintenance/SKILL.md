@@ -1,6 +1,6 @@
 ---
 name: project-maintenance
-description: "Archive completed plans, deduplicate stale memory, and clean auto-memory at the end of a project. Use when the user wants to wrap up a plan, clean up files, or run a memory cleanup pass."
+description: "Archive completed plans, deduplicate stale memory, and clean auto-memory at the end of a project. Use when the user says 'wrap up this plan', 'archive the project', 'clean up files', 'deduplicate memory', 'run memory cleanup', 'this project is done'. NOT for: managing CLAUDE.md or `.claude/rules/` (use `rules-orchestration`); NOT for: capturing individual session insights (use the `learn` command)."
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 when_to_use: "Use when wrapping up plans, deduplicating files, or running memory cleanup. CONTRAST: refine MEMORIZE (general insights); rules-orchestration SYNC (codify rules); rules-orchestration AUDIT (audit rules)."
 argument-hint: "[plan-archive|memory-audit|memory-dedup|memory-archive|memory-clean] [path] [--abandoned] [--days 30]"

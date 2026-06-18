@@ -7,7 +7,7 @@ This template is used for Strategy C: Autonomous Sequential Execution. It is use
 1. **Load context** — read `execution_context` and `context` from the PLAN.md.
 2. **For each task/checkpoint**:
    - **IF type="auto"**:
-     - Execute in main context or spawn a tp-global-implementer parallel worker.
+     - Execute inline in the forked context (the files are already loaded). Implementation on files you are editing stays inline.
      - Track all deviations (bugs, critical additions, blockers).
    - **IF checkpoint:decision**:
      - Evaluate heuristic rules (simplest path, plan recommendation, reversibility).

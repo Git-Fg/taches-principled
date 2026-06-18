@@ -1,6 +1,6 @@
 ---
 name: wiki
-description: "Search, query, ingest, or verify a personal wiki, knowledge base, or notes system. Use when user mentions 'wiki', 'KB', 'knowledge base', 'look up in my notes', 'find in my wiki', 'search my docs', 'lint wiki', 'check wiki consistency', 'add to wiki', 'ingest into wiki', 'populate wiki', or 'build wiki'."
+description: "Search, query, ingest, or verify a personal wiki, knowledge base, or notes system. Use when user mentions 'wiki', 'KB', 'knowledge base', 'look up in my notes', 'find in my wiki', 'search my docs', 'lint wiki', 'check wiki consistency', 'add to wiki', 'ingest into wiki', 'populate wiki', or 'build wiki'. NOT for: looking up information on the public web (use `web-search`); NOT for: researching an unfamiliar library/API (use `tp-researcher`)."
 when_to_use: |
   - "Find something in my wiki / KB / notes"
   - "Search the wiki for X"
@@ -18,28 +18,24 @@ Based on [Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf5
 
 ## Teaching: Always Tell Subagents Which Wiki to Target
 
-**The rule:** This skill is a hub. The hub spawns subagents. The subagents (`wiki-searcher`, `wiki-linter`, `wiki-ingester`) need to know which wiki to operate on. **The hub's job is to resolve the target wiki BEFORE spawning, and pass it as an argument.**
+**The rule:** This skill is a hub. The hub spawns one specialist subagent for read-only queries (`wiki-searcher`) and performs ingest/lint operations inline against the resolved wiki path. **The hub's job is to resolve the target wiki BEFORE spawning or writing, and pass it as the working directory.**
 
-**Why this rule exists:** A subagent that doesn't know the target wiki has to re-resolve it from the registry. That re-resolution can disagree with what the user meant (the user said "the work wiki" but the subagent picked "main" because the alias was ambiguous). When the hub does the resolution, the user can correct it once at dispatch time, and every subagent call inherits the same answer. When the subagent does the resolution, the user has to correct it N times for N operations.
+**Why this rule exists:** A subagent that doesn't know the target wiki has to re-resolve it from the registry. That re-resolution can disagree with what the user meant (the user said "the work wiki" but the subagent picked "main" because the alias was ambiguous). When the hub does the resolution, the user can correct it once at dispatch time, and every subsequent call inherits the same answer.
 
 **How to follow the rule:**
 
 1. **Resolve the target wiki first** — read `~/.claude/wiki-root.md` (the registry) and apply the disambiguation rules from `references/registry-schema.md` to get the absolute path. If the user named a wiki, match by alias. If the user said "all my wikis", resolve all of them.
-2. **Spawn the subagent with `wiki_path` set** to the resolved absolute path. **Or** pass `alias` if you don't know the path but know the label — the subagent will resolve it from the registry (see subagent body for fallback rules).
-3. **Never spawn a subagent without `wiki_path` or `alias`**. The subagent can technically self-discover from the registry as a last resort, but that's the failure mode, not the normal flow.
-4. **For multi-wiki operations** ("lint all my wikis", "ingest this into every wiki"): spawn the subagent once per resolved wiki, passing each `wiki_path` in turn. Aggregate the per-wiki reports.
+2. **For QUERY**: spawn `wiki-searcher` with `wiki_path` (preferred) or `alias` (fallback). Never spawn without one of them.
+3. **For INGEST / LINT**: perform the operation inline in the resolved `wiki_path`. The registry-resolved path is your working directory.
+4. **For multi-wiki operations** ("lint all my wikis", "ingest this into every wiki"): loop over the resolved wikis, repeating the operation in each.
 
-**Per-subagent argument shapes** (the hub must populate these on spawn):
+**Argument contract (still applies when spawning `wiki-searcher`):**
 
 | Subagent | Required | Optional |
 |---|---|---|
 | `wiki-searcher` | `query` (string), `wiki_path` (string) — OR `alias` (string) | `multi_wiki` (bool, default false) — set to `true` to run across all configured wikis |
-| `wiki-ingester` | `mode` (`url`/`text`/`file`/`bulk`), `content`, `wiki_path` — OR `alias` | `multi_wiki` (bool, default false) |
-| `wiki-linter` | `directive` (string), `wiki_path` — OR `alias` | `multi_wiki` (bool, default false) |
 
-**What the subagent does if `wiki_path` is missing and `alias` is missing:** falls back to self-discovery from `~/.claude/wiki-root.md`, following the disambiguation rules in `references/registry-schema.md`. If exactly one wiki is configured, uses it; if the registry is unambiguous for the current operation, uses the first match; if ambiguous, returns an error to the hub ("no `wiki_path` or `alias` provided and registry is ambiguous") so the hub can ask the user to disambiguate.
-
-**So: the hub can pass `wiki_path` (preferred) or `alias` (fallback) or rely on subagent self-discovery (last resort, returns error on ambiguity). The hub should pick the first.**
+`wiki-searcher` falls back to self-discovery from `~/.claude/wiki-root.md` if neither `wiki_path` nor `alias` is provided, following the disambiguation rules in `references/registry-schema.md`. If exactly one wiki is configured, it uses it; if ambiguous, it returns an error to the hub so the hub can ask the user to disambiguate.
 
 ## Wiki Root Resolution (multi-wiki registry)
 
@@ -53,41 +49,39 @@ Any subagent that intends to use `qmd` (Quick Markdown Search by Tobi Lütke, v2
 
 ## Decision Router
 
-Classify the user's intent, then spawn the matching subagent. When in doubt, ask the user to disambiguate ("Do you want to search the wiki, or add something to it?").
+Classify the user's intent. QUERY spawns `wiki-searcher`; INGEST and LINT run inline. When in doubt, ask the user to disambiguate ("Do you want to search the wiki, or add something to it?").
 
-| User intent (signal words) | Spawn | Pass to the subagent |
+| User intent (signal words) | Action | Pass to the action |
 |---|---|---|
-| **Query / Search**: "find", "look up", "search", "what does my wiki say about", "do I have notes on" | `wiki-searcher` (read-only) | `query` (string) + `wiki_path` (string) or `alias` (string) — see Argument Contract below |
-| **Ingest / Build / Add**: "add to wiki", "ingest", "save to wiki", "import", "file this into wiki", "populate wiki", "build wiki from <source>" | `wiki-ingester` | `mode` (`url`/`text`/`file`/`bulk`) + `content` + `wiki_path` or `alias` |
-| **Lint / Verify**: "lint", "check consistency", "verify", "find broken links", "reconcile", "audit" | `wiki-linter` | `directive` (string) + `wiki_path` or `alias` |
+| **Query / Search**: "find", "look up", "search", "what does my wiki say about", "do I have notes on" | Spawn `wiki-searcher` (read-only) | `query` (string) + `wiki_path` (string) or `alias` (string) — see Argument Contract below |
+| **Ingest / Build / Add**: "add to wiki", "ingest", "save to wiki", "import", "file this into wiki", "populate wiki", "build wiki from <source>" | Perform ingest inline against the resolved `wiki_path` | n/a — operates on `$WIKI_ROOT` directly |
+| **Lint / Verify**: "lint", "check consistency", "verify", "find broken links", "reconcile", "audit" | Perform lint inline against the resolved `wiki_path` (or spawn `tp-critic` w/ lens "audit wiki for orphan pages, broken wikilinks, missing frontmatter, index drift, tag sprawl, intent violations, stale content" for an isolated-context audit) | n/a |
 
 ### Argument Contract (steering the orchestrator)
 
-**The hub (you) is the orchestrator. Always pass `wiki_path` to the subagent. Always.**
+**The hub (you) is the orchestrator. Always pass `wiki_path` when spawning `wiki-searcher`. Always.**
 
 - `wiki_path` is the absolute path the subagent should operate on. **Resolve it before spawning** — read `~/.claude/wiki-root.md` and apply the disambiguation rules from `references/registry-schema.md` to get the path.
 - If you don't know the path but know the alias, pass `alias` instead. The subagent will resolve it from the registry.
-- **Never spawn a subagent without one of `wiki_path` or `alias`.** The subagent can technically self-discover from the registry as a last resort, but the contract is: the hub has already done the resolution work, the subagent just executes.
-- For multi-wiki operations ("all my wikis"): spawn the subagent once per wiki, passing each resolved `wiki_path` in turn. The subagent reports per-wiki results.
+- **Never spawn `wiki-searcher` without one of `wiki_path` or `alias`.** It can technically self-discover from the registry as a last resort, but the contract is: the hub has already done the resolution work, the subagent just executes.
+- For multi-wiki operations ("all my wikis"): spawn `wiki-searcher` once per wiki, passing each resolved `wiki_path` in turn. The subagent reports per-wiki results.
 
 **The subagent will refuse to start if neither `wiki_path` nor `alias` is provided** and the registry is empty/unreadable. Treat that as a setup error and surface the no-registry message to the user.
 
 **Dispatch notes:**
-- `wiki-searcher` is the only subagent that can run on every load — it does no writes.
-- `wiki-linter` and `wiki-ingester` both read AND write. The hub does NOT touch the wiki directly; the subagents are the only paths that can mutate the resolved wiki.
+- `wiki-searcher` is the only subagent that ships with this skill — it does no writes, so the read-only contract is load-bearing (it's the allowed `tools:` exception).
+- INGEST and LINT operate inline against the resolved `wiki_path`. The orchestrator reads `$WIKI_ROOT/SCHEMA.md`, `index.md`, and `log.md` (per the orientation rules below) before writing. For LINT, you may also spawn `tp-critic` w/ lens "wiki audit" for an isolated-context consistency audit when the wiki is large enough that an inline walk would flood your context.
 - If the user's intent is ambiguous between `ingest` and `lint` (e.g., "fix my wiki"), default to `lint` (read-only path) and let the user escalate to `ingest` if needed.
 - For multi-source bulk ingest, prefer `bulk` mode — it does one search pass instead of N.
-- **Multi-wiki operation:** if the user says "lint all my wikis" or "ingest this into all my wikis", pass the operation to the subagent once per resolved wiki. The subagent reports per-wiki results.
+- **Multi-wiki operation:** if the user says "lint all my wikis" or "ingest this into all my wikis", loop over the resolved wikis and repeat the operation in each.
 
 ## Reference Index
 
-This hub skill ships with three specialist agents. Pick by intent:
+This hub skill ships with one specialist subagent (read-only) and performs INGEST / LINT inline.
 
-- **wiki-searcher** (blue, sonnet, read-only tools) — `QUERY` mode. Retrieves and synthesizes information from the user's wiki. Cites source pages. Never writes.
-- **wiki-linter** (yellow, sonnet, restricted tools) — `LINT` mode. Verifies consistency: orphan pages, broken wikilinks, missing frontmatter, index drift, tag sprawl, intent violations, stale content. Auto-fixes safe violations; flags structural ones.
-- **wiki-ingester** (green, sonnet, restricted tools) — `INGEST` mode. Adds new content to the wiki. Supports `url` (fetch web page), `text`/`notes` (pasted content), `file` (read a file), `bulk` (batch of N). Never modifies `raw/` once written.
+- **wiki-searcher** (read-only tools `[Read, Glob, Grep]`) — `QUERY` mode. Retrieves and synthesizes information from the user's wiki. Cites source pages. Never writes. This is the single allowed `tools:` restriction in the marketplace — read-only enforcement is the point (the wiki's mutation paths run inline in the hub, not through a subagent).
 
-The agents compose: a typical ingest run reads `SCHEMA.md` → fetches the source → cross-references existing pages → writes new pages with 2+ outbound wikilinks → updates `index.md` and `log.md`. A typical lint run reads `SCHEMA.md` + `index.md` + (optional) `.wiki/intent.md` → runs 7 checks (A–G) → groups findings by severity → auto-fixes safe items.
+INGEST runs inline in the hub: read `$WIKI_ROOT/SCHEMA.md` → fetch the source → cross-reference existing pages → write new pages with 2+ outbound wikilinks → update `index.md` and `log.md`. LINT runs inline or via `tp-critic` w/ lens "wiki audit" for an isolated-context consistency audit; either path reads `SCHEMA.md` + `index.md` + (optional) `.wiki/intent.md` → runs the wiki's lint checks → groups findings by severity → auto-fixes safe items.
 
 ## Mandatory Orientation — Every Wiki Operation
 
@@ -105,8 +99,8 @@ This skill is part of the `tp-wiki` plugin and depends on **optional** MCP tools
 
 | MCP tool | Used in | Fallback if absent |
 |---|---|---|
-| `mcp__mcp-searxng__fetch` | `wiki-ingester` mode `url` (fetch the web page) | `WebFetch` (Claude Code's built-in) — slower but always available |
-| `mcp__mcp-searxng__extract` | `wiki-ingester` mode `url` (RAG-ranked chunks for better summarization) | Fetch full page and post-process locally |
+| `mcp__mcp-searxng__fetch` | INGEST mode `url` (fetch the web page) | `WebFetch` (Claude Code's built-in) — slower but always available |
+| `mcp__mcp-searxng__extract` | INGEST mode `url` (RAG-ranked chunks for better summarization) | Fetch full page and post-process locally |
 | `web_extract` (alias) | Same as `mcp__mcp-searxng__extract` | Same as above |
 
 **Why these aren't hard dependencies:** `tp-wiki` ships standalone — a user who only wants wiki management should be able to install just this plugin. The MCP tools are accelerators (faster, RAG-ranked), not requirements. The fallback path uses Claude Code's built-in `WebFetch`.
@@ -160,7 +154,7 @@ read `references/qmd-integration.md`.
 
 ❌ **Ingesting into the wiki while another ingester is running.** `bulk` mode assumes a single writer. Concurrent ingests will produce duplicate pages, conflicting `index.md` updates, and torn `log.md` entries. The hub should serialize ingest operations.
 
-❌ **Linting then auto-fixing in one shot.** `wiki-linter` should report findings first; the user should approve the auto-fix policy (e.g., "yes, auto-fix orphan detection and missing frontmatter, but flag broken wikilinks for me"). Don't conflate the two phases.
+❌ **Linting then auto-fixing in one shot.** LINT should report findings first; the user should approve the auto-fix policy (e.g., "yes, auto-fix orphan detection and missing frontmatter, but flag broken wikilinks for me"). Don't conflate the two phases.
 
 ## CONTRAST
 

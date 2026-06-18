@@ -1,6 +1,6 @@
 ---
 name: fpf
-description: "Reason from first principles, compare solutions, or query the FPF knowledge base. Use when user says 'reason from first principles', 'compare solutions', 'make a decision with rationale', 'FPF', 'evaluate hypotheses', 'check evidence freshness', or 'query the FPF knowledge base'. Returns a Design Rationale Record (DRR), an evidence-freshness report, or a search-results table. Modes: PROPOSE, MAINTAIN, QUERY."
+description: "Reason from first principles, evaluate competing hypotheses with evidence, audit trust in evidence, and maintain the FPF knowledge base. Use when user says 'reason from first principles', 'compare solutions', 'make a decision with rationale', 'FPF', 'evaluate hypotheses', 'check evidence freshness', or 'query the FPF knowledge base'. Returns a Design Rationale Record (DRR), an evidence-freshness report, or a search-results table. Modes: PROPOSE, MAINTAIN, QUERY. NOT for: open-ended brainstorming (use `ideation`); NOT for: code architecture decisions (use `ddd`)."
 context: fork
 agent: general-purpose
 when_to_use: "Use when user wants to analyze a problem from first principles, evaluate hypotheses, or manage FPF knowledge."
@@ -51,18 +51,12 @@ Execute complete First Principles Framework cycle with ADI (Abduction-Deduction-
 ## Process
 
 1. **Initialize:** Set up `.principled/fpf/` structure and document context.
-2. **Capture Scope:** Spawn a subagent (e.g., `tp-researcher`) to capture scope and goals in `.principled/fpf/context.md`.
-3. **Generate Hypotheses:** Spawn **`fpf-hypothesis-generator`** agents in parallel (one per competing theory). Each generates independently at L0 and writes to `.principled/fpf/knowledge/L0/`.
-4. **L1 Logic Verification:** Dispatch the **`fpf-logic-verifier`** subagent for each L0 hypothesis.
-   - **Check:** Internal consistency, hidden assumptions, circular reasoning, and falsifiability.
-   - **Outcome:** Valid logic promotes to `.principled/fpf/knowledge/L1/`. Invalid logic moves to `.principled/fpf/knowledge/invalid/`.
-5. **L2 Evidence Validation:** Dispatch the **`fpf-evidence-validator`** subagent for each L1 hypothesis.
-   - **Check:** Cross-reference with codebase and knowledge base for supporting/refuting evidence.
-   - **Outcome:** Confirmed evidence promotes to `.principled/fpf/knowledge/L2/`. Gaps or refutations stay at L1 or move to invalid.
-6. **Trust Audit:** Dispatch the **`fpf-trust-auditor`** subagent for all L2 hypotheses to quantify confidence.
-   - **Check:** Calculate **R_eff** (effective reliability) and identify the **WLNK** (weakest link).
-   - **Outcome:** Audit results and confidence scores recorded in `.principled/fpf/evidence/`.
-7. **Decide and Document:** Review all L2 outcomes, create a Design Rationale Record (DRR) in `.principled/fpf/decisions/`, and present the final recommendation to the user.
+2. **Capture Scope:** If the scope is large enough that capturing it inline would flood your context, spawn a `tp-researcher` with scope "capture the problem's scope and goals into `.principled/fpf/context.md`". Otherwise capture inline.
+3. **Generate Hypotheses:** Author competing hypotheses inline (you are the orchestrator; reasoning in-context is the whole point of the forked isolation). Write each to `.principled/fpf/knowledge/L0/` as it stabilizes.
+4. **L1 Logic Verification:** For each L0 hypothesis, spawn `tp-critic` with lens "verify internal logic consistency, surface hidden assumptions, find circular reasoning, check falsifiability" — the isolated critic is independent of your reasoning biases. Valid logic promotes to `.principled/fpf/knowledge/L1/`. Invalid logic moves to `.principled/fpf/knowledge/invalid/`.
+5. **L2 Evidence Validation:** For each L1 hypothesis, spawn `tp-explorer` with scope "cross-reference this hypothesis with the codebase and knowledge base — find supporting AND refuting evidence" — the explorer's isolated context absorbs the cross-reference file reads. Confirmed evidence promotes to `.principled/fpf/knowledge/L2/`. Gaps or refutations stay at L1 or move to invalid.
+6. **Trust Audit:** Spawn `tp-critic` with lens "audit the overall reliability of the supporting evidence for these L2 hypotheses — calculate R_eff (effective reliability) and identify the WLNK (weakest link)" for all L2 hypotheses to quantify confidence.
+7. **Decide and Document:** Review all L2 outcomes, create a Design Rationale Record (DRR) in `.principled/fpf/decisions/`, and present the final recommendation to the user. Before presenting DRR to user: spawn `tp-critic` with lens "challenge this DRR". Loop until no HIGH findings remain before delivery.
 
 ## Artifacts Created
 
@@ -90,7 +84,7 @@ FPF lifecycle operations — reset reasoning cycles, reconcile with code changes
 
 ## 2. Reconcile with Code
 
-**ALWAYS spawn `fpf-evidence-validator` to scan git diff and cross-reference affected files.** The agent should:
+**ALWAYS spawn `tp-explorer` with scope "scan git diff and cross-reference affected files" — the explorer's isolated context reads the diff and the evidence files without polluting the maintenance context.** The agent should:
 - Run `git diff --name-only <baseline_commit> HEAD` to identify changed files
 - Cross-reference each changed file against evidence `carrier_ref` fields
 - Flag evidence with carrier_ref pointing to stale or modified files
@@ -133,7 +127,7 @@ Search all hypothesis layers (L0, L1, L2, invalid) and decisions. For each match
 
 ## Status Process
 
-**ALWAYS spawn `fpf-evidence-validator` to verify .principled/fpf/ structure and scan evidence freshness.** The agent should:
+**ALWAYS spawn `tp-explorer` with scope "verify `.principled/fpf/` structure and scan evidence freshness" — the explorer walks the directory tree in its own disposable context.** The agent should:
 - Verify all required directories exist (context/, knowledge/L0-L2/, invalid/, evidence/, decisions/)
 - Scan all evidence files for `valid_until` timestamps
 - Flag expired and stale evidence with dates and reasons
@@ -190,9 +184,9 @@ Before presenting DRR to user: spawn tp-critic subagent. Loop until no HIGH find
 
 ## Reference Index
 
-IF generating competing hypotheses → spawn **`fpf-hypothesis-generator`**
-IF performing logic verification (L0 → L1) → spawn **`fpf-logic-verifier`**
-IF performing evidence validation (L1 → L2) → spawn **`fpf-evidence-validator`**
-IF performing trust audit (L2) → spawn **`fpf-trust-auditor`**
+IF generating competing hypotheses → author hypotheses inline (you are the orchestrator; reasoning in-context is the point of the fork)
+IF performing logic verification (L0 → L1) → spawn **`tp-critic`** with lens "verify internal logic, hidden assumptions, falsifiability"
+IF performing evidence validation (L1 → L2) → spawn **`tp-explorer`** with scope "cross-reference with codebase and KB; find supporting AND refuting evidence"
+IF performing trust audit (L2) → spawn **`tp-critic`** with lens "audit overall reliability; calculate R_eff; identify WLNK"
 IF performing scope capture or research → spawn **`tp-researcher`**
-IF performing final critique → spawn **`tp-critic`** (general-purpose with write access)
+IF performing final critique → spawn **`tp-critic`** with lens "challenge this DRR"

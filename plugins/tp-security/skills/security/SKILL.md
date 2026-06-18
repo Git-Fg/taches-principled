@@ -1,6 +1,6 @@
 ---
 name: security
-description: "Scan for security vulnerabilities, exposed secrets, and broken authentication patterns before production deployment. Use when user says 'security audit', 'dependency scan', or 'find secrets'."
+description: "Scan for security vulnerabilities, exposed secrets, broken authentication, and compliance gaps before production deployment. Use when the user says 'security audit', 'dependency scan', 'find secrets', 'check for vulnerabilities', 'OWASP', 'compliance check', 'pre-deployment security review', 'is this safe to ship'. Four modes: SAST, DEPENDENCY-AUDIT, SECRETS-DETECTION, COMPLIANCE. NOT for: general code review (use `refine` REVIEW); NOT for: dependency policy on Rust (use `rust` skill)."
 allowed-tools: Read, Grep, Glob, Bash, Edit
 when_to_use: |
   - User is preparing for production deployment or major release.
@@ -48,10 +48,10 @@ This skill runs as **an orchestration script** — a multi-modal sweep with adve
 
 ## Decision Router
 
-IF scanning for injection, auth, or access control patterns in code → **SAST** mode — ALWAYS spawn `security-sast-scanner` per OWASP category. You MUST read `references/sast-patterns.md` BEFORE proceeding. Do not make assumptions without reading this file.
-IF checking for vulnerable or outdated dependencies → **DEPENDENCY-AUDIT** mode — ALWAYS spawn `security-dependency-auditor` per package manager. You MUST read `references/dependency-audit.md` BEFORE proceeding. Do not make assumptions without reading this file.
-IF finding exposed API keys, tokens, or credentials in code → **SECRETS-DETECTION** mode — ALWAYS spawn `security-secrets-detector` per secret type. You MUST read `references/secrets-detection.md` BEFORE proceeding. Do not make assumptions without reading this file.
-IF verifying compliance with security standards or certifications → **COMPLIANCE** mode — ALWAYS spawn `security-compliance-checker` for each regulation. You MUST read `references/compliance-checklists.md` BEFORE proceeding. Do not make assumptions without reading this file.
+IF scanning for injection, auth, or access control patterns in code → **SAST** mode — ALWAYS spawn `tp-critic` with lens "scan for injection, authentication bypass, SSRF, deserialization, and access control vulnerabilities per OWASP category". You MUST read `references/sast-patterns.md` BEFORE proceeding. Do not make assumptions without reading this file.
+IF checking for vulnerable or outdated dependencies → **DEPENDENCY-AUDIT** mode — ALWAYS spawn `tp-critic` with lens "audit third-party dependency locks for known CVEs, outdated packages, typosquatting risks, and supply chain vulnerabilities per package manager". You MUST read `references/dependency-audit.md` BEFORE proceeding. Do not make assumptions without reading this file.
+IF finding exposed API keys, tokens, credentials, or private keys in code → **SECRETS-DETECTION** mode — ALWAYS spawn `tp-critic` with lens "scan the codebase for exposed API keys, tokens, credentials, private keys, and other sensitive data using pattern matching and entropy analysis per secret type". You MUST read `references/secrets-detection.md` BEFORE proceeding. Do not make assumptions without reading this file.
+IF verifying compliance with security standards or certifications → **COMPLIANCE** mode — ALWAYS spawn `tp-critic` with lens "verify the implementation against OWASP ASVS, GDPR, SOC2, PCI-DSS, HIPAA — map evidence to requirements, identify gaps, and prioritize remediation per regulation". You MUST read `references/compliance-checklists.md` BEFORE proceeding. Do not make assumptions without reading this file.
 IF ambiguous → ask: "Are you scanning code patterns, dependencies, exposed secrets, or compliance standards?"
 
 ---

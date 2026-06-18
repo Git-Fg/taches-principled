@@ -4,7 +4,7 @@
 
 ## When to Use
 
-After a CAPTURE session has been collected. Analyzes the three artifacts (debug log, stream-json, persisted JSONL) in parallel using three specialized agents, then reports convergence across analysts.
+After a CAPTURE session has been collected. Analyzes the three artifacts (debug log, stream-json, persisted JSONL) in parallel using three isolated-context specialists, then reports convergence across analysts.
 
 ## Input
 
@@ -14,11 +14,11 @@ After a CAPTURE session has been collected. Analyzes the three artifacts (debug 
 
 ## Artifact Types
 
-| Artifact | Path Pattern | Analyst | Extracts |
+| Artifact | Path Pattern | Specialist (lens / scope) | Extracts |
 |---|---|---|---|
-| Debug log | `~/.claude/captures/<UUID>.debug.log` | `tp-debug-tracer` | Hook fires, permission gates, plugin sync, MCP errors |
-| Stream-json | `~/.claude/captures/<UUID>.stream.jsonl` | `session-inspector` | Streaming events, partial chunks, early termination |
-| Persisted JSONL | `~/.claude/projects/<encoded-cwd>/<UUID>.jsonl` | `session-meta-reviewer` | Tool calls, results, usage, errors |
+| Debug log | `~/.claude/captures/<UUID>.debug.log` | `tp-explorer` (scope: "parse debug log; extract root-cause traces from hook fires, permission gates, plugin sync, MCP errors") | Hook fires, permission gates, plugin sync, MCP errors |
+| Stream-json | `~/.claude/captures/<UUID>.stream.jsonl` | `tp-explorer` (scope: "parse stream-json; produce structured event list with streaming events, partial chunks, early termination") | Streaming events, partial chunks, early termination |
+| Persisted JSONL | `~/.claude/projects/<encoded-cwd>/<UUID>.jsonl` | `tp-critic` (lens: "examine persisted JSONL for behavioral anti-patterns; identify tool calls, results, usage, errors") | Tool calls, results, usage, errors |
 
 ## Execution
 
@@ -29,11 +29,10 @@ After a CAPTURE session has been collected. Analyzes the three artifacts (debug 
 
 **Phase 2 — Fan out three parallel specialists:**
 
-All three spawn with `background: true` concurrently:
-1. **`session-inspector`** (`--full` mode) ← stream-json → structured event list
-2. **`session-meta-reviewer`** (custom subagent) ← persisted JSONL → anti-pattern list
-3. **`tp-debug-tracer`** (custom subagent, if available) ← debug log → root-cause traces
-   - **Fallback:** If `tp-debug-tracer` not available, use `session-inspector` on debug log instead
+All three spawn with `background: true` concurrently. Each spawn prompt includes the privacy scrub directive (strip workspace file contents, verbatim user prompts, project paths, environment variables, tokens, credentials):
+1. **`tp-explorer`** with scope "parse stream-json → structured event list" (FULL mode)
+2. **`tp-critic`** with lens "examine persisted JSONL for behavioral anti-patterns"
+3. **`tp-explorer`** with scope "extract root-cause traces from debug log"
 
 **Phase 3 — Await all results:**
 - Use `TaskOutput` with `block: true` for all three
@@ -53,7 +52,7 @@ All three spawn with `background: true` concurrently:
   "findings": [
     {
       "finding": "<description>",
-      "analysts": ["session-meta-reviewer", "debug-tracer"],
+      "analysts": ["critic", "debug-explorer"],
       "convergence": "high",
       "severity": "HIGH",
       "evidence": { "file": "<path>", "line": <n>, "text": "..." }

@@ -1,6 +1,6 @@
 ---
 name: rules-orchestration
-description: "Manage CLAUDE.md and rules — extract learnings, add rules, restructure, and review. Use when updating project conventions."
+description: "Manage CLAUDE.md and `.claude/rules/` — extract learnings from sessions, add new rules, restructure existing rules, and audit rule quality. Use when the user says 'add a rule', 'extract this convention', 'restructure my rules', 'audit my CLAUDE.md', 'codify this pattern'. Five modes: ANALYZE / ADD / RESTRUCTURE / REVIEW / SYNC. NOT for: archiving plans or cleaning auto-memory (use `project-maintenance`); NOT for: capturing individual session insights (use the `learn` command)."
 allowed-tools: Read, Edit, Write, Bash, Grep
 when_to_use: "Use when user wants to update rules, refine CLAUDE.md, codify conventions, or extract rules from conversation."
 argument-hint: "[ANALYZE|ADD|RESTRUCTURE|REVIEW|SYNC] [target]"
@@ -42,7 +42,7 @@ After conversation or skill execution with discoverable conventions, anti-patter
 
 1. **Capture context** — Read from `.principled/scratch/` or conversation summary. Determine the source: recent skill execution output, session transcript, or explicit user request.
 
-2. **Extract insights** — Spawn a `tp-transcript-rules-analyzer` subagent to identify conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge. Pass the context path and instruct it to write findings to `.principled/scratch/rules-analysis-{timestamp}.md`.
+2. **Extract insights** — Analyze the context inline (or spawn a `tp-researcher` subagent with scope "read this transcript/context and extract conventions, anti-patterns, tool preferences, architectural decisions, and domain knowledge as structured findings") when the source material is large and would flood your context. Write findings to `.principled/scratch/rules-analysis-{timestamp}.md`.
 
 3. **Synthesize proposals** — Read the analysis output. Convert raw insights into structured proposals with:
    - **Category**: TECHNICAL | PROCESS | PATTERN | ANTI-PATTERN | DECISION
@@ -55,7 +55,7 @@ After conversation or skill execution with discoverable conventions, anti-patter
 
 5. **Present proposals** — Show user a numbered list of proposals with file targets and a one-line rationale. Ask: "Integrate these rules?"
 
-6. **On approval** — Spawn a `tp-transcript-rules-integrator` subagent with the proposal file path and target files. The integrator applies changes and commits.
+6. **On approval** — Apply the changes inline: read each target file, apply the approved proposals with precise edits, validate frontmatter, and commit with a conventional message.
 
 ### Output
 - Analysis: `.principled/scratch/rules-analysis-{timestamp}.md`
@@ -75,7 +75,7 @@ CLAUDE.md exceeds 200 lines, `.claude/rules/` has more than 10 files, or rules f
 
 1. **Audit current state** — Read all files in `.claude/rules/` and `CLAUDE.md`. Map: total line count, file count, any obvious duplication visible without analysis.
 
-2. **Identify issues** — Spawn a `tp-transcript-rules-auditor` subagent with full paths to all rules files. Instruct it to write findings to `.principled/scratch/rules-audit.md`.
+2. **Identify issues** — Spawn a `tp-critic` subagent (lens: "audit the rules in `.claude/rules/` and `CLAUDE.md` for duplication, bloat, missing path scoping, contradictions, vagueness, outdated content, and context inefficiency") with full paths to all rules files. Instruct it to write findings to `.principled/scratch/rules-audit.md`.
 
 3. **Design new structure** — Review the audit report. Design a reorganization:
    - Which files to split (target: under 200 lines each)
@@ -129,12 +129,11 @@ Pending proposals exist from ANALYZE or SYNC that need approval before being com
 
 1. **Load proposals** — Find proposal files: `ls .principled/scratch/rules-proposals-*.md`. If multiple exist, use the most recent. If none exist, report and exit.
 
-2. **Spawn review panel** — Dispatch 2-3 `tp-transcript-rules-auditor` subagents in parallel. Give each critic the proposal file and this rubric:
-   - **Clarity**: Is the rule text actionable? Is the rationale clear?
-   - **Conflict**: Does this contradict or duplicate an existing rule?
-   - **Efficiency**: Would adding this reduce or increase context cost?
-   - **Shareability**: Is this team-relevant or personal preference?
-   Instruct each to write their verdict to `.principled/scratch/rules-review-{critic-id}.md`.
+2. **Spawn review panel** — Dispatch 2-3 `tp-critic` subagents in parallel, each with a distinct lens:
+   - Lens 1: "is the rule text actionable and the rationale clear?"
+   - Lens 2: "does this contradict or duplicate an existing rule?"
+   - Lens 3: "would adding this reduce or increase context cost? is it team-relevant or personal preference?"
+   Give each the proposal file. Instruct each to write their verdict to `.principled/scratch/rules-review-{critic-id}.md`.
 
 3. **Aggregate verdict** — Read all review outputs. For each proposal: count approve/revise/reject votes. Present consensus:
    ```markdown
@@ -146,7 +145,7 @@ Pending proposals exist from ANALYZE or SYNC that need approval before being com
    ```
    For REVISE: include specific concerns. For REJECT: include reason.
 
-4. **Apply approved** — For APPROVE: spawn a tp-transcript-rules-integrator subagent with approved proposals. For REVISE: present revision options to user. For REJECT: archive proposal with reason.
+4. **Apply approved** — For APPROVE: apply inline (read target files, edit precisely, validate frontmatter, commit). For REVISE: present revision options to user. For REJECT: archive proposal with reason.
 
 ---
 
@@ -171,7 +170,7 @@ After `learn` command captures insights, or after skill execution that establish
    - `auto`: critical/correctness — safe to integrate without approval
    - `review`: important/nice-to-have — needs human review
 
-5. **Auto-integrate low-risk** — For `auto` tagged candidates: spawn tp-transcript-rules-integrator directly. Notify user of changes.
+5. **Auto-integrate low-risk** — For `auto` tagged candidates: apply inline directly. Notify user of changes.
 
 6. **Queue for REVIEW** — For `review` tagged candidates: present to user and suggest REVIEW mode.
 

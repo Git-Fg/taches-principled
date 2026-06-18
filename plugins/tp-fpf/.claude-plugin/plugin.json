@@ -1,7 +1,7 @@
 {
   "name": "tp-fpf",
-  "version": "0.4.1",
-  "description": "First Principles Framework — structured reasoning with hypothesis generation, evidence validation, and auditable decision records.",
+  "version": "0.5.1",
+  "description": "First Principles Framework — structured reasoning in an isolated forked context with hypothesis generation, evidence validation, and auditable decision records. PROPOSE / MAINTAIN / QUERY modes. Verification stages spawn `tp-critic` with FPF-specific lenses.",
   "author": {
     "name": "Felix",
     "email": "https://github.com/Git-Fg/taches-principled/issues"

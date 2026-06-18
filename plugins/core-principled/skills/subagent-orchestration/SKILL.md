@@ -1,7 +1,7 @@
 ---
 name: subagent-orchestration
-description: "Design multi-agent architectures, author agent definitions, or orchestrate parallel execution. Use when delegating tasks to subagents."
-when_to_use: "Use when user asks to spawn subagents, run tasks in parallel, define custom agents, or manage background workers."
+description: "Design multi-agent architectures, author agent definitions, or spawn reviewers in parallel for code reviews. Use when delegating work to a fresh-context reviewer, defining a custom agent, or running parallel reviews of a code change."
+when_to_use: "Use when user asks to spawn subagents, run reviews in parallel, define custom agents, or manage background workers."
 ---
 
 ## Routing Guidance
@@ -14,34 +14,32 @@ when_to_use: "Use when user asks to spawn subagents, run tasks in parallel, defi
 
 ## Decision Router
 
-Pick the execution mode by task scale and shape — not by which mechanic is most familiar. The runtime exposes more than one primitive now; the orchestrator's first job is selecting the right one.
+Pick the execution mode by task scale and shape. The marketplace ships **6 named subagents** — all specialization lives in lens prompts at the call site, not in separate agent files.
 
 ### Execution-mode selection
 
 | Task scale | Right primitive | When to choose it |
 |---|---|---|
 | Trivial — 1 file, <10 lines, or a single search/read | Inline in the main context | Quick edit, single lookup, glance-check |
-| Non-trivial single-context — 3–10 files, single methodology, side task | Subagents | Result returns and is synthesized in this conversation; orchestration shape is one-off |
-| Multi-stage with fan-out → verify → synthesize | Orchestration script | Repeatable shape worth codifying; structured-output schemas; adversarial verification across N independent agents |
-| Codebase-wide or many-file or multi-methodology | Orchestration script with explicit phase structure | Coordination outgrows a handful of subagent spawns per turn |
+| Non-trivial single-context — 3–10 files, single methodology, side task | Inline + `tp-critic` w/ lens for review | Main agent has the context; isolated review earns its cost |
+| Multi-stage with fan-out → verify → synthesize | Multiple `tp-critic` w/ different lenses + inline work | Same isolation benefit as before, no specialized agent proliferation |
+| Codebase-wide or many-file or multi-methodology | `tp-explorer` w/ scope for the map + inline implementation + `tp-critic` w/ lens for review | The 6-agent roster covers it |
 | Long-running with external triggers | Orchestration script + recurring checks + push channels | Reacts to CI, alerts, scheduled events; survives idle time |
 
 Implicit signals that demote the mode: `--solo` or `--lightweight` flag → inline; sub-sentence ask touching ≤3 files → inline; context usage > 70% → inline for the remainder.
 
-### Runtime-API mapping
+### The 6 named subagents (the marketplace roster)
 
-The orchestration runtime composes subagent spawns — every script step is a subagent. Patterns we name semantically map onto the runtime's API like this:
+| Agent | Role | Lens / scope / question contract |
+|---|---|---|
+| `tp-critic` | Universal isolated-context reviewer | Lens in spawn prompt: "review through the lens of <angle>" |
+| `tp-explorer` | Universal isolated-context codebase mapper | Scope in spawn prompt: "<exploration question>" |
+| `tp-researcher` | Universal isolated-context external researcher | Question in spawn prompt: "<research question>" |
+| `mcp-quality-judge` | Domain-specialized isolated judge for MCP servers | Preloads `mcp-expertise`. Dimension in spawn prompt. |
+| `sadd-judge` | Candidate scoring against a rubric | Rubric + candidate in spawn prompt. Returns JSON verdict. |
+| `wiki-searcher` | Read-only wiki query (`tools: [Read, Glob, Grep]`) | `query` + `wiki_path`/`alias`. The single allowed `tools:` exception. |
 
-| Coordination pattern | Inline mechanic | Script mechanic | Use when |
-|---|---|---|---|
-| Fan-out then synthesize all | Spawn subagents in parallel, await all | Fan-out with a barrier (script-level `parallel`) | All prior-stage results genuinely needed before the next stage |
-| Fan-out without barrier | (no native inline equivalent) | Pipeline stages without a barrier (script-level `pipeline`) | Each item can flow through stages independently |
-| Structured-output return | Embed return-format requirements in the spawn prompt | Pass a schema with the spawn; the runtime forces a structured-output tool call and retries on mismatch | Downstream consumer needs validated data |
-| Dispatch to a named role | Spawn an agent definition by name (`tp-critic`, `tp-judge`, etc.) | Pass `agentType` with the spawn; the script dispatches to the same role registry | Reusing a canonical role across many calls |
-| Isolated branch mutation | Spawn a subagent in a worktree | Mark the script-level spawn as worktree-isolated | Parallel agents would otherwise conflict on the same files |
-| Fast lightweight delegation | Spawn with a Haiku-class model | Pass a model override on the spawn | Bounded, simple worker step |
-
-The agent definitions under each plugin's `agents/` directory are the durable role library. Both inline subagent spawns and orchestration-script spawns dispatch to them by name.
+All "specialized reviewer" roles — bug-hunter, security-reviewer, rust-cargo-reviewer, etc. — collapse into `tp-critic` parameterized by a one-sentence lens in the spawn prompt. Before adding a new specialized reviewer agent, ask: "Could this be a one-sentence lens passed to `tp-critic` instead?" If yes, do not add an agent file.
 
 ### Mode selection — narrative form
 
@@ -49,7 +47,7 @@ The agent definitions under each plugin's `agents/` directory are the durable ro
 When the user wants to create, define, or configure a new subagent definition — write its scope, tools/models/memory settings, or generate an agent template.
 
 **ORCHESTRATE mode** — Execution dispatch:
-When the user wants to delegate work, spawn workers, run in parallel, fan out tasks, or manage background agents — load ORCHESTRATE mode and pick the right execution-mode tier from the table above. The mode covers both inline subagent spawning and writing an orchestration script when the task scale warrants it.
+When the user wants to delegate work, spawn reviewers, run parallel reviews, or manage background agents — load ORCHESTRATE mode and pick the right execution-mode tier from the table above.
 
 ---
 
@@ -81,9 +79,9 @@ Agents exist at five scopes with priority: Managed (org-wide, highest), Session 
 |-------|------|-------------|
 | `name` | string | Unique identifier. Lowercase letters and hyphens only. Required. |
 | `description` | string | When Claude should delegate to this subagent. Required. |
-| `tools` | list[string] | Tools the subagent can use. Allowlist. |
+| `tools` | list[string] | Tools the subagent can use. Allowlist. **Set only when restriction IS the point** (currently only `wiki-searcher`). |
 | `disallowedTools` | list[string] | Tools to remove from inherited list |
-| `model` | string | `sonnet`, `opus`, `haiku`, full model ID, or `inherit` |
+| `model` | string | `sonnet`, `opus`, `haiku`, full model ID, or `inherit` — inherit by default |
 | `permissionMode` | string | `default`, `acceptEdits`, `auto`, `dontAsk`, `bypassPermissions`, `plan` |
 | `maxTurns` | integer | Max agentic turns before subagent stops |
 | `skills` | list[string] | Skills to preload (full content injected at startup) |
@@ -127,14 +125,16 @@ Do not filter or conditionally load skills based on narrow task assumptions. Cas
 Enable memory on every subagent by default. `project` scope for team-shared knowledge; `user` scope for cross-project expertise; `local` scope for sensitive output (gitignored).
 
 ### Body Prompt Philosophy
+
 Keep the markdown body general and concise — a short role statement and behavioral guardrails. If writing more than ~30 lines, you're duplicating a skill. Reference it in the `skills` field instead.
 
 ### Spawning Topology Constraint
+
 NEVER place spawn, fan-out, or delegation instructions inside agent definition markdown files. Because the `Agent` tool is strictly removed from the subagent tool registry at the implementation level, nested spawning directives will cause a fatal failure. *(Note: Subagents CAN invoke skills via the `Skill` tool)*. If nested orchestration or multi-agent coordination is required, you must instead create a skill with `context: fork` frontmatter to establish an isolated orchestration environment.
 
 ### Routing Principle
 
-The `description` field is the routing oracle — write it like a trigger rule with specific conditions, not capability lists.
+The `description` field is the routing oracle — write it like a trigger rule with specific conditions, not capability lists. For the 6 marketplace keepers, front-load the role and the input contract ("lens/scope/question/dimension").
 
 ### File Templates
 
@@ -142,11 +142,11 @@ BEFORE writing spawn prompts, you MUST read `references/agent-templates.md` for 
 
 ### Contract Design (6 principles)
 
-When defining an agent's `tools:` and body contract, BEFORE shipping the agent definition file you MUST read `references/subagent-contract-design.md`. The 6 design principles (P1 source-of-truth, P2 bind Reads to Writes, P3 ordered operations with verification, P4 explicit link resolution, P5 failure-mode footer, P6 ground truth) apply to every agent in the marketplace. Issues #35–#38 in the GitHub tracker are all instances of contracts that didn't follow these principles. The reference also documents the 4 tool-source patterns (explicit full list, explicit restricted list, `tools: []` with orchestrator handling, `tools: []` inheriting from skill) and the 3-phase testing methodology (static read → real invocation → JSONL trace). Do not proceed or make assumptions without reading this file.
+When defining an agent's `tools:` and body contract, BEFORE shipping the agent definition file you MUST read `references/subagent-contract-design.md`. The 6 design principles (P1 source-of-truth, P2 bind Reads to Writes, P3 ordered operations with verification, P4 explicit link resolution, P5 failure-mode footer, P6 ground truth) apply to every agent in the marketplace. The reference also documents the 4 tool-source patterns and the 3-phase testing methodology (static read → real invocation → JSONL trace). Do not proceed or make assumptions without reading this file.
 
 ### Fork Mode Principle
 
-Fork mode creates a subagent that inherits the full conversation context and shares the parent's prompt cache. Use when the subagent needs to understand the full conversation or reference earlier decisions. Do not use for independent tasks or parallel workstreams.
+Fork mode creates a subagent that inherits the full conversation context and shares the parent's prompt cache. Use when the subagent needs to understand the full conversation or reference earlier decisions. Do not use for independent tasks or parallel workstreams. The 4 fork skills in the marketplace (`plan-lifecycle`, `sadd`, `task-lifecycle`, `fpf`) all use this pattern — they implement inline within the fork and spawn only `tp-critic` for isolated review.
 
 ### Architecture Design (Multi-Agent Patterns)
 
@@ -165,23 +165,24 @@ DESIGN mode also covers the *shape* of a multi-agent system: which pattern fits 
 - Use debate protocols for consensus, not simple voting — voting treats hallucinations as equal to reasoning
 - Set iteration limits on all agent execution
 - Start simple — add multi-agent complexity only when single-agent fails
+- **Default to inline implementation; reach for subagents only when isolation earns the cost**
 
 ---
 
 ## ORCHESTRATE Mode
 
-Orchestrate multiple subagents in parallel, loop a critic-role subagent until no HIGH findings remain, iterate with feedback loops, and manage background workers.
+Spawn isolated-context subagents — primarily `tp-critic` (parameterized by a lens) for parallel reviews, plus `tp-explorer` and `tp-researcher` for large exploration. The main agent implements inline; the subagents self-review against the lens/scope/question.
 
-When the task scale is at the *multi-stage* tier or higher (per the execution-mode selection table above), prefer composing the orchestration as a script: the script holds the loop, the branching, and the intermediate results; the conversation only holds the final answer. The mode covers both inline fan-out and script-based composition — pick the tier and the runtime resolves the underlying mechanic.
+When the task scale is at the *multi-stage* tier or higher, prefer composing the orchestration as a script: the script holds the loop, the branching, and the intermediate results; the conversation only holds the final answer. The mode covers both inline fan-out and script-based composition — pick the tier and the runtime resolves the underlying mechanic.
 
 ### Core Mental Model
 
 Four rules govern every delegation decision:
 
-1. **Analyze before delegating** — understand the full task graph first
-2. **Assign unambiguous scope** — each subagent gets exclusive file ownership
-3. **Validate before integrating** — run success criteria, never assume
-4. **Persist state to disk** — subagents don't share conversation memory
+1. **Default to inline** — the main agent implements unless isolation earns the cost.
+2. **Assign unambiguous scope** — each spawned subagent gets an exclusive lens/scope/question.
+3. **Validate before integrating** — run success criteria, never assume.
+4. **Persist state to disk** — subagents don't share conversation memory.
 
 ### Cost-Capability Spectrum
 
@@ -197,103 +198,51 @@ Four rules govern every delegation decision:
 #### Decompose
 
 Break the task into independent workstreams. Each stream must:
-- Own its file set exclusively (no overlapping edits)
+- Own its lens/scope/question exclusively (no overlapping reviews)
 - Have a clear deliverable (file path + format)
-- Have passing success criteria (test, lint, type-check)
+- Have passing success criteria (test, lint, type-check, build)
 - Have a one-command rollback
 
 #### Context Harden (RACE Framework)
 
-Structure every spawn prompt with RACE:
-```
-## Role: [What this agent is and what expertise it brings]
-## Action: [Concrete, scoped task — imperative form, one clear objective]
-## Context: [What the orchestrator has done; what this agent should do next; file ownership boundaries]
-## Expectation: [Output format/schema; success criteria; coverage rule]
-```
+Structure every spawn prompt with RACE. For the 6 marketplace keepers, the RACE fields become:
+- **Role**: which keeper (`tp-critic`, `tp-explorer`, `tp-researcher`, `mcp-quality-judge`, `sadd-judge`, `wiki-searcher`)
+- **Action**: concrete, scoped task — imperative form, one clear objective
+- **Context**: what the orchestrator has done; what this agent should do next; output contract
+- **Expectation**: output format/schema; success criteria; coverage rule
+
+For `tp-critic`, the Action carries a **lens** ("review through the lens of OWASP Top 10"). For `tp-explorer`, a **scope** ("map the structure under src/auth"). For `tp-researcher`, a **question** ("what's the current best practice for X"). The lens/scope/question is the one-sentence specialization.
 
 Key constraints: Positive framing (tell agents what to do), minimal high-signal context, explicit scope boundaries, coverage rule (comprehensive vs curated).
 
 **Failure signal:** Return structured JSON with status, reason, completed_portion, retry_possible.
 
-**MANDATORY:** You MUST read `references/agent-templates.md` BEFORE writing any RACE prompt. Do not proceed without reading this file. The reference contains the full RACE Component Details table, RACE Anti-Patterns table, and role-based agent templates (Researcher, Explorer, Implementer, tp-critic, Monitor, Architect) — all spawn prompts MUST conform to these templates.
+**MANDATORY:** You MUST read `references/agent-templates.md` BEFORE writing any RACE prompt. Do not proceed without reading this file. The reference contains the full RACE Component Details table, RACE Anti-Patterns table, and role-based agent templates (Researcher, Explorer, Implementer, Monitor, Architect) — all spawn prompts MUST conform to these templates.
 
 #### Spawn and Collect
 
-Spawn with appropriate model/tools/background. Read subagent results from the shared scratchpad files — for exploration use `.principled/scratch/{plan-id}.md`; for implementation use `.principled/scratch/{plan-id}-execution.md`. Inspect raw transcript files at `{{CLAUDE_WORKING_DIR}}/.claude/projects/{project-id}/` for detailed per-agent logs. Use SendMessage to resume background agents.
+Spawn with appropriate model/tools/background. Read subagent results from the shared scratchpad files — for exploration use `.principled/scratch/{plan-id}.md`; for review use `.principled/scratch/{plan-id}-review.md`. Inspect raw transcript files at `{{CLAUDE_WORKING_DIR}}/.claude/projects/{project-id}/` for detailed per-agent logs. Use SendMessage to resume background agents.
 
 #### Synthesize
 
-Cross-domain consistency check + full integration test before presenting results.
+Cross-domain consistency check + full integration test before presenting results. A bounded summary from each subagent (severity + file:line + fix) integrates cleanly; raw exploration results are a delegation tax.
 
 ### Self-Review Loop
 
-Implement → Spawn reviewer (read-only) → [pass] → integrate → [fail] → Fix → Respawn reviewer
+Implement (inline) → Spawn `tp-critic` w/ lens → [pass] → integrate → [fail] → Fix inline → Respawn `tp-critic` w/ same lens
 
 The reviewer must report ALL findings including low-confidence ones. A downstream filter ranks severity.
 
 ### Parallel Patterns
 
-**Horizontal Split** — Investigation streams run in parallel (security, perf, style). Not for shared dependencies.
+**Horizontal Split** — Investigation streams run in parallel, each as a `tp-critic` w/ distinct lens (security, perf, style). Not for shared dependencies.
 
 **Vertical Slice** — Each team owns their service end-to-end (frontend, backend, tests). Not for features requiring mid-implementation coordination.
 
 **Pipeline** — Chained execution where one stage must complete before the next. Not for parallelizable work.
 
-**Contest** — Competing hypotheses tested simultaneously. Not when one hypothesis is already strongly supported.
+**Contest** — Competing hypotheses tested simultaneously via `sadd-judge` instances. Not when one hypothesis is already strongly supported.
 
-**Fan-out/Fan-in** — N parallel subagents then 1 aggregator. Only justified when N > 5 or synthesis requires cross-domain reasoning.
+### Output discipline
 
-### Background Subagents
-
-Spawn with `background: true` when the orchestrator can proceed without the result. Use for long-running tasks (monitoring, polling) or parallel independent workstreams.
-
-### Iteration Principle
-
-After 2 retries on the same failure: stop, report back with findings. Never loop silently.
-
-### Three Automation Layers
-
-| Layer | Best for |
-|------|----------|
-| Hooks | Validate subagent outputs, enforce guardrails |
-| Recurring schedule (cron-style or self-paced loop) | Long-running orchestration, long-poll retries |
-| Monitor | CI/log watching, real-time reaction |
-| Orchestration script | Repeatable multi-stage fan-out with adversarial verification at scale |
-
-Never poll when you can watch. A monitor fires only on matching output (free while silent). A recurring schedule fires every N seconds regardless of state. An orchestration script absorbs the loop, branching, and intermediate results so the conversation only holds the final answer.
-
-### Anti-Patterns
-
-Never:
-- Spawn subagents that edit overlapping files — git conflicts
-- Delegate without success criteria — unverifiable failure
-- Assume subagent completed without validation — silent failures
-- Let orchestrator implement while waiting — deadlock
-- Skip rollback plan — broken state with no recovery
-- Use RACE for one-liner tasks — coordination overhead exceeds benefit
-- Negative framing — prefer positive framing ("do A instead")
-
-Never delegate:
-- Destructive operations without explicit approval
-- Tasks requiring conversation history
-- Simple single-step tasks
-- Overlapping file scopes
-
-### Reference: Orchestration Use Cases
-
-| Scenario | Pattern | Why |
-|----------|---------|-----|
-| PR with multi-file changes | Horizontal Split | Independent analysis streams |
-| Production bug, root cause unknown | Contest | Competing hypotheses tested |
-| Migrate services | Vertical Slice | Each team owns their service |
-| Add feature with unfamiliar library | Parallel Research + Implement | Research feeds implementation |
-| Long CI run, continue work | Background Monitor | Zero-cost watching |
-| Implemented fix, want verification | Self-Review Loop | Maker-checker catches gaps |
-| Parse HTML from multiple sites | Iterative Pipeline | Structured extraction per source |
-| Generate edge-case tests | Contest | Multiple perspectives catch gaps |
-| Major refactor | Horizontal Split + Specialist | Dedicated expert attention |
-| Ongoing maintenance | Background Monitor | Proactive improvement |
-
-## CONTRAST
-- NOT for: ddd (structure vs delegation), NOT for diagnose (analysis vs orchestration), NOT for sadd (patterns vs execution)
+Every spawned subagent returns a **bounded summary**. The subagent's internal exploration is disposable; what it returns is permanent in the parent. A 12k-token review of a 3k-token artifact is a delegation tax, not a benefit.

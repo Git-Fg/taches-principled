@@ -1,6 +1,6 @@
 ---
 name: ideation
-description: "Explore a vague idea or generate creative alternatives before committing to an approach. Use when the user wants to 'think through', 'explore possibilities', or 'generate ideas' for an unformed problem."
+description: "Explore a vague idea or generate creative alternatives before committing to an approach. Use when the user says 'think through this', 'explore possibilities', 'generate ideas for X', 'brainstorm', 'what are the options', 'I'm not sure what to do yet'. Two modes: DIVERGE (single-question collaborative exploration) and CREATE-IDEAS (6 distinct approaches with trade-offs). NOT for: scoring competitive solutions (use `sadd` JUDGE); NOT for: first-principles reasoning on a hard decision (use `fpf`)."
 when_to_use: |
   - User wants to refine a vague idea through collaborative dialogue.
   - User needs a list of creative alternatives or diverse approaches to a problem.
@@ -53,12 +53,13 @@ IF idea is fully formed and documented → no need for this skill
 
 ## Execution Mode
 
-**Default: subagent delegation.** For creative idea generation, spawn parallel subagents. The main agent synthesizes results — it never generates ideas inline.
+**Default: inline divergent generation.** Ideation benefits from diverse angles, but spawning 6 subagents to generate 6 ideas duplicates reasoning you can do in-context at lower cost. Generate the 6 approaches inline in this order: 3 high-probability central solutions, then 3 low-probability distinct regions. After generating, optionally spawn 2 `tp-critic` instances in parallel — one with lens "challenge these 3 anchor candidates for feasibility", one with lens "challenge these 3 tail candidates for feasibility" — for isolated-context stress tests.
 
-**Spawn pattern for create-ideas mode:**
-- ALWAYS spawn 3 **`tp-ideation-anchor`** subagents for convergent exploration (high-probability)
-- ALWAYS spawn 3 **`tp-ideation-tail`** subagents for divergent exploration (low-probability)
-- ALWAYS aggregate findings inline after all 6 complete
+**Process for create-ideas mode:**
+- Generate 3 high-probability central solutions inline (anchor candidates)
+- Generate 3 low-probability distinct solutions inline (tail candidates)
+- Optionally spawn 2 `tp-critic` instances in parallel with the challenge lenses above
+- Present all 6 ranked options to the user (do not merge or average)
 - Scope: the topic, the generative brief, constraints from brainstorm mode (if any)
 - Output: `.principled/specs/plans/<topic>.design.md`
 
@@ -76,7 +77,7 @@ Designs emerge through exploration, not dictation. Single questions answered one
 
 ### Brainstorm Process Principle
 
-Explore the idea with single questions focusing on purpose, constraints, and success criteria. Generate 6 approaches with trade-offs (using 3 **`tp-ideation-anchor`** and 3 **`tp-ideation-tail`** agents). Present the design section by section, confirming each before proceeding.
+Explore the idea with single questions focusing on purpose, constraints, and success criteria. Generate 6 approaches with trade-offs inline (3 high-probability anchors + 3 low-probability tails). Present the design section by section, confirming each before proceeding.
 
 Output: Validated design written to `.principled/specs/plans/<topic>.design.md`, committed to git.
 
@@ -95,8 +96,9 @@ Incremental validation catches misunderstandings early.
 
 Generate 6 distinct responses for a given topic.
 
-- **Anchor subagents:** Spawn 3 `tp-ideation-anchor` subagents for high-probability central solutions.
-- **Tail subagents:** Spawn 3 `tp-ideation-tail` subagents for low-probability distinct regions.
+- **Anchor candidates:** 3 high-probability central solutions, generated inline (you are the anchor).
+- **Tail candidates:** 3 low-probability distinct solutions, generated inline (you are the tail).
+- **Stress test (optional):** spawn 2 `tp-critic` instances in parallel — "challenge these anchor candidates" + "challenge these tail candidates".
 - **Synthesis:** Do not merge or average — present 6 distinct ranked options to the user.
 - **Ranked presentation:** Order options by combined anchor/tail interest; do not flatten diversity.
 - **Output:** Write ranked design to `.principled/specs/plans/<topic>.design.md` and commit to git.
@@ -119,6 +121,6 @@ Generate 6 distinct responses for a given topic.
 
 ## Reference Index
 
-IF performing convergent ideation (high-probability) → spawn **`tp-ideation-anchor`**
-IF performing divergent ideation (low-probability) → spawn **`tp-ideation-tail`**
+IF performing convergent ideation (high-probability) → generate inline (you are the anchor)
+IF performing divergent ideation (low-probability) → generate inline (you are the tail)
 IF performing codebase research for constraints → spawn **`tp-explorer`**

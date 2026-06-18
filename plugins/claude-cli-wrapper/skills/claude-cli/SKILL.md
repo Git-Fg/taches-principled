@@ -1,6 +1,6 @@
 ---
 name: claude-cli
-description: "Drive the Claude Code CLI from Bash — headless sessions, structured output, model/permission control, and code reviews. Use when an agent needs to run Claude programmatically."
+description: "Drive the Claude Code CLI from Bash — headless sessions, structured output, model/permission control, code reviews, and the `claude` subcommands (`claude ultrareview`, `claude agents`, `claude doctor`, `claude mcp`, `claude plugin`). Use when the user asks to 'spawn a headless Claude session', 'run a cloud code review', 'continue a previous Claude session', or 'change the model or permission mode'."
 when_to_use: |
   - "Spawn a headless Claude session to run a task"
   - "Continue or resume a previous Claude Code session"
@@ -340,7 +340,7 @@ The `claude` CLI has two ways to spawn agents:
 ### Spawn an agent for the current session
 
 ```bash
-claude -p "Run a security review of this codebase" --agent security-reviewer
+claude -p "Review this codebase through the OWASP Top 10 lens (injection, auth bypass, exposed secrets, insecure crypto)" --agent tp-critic
 ```
 
 The agent is selected for the current session only. If `--agent` is not specified, the default agent is used (or whatever the `agent` setting resolves to).

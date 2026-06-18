@@ -97,12 +97,10 @@ The user can override with explicit confirmation. If they confirm, proceed with 
 
 ## Subagent Pattern
 
-For privacy audit and body construction, spawn an **`session-issue-generator`** subagent:
+For privacy audit and body construction, spawn a `tp-critic` subagent with lens "sanitize this meta-review finding for public GitHub issue creation — strip workspace file contents, user prompts verbatim (paraphrase intent), project paths, environment variables, tokens, credentials; construct a public-friendly issue body":
 
 ```
-Spawn session-issue-generator:
-Sanitize meta-review finding for public GitHub issue creation.
-
+Spawn tp-critic with lens "sanitize meta-review finding for public GitHub issue creation":
 Input: {meta_review_path}
 Output: {issue_body_path}
 ```

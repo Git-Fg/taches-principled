@@ -86,11 +86,11 @@ Write filtered output to `.principled/scratch/session-inspect-{uuid}-{filter}.js
 
 ## Tool Invocation Pattern
 
-For INSPECT, spawn a **`session-inspector`** subagent:
+For INSPECT, spawn a `tp-explorer` subagent:
 
 ```
-Spawn session-inspector:
-Read the session transcript at {path} and produce structured output.
+Spawn tp-explorer with scope:
+"Read the session transcript at {path} and produce structured output. Apply the privacy scrub: strip absolute paths (replace ~/.claude/sessions/ with {session}), never retain user prompts verbatim, redact environment variables and tokens (show name, not value), exclude file contents."
 
 Mode: {SUMMARY|FULL|FILTER}
 Filter: {errors|tools|cost|skills}|none

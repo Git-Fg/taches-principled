@@ -1,6 +1,6 @@
 ---
 name: skill-authoring
-description: "Create, optimize, and test Claude Code skills, including metadata refinement and trigger benchmarking."
+description: "Create, optimize, and test Claude Code skills — write a new SKILL.md, refine trigger phrases, audit routing, benchmark descriptions, validate frontmatter. Use when the user says 'create a skill', 'write a skill', 'optimize this skill's routing', 'audit this skill', 'improve this skill', 'fix the trigger phrases', 'test skill routing'. NOT for: authoring agent definitions (use `subagent-orchestration`); NOT for: polishing an existing skill's prose (use `refine`); NOT for: authoring a command or hook (no marketplace skill covers that)."
 allowed-tools: Read, Edit, Write, Grep, Glob
 when_to_use: "Use when building new capabilities, fixing skill routing, or optimizing trigger signals. Do NOT use for general code authoring or project planning."
 ---
@@ -444,10 +444,8 @@ Skill creation follows phases: requirements → draft → verify → integrate. 
 
 **Principle over procedure:** A skill about coordinated work should demonstrate coordination. Frame each phase as a tracked task with clear completion criteria.
 
-For pre-commit verification of threshold checks, ALWAYS spawn a reviewer subagent and loop until no HIGH findings.
-Spawn **`tp-skill-auditor`** to audit frontmatter validity, description triggers, and structure.
-Spawn **`tp-grader`** to evaluate teaching effectiveness across the four weighted dimensions.
-This verifies routing signal density, delta clarity, and anti-pattern quality before the skill enters the loading pool.
+For pre-commit verification of threshold checks, ALWAYS spawn a `tp-critic` subagent (lens: "audit this skill for frontmatter validity, description triggers, and structure") and loop until no HIGH findings. Separately, spawn another `tp-critic` (lens: "evaluate teaching effectiveness across the four weighted dimensions — routing signal density, delta clarity, teaching posture, anti-pattern quality") for the teaching-quality review.
+This verifies the skill before it enters the loading pool.
 
 ## CONTRAST
 

@@ -1,6 +1,6 @@
 ---
 name: diagnose
-description: "Investigate and find the root cause of complex bugs, recurring failures, or unexpected behavior. Use when user says 'why is this happening', 'find the bug', or 'analyze the failure'."
+description: "Investigate and find the root cause of complex bugs, recurring failures, or unexpected behavior. Use when the user says 'why is this happening', 'find the bug', 'analyze the failure', 'what broke', 'regression', 'incident analysis'. Four modes: A3 (structured root-cause doc), FIVE-WHYS (single causal chain), FISHBONE (multi-factor), STACK-TRACE (call-chain tracing). NOT for: general code improvement (use `refine`); NOT for: design/architecture issues (use `ddd`)."
 allowed-tools: Read, Write
 when_to_use: |
   - User is dealing with a bug that has a long call chain or is hard to reproduce.
@@ -26,11 +26,11 @@ argument-hint: "[problem description]"
 
 ## Decision Router
 
-IF investigating a specific incident, recurring issue, or major problem needing structured documentation → use **A3** mode — ALWAYS spawn a tp-explorer subagent to investigate before analysis. You MUST read `references/a3-methodology.md` BEFORE executing A3 mode.
+IF investigating a specific incident, recurring issue, or major problem needing structured documentation → use **A3** mode — ALWAYS spawn a `tp-explorer` subagent (scope: "investigate the incident; map the code paths involved") before analysis. You MUST read `references/a3-methodology.md` BEFORE executing A3 mode.
 IF problem has a clear single causal chain from symptom to root → use **FIVE-WHYS** mode. You MUST read `references/five-whys.md` BEFORE executing FIVE-WHYS mode.
-IF problem has multiple potential contributing factors across domains → use **FISHBONE** mode — ALWAYS spawn category-specific tp-explorer subagents in parallel for each factor. You MUST read `references/fishbone.md` BEFORE executing FISHBONE mode.
-IF an error surfaces deep in execution with a long call chain → use **STACK-TRACE** mode — ALWAYS spawn a tp-debug-tracer subagent to instrument code before failure points and trace backward through the call chain. You MUST read `references/stack-trace.md` BEFORE executing STACK-TRACE mode.
-**Note:** `tp-debug-tracer` is also used by `session-analytics` CROSS-ANALYZE mode for debug log root-cause tracing.
+IF problem has multiple potential contributing factors across domains → use **FISHBONE** mode — ALWAYS spawn category-specific `tp-explorer` subagents in parallel, each scoped to one factor's code paths. You MUST read `references/fishbone.md` BEFORE executing FISHBONE mode.
+IF an error surfaces deep in execution with a long call chain → use **STACK-TRACE** mode — ALWAYS spawn a `tp-explorer` subagent (scope: "instrument code before the failure point and trace the call chain backward to its trigger") to investigate before analysis. You MUST read `references/stack-trace.md` BEFORE executing STACK-TRACE mode.
+**Note:** STACK-TRACE tracing is also used by `session-analytics` CROSS-ANALYZE mode for debug log root-cause tracing.
 IF the problem type is unclear or the user wants auto-selection → use **AUTO** mode
 IF user specifies a mode explicitly → apply that mode directly
 

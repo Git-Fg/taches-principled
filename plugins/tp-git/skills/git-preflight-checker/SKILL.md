@@ -1,6 +1,6 @@
 ---
 name: git-preflight-checker
-description: "Run pre-flight validation checks (lint, type-check, tests, build sanity) before commits or PRs. Use before any commit or merge to gate quality. Exits fast with clear pass/fail so the main agent can proceed or abort."
+description: "Run pre-flight validation checks (lint, type-check, tests, build sanity) before commits or PRs. Use when the user says 'run pre-flight checks', 'lint and type-check before pushing', 'verify the project builds before opening a PR', 'run the test suite on changed files before merge'. Exits fast with clear pass/fail so the main agent can proceed or abort. NOT for: code review of the changes (use `git` skill REVIEW mode or `refine` REVIEW); NOT for: actually running git operations (use the `git` skill)."
 when_to_use: |
   - "Run pre-flight checks before committing"
   - "Lint and type-check before pushing"
@@ -20,7 +20,7 @@ executes them directly (no subagent context overhead).
 - NOT for: fixing the failures — only validate and report
 - NOT for: running the full test suite every time — focus on changed files
 - NOT for: git operations (commit, branch, worktree) — use the `git` skill
-- NOT for: code review of the changes — use `git-pr-reviewer` or `refine REVIEW`
+- NOT for: code review of the changes — use `refine` REVIEW or spawn `tp-critic` (lens: "review this diff for bug, security, and contract errors")
 
 ## The four checks, in order
 

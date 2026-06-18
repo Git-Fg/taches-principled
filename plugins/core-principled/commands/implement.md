@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Execute task implementation with verification at each step
+description: Execute task implementation with verification at each step. Implements a refined task spec (typically from `task-lifecycle` REFINE → IMPLEMENT) inline with verification. NOT for: planning a multi-phase project (use `plan-lifecycle`); NOT for: brainstorming options (use `ideate`).
 argument-hint: "[task-title-or-path] [--continue] [--refine] [--human-in-the-loop]"
 ---
 

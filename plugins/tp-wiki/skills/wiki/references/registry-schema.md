@@ -1,6 +1,6 @@
 # Wiki Registry Schema
 
-This file is the single source of truth for the format of `~/.claude/wiki-root.md`. The hub skill (`SKILL.md`) and the three wiki subagents (`wiki-searcher`, `wiki-ingester`, `wiki-linter`) all cite this file imperatively before performing any wiki operation. Read it once at the start of any wiki work and the rest of the operation flows from what is here.
+This file is the single source of truth for the format of `~/.claude/wiki-root.md`. The hub skill (`SKILL.md`) and `wiki-searcher` all cite this file imperatively before performing any wiki operation. Read it once at the start of any wiki work and the rest of the operation flows from what is here.
 
 The registry tells the orchestrator three things: *which wikis exist on disk*, *how to pick the right one when the user's intent is vague*, and *what to read inside each wiki before doing anything else*. Everything in this document serves one of those three jobs.
 
