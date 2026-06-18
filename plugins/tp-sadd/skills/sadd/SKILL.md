@@ -1,6 +1,6 @@
 ---
 name: sadd
-description: "Solve a complex problem by generating candidates and judging them with multiple isolated-context reviewers. Use when the user says 'compare these options', 'pick the best approach', 'which solution is right', 'evaluate these alternatives', 'judge these candidates', 'is this design right', or 'rate these implementations'. Two modes: EXECUTE (run with retry) and JUDGE (multi-judge debate). NOT for: simple bug diagnosis (use `diagnose`), single-shot implementation (do it inline), competitive brainstorming (use `ideation`), or fact-checking claims about the world (use `web-search`)."
+description: "Solve a complex problem by generating candidates and judging them with multiple isolated-context reviewers. Use when the user says 'compare these options', 'pick the best approach', 'which solution is right', 'evaluate these alternatives', 'judge these candidates', 'is this design right', or 'rate these implementations'. Two modes: EXECUTE (run with retry) and JUDGE (multi-judge debate). NOT for: simple bug diagnosis (use `diagnose`), single-shot implementation (do it inline), competitive brainstorming (use `ideation`), fact-checking claims about the world (use `web-search`), or first-principles reasoning with evidence (use `fpf`)."
 context: fork
 agent: general-purpose
 when_to_use: |
