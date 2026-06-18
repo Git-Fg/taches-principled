@@ -68,7 +68,7 @@ jobs:
           done
           echo "All JSON files parse cleanly."
 
-      - name: Check for duplicate version: keys (regression from 1.14.0)
+      - name: Check for duplicate "version" keys (regression from 1.14.0)
         run: |
           # Each plugin entry must have exactly one `version` key. JSON
           # parsers silently use the second value, so duplicates produce
