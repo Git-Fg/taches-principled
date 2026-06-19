@@ -136,7 +136,7 @@
     },
     {
       "name": "tp-rust",
-      "version": "0.6.0",
+      "version": "0.6.1",
       "description": "Principled Rust project skills \u2014 single `rust` hub with a `Modes:` directive covering the full Rust lifecycle: SCAFFOLD (lib/bin decision, Cargo.toml template edition 2024, MSRV 1.81, feature flag design, lib+bin code layout, rustdoc, edition migration), WORKSPACE (when to split, virtual workspace template, workspace inheritance, Cargo.lock policy, MSRV coordination, cross-crate patterns, workspace publishing), QUALITY (canonical 6-job CI, clippy + rustfmt policy, cargo-nextest, coverage, supply-chain ladder, dev-experience tooling), RELEASE (Cargo semver, changelog tooling, cargo publish playbook, supply-chain maintenance, feature deprecation), REVIEW (holistic existing-project health audit via 5 parallel tp-critic lenses \u2014 source-code health & idioms, dependency hygiene, build & test health, public API surface, supply chain). Each mode dispatches `tp-critic` with Rust-specific lenses (Cargo.toml audit, CI configuration, supply chain, pre-publish, source-code, dependency hygiene, build/test health, public API surface); the inline Rust idiom-polish checklist handles code cleanup.",
       "source": "./plugins/tp-rust",
       "homepage": "https://github.com/Git-Fg/taches-principled",

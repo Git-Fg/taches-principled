@@ -2,6 +2,24 @@
 
 All notable changes are documented here.
 
+## [0.6.1] — 2026-06-19
+
+### Fixed
+
+- **Single-binary multi-suite pattern: corrected the import advice in `references/quality-testing-and-coverage.md` §4.** The previous migration step told readers to add `use super::*;` to each moved suite file. That is wrong for the `tests/suites/` wrapper layout the reference documents: a suite at `crate::suites::<name>` has `super` = `crate::suites` (which holds only the `mod` declarations), so `use super::*;` imports nothing useful and the shared `common` helpers are unreachable. Fixed to `use crate::common;`, with an explicit explanation of the module path so readers understand *why*. Found by a `tp-critic` self-review lens.
+
+### Added
+
+- **`### Idiomatic variant: the prelude pattern (mdBook style)`** subsection in §4. Documents the alternative flat layout (suites as direct crate-root submodules) with a `mod prelude { pub use crate::common::{...}; }` re-export, modelled on `rust-lang/mdBook`'s `tests/testsuite/main.rs`. This layout gives the shortest helper imports (`use crate::prelude::*;`) and a single grep-able list of what every suite gets.
+- **`#![allow(unreachable_pub)]` gotcha** — a real-world footgun surfaced by mdBook's implementation: `pub` helpers inside an integration-test crate are never consumed from outside, so the `unreachable_pub` lint fires on them. The canonical `tests/main.rs` example and migration step 2 now include `#![allow(unreachable_pub, reason = "not needed in an integration test crate")]`.
+- **mdBook cited as the proven real-world implementation** in the §4 "Canonical source" section, alongside the Cargo Book.
+- **Cargo Book's own inefficiency quote** added to the "Why this works" list — Cargo's docs explicitly note the N-binary layout "can take longer to compile, and may not make full use of multiple CPUs when running the tests", which the single binary fixes.
+
+### AUDIT
+
+- Self-review scope: a `tp-critic` lens auditing the two recent tp-rust commits (REVIEW mode `45b6bce` + multi-suite pattern `53745ac`) for marketplace-rule compliance, technical correctness, and voice consistency. The critic agent hit an API connection error mid-run but surfaced the import-advice finding (the one genuine technical error) before dying; remaining checks were completed inline against the Cargo Book and a `rust-lang/mdBook` source fetch.
+- Per-finding resolution: the `use super::*;` import error → **Fixed** (this release). The hub-router-budget overage (251 lines vs the recommended ~150) → **Skipped** (functionally fine; mechanism stays in references; pre-existing, deferred per the [0.5.0] "Out of scope" note). The CHANGELOG plugin-vs-marketplace-version convention question → **Noted**, left for a maintainer decision (the existing entries are marketplace-level `1.x.y`; the [0.5.0]–[0.6.1] entries use plugin-level versions because the marketplace version was not bumped alongside).
+
 ## [0.6.0] — 2026-06-19
 
 ### Added
