@@ -1,12 +1,13 @@
 ---
 name: rust
-description: "Manage the full Rust project lifecycle — scaffold a new crate or workspace, configure CI/clippy/nextest, audit dependencies with cargo-deny, publish to crates.io, harden the supply chain. Use when the user says 'Rust', 'Cargo', 'new crate', 'cargo publish', 'cargo-deny', 'cargo-vet', 'cargo nextest', 'clippy', 'MSRV', or 'edition 2024'. Four modes: SCAFFOLD, WORKSPACE, QUALITY, RELEASE. NOT for: design / architecture reasoning across competing options (use `fpf`); NOT for: investigating a runtime bug (use `diagnose`)."
+description: "Manage the full Rust project lifecycle — scaffold a new crate or workspace, configure CI/clippy/nextest, audit dependencies with cargo-deny, publish to crates.io, harden the supply chain. Use when the user says 'Rust', 'Cargo', 'new crate', 'cargo publish', 'cargo-deny', 'cargo-vet', 'cargo nextest', 'clippy', 'MSRV', or 'edition 2024'. Five modes: SCAFFOLD, WORKSPACE, QUALITY, RELEASE, REVIEW. NOT for: design / architecture reasoning across competing options (use `fpf`); NOT for: investigating a runtime bug (use `diagnose`)."
 when_to_use: |
   - User wants to scaffold a new Rust crate or workspace
   - User wants to set up CI, clippy, nextest, coverage, or cargo-deny
   - User wants to publish a crate, bump version, write a changelog, or deprecate a feature
   - User wants to harden supply-chain (cargo-deny, cargo-vet, Dependabot)
   - User asks about edition 2024, MSRV, workspace inheritance, or feature flag design
+  - User wants a holistic review, audit, or health check of an *existing* Rust project or workspace
 ---
 
 # rust
@@ -19,6 +20,7 @@ You are the Rust project lifecycle hub. You do not execute Rust work yourself; y
 - WORKSPACE: 'set up a Cargo workspace', 'split into a workspace', 'share deps', 'workspace inheritance', 'coordinate MSRV', 'publish a workspace', 'internal features'
 - QUALITY: 'set up CI for Rust', 'configure clippy', 'switch to nextest', 'add coverage', 'audit dependencies', 'cargo-deny', 'cargo-vet', 'add benchmarks'
 - RELEASE: 'publish my crate', 'release-plz', 'bump version', 'changelog', 'deprecate a feature', 'bump MSRV safely', 'replace a dependency', 'Dependabot for Rust', 'yank a version'
+- REVIEW: 'review my rust project', 'audit this crate', 'audit this workspace', 'health check my cargo project', 'critique my rust code', 'find issues in this crate', 'what is wrong with this project', 'rust code review'
 
 ## Decision Router
 
@@ -26,6 +28,7 @@ IF scaffolding a new crate or designing features → SCAFFOLD mode
 IF splitting a project into a workspace, sharing deps across crates, or coordinating MSRV → WORKSPACE mode
 IF setting up CI / clippy / nextest / coverage / audit / dev-experience tooling → QUALITY mode
 IF versioning, publishing, writing a changelog, maintaining supply-chain, or deprecating a feature → RELEASE mode
+IF reviewing, auditing, or health-checking an *existing* Rust project or workspace → REVIEW mode
 
 ---
 
@@ -138,6 +141,36 @@ A new published version with a CHANGELOG entry, a git tag, a `cargo publish` log
 
 ---
 
+# Mode: REVIEW
+
+The holistic-audit layer for an *existing* Rust project or workspace. Fans out 5 parallel `tp-critic` lenses (source-code, dependency-hygiene, build-test, public-api, supply-chain) and synthesizes a deduplicated, severity-ranked report. REVIEW is read-only — it never modifies files; the user (or a downstream mode) decides what to fix.
+
+## Process
+
+1. Confirm the target — an absolute path to a Rust project or workspace root. If the user supplies a relative path or a glob, resolve it before spawning.
+2. ALWAYS spawn 5 `tp-critic` instances in parallel, one per lens (see Subagent Index below for the exact lens strings and primary references). All 5 run in the same `Agent` call (no barrier between them).
+3. Each lens returns findings in the contract defined in `references/review-orchestration.md` (`{ severity, location, dimension, finding, consequence, fix }` JSON array, `(unverified)`-tagged locations for unverified claims).
+4. Apply the dedup/synthesis protocol from §6 of `references/review-orchestration.md` (merge by `location`; concatenate `dimension`; keep the highest `severity`; sort BLOCKER → WARN → NIT).
+5. Emit the final markdown report (the table format from §6 of the orchestration reference). Empty severity buckets are omitted.
+
+You MUST read `references/review-orchestration.md` BEFORE invoking REVIEW mode or spawning any audit lens. It is the contract: the 5-lens fan-out, the output shape every lens must return, the severity rubric (BLOCKER/WARN/NIT), the P6 ground truth rule, the dedup/synthesis protocol, and the report format. Without it, lenses return heterogeneous prose and synthesis fails.
+
+You MUST read `references/review-source-code.md` BEFORE spawning the `"audit source-code health and idioms"` lens. It teaches the idiomatic-pattern checklist, the clippy profile evaluation, the `unsafe` and soundness guardrails, the error-handling discipline, and the async/concurrency hazard list — plus the "Authoritative sources" URL card with the per-URL trigger conditions.
+
+You MUST read `references/review-dependency-hygiene.md` BEFORE spawning the `"audit dependency hygiene"` lens. It teaches the Cargo.toml version-constraint audit, the dependency-tree duplicate detection, the manifest consistency checks, the `deny.toml` *shape* audit (this lens does not check policy — that is the supply-chain lens), the lockfile hygiene checks, and the explicit boundary with the supply-chain lens.
+
+You MUST read `references/review-public-api.md` BEFORE spawning the `"audit public API surface"` lens. It teaches the doc-coverage rules, the public-visibility hazards (including the seal-trait pattern), the semver consistency check (applying `release-versioning-and-changelog.md` rules), the public-type ergonomics smell-test, and the explicit boundary with the release-mode `"pre-publish review"` lens.
+
+**Spawn Directives:**
+- ALWAYS spawn 5 `tp-critic` instances in parallel — one per lens, all five at once. Pass each instance: (a) the lens string from the Subagent Index, (b) the target path, (c) the Output Contract from `references/review-orchestration.md` §2 verbatim.
+- After all 5 return, run the dedup/synthesis protocol from `references/review-orchestration.md` §6 inline. Do NOT delegate synthesis to a subagent — it is a deterministic merge and the orchestrator owns the final report.
+
+## Output
+
+A deduplicated, severity-ranked markdown report with the table format defined in `references/review-orchestration.md` §6: a header (project name, date, lens coverage count, finding counts by severity), then BLOCKER / WARN / NIT tables with `{ location, dimension, finding, consequence, fix }` columns. The report is the entire output — REVIEW does not produce code, diffs, or fix suggestions beyond the per-row `fix` field.
+
+---
+
 ## Failure Handling
 
 | Mode | Failure | Action |
@@ -146,6 +179,7 @@ A new published version with a CHANGELOG entry, a git tag, a `cargo publish` log
 | WORKSPACE | `additive-defaults` build error (cargo #12162) | Pin the workspace default features explicitly with the feature-wrapper pattern from the inheritance reference |
 | QUALITY | `cargo deny check` fails on the 0.18+ removed-key schema | Replace `vulnerability` and `unlicensed` keys with the `[advisories]` and `[licenses]` sections per the current schema |
 | RELEASE | `cargo publish` fails mid-workspace | Yank the partially-published version, fix `release-plz.toml` ordering, retry — never `--allow-dirty` without a `--dry-run` first |
+| REVIEW | Lenses return overlapping findings on the same `path:line`, or a lens returns prose instead of the JSON contract | Re-apply the dedup protocol from `references/review-orchestration.md` §6 (merge by `location`, keep highest severity, concatenate `dimension`); for the prose-return lens, re-spawn with the Output Contract pasted verbatim in the spawn prompt |
 | Any | MSRV bump decision is contested | ASK the user which camp (api-guidelines advisory vs RustCrypto breaking) — the policy has no community consensus |
 
 ---
@@ -172,6 +206,12 @@ A new published version with a CHANGELOG entry, a git tag, a `cargo publish` log
 - `references/release-publishing-and-deps.md` — first-publish playbook, Cargo 1.90+ native workspace publishing, yank-not-delete, MSRV-aware resolver, vendoring decision
 - `references/release-supply-chain-maintenance.md` — cargo-vet maintenance, Dependabot, RUSTSEC, bump-vs-replace-vs-live-with, 3-step feature deprecation cycle, `#[deprecated]` syntax, ADD-vs-REMOVE for features
 
+**REVIEW mode**
+- `references/review-orchestration.md` — the contract: 5-lens fan-out, output schema (`severity | location | dimension | finding | consequence | fix`), severity rubric, dedup/synthesis protocol, P6 ground truth rule, report format
+- `references/review-source-code.md` — source-code health & idioms lens checklist: idiomatic patterns, clippy profile evaluation, `unsafe` and soundness guardrails, error handling, async/concurrency hazards, perf smell-tests; URL card for clippy / Rust Reference / Nomicon / unsafe-code-guidelines / rustdoc / edition guide / perf book / RFCs
+- `references/review-dependency-hygiene.md` — dependency-hygiene lens: Cargo.toml version-constraint audit, tree duplicate detection, manifest consistency, `deny.toml` shape check, lockfile hygiene; URL card for Cargo Book / manifest reference / RUSTSEC / advisory-db / cargo-deny schema
+- `references/review-public-api.md` — public-API surface lens: doc coverage, visibility hazards, seal-trait pattern, semver consistency, public-type ergonomics; URL card for rustdoc book / API Guidelines / Cargo semver / edition guide
+
 ---
 
 ## Subagent Index
@@ -180,6 +220,10 @@ A new published version with a CHANGELOG entry, a git tag, a `cargo publish` log
 - **tp-critic, lens "audit CI configuration"** — `QUALITY` mode. Audits `.github/workflows/*.yml` + `clippy.toml` + `rustfmt.toml` + `.config/nextest.toml` for the 6-job canonical CI, `RUSTFLAGS=-D warnings` discipline, nextest adoption criteria, and dev-experience tooling. Fan out one tp-critic per CI workflow file in parallel.
 - **tp-critic, lens "audit supply chain"** — `QUALITY` (initial setup) and `RELEASE` (ongoing maintenance) modes. Audits `deny.toml` against the 0.19+ schema, `Cargo.lock` for RUSTSEC advisories, `cargo vet` audit coverage, Dependabot config, and `.cargo/config.toml` for the MSRV-aware resolver. Returns the stage (0-3) the project is at on the supply-chain ladder with the gaps blocking promotion.
 - **tp-critic, lens "pre-publish review"** — `RELEASE` mode. Pre-publish review: runs a mental `cargo semver-checks` against the public API delta, checks CHANGELOG for the new version, verifies `Cargo.toml` version + edition + MSRV + workspace lockstep, surfaces breaking-change signal.
+- **tp-critic, lens "audit source-code health and idioms"** — `REVIEW` mode (Lens 1 of 5). Audits `.rs` files for idiomatic patterns, clippy profile soundness, `unsafe` correctness, error-handling discipline, and async/concurrency hazards. Primary reference: `references/review-source-code.md` (with `references/quality-clippy-and-fmt.md` and `references/rust-idiom-polish.md`).
+- **tp-critic, lens "audit dependency hygiene"** — `REVIEW` mode (Lens 2 of 5). Audits `Cargo.toml` version constraints (wildcards, path-deps without version, `git` deps in published crates), dependency-tree duplicates and bloat, manifest consistency (`rust-version` vs `clippy.toml` MSRV, `[lints]` table, workspace inheritance), and the `deny.toml` *shape* (not policy — that's the supply-chain lens). Primary reference: `references/review-dependency-hygiene.md`.
+- **tp-critic, lens "audit build & test health"** — `REVIEW` mode (Lens 3 of 5). Audits `.github/workflows/*.yml` + `clippy.toml` + `rustfmt.toml` + `.config/nextest.toml` + `.cargo/config.toml` against the canonical 6-job CI, `RUSTFLAGS=-D warnings` discipline, nextest adoption criteria (>200 tests OR CI > 5 min), and dev-experience tooling. Reuses the `QUALITY` mode references (`quality-ci-template.md`, `quality-testing-and-coverage.md`, `quality-dev-experience.md`); no new lens reference file.
+- **tp-critic, lens "audit public API surface"** — `REVIEW` mode (Lens 4 of 5). Audits documentation coverage, public-visibility hazards (`pub(crate)` in public signatures, missing seal traits, `pub use` re-exports), semver consistency against `release-versioning-and-changelog.md`, and public-type ergonomics. Primary reference: `references/review-public-api.md`.
 - **Inline Rust idiom-polish** — `SCAFFOLD` and `QUALITY` modes. Post-implementation cleanup of recently-written `.rs` code for idiomatic Rust (ownership/borrowing, error handling, iterator chains, clone elimination) without changing behavior or borrow-checker compliance. Apply inline; see `references/rust-idiom-polish.md` for the checklist.
 
 ---
@@ -190,6 +234,7 @@ A new published version with a CHANGELOG entry, a git tag, a `cargo publish` log
 - **WORKSPACE** — Premature workspace split (wait for a real signal: binary+lib, multi-bin, shared types >100 lines); `path = "..."` in a published crate (breaks for downstream users); sharing `dev-dependencies` at workspace level when members are heterogeneous (binary's test deps pollute the lib); nested workspace dirs when flat would do
 - **QUALITY** — `cargo-audit` and `cargo-deny` run redundantly (deny subsumes audit); `cargo test --release` (slower build, no perf signal); `RUSTFLAGS=-D warnings` for workspace members (denies warnings in transitive deps too); coverage target on day 1 (measure first, target after 2-3 months); pre-optimizing benchmarks
 - **RELEASE** — Publishing without `--dry-run`; deleting a version from CI history (only yank); using `cargo-release` to publish a workspace without testing the order; yanking for "minor" bugs (publish a new patch); removing a feature in the same release that deprecates it; `cargo publish --allow-dirty` without a `--dry-run` first; long-lived crates.io API tokens (use OIDC trusted publishing)
+- **REVIEW** — Spawning lenses sequentially (one `tp-critic` at a time, waiting for each to finish) instead of in parallel — destroys the isolation benefit and serializes a 5× slowdown; promoting an `(unverified)` finding to BLOCKER without reading the file — violates the P6 ground truth rule; modifying files mid-audit (REVIEW is read-only — if the user asks for fixes, route back to SCAFFOLD/WORKSPACE/QUALITY/RELEASE per dimension); using REVIEW for performance-regression analysis against a baseline commit (REVIEW does a smell-test, not a regression delta); using REVIEW to design alternative architectures (use `fpf` for design reasoning — REVIEW audits the existing code against existing standards)
 
 ---
 
@@ -200,3 +245,6 @@ A new published version with a CHANGELOG entry, a git tag, a `cargo publish` log
 - NOT for: improving an existing artifact (polish, clarity, structure) — use `refine`
 - NOT for: non-Rust project init (use a language-specific scaffold or `ideation`)
 - NOT for: cross-language polyglot workspace (one Cargo workspace + npm/pip/etc.) — handle the non-Rust halves with their own language skills
+- NOT for (REVIEW vs QUALITY): setting up CI / clippy / nextest / coverage / cargo-deny / cargo-vet from scratch — use `QUALITY`. REVIEW audits the existing setup; it does not author it.
+- NOT for (REVIEW vs RELEASE `pre-publish review`): gating a specific version bump or running `cargo semver-checks` against the API delta since the last tag — use `RELEASE`. REVIEW audits the current state of the public API regardless of release timing.
+- NOT for (REVIEW vs language-agnostic security audit): general threat modeling, secrets scanning, OWASP-class vulnerabilities — use the core security skill. REVIEW is deep, Rust-idiomatic, Cargo-specific (clippy lint semantics, MSRV resolver, cargo-deny/vet, unsafe soundness). For language-agnostic security, cite the security skill by its role.

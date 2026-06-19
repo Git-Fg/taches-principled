@@ -2,6 +2,44 @@
 
 All notable changes are documented here.
 
+## [0.5.0] — 2026-06-19
+
+### Added
+
+- **`tp-rust` REVIEW mode (5th top-level mode in the `rust` skill hub)** — holistic health audit of an *existing* Rust project or workspace. Fans out **5 parallel `tp-critic` lenses** in a single `Agent` call:
+  1. `"audit source-code health and idioms"` — `.rs` idiomatic patterns, clippy profile soundness, `unsafe` and soundness guardrails, error-handling discipline, async/concurrency hazards.
+  2. `"audit dependency hygiene"` — `Cargo.toml` version constraints (wildcards, path-deps without version, `git` deps in published crates), tree duplicates and bloat, manifest consistency, `deny.toml` *shape* check. Distinct from the supply-chain lens (which checks policy/CVE).
+  3. `"audit build & test health"` — `.github/workflows/*.yml` + `clippy.toml` + `rustfmt.toml` + `.config/nextest.toml` + `.cargo/config.toml` against the canonical 6-job CI, `RUSTFLAGS=-D warnings`, nextest adoption criteria.
+  4. `"audit public API surface"` — doc coverage, public-visibility hazards (`pub(crate)` in public signatures, seal-trait pattern, `pub use` re-exports), semver consistency against `release-versioning-and-changelog.md`, public-type ergonomics. Distinct from `RELEASE`'s `"pre-publish review"` (which gates a specific version bump).
+  5. `"audit supply chain"` — reuses the existing `"audit supply chain"` lens string. `deny.toml` against 0.19+ schema, `Cargo.lock` for RUSTSEC, `cargo vet` coverage, Dependabot, MSRV-aware resolver.
+- **4 new references under `plugins/tp-rust/skills/rust/references/`**:
+  - `review-orchestration.md` — the contract: output schema (`severity | location | dimension | finding | consequence | fix`), BLOCKER/WARN/NIT rubric, dedup/synthesis protocol, P6 ground truth rule, report format. Pure marketplace mechanics, no external URLs.
+  - `review-source-code.md` — Lens 1 checklist + URL card (clippy index/book, Rust Reference, Nomicon, unsafe-code-guidelines, rustdoc, edition guide, perf book, RFCs).
+  - `review-dependency-hygiene.md` — Lens 2 checklist + URL card (Cargo Book, manifest reference, RUSTSEC, advisory-db, cargo-deny schema).
+  - `review-public-api.md` — Lens 4 checklist + URL card (rustdoc book, Rust API Guidelines, Cargo semver, edition guide).
+- **`## Authoritative sources` convention** — every new reference ends with a per-URL fetch trigger (the marketplace's first "when to fetch this URL" pattern). Each entry names the canonical source and the specific audit-condition that warrants a live fetch. Justified under the chicken-and-egg rule as content-about-external-resources (allowed), not self-loading routing logic (forbidden). Triggers are auditable, not vague — e.g. *"fetch when a specific clippy lint code appears in a finding and its meaning / default level / category is unclear"*.
+- **`references/review-source-code.md` "## §7 Performance smell-tests"** — light-pass perf smell-tests (allocation-in-loop, redundant `clone()` in loops, `format!` in tight loops, `HashMap` lookups in O(n) loops). Not a perf-regression analysis; for that, a dedicated perf pass is needed.
+
+### Changed
+
+- **`plugins/tp-rust/skills/rust/SKILL.md` hub body** — added REVIEW throughout: Routing Guidance triggers, Decision Router IF-line, new `# Mode: REVIEW` section, Failure Handling row, Reference Index `**REVIEW mode**` block, Subagent Index entries for all 4 new lenses (Lens 5 reuses the existing supply-chain string), Anti-patterns row, CONTRAST bullets (vs `QUALITY`, vs `RELEASE pre-publish review`, vs the core security skill).
+- **`when_to_use` frontmatter** — added "User wants a holistic review, audit, or health check of an *existing* Rust project or workspace" as a trigger.
+- **Description frontmatter** — "Four modes" → "Five modes" (SCAFFOLD, WORKSPACE, QUALITY, RELEASE, REVIEW); description expanded to name all 5 REVIEW lenses.
+- **Hub size** — `SKILL.md` grew from 203 → 250 lines. REVIEW body is ~26 lines (kept under the 30-line router budget per mode); all REVIEW mechanism lives in `references/` and loads on imperative citation.
+
+### Skip notes
+
+- **No new `tp-rust-critic` agent file.** All 4 new lenses are one-sentence lens prompts passed to the existing `tp-critic`. The marketplace agent-contracts rule: "Could this be a one-sentence lens instead?" — yes, always. No file proliferation. Lens 5 reuses the existing `"audit supply chain"` string verbatim.
+- **Existing QUALITY/RELEASE references unchanged.** Lens 3 reuses `quality-ci-template.md`, `quality-testing-and-coverage.md`, `quality-dev-experience.md` verbatim. Lens 5 reuses `quality-supply-chain-ladder.md` and `release-supply-chain-maintenance.md`. No duplication of supply-chain policy or CI/setup content — only the new code/API/hygiene dimensions get new references.
+- **No `knowledge/raw/official/` mirrors of Rust docs.** The marketplace maintains Claude Code doc mirrors only (per CLAUDE.md's "Refreshing Official Docs" recipe). Rust ecosystem URLs are embedded as static citations + live fetch on trigger. Avoids the maintenance tax of mirroring a 3rd-party doc tree.
+
+### Out of scope
+
+- **Hub budget refactor** — the hub is now 250 lines and the recommended router ceiling is ~30 lines per mode × 5 modes = 150 lines. The hub is functionally fine (mechanism stays in references, body is router-style) but the original 4-mode hub was already over the recommended ceiling before REVIEW was added. Restructuring the 4 existing modes to flatten into pure router paragraphs is a separate refactor; deferred to a future release to avoid unrelated churn.
+- **Retrofitting `## Authoritative sources` blocks** into the existing 13 references — they are already cited correctly (rustsec.org, cargo-deny schema, nexte.st, etc.). Adding per-URL fetch triggers is a polish follow-up; not part of this release.
+- **Performance regression analysis** — REVIEW does a perf smell-test (§7 of `review-source-code.md`), not a regression delta against a baseline commit. A true regression analysis needs benchmark history; out of scope.
+- **Architecture-level critique** — REVIEW audits existing code against existing standards, not against alternative designs. For design reasoning, the user is routed to `fpf` (PROPOSE mode) via the new CONTRAST bullet.
+
 ## [1.24.1] — 2026-06-18
 
 ### Changed
