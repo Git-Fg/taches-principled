@@ -83,3 +83,16 @@ Certifies that a human has reviewed every dep against criteria like "safe-to-dep
 ## §5. SBOM (if required by enterprise)
 
 `cargo-cyclonedx` generates a CycloneDX SBOM from `Cargo.lock`.
+
+## Authoritative sources
+
+When a `deny.toml` schema key, an advisory status, or a cargo-vet workflow step is in question, fetch the live canonical source. The triggers below are the *only* reasons to fetch.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://embarkstudios.github.io/cargo-deny/checks/cfg.html` | cargo-deny `deny.toml` schema | Authoring or auditing `deny.toml` — verify against the current schema |
+| `https://github.com/EmbarkStudios/cargo-deny` | cargo-deny repo (install, changelog, check semantics) | A check's behavior changed across versions, or a key's meaning is unclear |
+| `https://rustsec.org/` | RUSTSEC advisory database and RSS feed | Monitoring or triaging an advisory |
+| `https://github.com/rustsec/advisory-db` | The advisory-db source of truth | Confirming whether an advisory is active, yanked, or has a backported fix |
+| `https://mozilla.github.io/cargo-vet/` | The cargo-vet Book (bootstrap, certification, exemptions, imports) | Setting up cargo-vet or auditing coverage |
+| `https://github.com/CycloneDX/cyclonedx-rust-cargo` | cargo-cyclonedx (CycloneDX SBOM generation) | Producing an SBOM for enterprise compliance |

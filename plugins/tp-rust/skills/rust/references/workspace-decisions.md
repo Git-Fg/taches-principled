@@ -97,3 +97,15 @@ tokio = { workspace = true, features = ["macros"] }   # add features on top
 - A member that needs a different version pins explicitly: `serde = { version = "2" }`
 
 **Cargo 1.84+ additive defaults:** since the `additive-defaults` pitfall, be careful when mixing `default-features = false` in a member with workspace-default features. Pin explicitly when in doubt.
+
+## Authoritative sources
+
+When a workspace field's schema, an inheritance rule, or the `additive-defaults` behavior is in question, fetch the live canonical source. The triggers below are the *only* reasons to fetch.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://doc.rust-lang.org/cargo/reference/workspaces.html` | Workspaces reference (`[workspace]`, `members`, `[workspace.package]`/`[workspace.dependencies]`/`[workspace.lints]`) | Structuring a workspace root or auditing inheritance syntax |
+| `https://doc.rust-lang.org/cargo/reference/manifest.html` | Manifest schema (the `[workspace.*]` tables and the `field.workspace = true` syntax) | Verifying a workspace-level field's schema or the inheritance form |
+| `https://doc.rust-lang.org/cargo/reference/lints.html` | The `[lints]` table (1.74+, workspace-inheritable lint config) | Setting up `[workspace.lints]` or per-crate `[lints]` |
+| `https://github.com/rust-lang/cargo/issues/12162` | The `additive-defaults` pitfall (cargo #12162) | Diagnosing a workspace feature-default unification build error |
+| `https://doc.rust-lang.org/cargo/reference/features.html` | Cargo features (additivity, unification) — relevant to workspace feature inheritance | Diagnosing how a workspace-level feature propagates to members |

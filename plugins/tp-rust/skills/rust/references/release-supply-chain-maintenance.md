@@ -91,3 +91,16 @@ Use this when you want a feature to be visible in docs but signal "this is unsta
 - **ADD** when: 2+ users ask for it, the abstraction is real, the dep is acceptable
 - **REMOVE** when: zero users for 2 minor versions, the abstraction can be done in user code
 - **Never** remove during a 1.x series without a deprecation cycle
+
+## Authoritative sources
+
+When a cargo-vet workflow step, a Dependabot config key, an advisory status, or a deprecation/unstable attribute's syntax is in question, fetch the live canonical source. The triggers below are the *only* reasons to fetch.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://mozilla.github.io/cargo-vet/` | cargo-vet Book (certify, suggest, exemptions, imports) | Running the vet certification workflow or auditing coverage |
+| `https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file` | `dependabot.yml` schema (ecosystem, schedule, groups, labels) | Authoring or auditing the Dependabot config |
+| `https://rustsec.org/` | RUSTSEC advisory database and RSS feed | Monitoring or triaging an advisory |
+| `https://github.com/rustsec/advisory-db` | The advisory-db source of truth | Confirming advisory status, affected versions, or backported fixes |
+| `https://doc.rust-lang.org/reference/attributes/diagnostics.html#the-deprecated-attribute` | The `#[deprecated]` attribute reference | Authoring the 3-step deprecation cycle syntax |
+| `https://doc.rust-lang.org/rustdoc/the-doc-attribute.html` | rustdoc `#[doc(hidden)]` and related doc attributes | Hiding a deprecated item from docs or marking an unstable API |

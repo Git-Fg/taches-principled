@@ -71,3 +71,14 @@ name = "internal-types"
 version = "0.1.0"
 publish = false
 ```
+
+## Authoritative sources
+
+When a lockfile-policy decision, a feature-unification surprise, an MSRV-coordination warning, or a workspace-publish capability is in question, fetch the live canonical source. The triggers below are the *only* reasons to fetch.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://doc.rust-lang.org/cargo/guide/cargo-toml-vs-cargo-lock.html` | `Cargo.lock` commit policy (apps vs libraries) | Deciding whether to commit `Cargo.lock` for a given workspace shape |
+| `https://doc.rust-lang.org/cargo/reference/features.html` | Feature unification, optional deps, the "biggest feature wins" rule | Diagnosing unexpected feature-unification behavior across members |
+| `https://doc.rust-lang.org/cargo/reference/rust-version.html` | MSRV-aware resolver and workspace MSRV coordination | Coordinating MSRV across members or diagnosing an MSRV warning |
+| `https://github.com/rust-lang/cargo/blob/master/CHANGELOG.md` | Cargo release notes (e.g. 1.90 native `cargo publish --workspace`) | Confirming which Cargo version added a workspace-publish capability |

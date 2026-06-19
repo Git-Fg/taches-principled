@@ -81,3 +81,16 @@ Three archetypes; pick by workflow, not feature list.
 - Greenfield project? → **git-cliff** (or release-please if your team is JS/TS-heavy)
 - Want a Release PR workflow? → **release-please**
 - Mature Rust project with curated changelog? → hand-written, keep doing it
+
+## Authoritative sources
+
+When a semver classification, the `0.x` compat rule, the MSRV-bump-is-breaking question, or a changelog tool's config is in question, fetch the live canonical source. The triggers below are the *only* reasons to fetch.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://doc.rust-lang.org/cargo/reference/semver.html` | Cargo's SemVer compatibility rules (incl. the `^0.x` special case) | Classifying a change as breaking/compatible, or the `0.x` compat rule is in question |
+| `https://semver.org/` | The SemVer 2.0 specification | A versioning decision cites semver.org directly |
+| `https://doc.rust-lang.org/cargo/reference/rust-version.html` | `rust-version` and the MSRV-aware resolver (RFC 3537, Cargo 1.84+) | Resolving the contested "MSRV bump is breaking" question for this project |
+| `https://rust-lang.github.io/api-guidelines/` | API Guidelines MSRV policy (the "advisory, not breaking" camp) | Citing the api-guidelines position vs the RustCrypto/rust-bitcoin "breaking" camp |
+| `https://git-cliff.org/` | git-cliff (git-driven changelog generator, `cliff.toml`) | Configuring `cliff.toml` or conventional-commits parsing |
+| `https://github.com/googleapis/release-please` | release-please (Release-PR workflow, multi-language) | Setting up the release-please GitHub Action |

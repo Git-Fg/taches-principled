@@ -41,3 +41,15 @@ imports_granularity = "Crate"  # nightly-only; falls back gracefully on stable
 ## §5. The `#![deny(warnings)]` anti-pattern
 
 **DO NOT** use `#![deny(warnings)]` in `lib.rs`. It makes your crate fail to compile when a transitive dep emits a new warning (which is outside your control). Use `RUSTFLAGS: "-D warnings"` in CI for your crate only.
+
+## Authoritative sources
+
+When a clippy lint's category, a `clippy.toml`/`rustfmt.toml` key, or a per-use-case lint-group choice is in question, fetch the live canonical source. The triggers below are the *only* reasons to fetch.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://doc.rust-lang.org/clippy/` | The Clippy Book (lint levels, configuration, lint groups) | Choosing which lint group to enable per project type |
+| `https://rust-lang.github.io/rust-clippy/master/` | The clippy lint index (every lint: name, category, default level) | A specific lint's category or default level is unclear |
+| `https://doc.rust-lang.org/clippy/configuration.html` | `clippy.toml` configuration keys (`msrv`, `disallowed-*`, threshold lints) | Authoring or auditing `clippy.toml` |
+| `https://rust-lang.github.io/rustfmt/` | rustfmt configuration reference (every `rustfmt.toml` key, stable vs nightly) | Authoring or auditing `rustfmt.toml` (e.g. which keys are nightly-only) |
+| `https://doc.rust-lang.org/edition-guide/` | Edition Guide (edition-specific lint defaults) | An edition changes a lint's default level |

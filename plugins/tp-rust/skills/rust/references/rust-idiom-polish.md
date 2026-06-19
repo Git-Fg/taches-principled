@@ -17,3 +17,13 @@
 **How to verify:** run `cargo check` and `cargo clippy`. If either fails, revert the offending edit and report the borrow-checker error to the user. Do not commit until both pass.
 
 **Do not apply when:** the file is still actively being edited (the diff is in flux), the diff is empty, the only changes are in `Cargo.toml` or `Cargo.lock`, or the user has explicitly disabled simplification for this session.
+
+## Authoritative sources
+
+When a polish step's corresponding clippy lint, or the borrow/ownership semantics behind a change, is unclear, fetch the live canonical source. The triggers below are the *only* reasons to fetch.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://rust-lang.github.io/rust-clippy/master/` | The clippy lint index (the lints behind each item, e.g. `cloned_instead_of_copied`, `needless_clone`, `manual_map`) | A polish step's corresponding clippy lint name or category is unclear |
+| `https://doc.rust-lang.org/reference/` | The Rust Reference (ownership, borrowing, coercion — the semantics the checklist relies on) | A borrow-checker error from a polish step needs a precise semantic explanation |
+| `https://doc.rust-lang.org/book/` | The Rust Book (idioms, the ownership chapter) | Reinforcing an idiom the checklist applies |

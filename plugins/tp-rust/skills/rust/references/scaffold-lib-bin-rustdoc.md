@@ -126,3 +126,15 @@ cargo clippy --all-targets -- -D warnings
 - RPIT (return-position impl Trait) lifetime capture defaults tightened
 
 **Strategy:** bump edition, run `cargo fix --edition`, fix the remaining compile errors one at a time, run clippy. Most projects migrate in 1-2 hours.
+
+## Authoritative sources
+
+When a rustdoc convention, a doctest attribute, a Cargo target-discovery rule, or an edition-migration sharp edge is in question, fetch the live canonical source. The triggers below are the *only* reasons to fetch.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://doc.rust-lang.org/rustdoc/` | The rustdoc Book (doc-comments, `# Panics`/`# Errors`/`# Safety` sections, intra-doc links) | Authoring rustdoc conventions or auditing doc-section compliance |
+| `https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html` | Doctest semantics and attributes (`no_run`, `ignore`, `should_panic`, `compile_fail`) | Deciding a doctest attribute or diagnosing why a doctest fails to compile |
+| `https://doc.rust-lang.org/cargo/reference/cargo-targets.html` | Cargo targets (lib, bin, examples, tests auto-discovery rules) | Confirming the lib+bin layout or the `examples/` vs `tests/` discovery rules |
+| `https://doc.rust-lang.org/edition-guide/` | Edition Guide, including the 2021→2024 migration playbook | Running `cargo fix --edition` or auditing migration sharp edges (`gen` keyword, `expr_2021`, lifetime capture, RPIT) |
+| `https://doc.rust-lang.org/reference/` | The Rust Reference (module, item, and visibility semantics) | A layout or visibility question hinges on exact language semantics |

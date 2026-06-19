@@ -54,3 +54,16 @@ cargo vendor
 ```
 
 Use for: air-gapped builds, reproducible CI without network, license compliance (you ship the vendored deps with the source). Most projects don't need it; the cargo-deny → cargo-vet → Dependabot supply-chain ladder (initial setup is in the QUALITY mode's `references/quality-supply-chain-ladder.md`) is the lighter-weight alternative.
+
+## Authoritative sources
+
+When a `cargo publish`/`yank`/`vendor` flag, a resolver-config question, or a workspace-publish capability is in question, fetch the live canonical source. The triggers below are the *only* reasons to fetch.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://doc.rust-lang.org/cargo/commands/cargo-publish.html` | `cargo publish` (`--dry-run`, `--allow-dirty`, `--workspace`) | Running the first-publish playbook or diagnosing a publish failure |
+| `https://crates.io/me` | crates.io account / API token page | Running `cargo login` for the first time |
+| `https://doc.rust-lang.org/cargo/commands/cargo-yank.html` | `cargo yank` (semantics: skipped in new resolution, NOT deleted) | Deciding whether to yank, or what a yank does and doesn't do |
+| `https://doc.rust-lang.org/cargo/reference/resolver.html` | Resolver config (`incompatible-rust-versions = "fallback"`) | Enabling the MSRV-aware resolver in `.cargo/config.toml` |
+| `https://doc.rust-lang.org/cargo/commands/cargo-vendor.html` | `cargo vendor` (source replacement for offline/reproducible builds) | Setting up vendored sources |
+| `https://github.com/rust-lang/cargo/blob/master/CHANGELOG.md` | Cargo release notes (e.g. 1.90 native `cargo publish --workspace`) | Confirming which Cargo version added workspace publishing |

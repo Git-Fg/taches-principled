@@ -114,3 +114,15 @@ jobs:
 This is the canonical stack as of 2026: `dtolnay/rust-toolchain` (or `actions-rust-lang/setup-rust-toolchain` which bundles it) + `Swatinem/rust-cache@v2` + `taiki-e/install-action` for pre-built cargo subcommands. Source: rust-project-primer CI chapter.
 
 **For Forgejo/Gitea:** same YAML, just replace `actions/checkout` with `actions/checkout@v4` and the cache action works on self-hosted runners using the native Gitea cache backend.
+
+## Authoritative sources
+
+When a GitHub Actions concurrency rule, an action's inputs, or a cache-key question is in doubt, fetch the live canonical source. The triggers below are the *only* reasons to fetch.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://docs.github.com/en/actions/using-jobs/using-concurrency` | GitHub Actions concurrency (`cancel-in-progress`, `group` keys) | Tuning the concurrency rule or diagnosing a cancelled-run bug |
+| `https://github.com/actions-rust-lang/setup-rust-toolchain` | The one-liner action that bundles toolchain + cache + components | Choosing between the one-liner and the separate dtolnay/Swatinem actions |
+| `https://github.com/dtolnay/rust-toolchain` | Toolchain-install action (pinning stable/nightly/MSRV, components) | Pinning a specific toolchain version or adding a component |
+| `https://github.com/Swatinem/rust-cache` | Cargo registry + build-artifact cache action | Diagnosing cache misses or sizing the cache key |
+| `https://github.com/taiki-e/install-action` | Pre-built cargo-subcommand installer (cargo-deny, nextest, hack) | Adding a cargo subcommand to CI without a build-from-source step |

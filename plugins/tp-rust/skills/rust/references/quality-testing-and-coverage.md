@@ -208,7 +208,7 @@ Run: `cargo bench`. For CI, use `bencher.dev` or `criterion-cycles` to track reg
 
 **divan** (rising alternative): faster, simpler, smaller ecosystem. Use when Criterion's stat-sig machinery is overkill.
 
-**iai-callgrind** (deterministic): use when you need deterministic benchmarks (no flakiness from system noise).
+**gungraun** (formerly **iai-callgrind**; deterministic): use when you need deterministic, single-run benchmarks via Valgrind's Callgrind/Cachegrind — immune to system noise. No Windows support (Valgrind limitation).
 
 **When to add benchmarks:**
 - You have a perf-sensitive hot path
@@ -216,3 +216,20 @@ Run: `cargo bench`. For CI, use `bencher.dev` or `criterion-cycles` to track reg
 - You want to detect perf regressions before users do
 
 DO NOT add benchmarks preemptively. Each one is a maintenance cost.
+
+## Authoritative sources
+
+When a test-runner profile, a coverage-tool choice, a filter-expression syntax, or a benchmark library's API is in question, fetch the live canonical source. The triggers below are the *only* reasons to fetch.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://nexte.st/` | cargo-nextest docs (profiles, retries, JUnit, timeouts) | Authoring `.config/nextest.toml` or diagnosing a retry/timeout issue |
+| `https://nexte.st/docs/filterset/` | nextest filter-set expressions (`-E 'test(/name/)'`) | Building a per-suite/per-test filter for the single-binary multi-suite pattern |
+| `https://doc.rust-lang.org/cargo/reference/cargo-targets.html#integration-tests` | Cargo's integration-test target model (the single-binary recommendation) | Confirming why N root-level test files cost N× link time |
+| `https://github.com/taiki-e/cargo-llvm-cov` | cargo-llvm-cov (LLVM-based coverage, line vs branch) | Setting up coverage or choosing llvm-cov over tarpaulin |
+| `https://github.com/xd009642/tarpaulin` | cargo-tarpaulin (cross-platform coverage, incl. Windows) | Choosing tarpaulin when llvm-cov won't cover the target |
+| `https://github.com/taiki-e/cargo-hack` | cargo-hack (`--feature-powerset`, `--each-feature`) | Setting up the feature-matrix test |
+| `https://nnethercote.github.io/perf-book/` | The Rust Performance Book (codegen, allocation, inlining) | A coverage/test gap traces to a perf-sensitive hot path |
+| `https://github.com/bheisler/criterion.rs` | Criterion (statistics-driven wall-clock benchmarking) | Authoring a `#[bench]` or interpreting Criterion's statistics output |
+| `https://github.com/nvzqz/divan` | Divan (lighter wall-clock benchmarking) | Choosing divan over Criterion |
+| `https://github.com/gungraun/gungraun` | Gungraun (formerly iai-callgrind; deterministic Valgrind-based benchmarking) | Needing deterministic, single-run benchmarks immune to system noise |

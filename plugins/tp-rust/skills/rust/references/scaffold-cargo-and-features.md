@@ -116,3 +116,17 @@ pub(crate) mod rustls_impl;
 The `__` prefix signals "internal, not part of public API, may disappear at any time" (reqwest's documented comment).
 
 **Deprecation cycle:** when removing a feature post-1.0: `warn` in 1.x, `#[deprecated]` in 1.x+1, remove in 1.x+2. Use `#[cfg_attr(feature = "old-feature", deprecated = "use new-feature instead")]` for items.
+
+## Authoritative sources
+
+When a manifest field's exact schema, the MSRV-resolver semantics, or the additive-feature rule is in question, fetch the live canonical source. The triggers below are the *only* reasons to fetch — fetching on every scaffold wastes tokens.
+
+| Source | Canonical for | Fetch live when |
+|---|---|---|
+| `https://doc.rust-lang.org/cargo/reference/manifest.html` | The Manifest schema (every `[package]`/`[lib]`/`[[bin]]`/`[features]` field) | Auditing or authoring a `Cargo.toml` field's correctness, deprecation, or exact schema |
+| `https://doc.rust-lang.org/cargo/reference/features.html` | Cargo features reference (additivity, `dep:` syntax, mutual-exclusion escape hatch, optional deps) | Designing or reviewing a `[features]` table; deciding whether a feature combination is valid |
+| `https://doc.rust-lang.org/edition-guide/` | The Edition Guide (2024 stabilization, what each edition unlocks) | Choosing `edition` or auditing edition-locked behavior |
+| `https://doc.rust-lang.org/cargo/reference/rust-version.html` | `rust-version` field semantics and the MSRV-aware resolver (RFC 3537, Cargo 1.81+) | Setting or questioning an MSRV; verifying when the resolver enforces vs. merely advises |
+| `https://github.com/taiki-e/cargo-hack` | cargo-hack (`--feature-powerset`, `--each-feature`, feature-matrix testing) | Setting up the CI feature-matrix test the feature-flag playbook requires |
+| `https://github.com/foresterre/cargo-msrv` | cargo-msrv (automated MSRV detection) | Running `cargo msrv find` to verify a declared MSRV against the real dep tree |
+| `https://rust-lang.github.io/api-guidelines/` | Rust API Guidelines (feature naming, `C-FEATURE` conventions) | Deciding feature-flag naming or whether a feature counts as public API |

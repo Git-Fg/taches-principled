@@ -2,6 +2,38 @@
 
 All notable changes are documented here.
 
+## [0.7.0] — 2026-06-19
+
+### Added
+
+- **`## Authoritative sources` blocks retrofitted into all 13 pre-existing `tp-rust` references.** Completes the URL/fetch-trigger convention introduced in `[0.5.0]` (which only covered the 4 new REVIEW references). Every reference now ends with a `| Source | Canonical for | Fetch live when |` table naming the canonical external sources for its topic, each with a *specific* audit-condition trigger (not a vague "when relevant"). 16 of 17 references now carry the block; `review-orchestration.md` is intentionally block-less (pure marketplace mechanics, no external URLs). The retrofit added ~70 unique canonical Rust-ecosystem URLs across the skill.
+  - `scaffold-cargo-and-features.md` — manifest schema, features reference, edition guide, `rust-version`/MSRV resolver, cargo-hack, cargo-msrv, API Guidelines.
+  - `scaffold-lib-bin-rustdoc.md` — rustdoc Book, doctests, Cargo targets, edition migration, Rust Reference.
+  - `workspace-decisions.md` — Workspaces reference, manifest, `[lints]` table, cargo #12162.
+  - `workspace-lockfile-and-cross-crate.md` — `Cargo.lock` policy, feature unification, MSRV resolver, Cargo CHANGELOG.
+  - `quality-ci-template.md` — GitHub Actions concurrency, setup-rust-toolchain, dtolnay/rust-toolchain, Swatinem/rust-cache, taiki-e/install-action.
+  - `quality-clippy-and-fmt.md` — Clippy Book, clippy lint index, `clippy.toml` config, rustfmt config, edition guide.
+  - `quality-testing-and-coverage.md` — nextest (+ filterset), Cargo targets (multi-suite), cargo-llvm-cov, cargo-tarpaulin, cargo-hack, perf book, Criterion, divan, gungraun.
+  - `quality-supply-chain-ladder.md` — cargo-deny schema/repo, RUSTSEC, advisory-db, cargo-vet Book, cargo-cyclonedx.
+  - `quality-dev-experience.md` — bacon, sccache, mold, rustup toolchain file, Swatinem/rust-cache, `.cargo/config.toml` reference.
+  - `release-versioning-and-changelog.md` — Cargo semver, semver.org, MSRV resolver, API Guidelines, git-cliff, release-please.
+  - `release-publishing-and-deps.md` — `cargo publish`/`yank`/`vendor`, crates.io, resolver config, Cargo CHANGELOG.
+  - `release-supply-chain-maintenance.md` — cargo-vet Book, Dependabot config, RUSTSEC, advisory-db, `#[deprecated]`, rustdoc `#[doc(hidden)]`.
+  - `rust-idiom-polish.md` — clippy lint index, Rust Reference, Rust Book.
+
+### Fixed
+
+- **`iai-callgrind` → `gungraun` rename in `quality-testing-and-coverage.md` §9.** The deterministic-benchmarking crate formerly known as `iai-callgrind` was renamed to **gungraun** (repo `github.com/gungraun/gungraun`, docs `gungraun.github.io/gungraun/`). The reference now uses the current name with "(formerly iai-callgrind)" for discoverability, and notes the Windows/Valgrind limitation. Caught during URL verification for this retrofit.
+
+### Changed
+
+- **`tp-rust` 0.6.1 → 0.7.0** (minor: substantive content enhancement across 13 references; not a new capability, but a uniform guidance surface that changes what every reference teaches).
+
+### AUDIT
+
+- Retrofit scope: the `[0.6.1]` self-review's follow-up #5 ("Retrofit `## Authoritative sources` blocks into the 13 pre-existing references"). URL verification: 5 non-obvious canonical URLs fetched live this session to confirm they hadn't moved (divan ✓, bacon ✓, git-cliff ✓, rustfmt ✓, **iai-callgrind → found renamed to gungraun**, fixed). The remaining URLs reuse the high-confidence rust-lang.org canonical set established and verified in `[0.5.0]`–`[0.6.1]`.
+- Per-finding resolution: iai-callgrind rename → **Fixed** (this release). `review-orchestration.md` left block-less → **Intentional** (mechanics-only; no external URLs to cite). All other references → **Retrofitted**.
+
 ## [0.6.1] — 2026-06-19
 
 ### Fixed
