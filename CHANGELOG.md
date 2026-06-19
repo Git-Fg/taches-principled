@@ -2,6 +2,31 @@
 
 All notable changes are documented here.
 
+## [0.6.0] — 2026-06-19
+
+### Added
+
+- **Single-Binary Multi-Suite Pattern** in `plugins/tp-rust/skills/rust/references/quality-testing-and-coverage.md` (new §4). When `tests/` accumulates ≥10-20 root-level integration test files, each becomes a separate Cargo test binary and pays N× link-time cost; the pattern collapses them into one `tests/main.rs` mounting `tests/suites/<name>.rs` submodules. Benefits: **absolute dead-code accuracy on shared `tests/common/mod.rs` helpers** (no more `#![allow(dead_code)]` band-aid), **10-20× faster incremental link speeds**, easy per-suite filtering (`cargo test timeout_and_clamping` or `cargo nextest run -E 'test(/timeout_and_clamping/)'`), no `Cargo.toml` change. Includes a 6-step migration playbook, two anti-patterns (don't keep N binaries at scale; don't adopt the pattern at N=2), and a feature-set caveat (suites that need different feature flags must stay N binaries — Cargo does not allow conditional features per integration binary).
+- **QUALITY Process step 4** — collapse `tests/` into the single-binary multi-suite structure when ≥10-20 root-level files accumulate. Inserted between nextest adoption and coverage; old steps 4 and 5 renumbered to 5 and 6.
+- **`tp-critic, lens "audit build & test health"` (REVIEW Lens 3)** — gains an additional finding type: presence of ≥10-20 root-level `tests/*.rs` files without a `tests/main.rs` consolidator is a WARN with the migration steps from `references/quality-testing-and-coverage.md` §4 as the `fix` field.
+
+### Changed
+
+- **`references/quality-testing-and-coverage.md`** — renumbered §4-§8 → §5-§9 to make room for the new pattern. The `cargo-hack` → `cargo-llvm-cov` → `cargo-tarpaulin` → coverage scope → benchmarking sequence is unchanged.
+- **`references/scaffold-lib-bin-rustdoc.md` §3 "Examples & tests directory"** — added a forward-reference paragraph at the end: when the test suite grows past 1-3 files, point readers at the new `quality-testing-and-coverage.md` §4 for the migration playbook. Stays minimal so SCAFFOLD-mode readers don't get premature guidance.
+- **SKILL.md QUALITY mode Process** — added step 4 (multi-suite collapse) and renumbered the subsequent steps. The Process section now has 6 steps (was 5).
+- **SKILL.md QUALITY mode Anti-patterns** — added one bullet: "keeping N separate integration test binaries once `tests/` grows past 10-20 files (collapse into the single-binary multi-suite structure from `quality-testing-and-coverage.md` §4)".
+- **SKILL.md "You MUST read quality-testing-and-coverage.md BEFORE switching test runners or adding coverage" sentence** — now mentions the multi-suite pattern explicitly so QUALITY-mode readers see it before adopting nextest or coverage.
+
+### Skip notes
+
+- **No new `## Authoritative sources` block** was added to `quality-testing-and-coverage.md` as a whole. The new §4 cites the Cargo Book integration tests section and the nextest filter docs inline (matching the existing convention from §1's `https://nexte.st/docs/benchmarks/` citation). A full per-reference URL card was already flagged as out-of-scope for the existing 13 references in the [0.5.0] entry — applying the same rule here keeps the change focused.
+- **No CLI flag changes**, no marketplace catalog metadata changes beyond the version bump.
+
+### Out of scope
+
+- **No link-time benchmarks shipped with this release.** The 10-20× figure comes from the project's own migration notes and from the structural reasoning (Cargo's per-binary link cost vs single-binary link). Empirical before/after timings on the marketplace's own `tp-rust` crate would strengthen the claim; deferred to a future release.
+
 ## [0.5.0] — 2026-06-19
 
 ### Added

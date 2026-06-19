@@ -98,6 +98,8 @@ mycrate/
 
 **Do NOT put unit tests in `tests/`.** Unit tests live in `src/foo.rs` with `#[cfg(test)] mod tests`. Integration tests in `tests/` are slower (separate compilation) and have no access to internals.
 
+**When the suite grows:** once `tests/` carries ≥10-20 root-level files (`api_test.rs`, `auth_test.rs`, …), each becomes a separate test binary in Cargo, with N× link-time cost. Collapse them into a single `tests/main.rs` that mounts the files as `tests/suites/<name>.rs` submodules. See `references/quality-testing-and-coverage.md` §4 (the single-binary multi-suite pattern) for the migration playbook, the dead-code accuracy benefit, and the per-suite filtering syntax. For brand-new projects with 1-3 integration tests, stay with the Cargo default; the migration cost outweighs the benefit until the suite grows.
+
 ## §4. Edition migration (when working with an existing 2021 crate)
 
 The edition-2024 migration is mostly automated but has a few sharp edges:

@@ -38,7 +38,85 @@ Activate in CI:
 - CI test job > 5 min, OR
 - You need per-test timeouts, retries, or JUnit XML output
 
-## §4. cargo-hack for feature matrix testing
+## §4. The Single-Binary Multi-Suite Pattern (recommended once tests/ grows)
+
+When a project accumulates ≥10-20 root-level integration test files in `tests/`, each file becomes a **separate test binary** in Cargo's compilation model. Each binary re-links the entire dependency graph (axum, tokio, reqwest, …) and gets its own compilation unit. Three problems compound:
+
+1. **Link-time tax** — 10-20× more link work per test cycle. On large dep trees, local edit-test loops go from seconds to minutes and CI runs pick up the same cost.
+2. **Shared-helper dead-code blindness** — helpers in `tests/common/mod.rs` are shared via `mod common;` in every binary, but the compiler can only see usage *within* each binary. A helper used by only one suite gets flagged dead in every other binary, which forces a project-wide `#![allow(dead_code)]` in `common` and hides genuinely abandoned helpers.
+3. **Wasted incremental compilation** — editing one helper re-links every binary that imports `common`.
+
+**The pattern (the modern gold standard):** collapse the N root-level integration test files into a **single integration test binary** that mounts the individual files as submodules. Cargo compiles and links once; the compiler sees the full call graph across all suites.
+
+### New directory structure
+
+```
+tests/
+├── main.rs                # The single entry point (the only top-level test file)
+├── common/
+│   └── mod.rs             # Unchanged helpers
+└── suites/
+    ├── timeout_and_clamping.rs
+    ├── models_endpoint_consistency.rs
+    └── ...                # All other suites moved here
+```
+
+### `tests/main.rs` content
+
+```rust
+mod common;  // shared test environment
+
+// Declare each suite as a submodule under the single binary.
+mod suites {
+    mod timeout_and_clamping;
+    mod models_endpoint_consistency;
+    // ... all other suites
+}
+```
+
+Each file in `tests/suites/` is an ordinary test module — `#[test] fn it_works() { ... }` — and `use super::*;` gives it access to the parent crate.
+
+### Why this works
+
+- **Absolute dead-code accuracy** — `main.rs` is a single crate, so the compiler knows when an item in `common` is used anywhere across the N suites. You can safely remove every `#![allow(dead_code)]`. Any helper that is truly abandoned is now flagged.
+- **10-20× faster incremental link speeds** — linking axum / tokio / reqwest once instead of N times saves minutes per local edit-test cycle and per CI run.
+- **Easy filtering** — `cargo test timeout_and_clamping` still runs only that suite (because it's the only integration test binary). `cargo nextest run -E 'test(/timeout_and_clamping/)'` is the nextest equivalent for finer filtering. The single-binary model does not reduce filter granularity.
+- **No API change for the tests themselves** — each suite file looks the same as before; only its location and the parent `main.rs` declaration change.
+- **No `Cargo.toml` change required** — Cargo discovers `tests/main.rs` as the single integration test binary by default. `[[test]]` entries are only needed if the project already customised them.
+
+### When to adopt
+
+- The project has ≥10-20 root-level integration test files in `tests/`, OR
+- Linking an integration test binary takes > 10 s on a warm cache, OR
+- `tests/common/mod.rs` carries a `#![allow(dead_code)]` because of the dead-across-binaries problem, OR
+- CI integration-test job time is dominated by repeated link steps.
+
+For brand-new projects with 1-3 integration tests, stay with Cargo's default N-binary model. The migration cost is real; the benefit only kicks in at scale.
+
+### Migration playbook
+
+1. `mkdir tests/suites`. Move every existing `tests/<name>.rs` (except `tests/common/`) to `tests/suites/<name>.rs`.
+2. Create `tests/main.rs` with the `mod common;` + `mod suites { mod <name>; … }` shape above.
+3. In each moved file, add `use super::*;` at the top. Keep any `use mycrate::...` as-is (it resolves against the parent crate, same as before).
+4. Delete `#![allow(dead_code)]` from `tests/common/mod.rs`. Run `cargo test`. Address any genuinely unused helpers by either deleting them or wiring them in.
+5. CI: the single binary is the only integration test, so `cargo test` or `cargo nextest run --test main` runs everything. Per-suite filtering works via the test path: `cargo nextest run -E 'test(/timeout_and_clamping/)'`.
+6. Commit as a single refactor commit so the link-time delta is attributable. Verify before/after with `cargo clean && time cargo test --no-run`.
+
+### Anti-pattern: keep N binaries when N is large
+
+If `tests/` carries 20 root-level files and CI is slow, do NOT keep the N-binary layout for "familiarity". The migration is mechanical and the link-time win is immediate.
+
+### Anti-pattern: adopt the pattern at N = 2
+
+At ≤5 root-level test files with a small dep graph, the migration cost (restructuring the directory, teaching the team) outweighs the link-time win. Stay with the Cargo default until a real signal appears.
+
+### Anti-pattern: use the pattern when suites need different feature sets
+
+If suite A needs `tokio` and suite B needs `actix`, the single-binary model forces both onto the same feature set. The N-binary model is required here — Cargo does not let a single integration binary conditionally enable features. Document the exception and link to the [Cargo Book integration tests section](https://doc.rust-lang.org/cargo/guide/tests.html).
+
+See the nextest filter expression reference for the per-suite filtering syntax: <https://nexte.st/docs/filterset/>.
+
+## §5. cargo-hack for feature matrix testing
 
 ```yaml
 - name: Feature matrix
@@ -47,7 +125,7 @@ Activate in CI:
 
 Use when you have ≥3 features to ensure every combination compiles.
 
-## §5. cargo-llvm-cov (preferred for Linux/macOS)
+## §6. cargo-llvm-cov (preferred for Linux/macOS)
 
 ```bash
 cargo install cargo-llvm-cov
@@ -64,18 +142,18 @@ In CI:
     files: lcov.info
 ```
 
-## §6. cargo-tarpaulin (cross-platform, less accurate)
+## §7. cargo-tarpaulin (cross-platform, less accurate)
 
 Use only when you need Windows support and cargo-llvm-cov won't work.
 
-## §7. Coverage scope
+## §8. Coverage scope
 
 Start with line coverage. Add branch coverage when you have a coverage target:
 ```bash
 cargo llvm-cov nextest --branch
 ```
 
-## §8. Benchmarking (when needed)
+## §9. Benchmarking (when needed)
 
 **Criterion (default):**
 ```rust
